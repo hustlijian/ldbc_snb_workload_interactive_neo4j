@@ -23,80 +23,76 @@ import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
+import com.ldbc.socialnet.neo4j.domain.CommentsBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.EmailAddressesBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.ForumsBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.LanguagesBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.LocationsBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.OrganisationsBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.PersonsBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.PostsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.Relationships;
-import com.ldbc.socialnet.neo4j.indexes.CommentsBatchIndex;
-import com.ldbc.socialnet.neo4j.indexes.EmailAddressesBatchIndex;
-import com.ldbc.socialnet.neo4j.indexes.ForumsBatchIndex;
-import com.ldbc.socialnet.neo4j.indexes.LanguagesBatchIndex;
-import com.ldbc.socialnet.neo4j.indexes.LocationsBatchIndex;
-import com.ldbc.socialnet.neo4j.indexes.OrganisationsBatchIndex;
-import com.ldbc.socialnet.neo4j.indexes.PersonsBatchIndex;
-import com.ldbc.socialnet.neo4j.indexes.PostsBatchIndex;
-import com.ldbc.socialnet.neo4j.indexes.TagClassesBatchIndex;
-import com.ldbc.socialnet.neo4j.indexes.TagsBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.TagClassesBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.TagsBatchIndex;
 
 /*
-    
-    comment.csv - 1290084
-    post.csv - 355341
-    person.csv - 2000
-    forum.csv - 25255
-    tag.csv - 2098
-    tagClass.csv - 57
-    organisation.csv - 1721
-    language.csv - 79
-    location.csv - 1354
-    emailaddress.csv - 3440
-    comment_reply_of_comment.csv - 832156
-    comment_reply_of_post.csv - 457928
-    comment_located_location.csv - 1290084
-    location_part_of_location.csv - 1348
-    person_knows_person.csv - 59630
-    person_study_at_organisation.csv - 1599
-    person_speaks_language.csv - 4415
-    person_creator_of_comment.csv - 1290084
-    person_creator_of_post.csv - 355341
-    person_moderator_of_forum.csv - 25255
-    person_based_near_location.csv - 2000
-    person_work_at_organisation.csv - 4385
-    person_interest_tag.csv - 7091
-    person_has_email_emailaddress.csv - 3440
-    post_annotated_language.csv - 137471
-    person_like_post.csv - 1347476
-    post_located_location.csv - 355341
-    forum_hasmember_person.csv - 537832
-    forum_container_of_post.csv - 355341
-    forum_hastag_tag.csv - 30346
-    tag_has_type_tagclass.csv - 2098
-    tagclass_is_subclass_of_tagclass.csv - 56
-    organisation_based_near_location.csv - 1721
-
-Time: 5 min, 29 sec
-
-Graph Metrics:
-  Node count = 1,681,430
-  Relationship count = 7,070,449
+Buffer (100,000) & transform (relationship get) =   4 min, 50 sec
+Buffer (100,000) & transform (identity) =           5 min, 17 sec
+Buffer (100,000) =                                  5 min, 17 sec
+No Buffer =                                         5 min, 29 sec
  */
 
-public class BatchInserterTest
+/*
+Files
+  comment.csv - 1290084
+  post.csv - 355341
+  person.csv - 2000
+  forum.csv - 25255
+  tag.csv - 2098
+  tagClass.csv - 57
+  organisation.csv - 1721
+  language.csv - 79
+  location.csv - 1354
+  emailaddress.csv - 3440
+  comment_reply_of_comment.csv - 832156
+  comment_reply_of_post.csv - 457928
+  comment_located_location.csv - 1290084
+  location_part_of_location.csv - 1348
+  person_knows_person.csv - 59630
+  person_study_at_organisation.csv - 1599
+  person_speaks_language.csv - 4415
+  person_creator_of_comment.csv - 1290084
+  person_creator_of_post.csv - 355341
+  person_moderator_of_forum.csv - 25255
+  person_based_near_location.csv - 2000
+  person_work_at_organisation.csv - 4385
+  person_interest_tag.csv - 7091
+  person_has_email_emailaddress.csv - 3440
+  post_has_tag_tag.csv - 285855
+  post_annotated_language.csv - 137471
+  person_like_post.csv - 1347476
+  post_located_location.csv - 355341
+  forum_hasmember_person.csv - 537832
+  forum_container_of_post.csv - 355341
+  forum_hastag_tag.csv - 30346
+  tag_has_type_tagclass.csv - 2098
+  tagclass_is_subclass_of_tagclass.csv - 56
+  organisation_based_near_location.csv - 1721
+Graph Metrics:
+  Node count = 1,681,430
+  Relationship count = 7,355,787
+ */
+
+public class LdbcSocialNeworkNeo4jImporter
 {
     /*
-     TODO code improvements
-       -  variable number of csv lines to read before executing handler
-       -  break insert handler into 2 steps, 
-          read & write, so random reads can be performed in batches before all writes, 
-          e.g. for relationship insertion
-          i.e. like map/reduce: 
-              map:      columns->nodeIds&params
-              reduce:   nodeIds&params to ondisk relationships
-       - define all relationship types before, don't use dynamic ones
-       - remove expected column count, or better yet make it optional
+     TODO code improvements here
        - add properties file for pointing to resources
        - add readme with links to ldbc projects
-       - put file name in OneLineInserter, it's file specific anyway
-       - add toString for Time and Duration classes
        - is it necessary to store the "id" as a property if i want to index it?
           - is it good practice?
+     TODO code improvements ldbc_driver
+       - add toString for Time and Duration classes
        - use import java.util.concurrent.TimeUnit in my Time class
      */
 
@@ -106,26 +102,38 @@ public class BatchInserterTest
      TODO confluence relationship schema table should have start/end node types
      */
 
-    private static final Logger logger = Logger.getLogger( BatchInserterTest.class );
+    private final static Logger logger = Logger.getLogger( LdbcSocialNeworkNeo4jImporter.class );
 
     private final static String DB_DIR = "db";
     private final static String RAW_DATA_DIR = "/home/alex/workspace/java/ldbc_socialnet_bm/ldbc_socialnet_dbgen/outputDir/";
+    private final static Map<String, Object> EMPTY_MAP = new HashMap<String, Object>();
 
     public static void main( String[] args ) throws IOException
     {
+        LdbcSocialNeworkNeo4jImporter ldbcSocialNetworkLoader = new LdbcSocialNeworkNeo4jImporter( DB_DIR, RAW_DATA_DIR );
+        ldbcSocialNetworkLoader.load();
+    }
+
+    private final List<CsvFileInserter> fileInserters;
+    private final BatchInserter batchInserter;
+
+    public LdbcSocialNeworkNeo4jImporter( String dbDir, String csvDir ) throws IOException
+    {
         logger.info( "Clear DB directory" );
+        FileUtils.deleteRecursively( new File( dbDir ) );
 
-        FileUtils.deleteRecursively( new File( DB_DIR ) );
-
-        logger.info( "Instantiating BatchInserter" );
-
+        logger.info( "Instantiating Neo4j BatchInserter" );
         Map<String, String> config = new HashMap<String, String>();
         config.put( "neostore.nodestore.db.mapped_memory", "90M" );
-        BatchInserter batchInserter = BatchInserters.inserter( DB_DIR, config );
+        batchInserter = BatchInserters.inserter( DB_DIR, config );
 
-        // new LuceneBatchInserterIndexProvider( batchInserter );
+        // BatchInserterIndexProvider batchIndexProvider = new
+        // LuceneBatchInserterIndexProvider( batchInserter );
         BatchInserterIndexProvider batchIndexProvider = new LuceneBatchInserterIndexProviderNewImpl( batchInserter );
 
+        /*
+        * Neo4j Batch Index Providers
+        */
         CommentsBatchIndex commentsIndex = new CommentsBatchIndex( batchIndexProvider );
         PostsBatchIndex postsIndex = new PostsBatchIndex( batchIndexProvider );
         PersonsBatchIndex personsIndex = new PersonsBatchIndex( batchIndexProvider );
@@ -138,9 +146,9 @@ public class BatchInserterTest
         EmailAddressesBatchIndex emailAddressesIndex = new EmailAddressesBatchIndex( batchIndexProvider );
 
         /*
-        * Files
+        * CSV Files
         */
-        List<CsvFileInserter> fileInserters = new ArrayList<CsvFileInserter>();
+        fileInserters = new ArrayList<CsvFileInserter>();
         fileInserters.add( comments( batchInserter, commentsIndex ) );
         fileInserters.add( posts( batchInserter, postsIndex ) );
         fileInserters.add( persons( batchInserter, personsIndex ) );
@@ -165,6 +173,7 @@ public class BatchInserterTest
         fileInserters.add( personWorksAtOrganisation( batchInserter, personsIndex, organisationsIndex ) );
         fileInserters.add( personHasInterestTag( batchInserter, personsIndex, tagsIndex ) );
         fileInserters.add( personHasEmailAddress( batchInserter, personsIndex, emailAddressesIndex ) );
+        fileInserters.add( postHasTag( batchInserter, postsIndex, tagsIndex ) );
         fileInserters.add( postAnnotatedWithLanguage( batchInserter, postsIndex, languagesIndex ) );
         fileInserters.add( personLikesPost( batchInserter, personsIndex, postsIndex ) );
         fileInserters.add( postLocatedAtLocation( batchInserter, postsIndex, locationsIndex ) );
@@ -174,14 +183,17 @@ public class BatchInserterTest
         fileInserters.add( tagHasTypeTagClass( batchInserter, tagsIndex, tagClassesIndex ) );
         fileInserters.add( tagClassHasSubclassOfTagClass( batchInserter, tagClassesIndex ) );
         fileInserters.add( organisationBasedNearLocation( batchInserter, organisationsIndex, locationsIndex ) );
+    }
 
-        logger.info( "Inserting content from CSV files" );
+    public void load() throws FileNotFoundException
+    {
+        logger.info( "Loading CSV files" );
 
         long startTime = System.currentTimeMillis();
 
         for ( CsvFileInserter fileInserter : fileInserters )
         {
-            logger.info( String.format( "\t%s - %s", fileInserter.getFile().getName(), fileInserter.insertAllBuffered() ) );
+            logger.info( String.format( "\t%s - %s", fileInserter.getFile().getName(), fileInserter.insertAll() ) );
         }
 
         long runtime = System.currentTimeMillis() - startTime;
@@ -192,11 +204,7 @@ public class BatchInserterTest
                 TimeUnit.MILLISECONDS.toSeconds( runtime )
                         - TimeUnit.MINUTES.toSeconds( TimeUnit.MILLISECONDS.toMinutes( runtime ) ) ) );
 
-        logger.info( "Shutting down BatchInserter" );
-
         batchInserter.shutdown();
-
-        logger.info( "Instantiating transactional Neo4j database" );
 
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase( DB_DIR );
 
@@ -205,8 +213,6 @@ public class BatchInserterTest
         logger.info( "\tRelationship count = " + relationshipCount( db ) );
 
         db.shutdown();
-
-        logger.info( "Shutting down transactional Neo4j database" );
     }
 
     private static CsvFileInserter comments( final BatchInserter batchInserter, final CommentsBatchIndex commentsIndex )
@@ -238,10 +244,10 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "comment.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( columnValues[0] );
+                int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 // TODO convert to datetime
                 // 2010-12-28T07:16:25Z
@@ -289,10 +295,10 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "post.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( columnValues[0] );
+                int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 // TODO add the rest of the fields after file is repaired
                 long postNodeId = batchInserter.createNode( properties );
@@ -341,10 +347,10 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "person.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( columnValues[0] );
+                int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "firstName", columnValues[1] );
                 properties.put( "lastName", columnValues[2] );
@@ -385,10 +391,10 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "forum.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( columnValues[0] );
+                int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "title", columnValues[1] );
                 // TODO datetime
@@ -419,10 +425,10 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "tag.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( columnValues[0] );
+                int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
                 // TODO tagClass
@@ -453,10 +459,10 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "tagClass.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( columnValues[0] );
+                int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
                 // TODO tagClass (this will be a relationship - perhaps don't
@@ -489,10 +495,10 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "organisation.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( columnValues[0] );
+                int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
                 // TODO what is this column?
@@ -521,10 +527,10 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "language.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( columnValues[0] );
+                int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
                 long languageNodeId = batchInserter.createNode( properties );
@@ -553,10 +559,10 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "location.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( columnValues[0] );
+                int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
                 // TODO tagClass?
@@ -583,10 +589,10 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "emailaddress.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( columnValues[0] );
+                int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
                 long emailAddressNodeId = batchInserter.createNode( properties );
@@ -618,14 +624,22 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "comment_reply_of_comment.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
+            {
+                int id = Integer.parseInt( (String) columnValues[0] );
+                long fromCommentNodeId = commentsIndex.getIndex().get( "id",
+                        Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long toCommentNodeId = commentsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+                return new Object[] { id, fromCommentNodeId, toCommentNodeId };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                long fromCommentNodeId = commentsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                long toCommentNodeId = commentsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
-                batchInserter.createRelationship( fromCommentNodeId, toCommentNodeId, Relationships.REPLY_OF,
-                        properties );
+                properties.put( "id", columnValues[0] );
+                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                        Relationships.REPLY_OF, properties );
             }
         } );
     }
@@ -639,7 +653,7 @@ public class BatchInserterTest
             creationDate    dateTime    attribute           1   1
             hasCreator      Person      directed relation   1   1
             content         string      attribute           1   1
-            browserUsed     string      attribute           0   1   Chrone, IE, Firefox
+            browserUsed     string      attribute           0   1   Chrome, IE, Firefox
             locationIP      string      attribute           1   1
             isLocatedIn     Country     directed relation   0   1   Person.IsLocatedIn
             replyOf         Post        directed relation   0   1
@@ -653,13 +667,22 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "comment_reply_of_post.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
+            {
+                int id = Integer.parseInt( (String) columnValues[0] );
+                long fromCommentNodeId = commentsIndex.getIndex().get( "id",
+                        Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long toPostNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+                return new Object[] { id, fromCommentNodeId, toPostNodeId };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                long fromCommentNodeId = commentsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                long toPostNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
-                batchInserter.createRelationship( fromCommentNodeId, toPostNodeId, Relationships.REPLY_OF, properties );
+                properties.put( "id", columnValues[0] );
+                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                        Relationships.REPLY_OF, properties );
             }
         } );
     }
@@ -689,14 +712,23 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "comment_located_location.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
+            {
+                int id = Integer.parseInt( (String) columnValues[0] );
+                long fromCommentNodeId = commentsIndex.getIndex().get( "id",
+                        Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long toLocationNodeId = locationsIndex.getIndex().get( "id",
+                        Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+                return new Object[] { id, fromCommentNodeId, toLocationNodeId };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                long fromCommentNodeId = commentsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                long toLocationNodeId = locationsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
-                batchInserter.createRelationship( fromCommentNodeId, toLocationNodeId, Relationships.IS_LOCATED_IN,
-                        properties );
+                properties.put( "id", columnValues[0] );
+                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                        Relationships.IS_LOCATED_IN, properties );
             }
         } );
     }
@@ -717,19 +749,27 @@ public class BatchInserterTest
         TODO csv not documented in confluence
         id     from_location   to_location
         00      11              5170
-
          */
         return new CsvFileInserter( new File( RAW_DATA_DIR + "location_part_of_location.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
+            {
+                int id = Integer.parseInt( (String) columnValues[0] );
+                long fromLocationNodeId = locationsIndex.getIndex().get( "id",
+                        Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long toLocationNodeId = locationsIndex.getIndex().get( "id",
+                        Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+                return new Object[] { id, fromLocationNodeId, toLocationNodeId };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                long fromLocationNodeId = locationsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                long toLocationNodeId = locationsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
-                batchInserter.createRelationship( fromLocationNodeId, toLocationNodeId, Relationships.IS_PART_OF,
-                        properties );
+                properties.put( "id", columnValues[0] );
+                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                        Relationships.IS_PART_OF, properties );
             }
         } );
     }
@@ -768,13 +808,21 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "person_knows_person.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
+            {
+                int id = Integer.parseInt( (String) columnValues[0] );
+                long fromPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long toPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+                return new Object[] { id, fromPersonNodeId, toPersonNodeId };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                long fromPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                long toPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
-                batchInserter.createRelationship( fromPersonNodeId, toPersonNodeId, Relationships.KNOWS, properties );
+                properties.put( "id", columnValues[0] );
+                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2], Relationships.KNOWS,
+                        properties );
             }
         } );
     }
@@ -796,15 +844,24 @@ public class BatchInserterTest
                 new CsvLineInserter()
                 {
                     @Override
-                    public void insertLine( String[] columnValues )
+                    public Object[] transform( Object[] columnValues )
+                    {
+                        int id = Integer.parseInt( (String) columnValues[0] );
+                        long fromPersonNodeId = personsIndex.getIndex().get( "id",
+                                Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                        long toOrganisationNodeId = organisationsIndex.getIndex().get( "id",
+                                Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+                        int classYear = Integer.parseInt( (String) columnValues[3] );
+                        return new Object[] { id, fromPersonNodeId, toOrganisationNodeId, classYear };
+                    }
+
+                    @Override
+                    public void insert( Object[] columnValues )
                     {
                         Map<String, Object> properties = new HashMap<String, Object>();
-                        properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                        long fromPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                        long toOrganisationNodeId = organisationsIndex.getIndex().get( "id",
-                                Integer.parseInt( columnValues[2] ) ).getSingle();
-                        properties.put( "classYear", Integer.parseInt( columnValues[3] ) );
-                        batchInserter.createRelationship( fromPersonNodeId, toOrganisationNodeId,
+                        properties.put( "id", columnValues[0] );
+                        properties.put( "classYear", columnValues[3] );
+                        batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
                                 Relationships.STUDY_AT, properties );
                     }
                 } );
@@ -824,13 +881,22 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "person_speaks_language.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
+            {
+                int id = Integer.parseInt( (String) columnValues[0] );
+                long fromPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long toLanguageNodeId = languagesIndex.getIndex().get( "id",
+                        Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+                return new Object[] { id, fromPersonNodeId, toLanguageNodeId };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                long fromPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                long toLanguageNodeId = languagesIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
-                batchInserter.createRelationship( fromPersonNodeId, toLanguageNodeId, Relationships.SPEAKS, properties );
+                properties.put( "id", columnValues[0] );
+                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2], Relationships.SPEAKS,
+                        properties );
             }
         } );
     }
@@ -850,14 +916,22 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "person_creator_of_comment.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
+            {
+                int id = Integer.parseInt( (String) columnValues[0] );
+                long toPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long fromCommentNodeId = commentsIndex.getIndex().get( "id",
+                        Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+                return new Object[] { id, toPersonNodeId, fromCommentNodeId };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                long toPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                long fromCommentNodeId = commentsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
-                batchInserter.createRelationship( fromCommentNodeId, toPersonNodeId, Relationships.HAS_CREATOR,
-                        properties );
+                properties.put( "id", columnValues[0] );
+                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                        Relationships.HAS_CREATOR, properties );
             }
         } );
     }
@@ -877,13 +951,21 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "person_creator_of_post.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
+            {
+                int id = Integer.parseInt( (String) columnValues[0] );
+                long toPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long fromPostNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+                return new Object[] { id, toPersonNodeId, fromPostNodeId };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                long toPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                long fromPostNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
-                batchInserter.createRelationship( fromPostNodeId, toPersonNodeId, Relationships.HAS_CREATOR, properties );
+                properties.put( "id", columnValues[0] );
+                batchInserter.createRelationship( (long) columnValues[2], (long) columnValues[1],
+                        Relationships.HAS_CREATOR, properties );
             }
         } );
     }
@@ -903,15 +985,14 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "person_moderator_of_forum.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
             {
-                Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                long toPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
+                int id = Integer.parseInt( (String) columnValues[0] );
+                long toPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
                 long fromForumNodeId = 0;
                 try
                 {
-                    fromForumNodeId = forumsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
+                    fromForumNodeId = forumsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[2] ) ).getSingle();
                 }
                 catch ( Exception e )
                 {
@@ -922,10 +1003,21 @@ public class BatchInserterTest
                      *    2978|Wall of Lei Liu|2010-03-11T03:55:32Z
                      * then files like person_moderator_of_forum.csv attempt to retrieve 29780
                      */
-                    return;
+                    return null;
                 }
-                batchInserter.createRelationship( fromForumNodeId, toPersonNodeId, Relationships.HAS_MODERATOR,
-                        properties );
+                return new Object[] { id, toPersonNodeId, fromForumNodeId };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
+            {
+                // remove after data generator fixed
+                if ( columnValues == null ) return;
+
+                Map<String, Object> properties = new HashMap<String, Object>();
+                properties.put( "id", columnValues[0] );
+                batchInserter.createRelationship( (long) columnValues[2], (long) columnValues[1],
+                        Relationships.HAS_MODERATOR, properties );
             }
         } );
     }
@@ -952,14 +1044,22 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "person_based_near_location.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
+            {
+                int id = Integer.parseInt( (String) columnValues[0] );
+                long fromPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long toLocationNodeId = locationsIndex.getIndex().get( "id",
+                        Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+                return new Object[] { id, fromPersonNodeId, toLocationNodeId };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                long fromPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                long toLocationNodeId = locationsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
-                batchInserter.createRelationship( fromPersonNodeId, toLocationNodeId, Relationships.IS_LOCATED_IN,
-                        properties );
+                properties.put( "id", columnValues[0] );
+                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                        Relationships.IS_LOCATED_IN, properties );
             }
         } );
     }
@@ -981,15 +1081,24 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "person_work_at_organisation.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
+            {
+                int id = Integer.parseInt( (String) columnValues[0] );
+                long fromPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long toOrganisationNodeId = organisationsIndex.getIndex().get( "id",
+                        Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+                int workFrom = Integer.parseInt( (String) columnValues[3] );
+                return new Object[] { id, fromPersonNodeId, toOrganisationNodeId, workFrom };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                long fromPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                long toOrganisationNodeId = organisationsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
-                properties.put( "workFrom", Integer.parseInt( columnValues[3] ) );
-                batchInserter.createRelationship( fromPersonNodeId, toOrganisationNodeId, Relationships.IS_LOCATED_IN,
-                        properties );
+                properties.put( "id", columnValues[0] );
+                properties.put( "workFrom", columnValues[3] );
+                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                        Relationships.IS_LOCATED_IN, properties );
             }
         } );
     }
@@ -1007,13 +1116,21 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "person_interest_tag.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
+            {
+                int id = Integer.parseInt( (String) columnValues[0] );
+                long fromPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long toTagNodeId = tagsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+                return new Object[] { id, fromPersonNodeId, toTagNodeId };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                long fromPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                long toTagNodeId = tagsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
-                batchInserter.createRelationship( fromPersonNodeId, toTagNodeId, Relationships.HAS_INTEREST, properties );
+                properties.put( "id", columnValues[0] );
+                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                        Relationships.HAS_INTEREST, properties );
             }
         } );
     }
@@ -1034,14 +1151,22 @@ public class BatchInserterTest
                 new CsvLineInserter()
                 {
                     @Override
-                    public void insertLine( String[] columnValues )
+                    public Object[] transform( Object[] columnValues )
+                    {
+                        int id = Integer.parseInt( (String) columnValues[0] );
+                        long fromPersonNodeId = personsIndex.getIndex().get( "id",
+                                Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                        long toEmailAddressNodeId = emailAddressesIndex.getIndex().get( "id",
+                                Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+                        return new Object[] { id, fromPersonNodeId, toEmailAddressNodeId };
+                    }
+
+                    @Override
+                    public void insert( Object[] columnValues )
                     {
                         Map<String, Object> properties = new HashMap<String, Object>();
-                        properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                        long fromPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                        long toEmailAddressNodeId = emailAddressesIndex.getIndex().get( "id",
-                                Integer.parseInt( columnValues[2] ) ).getSingle();
-                        batchInserter.createRelationship( fromPersonNodeId, toEmailAddressNodeId,
+                        properties.put( "id", columnValues[0] );
+                        batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
                                 Relationships.HAS_EMAIL_ADDRESS, properties );
                     }
                 } );
@@ -1051,24 +1176,31 @@ public class BatchInserterTest
             final TagsBatchIndex tagsIndex ) throws FileNotFoundException
     {
         /*
-        TODO no schema definition for ANNOTATED_WITH relationship - though technically it's not a relationship in the schema
+        TODO no schema definition for HAS_TAG relationship - though technically it's not a relationship in the schema
 
         TODO not csv definition in confluence
         assume...
-        id  Post.id     Language.id
+        id  Post.id     Tag.id
         00  75          259
          */
         return new CsvFileInserter( new File( RAW_DATA_DIR + "post_has_tag_tag.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
+            {
+                int id = Integer.parseInt( (String) columnValues[0] );
+                long fromPostNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long toTagNodeId = tagsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+                return new Object[] { id, fromPostNodeId, toTagNodeId };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                long fromPostNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                long toLanguageNodeId = tagsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
-                batchInserter.createRelationship( fromPostNodeId, toLanguageNodeId, Relationships.ANNOTATED_WITH,
-                        properties );
+                properties.put( "id", columnValues[0] );
+                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                        Relationships.HAS_TAG, properties );
             }
         } );
     }
@@ -1087,15 +1219,14 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "post_annotated_language.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
             {
-                Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                long fromPostNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
+                int id = Integer.parseInt( (String) columnValues[0] );
+                long fromPostNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
                 long toLanguageNodeId = 0;
                 try
                 {
-                    toLanguageNodeId = languagesIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
+                    toLanguageNodeId = languagesIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[2] ) ).getSingle();
                 }
                 catch ( Exception e )
                 {
@@ -1103,10 +1234,21 @@ public class BatchInserterTest
                      * TODO remove exception handling after data generator is fixed
                      * at present sometimes it occurs that languageId == -1
                      */
-                    return;
+                    return null;
                 }
-                batchInserter.createRelationship( fromPostNodeId, toLanguageNodeId, Relationships.ANNOTATED_WITH,
-                        properties );
+                return new Object[] { id, fromPostNodeId, toLanguageNodeId };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
+            {
+                // TODO remove when data generator fixed
+                if ( columnValues == null ) return;
+
+                Map<String, Object> properties = new HashMap<String, Object>();
+                properties.put( "id", columnValues[0] );
+                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                        Relationships.ANNOTATED_WITH, properties );
             }
         } );
     }
@@ -1130,15 +1272,25 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "person_like_post.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
+            {
+                int id = Integer.parseInt( (String) columnValues[0] );
+                long fromPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long toPostNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+                // TODO dateTime
+                Object creationDate = columnValues[3];
+                return new Object[] { id, fromPersonNodeId, toPostNodeId, creationDate };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                long fromPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                long toPostNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
+                properties.put( "id", columnValues[0] );
                 // TODO dateTime
                 properties.put( "creationDate", columnValues[3] );
-                batchInserter.createRelationship( fromPersonNodeId, toPostNodeId, Relationships.LIKE, properties );
+                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2], Relationships.LIKE,
+                        properties );
             }
         } );
     }
@@ -1156,14 +1308,22 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "post_located_location.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
+            {
+                int id = Integer.parseInt( (String) columnValues[0] );
+                long fromPostNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long toLocationNodeId = locationsIndex.getIndex().get( "id",
+                        Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+                return new Object[] { id, fromPostNodeId, toLocationNodeId };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                long fromPostNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                long toLocationNodeId = locationsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
-                batchInserter.createRelationship( fromPostNodeId, toLocationNodeId, Relationships.IS_LOCATED_IN,
-                        properties );
+                properties.put( "id", columnValues[0] );
+                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                        Relationships.IS_LOCATED_IN, properties );
             }
         } );
     }
@@ -1185,19 +1345,36 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "forum_hasmember_person.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
+            {
+                int id = Integer.parseInt( (String) columnValues[0] );
+                long fromForumNodeId = forumsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long toPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+
+                if ( columnValues.length == 4 )
+                {
+                    // TODO dateTime
+                    Object joinDate = columnValues[3];
+                    return new Object[] { id, fromForumNodeId, toPersonNodeId, joinDate };
+                }
+                else
+                {
+                    return new Object[] { id, fromForumNodeId, toPersonNodeId };
+                }
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
-                long fromForumNodeId = forumsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                long toPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
-
+                properties.put( "id", columnValues[0] );
                 if ( columnValues.length == 4 )
                 {
                     // TODO dateTime
                     properties.put( "joinDate", columnValues[3] );
                 }
-                batchInserter.createRelationship( fromForumNodeId, toPersonNodeId, Relationships.HAS_MEMBER, properties );
+                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                        Relationships.HAS_MEMBER, properties );
             }
         } );
     }
@@ -1216,14 +1393,13 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "forum_container_of_post.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
             {
-                Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
+                int id = Integer.parseInt( (String) columnValues[0] );
                 long fromForumNodeId = 0;
                 try
                 {
-                    fromForumNodeId = forumsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
+                    fromForumNodeId = forumsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
                 }
                 catch ( Exception e )
                 {
@@ -1234,9 +1410,22 @@ public class BatchInserterTest
                      *    50294
                      * then when trying to retrieve 50294 (probably supposed to be 502940) from forum.csv it is not found
                      */
+                    return null;
                 }
-                long toPostNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
-                batchInserter.createRelationship( fromForumNodeId, toPostNodeId, Relationships.CONTAINER_OF, properties );
+                long toPostNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[2] ) ).getSingle();
+                return new Object[] { id, fromForumNodeId, toPostNodeId };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
+            {
+                // remove after data generator fixed
+                if ( columnValues == null ) return;
+
+                Map<String, Object> properties = new HashMap<String, Object>();
+                properties.put( "id", columnValues[0] );
+                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                        Relationships.CONTAINER_OF, properties );
             }
         } );
     }
@@ -1255,14 +1444,13 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "forum_hastag_tag.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
             {
-                Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", Integer.parseInt( columnValues[0] ) );
+                int id = Integer.parseInt( (String) columnValues[0] );
                 long toTagNodeId = 0;
                 try
                 {
-                    toTagNodeId = tagsIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
+                    toTagNodeId = tagsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
                 }
                 catch ( Exception e )
                 {
@@ -1271,12 +1459,12 @@ public class BatchInserterTest
                      * currently forum_hastag_tag.csv contains Tag.id entries in column 1 that are not in tag.csv
                      * for example: 75 in forum_hastag_tag.csv but the closest to that number in tag.csv is 74
                      */
-                    return;
+                    return null;
                 }
                 long fromForumNodeId = 0;
                 try
                 {
-                    fromForumNodeId = forumsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
+                    fromForumNodeId = forumsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[2] ) ).getSingle();
                 }
                 catch ( Exception e )
                 {
@@ -1287,9 +1475,21 @@ public class BatchInserterTest
                      * 
                      * of 30346 entries only 1028 appear to be valid
                      */
-                    return;
+                    return null;
                 }
-                batchInserter.createRelationship( toTagNodeId, fromForumNodeId, Relationships.HAS_TAG, properties );
+                return new Object[] { id, toTagNodeId, fromForumNodeId };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
+            {
+                // remove after data generator fixed
+                if ( columnValues == null ) return;
+
+                Map<String, Object> properties = new HashMap<String, Object>();
+                properties.put( "id", columnValues[0] );
+                batchInserter.createRelationship( (long) columnValues[2], (long) columnValues[1],
+                        Relationships.HAS_TAG, properties );
             }
         } );
     }
@@ -1308,13 +1508,19 @@ public class BatchInserterTest
         return new CsvFileInserter( new File( RAW_DATA_DIR + "tag_has_type_tagclass.csv" ), new CsvLineInserter()
         {
             @Override
-            public void insertLine( String[] columnValues )
+            public Object[] transform( Object[] columnValues )
             {
-                long fromTagNodeId = tagsIndex.getIndex().get( "id", Integer.parseInt( columnValues[0] ) ).getSingle();
-                long toTagClassNodeId = tagClassesIndex.getIndex().get( "id", Integer.parseInt( columnValues[1] ) ).getSingle();
-                // TODO have constant for empty map
-                batchInserter.createRelationship( fromTagNodeId, toTagClassNodeId, Relationships.HAS_TYPE,
-                        new HashMap<String, Object>() );
+                long fromTagNodeId = tagsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
+                long toTagClassNodeId = tagClassesIndex.getIndex().get( "id",
+                        Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                return new Object[] { fromTagNodeId, toTagClassNodeId };
+            }
+
+            @Override
+            public void insert( Object[] columnValues )
+            {
+                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
+                        Relationships.HAS_TYPE, EMPTY_MAP );
             }
         } );
     }
@@ -1336,15 +1542,20 @@ public class BatchInserterTest
                 new CsvLineInserter()
                 {
                     @Override
-                    public void insertLine( String[] columnValues )
+                    public Object[] transform( Object[] columnValues )
                     {
                         long parentTagClassNodeId = tagClassesIndex.getIndex().get( "id",
-                                Integer.parseInt( columnValues[0] ) ).getSingle();
+                                Integer.parseInt( (String) columnValues[0] ) ).getSingle();
                         long subTagClassNodeId = tagClassesIndex.getIndex().get( "id",
-                                Integer.parseInt( columnValues[1] ) ).getSingle();
-                        // TODO have constant for empty map
-                        batchInserter.createRelationship( parentTagClassNodeId, subTagClassNodeId,
-                                Relationships.HAS_SUBCLASS_OF, new HashMap<String, Object>() );
+                                Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                        return new Object[] { parentTagClassNodeId, subTagClassNodeId };
+                    }
+
+                    @Override
+                    public void insert( Object[] columnValues )
+                    {
+                        batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
+                                Relationships.HAS_SUBCLASS_OF, EMPTY_MAP );
                     }
                 } );
     }
@@ -1365,16 +1576,17 @@ public class BatchInserterTest
                 new CsvLineInserter()
                 {
                     @Override
-                    public void insertLine( String[] columnValues )
+                    public void insert( Object[] columnValues )
                     {
                         Map<String, Object> properties = new HashMap<String, Object>();
-                        properties.put( "id", Integer.parseInt( columnValues[0] ) );
+                        properties.put( "id", Integer.parseInt( (String) columnValues[0] ) );
                         long fromOrganisationNodeId = organisationsIndex.getIndex().get( "id",
-                                Integer.parseInt( columnValues[1] ) ).getSingle();
+                                Integer.parseInt( (String) columnValues[1] ) ).getSingle();
                         long toLocationNodeId = 0;
                         try
                         {
-                            toLocationNodeId = locationsIndex.getIndex().get( "id", Integer.parseInt( columnValues[2] ) ).getSingle();
+                            toLocationNodeId = locationsIndex.getIndex().get( "id",
+                                    Integer.parseInt( (String) columnValues[2] ) ).getSingle();
                         }
                         catch ( Exception e )
                         {

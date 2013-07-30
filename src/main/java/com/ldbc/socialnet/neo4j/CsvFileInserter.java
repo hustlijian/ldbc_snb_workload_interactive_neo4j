@@ -5,9 +5,9 @@ import java.io.FileNotFoundException;
 
 public class CsvFileInserter
 {
-    private static final int DEFAULT_BUFFER_SIZE = 10000;
+    public static final int DEFAULT_BUFFER_SIZE = 100000;
 
-    private final String[][] csvReadBuffer;
+    private final Object[][] csvReadBuffer;
     private final File file;
     private final CsvFileReader csvReader;
     private final CsvLineInserter lineInserter;
@@ -22,7 +22,7 @@ public class CsvFileInserter
     {
         super();
         this.bufferSize = bufferSize;
-        this.csvReadBuffer = new String[bufferSize][];
+        this.csvReadBuffer = new Object[bufferSize][];
         this.file = file;
         this.csvReader = new CsvFileReader( file );
         this.lineInserter = lineInserter;
@@ -35,6 +35,7 @@ public class CsvFileInserter
 
     private int bufferLines()
     {
+        if ( csvReader.hasNext() == false ) return 0;
         for ( int line = 0; line < bufferSize; line++ )
         {
             if ( csvReader.hasNext() )
@@ -43,7 +44,7 @@ public class CsvFileInserter
             }
             else
             {
-                return line + 1;
+                return line;
             }
         }
         return bufferSize;
@@ -57,7 +58,11 @@ public class CsvFileInserter
         {
             for ( int line = 0; line < bufferedLines; line++ )
             {
-                lineInserter.insertLine( csvReadBuffer[line] );
+                csvReadBuffer[line] = lineInserter.transform( csvReadBuffer[line] );
+            }
+            for ( int line = 0; line < bufferedLines; line++ )
+            {
+                lineInserter.insert( csvReadBuffer[line] );
                 count++;
             }
             bufferedLines = bufferLines();
@@ -70,7 +75,7 @@ public class CsvFileInserter
         int count = 0;
         while ( csvReader.hasNext() )
         {
-            lineInserter.insertLine( csvReader.next() );
+            lineInserter.insert( lineInserter.transform( csvReader.next() ) );
             count++;
         }
         return count;

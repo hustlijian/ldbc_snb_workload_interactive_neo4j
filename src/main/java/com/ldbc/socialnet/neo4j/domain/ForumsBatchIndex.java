@@ -1,16 +1,16 @@
-package com.ldbc.socialnet.neo4j.indexes;
+package com.ldbc.socialnet.neo4j.domain;
 
 import org.neo4j.helpers.collection.MapUtil;
 import org.neo4j.unsafe.batchinsert.BatchInserterIndex;
 import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
 
-public class CommentsBatchIndex
+public class ForumsBatchIndex
 {
     private final BatchInserterIndex index;
 
-    public CommentsBatchIndex( BatchInserterIndexProvider batchIndexProvider )
+    public ForumsBatchIndex( BatchInserterIndexProvider batchIndexProvider )
     {
-        index = batchIndexProvider.nodeIndex( "comments", MapUtil.stringMap( "type", "exact" ) );
+        index = batchIndexProvider.nodeIndex( Nodes.Forum.name(), MapUtil.stringMap( "type", "exact" ) );
         // .setCacheCapacity( "name", 100000 );
     }
 

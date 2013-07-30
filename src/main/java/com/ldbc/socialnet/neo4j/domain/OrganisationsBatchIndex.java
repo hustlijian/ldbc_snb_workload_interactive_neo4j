@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.neo4j.indexes;
+package com.ldbc.socialnet.neo4j.domain;
 
 import org.neo4j.helpers.collection.MapUtil;
 import org.neo4j.unsafe.batchinsert.BatchInserterIndex;
@@ -10,7 +10,7 @@ public class OrganisationsBatchIndex
 
     public OrganisationsBatchIndex( BatchInserterIndexProvider batchIndexProvider )
     {
-        index = batchIndexProvider.nodeIndex( "organisations", MapUtil.stringMap( "type", "exact" ) );
+        index = batchIndexProvider.nodeIndex( Nodes.Organisation.name(), MapUtil.stringMap( "type", "exact" ) );
         // .setCacheCapacity( "name", 100000 );
     }
 
