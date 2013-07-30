@@ -17,6 +17,7 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.helpers.collection.IteratorUtil;
 import org.neo4j.helpers.collection.MapUtil;
 import org.neo4j.index.impl.lucene.LuceneBatchInserterIndexProviderNewImpl;
+import org.neo4j.index.lucene.unsafe.batchinsert.LuceneBatchInserterIndexProvider;
 import org.neo4j.kernel.impl.util.FileUtils;
 import org.neo4j.tooling.GlobalGraphOperations;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
@@ -127,9 +128,9 @@ public class LdbcSocialNeworkNeo4jImporter
         config.put( "neostore.nodestore.db.mapped_memory", "90M" );
         batchInserter = BatchInserters.inserter( DB_DIR, config );
 
+        BatchInserterIndexProvider batchIndexProvider = new LuceneBatchInserterIndexProvider( batchInserter );
         // BatchInserterIndexProvider batchIndexProvider = new
-        // LuceneBatchInserterIndexProvider( batchInserter );
-        BatchInserterIndexProvider batchIndexProvider = new LuceneBatchInserterIndexProviderNewImpl( batchInserter );
+        // LuceneBatchInserterIndexProviderNewImpl( batchInserter );
 
         /*
         * Neo4j Batch Index Providers
@@ -638,7 +639,7 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
                         Relationships.REPLY_OF, properties );
             }
         } );
@@ -681,7 +682,7 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
                         Relationships.REPLY_OF, properties );
             }
         } );
@@ -727,7 +728,7 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
                         Relationships.IS_LOCATED_IN, properties );
             }
         } );
@@ -768,7 +769,7 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
                         Relationships.IS_PART_OF, properties );
             }
         } );
@@ -821,7 +822,7 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2], Relationships.KNOWS,
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2], Relationships.KNOWS,
                         properties );
             }
         } );
@@ -861,7 +862,7 @@ public class LdbcSocialNeworkNeo4jImporter
                         Map<String, Object> properties = new HashMap<String, Object>();
                         properties.put( "id", columnValues[0] );
                         properties.put( "classYear", columnValues[3] );
-                        batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                        batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
                                 Relationships.STUDY_AT, properties );
                     }
                 } );
@@ -895,7 +896,7 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2], Relationships.SPEAKS,
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2], Relationships.SPEAKS,
                         properties );
             }
         } );
@@ -930,7 +931,7 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
                         Relationships.HAS_CREATOR, properties );
             }
         } );
@@ -964,7 +965,7 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (long) columnValues[2], (long) columnValues[1],
+                batchInserter.createRelationship( (Long) columnValues[2], (Long) columnValues[1],
                         Relationships.HAS_CREATOR, properties );
             }
         } );
@@ -1016,7 +1017,7 @@ public class LdbcSocialNeworkNeo4jImporter
 
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (long) columnValues[2], (long) columnValues[1],
+                batchInserter.createRelationship( (Long) columnValues[2], (Long) columnValues[1],
                         Relationships.HAS_MODERATOR, properties );
             }
         } );
@@ -1058,7 +1059,7 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
                         Relationships.IS_LOCATED_IN, properties );
             }
         } );
@@ -1097,7 +1098,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
                 properties.put( "workFrom", columnValues[3] );
-                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
                         Relationships.IS_LOCATED_IN, properties );
             }
         } );
@@ -1129,7 +1130,7 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
                         Relationships.HAS_INTEREST, properties );
             }
         } );
@@ -1166,7 +1167,7 @@ public class LdbcSocialNeworkNeo4jImporter
                     {
                         Map<String, Object> properties = new HashMap<String, Object>();
                         properties.put( "id", columnValues[0] );
-                        batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                        batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
                                 Relationships.HAS_EMAIL_ADDRESS, properties );
                     }
                 } );
@@ -1199,7 +1200,7 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
                         Relationships.HAS_TAG, properties );
             }
         } );
@@ -1247,7 +1248,7 @@ public class LdbcSocialNeworkNeo4jImporter
 
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
                         Relationships.ANNOTATED_WITH, properties );
             }
         } );
@@ -1289,7 +1290,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 properties.put( "id", columnValues[0] );
                 // TODO dateTime
                 properties.put( "creationDate", columnValues[3] );
-                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2], Relationships.LIKE,
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2], Relationships.LIKE,
                         properties );
             }
         } );
@@ -1322,7 +1323,7 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
                         Relationships.IS_LOCATED_IN, properties );
             }
         } );
@@ -1373,7 +1374,7 @@ public class LdbcSocialNeworkNeo4jImporter
                     // TODO dateTime
                     properties.put( "joinDate", columnValues[3] );
                 }
-                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
                         Relationships.HAS_MEMBER, properties );
             }
         } );
@@ -1424,7 +1425,7 @@ public class LdbcSocialNeworkNeo4jImporter
 
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (long) columnValues[1], (long) columnValues[2],
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
                         Relationships.CONTAINER_OF, properties );
             }
         } );
@@ -1488,7 +1489,7 @@ public class LdbcSocialNeworkNeo4jImporter
 
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (long) columnValues[2], (long) columnValues[1],
+                batchInserter.createRelationship( (Long) columnValues[2], (Long) columnValues[1],
                         Relationships.HAS_TAG, properties );
             }
         } );
@@ -1519,7 +1520,7 @@ public class LdbcSocialNeworkNeo4jImporter
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
+                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
                         Relationships.HAS_TYPE, EMPTY_MAP );
             }
         } );
@@ -1554,7 +1555,7 @@ public class LdbcSocialNeworkNeo4jImporter
                     @Override
                     public void insert( Object[] columnValues )
                     {
-                        batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
+                        batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
                                 Relationships.HAS_SUBCLASS_OF, EMPTY_MAP );
                     }
                 } );
