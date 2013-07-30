@@ -1,0 +1,12 @@
+*.jar
+.project
+.classpath
+.settings/
+.gitignore~
+*.class
+target/
+logs/
+lib/
+build.sh~
+README.md~
+.gitmodules~
