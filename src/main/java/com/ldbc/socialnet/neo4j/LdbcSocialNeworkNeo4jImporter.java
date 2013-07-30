@@ -193,7 +193,7 @@ public class LdbcSocialNeworkNeo4jImporter
 
         for ( CsvFileInserter fileInserter : fileInserters )
         {
-            logger.info( String.format( "\t%s - %s", fileInserter.getFile().getName(), fileInserter.insertAll() ) );
+            logger.info( String.format( "\t%s - %s", fileInserter.getFile().getName(), fileInserter.insertAllBuffered() ) );
         }
 
         long runtime = System.currentTimeMillis() - startTime;
