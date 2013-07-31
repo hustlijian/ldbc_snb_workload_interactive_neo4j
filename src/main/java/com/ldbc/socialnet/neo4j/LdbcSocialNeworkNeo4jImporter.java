@@ -29,6 +29,7 @@ import com.ldbc.socialnet.neo4j.domain.EmailAddressesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.ForumsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.LanguagesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.LocationsBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.Nodes;
 import com.ldbc.socialnet.neo4j.domain.OrganisationsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.PersonsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.PostsBatchIndex;
@@ -256,7 +257,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 properties.put( "locationIP", columnValues[2] );
                 properties.put( "browserUsed", columnValues[3] );
                 properties.put( "content", columnValues[4] );
-                long commentNodeId = batchInserter.createNode( properties );
+                long commentNodeId = batchInserter.createNode( properties, Nodes.Comment );
                 commentsIndex.getIndex().add( commentNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -302,7 +303,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 // TODO add the rest of the fields after file is repaired
-                long postNodeId = batchInserter.createNode( properties );
+                long postNodeId = batchInserter.createNode( properties, Nodes.Post );
                 postsIndex.getIndex().add( postNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -362,7 +363,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 properties.put( "creationDate", columnValues[5] );
                 properties.put( "locationIP", columnValues[6] );
                 properties.put( "browserUsed", columnValues[7] );
-                long personNodeId = batchInserter.createNode( properties );
+                long personNodeId = batchInserter.createNode( properties, Nodes.Person );
                 personsIndex.getIndex().add( personNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -400,7 +401,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 properties.put( "title", columnValues[1] );
                 // TODO datetime
                 properties.put( "creationDate", columnValues[2] );
-                long forumNodeId = batchInserter.createNode( properties );
+                long forumNodeId = batchInserter.createNode( properties, Nodes.Forum );
                 forumIndex.getIndex().add( forumNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -434,7 +435,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 properties.put( "name", columnValues[1] );
                 // TODO tagClass
                 properties.put( "hasType", columnValues[2] );
-                long tagNodeId = batchInserter.createNode( properties );
+                long tagNodeId = batchInserter.createNode( properties, Nodes.Tag );
                 tagIndex.getIndex().add( tagNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -469,7 +470,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 // TODO tagClass (this will be a relationship - perhaps don't
                 // need to store)
                 properties.put( "subClassOf", columnValues[2] );
-                long tagClassNodeId = batchInserter.createNode( properties );
+                long tagClassNodeId = batchInserter.createNode( properties, Nodes.TagClass );
                 tagClassesIndex.getIndex().add( tagClassNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -504,7 +505,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 properties.put( "name", columnValues[1] );
                 // TODO what is this column?
                 properties.put( "hasType", columnValues[2] );
-                long organisationNodeId = batchInserter.createNode( properties );
+                long organisationNodeId = batchInserter.createNode( properties, Nodes.Organisation );
                 organisationsIndex.getIndex().add( organisationNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -534,7 +535,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
-                long languageNodeId = batchInserter.createNode( properties );
+                long languageNodeId = batchInserter.createNode( properties, Nodes.Language );
                 languageIndex.getIndex().add( languageNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -570,7 +571,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 properties.put( "hasType", columnValues[2] );
                 // TODO string? "locationType"? finite set?
                 properties.put( "locationType", columnValues[3] );
-                long locationNodeId = batchInserter.createNode( properties );
+                long locationNodeId = batchInserter.createNode( properties, Nodes.Location );
                 locationIndex.getIndex().add( locationNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -596,7 +597,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
-                long emailAddressNodeId = batchInserter.createNode( properties );
+                long emailAddressNodeId = batchInserter.createNode( properties, Nodes.EmailAddress );
                 emailAddressIndex.getIndex().add( emailAddressNodeId, MapUtil.map( "id", id ) );
             }
         } );

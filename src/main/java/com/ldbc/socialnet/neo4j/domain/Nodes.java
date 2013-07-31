@@ -1,6 +1,8 @@
 package com.ldbc.socialnet.neo4j.domain;
 
-public enum Nodes
+import org.neo4j.graphdb.Label;
+
+public enum Nodes implements Label
 {
     Comment,
     Post,
