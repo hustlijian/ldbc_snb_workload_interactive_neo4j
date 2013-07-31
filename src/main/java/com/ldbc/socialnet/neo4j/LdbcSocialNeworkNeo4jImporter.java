@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -224,10 +225,10 @@ public class LdbcSocialNeworkNeo4jImporter
         Comment (documented)
             id              int         unique              1   1   sequential
             creationDate    dateTime    attribute           1   1
-            hasCreator      Person      directed relation   1   1
             content         string      attribute           1   1
             browserUsed     string      attribute           0   1   Chrone, IE, Firefox
             locationIP      string      attribute           1   1
+            hasCreator      Person      directed relation   1   1
             isLocatedIn     Country     directed relation   0   1   Person.IsLocatedIn
             replyOf         Post        directed relation   0   1
             replyOf         Comment     directed relation   0   1
@@ -271,13 +272,15 @@ public class LdbcSocialNeworkNeo4jImporter
             id              int         unique              1   1       sequential       
             creationDate    dateTime    attribute           1   1                
             hasCreator      Person      directed relation   1   1                
-            content         string      attribute           0   1                
+            content         string      attribute           0   1
+            // TODO langauge does not appear to be in CSV                
             language        string      attribute           1   1   standard languages           
             imageFile       string      attribute           0   1   "photoXXX.jpg"           
             browserUsed     string      attribute           0   1   Chrome, IE, Firefox          
             locationIP      string      attribute           1   1                
             isLocatedIn     Country     directed relation   0   1                
-            hasTag          Tag         directed relation   1   N                
+            hasTag          Tag         directed relation   1   N
+            // TODO retweet relationship is not in CSV files                
             retweet         Post        directed relation   0   1            
         Post (in file - 2013/07/25)
             id              int         unique              1   1       sequential
@@ -286,19 +289,30 @@ public class LdbcSocialNeworkNeo4jImporter
             locationIP      string      attribute           1   1                
             browserUsed     string      attribute           0   1   Chrome, IE, Firefox          
             content         string      attribute           0   1
-            // TODO something else?                
          
-        // TODO csv file has varying number of columns - bug?
-        // TODO not documented in confluence
-            id  imageFile   creationDate            locationIP      browserUsed     content
-            00  photo0.jpg  2011-01-15T07:01:20Z    143.106.0.7     Firefox        
-            100             2010-03-11T05:28:04Z    27.99.128.8     Firefox         About Michael Jordan, 1999, but returned... .
-         */
+        TODO csv file has varying number of columns - bug?
+        TODO not documented in confluence
+        TODO sometimes has 6 columns and sometimes has 7 columns
+        TODO when 6: 
+            [0]id           [1]???                                  [2]creationDate         [3]locationIP   [4]browserUsed  [5]content
+            100             ???                                     2010-03-11T05:28:04Z    27.99.128.8     Firefox         About Michael Jordan
+        TODO when 7:             
+            [0]id           [1]imageFile    [2]???                  [3]creationDate         [4]locationIP   [5]browserUsed  [6]content
+            00              photo0.jpg      ???                     2011-01-15T07:01:20Z    143.106.0.7     Firefox         ???
+        */
         return new CsvFileInserter( new File( RAW_DATA_DIR + "post.csv" ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
             {
+                // TODO remove ALEX AVERBUCH
+                if ( columnValues.length == 7 )
+                {
+                    if ( false == columnValues[6].equals( "" ) )
+                    {
+                        System.out.println( arrayString( columnValues ) );
+                    }
+                }
                 Map<String, Object> properties = new HashMap<String, Object>();
                 int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
@@ -1647,4 +1661,15 @@ public class LdbcSocialNeworkNeo4jImporter
         return relationshipCount;
     }
 
+    private static String arrayString( Object[] array )
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append( array[0] );
+        for ( int i = 1; i < array.length; i++ )
+        {
+            Object object = array[i];
+            sb.append( "\t|\t" ).append( object.toString() );
+        }
+        return sb.toString();
+    }
 }
