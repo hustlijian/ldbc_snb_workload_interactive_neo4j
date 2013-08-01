@@ -10,7 +10,7 @@ public class OrganisationsBatchIndex
 
     public OrganisationsBatchIndex( BatchInserterIndexProvider batchIndexProvider )
     {
-        index = batchIndexProvider.nodeIndex( Nodes.Organisation.name(), MapUtil.stringMap( "type", "exact" ) );
+        index = batchIndexProvider.nodeIndex( Domain.Node.ORGANISATION.name(), MapUtil.stringMap( "type", "exact" ) );
         // .setCacheCapacity( "name", 100000 );
     }
 

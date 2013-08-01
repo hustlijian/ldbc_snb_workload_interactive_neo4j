@@ -10,7 +10,7 @@ public class PersonsBatchIndex
 
     public PersonsBatchIndex( BatchInserterIndexProvider batchIndexProvider )
     {
-        index = batchIndexProvider.nodeIndex( Nodes.Person.name(), MapUtil.stringMap( "type", "exact" ) );
+        index = batchIndexProvider.nodeIndex( Domain.Node.PERSON.name(), MapUtil.stringMap( "type", "exact" ) );
         // .setCacheCapacity( "name", 100000 );
     }
 

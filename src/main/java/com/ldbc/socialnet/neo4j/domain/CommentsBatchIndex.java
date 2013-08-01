@@ -10,7 +10,7 @@ public class CommentsBatchIndex
 
     public CommentsBatchIndex( BatchInserterIndexProvider batchIndexProvider )
     {
-        index = batchIndexProvider.nodeIndex( Nodes.Comment.name(), MapUtil.stringMap( "type", "exact" ) );
+        index = batchIndexProvider.nodeIndex( Domain.Node.COMMENT.name(), MapUtil.stringMap( "type", "exact" ) );
         // .setCacheCapacity( "name", 100000 );
     }
 

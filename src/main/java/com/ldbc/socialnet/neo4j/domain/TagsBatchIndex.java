@@ -10,7 +10,7 @@ public class TagsBatchIndex
 
     public TagsBatchIndex( BatchInserterIndexProvider batchIndexProvider )
     {
-        index = batchIndexProvider.nodeIndex( Nodes.Tag.name(), MapUtil.stringMap( "type", "exact" ) );
+        index = batchIndexProvider.nodeIndex( Domain.Node.TAG.name(), MapUtil.stringMap( "type", "exact" ) );
         // .setCacheCapacity( "name", 100000 );
     }
 

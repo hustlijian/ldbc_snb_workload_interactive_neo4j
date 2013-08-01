@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,6 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.helpers.collection.IteratorUtil;
 import org.neo4j.helpers.collection.MapUtil;
-import org.neo4j.index.impl.lucene.LuceneBatchInserterIndexProviderNewImpl;
 import org.neo4j.index.lucene.unsafe.batchinsert.LuceneBatchInserterIndexProvider;
 import org.neo4j.kernel.impl.util.FileUtils;
 import org.neo4j.tooling.GlobalGraphOperations;
@@ -26,15 +24,14 @@ import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
 import com.ldbc.socialnet.neo4j.domain.CommentsBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.Domain;
 import com.ldbc.socialnet.neo4j.domain.EmailAddressesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.ForumsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.LanguagesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.LocationsBatchIndex;
-import com.ldbc.socialnet.neo4j.domain.Nodes;
 import com.ldbc.socialnet.neo4j.domain.OrganisationsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.PersonsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.PostsBatchIndex;
-import com.ldbc.socialnet.neo4j.domain.Relationships;
 import com.ldbc.socialnet.neo4j.domain.TagClassesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.TagsBatchIndex;
 
@@ -94,6 +91,8 @@ public class LdbcSocialNeworkNeo4jImporter
        - add readme with links to ldbc projects
        - is it necessary to store the "id" as a property if i want to index it?
           - is it good practice?
+       - in general, relationship schemas not documented
+          - both format and content
      TODO code improvements ldbc_driver
        - add toString for Time and Duration classes
        - use import java.util.concurrent.TimeUnit in my Time class
@@ -222,26 +221,8 @@ public class LdbcSocialNeworkNeo4jImporter
             throws FileNotFoundException
     {
         /*
-        Comment (documented)
-            id              int         unique              1   1   sequential
-            creationDate    dateTime    attribute           1   1
-            content         string      attribute           1   1
-            browserUsed     string      attribute           0   1   Chrone, IE, Firefox
-            locationIP      string      attribute           1   1
-            hasCreator      Person      directed relation   1   1
-            isLocatedIn     Country     directed relation   0   1   Person.IsLocatedIn
-            replyOf         Post        directed relation   0   1
-            replyOf         Comment     directed relation   0   1
-        Comment (in file - 2013/07/25)
-            id              int         unique              1   1   sequential
-            creationDate    dateTime    attribute           1   1
-            locationIP      string      attribute           1   1
-            browserUsed     string      attribute           0   1   Chrone, IE, Firefox
-            content         string      attribute           1   1
-        
-        // TODO not documented in confluence
-        id  date                    location IP     browser     content
-        00  2010-03-11T10:11:18Z    14.134.0.11     Chrome      About Michael Jordan, Association (NBA) website states, By acclamation, Michael Jordan is the greatest basketball player of all.
+        id  creationDate            location IP     browser     content
+        00  2010-03-11T10:11:18Z    14.134.0.11     Chrome      About Michael Jordan, Association...
          */
 
         return new CsvFileInserter( new File( RAW_DATA_DIR + "comment.csv" ), new CsvLineInserter()
@@ -258,7 +239,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 properties.put( "locationIP", columnValues[2] );
                 properties.put( "browserUsed", columnValues[3] );
                 properties.put( "content", columnValues[4] );
-                long commentNodeId = batchInserter.createNode( properties, Nodes.Comment );
+                long commentNodeId = batchInserter.createNode( properties, Domain.Node.COMMENT );
                 commentsIndex.getIndex().add( commentNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -268,56 +249,37 @@ public class LdbcSocialNeworkNeo4jImporter
             throws FileNotFoundException
     {
         /*
-        Post (documented)                                     
-            id              int         unique              1   1       sequential       
-            creationDate    dateTime    attribute           1   1                
-            hasCreator      Person      directed relation   1   1                
-            content         string      attribute           0   1
-            // TODO langauge does not appear to be in CSV                
-            language        string      attribute           1   1   standard languages           
-            imageFile       string      attribute           0   1   "photoXXX.jpg"           
-            browserUsed     string      attribute           0   1   Chrome, IE, Firefox          
-            locationIP      string      attribute           1   1                
-            isLocatedIn     Country     directed relation   0   1                
-            hasTag          Tag         directed relation   1   N
-            // TODO retweet relationship is not in CSV files                
-            retweet         Post        directed relation   0   1            
-        Post (in file - 2013/07/25)
-            id              int         unique              1   1       sequential
-            imageFile       string      attribute           0   1   "photoXXX.jpg"           
-            creationDate    dateTime    attribute           1   1                
-            locationIP      string      attribute           1   1                
-            browserUsed     string      attribute           0   1   Chrome, IE, Firefox          
-            content         string      attribute           0   1
-         
-        TODO csv file has varying number of columns - bug?
-        TODO not documented in confluence
-        TODO sometimes has 6 columns and sometimes has 7 columns
-        TODO when 6: 
+        TODO "retweet" relationship is in schema table but not in CSV files                        
+        
+        TODO csv file has varying number of columns - 6/7
+        when 6: 
             [0]id           [1]???                                  [2]creationDate         [3]locationIP   [4]browserUsed  [5]content
             100             ???                                     2010-03-11T05:28:04Z    27.99.128.8     Firefox         About Michael Jordan
-        TODO when 7:             
+        when 7:             
             [0]id           [1]imageFile    [2]???                  [3]creationDate         [4]locationIP   [5]browserUsed  [6]content
             00              photo0.jpg      ???                     2011-01-15T07:01:20Z    143.106.0.7     Firefox         ???
+
+        TODO "language" attribute appears in schema table but not in CSV-files and not in 
+            
+        TODO according to CSV-files: "id"   "photo"     "creationDate"  "ip"        "browser"       "content"
+        TODO naming in schema:        id    imageFile   creationDate    locationIP  browserUsed     content
         */
         return new CsvFileInserter( new File( RAW_DATA_DIR + "post.csv" ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
             {
-                // TODO remove ALEX AVERBUCH
-                if ( columnValues.length == 7 )
-                {
-                    if ( false == columnValues[6].equals( "" ) )
-                    {
-                        System.out.println( arrayString( columnValues ) );
-                    }
-                }
                 Map<String, Object> properties = new HashMap<String, Object>();
                 int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
-                // TODO add the rest of the fields after file is repaired
-                long postNodeId = batchInserter.createNode( properties, Nodes.Post );
+                // TODO recheck below & uncomment all after generator is fixed
+                // properties.put( "imageFile", columnValues[1] );
+                // TODO dateTime
+                // properties.put( "creationDate", columnValues[2] );
+                // properties.put( "locationIP", columnValues[3] );
+                // properties.put( "browserUsed", columnValues[4] );
+                // properties.put( "content", columnValues[5] );
+                long postNodeId = batchInserter.createNode( properties, Domain.Node.POST );
                 postsIndex.getIndex().add( postNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -327,36 +289,6 @@ public class LdbcSocialNeworkNeo4jImporter
             throws FileNotFoundException
     {
         /*
-        Person (documented)
-            id              int             unique              1   1                           sequential       
-            creationDate    dateTime        attribute           1   1   startYear - endYear     random       
-            firstName       string          attribute           1   1   dictionary                                      Person.IsLocatedIn   
-            lastName        string          attribute           1   1   dictionary                                      Person.IsLocatedIn   
-            gender          string          attribute           1   1   male/female (50%)       random       
-            birthday        date            attribute           1   1   1980-1990               random       
-            email           string          attribute           1   N                           top+random                                  F13
-            speaks          string          attribute           1   N   languages            
-            browserUsed     string          attribute           1   1   Chrone, IE, Firefox          
-            locationIP      string          attribute           1   1                
-            isLocatedIn     City            directed relation   1   1                           ?        
-            isLocatedIn     Country         directed relation   1   1                           by country population                       F2,F9
-            studyAt         Organization    directed relation   0   N                           University ranking      Person.IsLocatedIn  F3
-            workAt          Organization    directed relation   0   N                                                   Person.IsLocatedIn  F10
-            hasInterest     Tag             directed relation   1   N                           Singer's popularity     Person.IsLocatedIn  F5,F7
-            likes           Post            directed relation   0   N                                                   Person.IsLocatedIn  F14
-            knows           Person          relation            0   N                           power-law                                   F1
-            follows         Person          directed relation   0   N
-        Person (in file - 2013/07/25)                        
-            id              int             unique              1   1                           sequential
-            firstName       string          attribute           1   1   dictionary                                      Person.IsLocatedIn   
-            lastName        string          attribute           1   1   dictionary                                      Person.IsLocatedIn   
-            gender          string          attribute           1   1   male/female (50%)       random       
-            birthday        date            attribute           1   1   1980-1990               random                          
-            creationDate    dateTime        attribute           1   1   startYear - endYear     random
-            locationIP      string          attribute           1   1                
-            browserUsed     string          attribute           1   1   Chrone, IE, Firefox          
-
-        // TODO confluence is inconsistent with this, last 2 columns (locationIP, browserUsed) are not documented
         id      firstName   lastName    gender  birthday    creationDate            locationIP      browserUsed
         75      Fernanda    Alves       male    1984-12-15  2010-12-14T11:41:37Z    143.106.0.7     Firefox
          */
@@ -377,7 +309,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 properties.put( "creationDate", columnValues[5] );
                 properties.put( "locationIP", columnValues[6] );
                 properties.put( "browserUsed", columnValues[7] );
-                long personNodeId = batchInserter.createNode( properties, Nodes.Person );
+                long personNodeId = batchInserter.createNode( properties, Domain.Node.PERSON );
                 personsIndex.getIndex().add( personNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -387,20 +319,7 @@ public class LdbcSocialNeworkNeo4jImporter
             throws FileNotFoundException
     {
         /*
-        Forum (documented)
-            id              int         unique              1   1   Person.id x 2   derivation      F4
-            title           string      attribute           1   1                
-            creationDate    dateTime    attribute           1   1                
-            hasModerator    Person      directed relation   1   1                
-            hasTag          Tag         directed relation   1   N                
-            hasMember       Person      directed relation   1   N                
-            containerOf     Post        directed relation   1   N
-        Forum (in file - 2013/07/25)
-            id              int         unique              1   1   Person.id x 2   derivation      F4
-            title           string      attribute           1   1                
-            creationDate    dateTime    attribute           1   1                
-
-            // TODO not documented in confluence
+            // TODO "name" in CSV-files "title" in schema table
             id      title                       creationDate
             40220   Album 0 of Fernanda Alves   2011-01-15T07:01:19Z
          */
@@ -415,7 +334,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 properties.put( "title", columnValues[1] );
                 // TODO datetime
                 properties.put( "creationDate", columnValues[2] );
-                long forumNodeId = batchInserter.createNode( properties, Nodes.Forum );
+                long forumNodeId = batchInserter.createNode( properties, Domain.Node.FORUM );
                 forumIndex.getIndex().add( forumNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -425,17 +344,10 @@ public class LdbcSocialNeworkNeo4jImporter
             throws FileNotFoundException
     {
         /*
-        Tag (documented)
-            id      int         unique      1   1                
-            name    string      attribute   1   1   dictionary
-            hasType tagClass    attribute   1   N               
-        Tag (in file - 2013/07/25)
-            id      int         unique      1   1                
-            name    string      attribute   1   1   dictionary
-            hasType tagClass    attribute   1   N               
-
-        // TODO inconsistent with confluence. confluence does not mention hasType
-        id      name                hasType
+        TODO naming: "tagClass" in schema table, "url" in CSV-files 
+        TODO can we make this a relationship instead of an attribute? TagClass nodes exist already?
+        TODO inconsistent with confluence. confluence does not mention hasType
+        id      name                url/tagClass
         259     Gilberto_Gil        <http://dbpedia.org/resource/Gilberto_Gil>
          */
         return new CsvFileInserter( new File( RAW_DATA_DIR + "tag.csv" ), new CsvLineInserter()
@@ -447,9 +359,9 @@ public class LdbcSocialNeworkNeo4jImporter
                 int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
-                // TODO tagClass
-                properties.put( "hasType", columnValues[2] );
-                long tagNodeId = batchInserter.createNode( properties, Nodes.Tag );
+                // TODO url or tagClass?
+                properties.put( "url", columnValues[2] );
+                long tagNodeId = batchInserter.createNode( properties, Domain.Node.TAG );
                 tagIndex.getIndex().add( tagNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -459,17 +371,10 @@ public class LdbcSocialNeworkNeo4jImporter
             final TagClassesBatchIndex tagClassesIndex ) throws FileNotFoundException
     {
         /*
-        TagClass (documented)
-            id          int         unique              1   1                
-            name        string      attribute                        
-            subClassOf  tagClass    directed relation                        
-        TagClass (in file - 2013/07/25)
-            id          int         unique              1   1                
-            name        string      attribute                        
-            subClassOf  tagClass    directed relation                        
+        TODO "url" attribute in CSV-files but not in schema
+        TODO schema has relationship -subClassOf->TagClass
 
-        // TODO csv not documented in concluence
-        id      name        subClassOf
+        id      name        url
         211     Person      http://dbpedia.org/ontology/Person
          */
         return new CsvFileInserter( new File( RAW_DATA_DIR + "tagClass.csv" ), new CsvLineInserter()
@@ -481,10 +386,9 @@ public class LdbcSocialNeworkNeo4jImporter
                 int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
-                // TODO tagClass (this will be a relationship - perhaps don't
-                // need to store)
-                properties.put( "subClassOf", columnValues[2] );
-                long tagClassNodeId = batchInserter.createNode( properties, Nodes.TagClass );
+                // TODO can this be removed in favor of relationship only?
+                properties.put( "url", columnValues[2] );
+                long tagClassNodeId = batchInserter.createNode( properties, Domain.Node.TAG_CLASS );
                 tagClassesIndex.getIndex().add( tagClassNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -494,18 +398,8 @@ public class LdbcSocialNeworkNeo4jImporter
             final OrganisationsBatchIndex organisationsIndex ) throws FileNotFoundException
     {
         /*
-        Organization (documented)
-            id          int     unique              1   1                
-            name        string  attribute           1   1   dictionary           
-            isLocatedIn City    directed relation   1   1                
-            isLocatedIn Country directed relation   1   1
-        Organization (in file - 2013/07/25)                
-            id          int     unique              1   1                
-            name        string  attribute           1   1   dictionary
-            // TODO what is the third column?           
-
-        // TODO third column not documented in confluence
-        id      name                            TODO what is this?
+        TODO schema doc does not contain "url" attribute           
+        id      name                            url
         00      Universidade_de_Pernambuco      <http://dbpedia.org/resource/Universidade_de_Pernambuco>
          */
         return new CsvFileInserter( new File( RAW_DATA_DIR + "organisation.csv" ), new CsvLineInserter()
@@ -517,9 +411,8 @@ public class LdbcSocialNeworkNeo4jImporter
                 int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
-                // TODO what is this column?
-                properties.put( "hasType", columnValues[2] );
-                long organisationNodeId = batchInserter.createNode( properties, Nodes.Organisation );
+                properties.put( "url", columnValues[2] );
+                long organisationNodeId = batchInserter.createNode( properties, Domain.Node.ORGANISATION );
                 organisationsIndex.getIndex().add( organisationNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -529,13 +422,7 @@ public class LdbcSocialNeworkNeo4jImporter
             throws FileNotFoundException
     {
         /*
-        TODO csv is documented in confluence, but schema definition is not
-        Language (documented)
-            id          int     unique              1   1                
-            name        string  attribute           1   1   dictionary           
-        Language (in file - 2013/07/25)
-            id          int     unique              1   1                
-            name        string  attribute           1   1   dictionary           
+        TODO not documented in schema table
 
         id  name
         7   pt
@@ -549,7 +436,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
-                long languageNodeId = batchInserter.createNode( properties, Nodes.Language );
+                long languageNodeId = batchInserter.createNode( properties, Domain.Node.LANGUAGE );
                 languageIndex.getIndex().add( languageNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -559,17 +446,9 @@ public class LdbcSocialNeworkNeo4jImporter
             throws FileNotFoundException
     {
         /*
-        TODO type not mentioned in confluence schema table, only in csv description
-        
-        Location (documented)
-            id      int     unique      1   1                
-            name    string  attribute   1   1   dbpedia
-        Location (in file - 2013/07/25)
-            id      int     unique      1   1                
-            name    string  attribute   1   1   dbpedia
-
-        TODO column 4 not documented in confluence at all
-        id      name            type                                            ? TODO store as "second level label"?
+        TODO called Place in schema table and Location in CSV-files
+        TODO "type" not mentioned in schema table
+        id      name            url                                             type
         5170    South_America   <http://dbpedia.org/resource/South_America>     REGION
          */
         return new CsvFileInserter( new File( RAW_DATA_DIR + "location.csv" ), new CsvLineInserter()
@@ -581,11 +460,10 @@ public class LdbcSocialNeworkNeo4jImporter
                 int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
-                // TODO tagClass?
-                properties.put( "hasType", columnValues[2] );
-                // TODO string? "locationType"? finite set?
-                properties.put( "locationType", columnValues[3] );
-                long locationNodeId = batchInserter.createNode( properties, Nodes.Location );
+                properties.put( "url", columnValues[2] );
+                // LocationType = COUNTRY | CITY | REGION
+                long locationNodeId = batchInserter.createNode( properties, Domain.Node.LOCATION,
+                        Domain.LocationType.valueOf( (String) columnValues[3] ) );
                 locationIndex.getIndex().add( locationNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -611,7 +489,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
-                long emailAddressNodeId = batchInserter.createNode( properties, Nodes.EmailAddress );
+                long emailAddressNodeId = batchInserter.createNode( properties, Domain.Node.EMAIL_ADDRESS );
                 emailAddressIndex.getIndex().add( emailAddressNodeId, MapUtil.map( "id", id ) );
             }
         } );
@@ -621,21 +499,10 @@ public class LdbcSocialNeworkNeo4jImporter
             final CommentsBatchIndex commentsIndex ) throws FileNotFoundException
     {
         /*
-        Comment (documented)
-            id              int         unique              1   1   sequential
-            creationDate    dateTime    attribute           1   1
-            hasCreator      Person      directed relation   1   1
-            content         string      attribute           1   1
-            browserUsed     string      attribute           0   1   Chrone, IE, Firefox
-            locationIP      string      attribute           1   1
-            isLocatedIn     Country     directed relation   0   1   Person.IsLocatedIn
-            replyOf         Post        directed relation   0   1
-            replyOf         Comment     directed relation   0   1
-        Comment (in file - 2013/07/25)
-            replyOf         Comment     directed relation   0   1
+        TODO "repliedTo" not document in schema table
          
-         id     from    to
-         300    450     420
+         id     (from)Comment.id    (to)Comment.id
+         300    450                 420
          */
         return new CsvFileInserter( new File( RAW_DATA_DIR + "comment_reply_of_comment.csv" ), new CsvLineInserter()
         {
@@ -654,8 +521,8 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
-                        Relationships.REPLY_OF, properties );
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2], Domain.Rel.REPLY_OF,
+                        properties );
             }
         } );
     }
@@ -664,21 +531,10 @@ public class LdbcSocialNeworkNeo4jImporter
             final CommentsBatchIndex commentsIndex, final PostsBatchIndex postsIndex ) throws FileNotFoundException
     {
         /*
-        Comment (documented)
-            id              int         unique              1   1   sequential
-            creationDate    dateTime    attribute           1   1
-            hasCreator      Person      directed relation   1   1
-            content         string      attribute           1   1
-            browserUsed     string      attribute           0   1   Chrome, IE, Firefox
-            locationIP      string      attribute           1   1
-            isLocatedIn     Country     directed relation   0   1   Person.IsLocatedIn
-            replyOf         Post        directed relation   0   1
-            replyOf         Comment     directed relation   0   1
-        Comment (in file - 2013/07/25)
-            replyOf         Post        directed relation   0   1
+        TODO "repliedTo" not document in schema table
          
-         id     from    to
-         300    450     420
+         id     (from)Comment.id    (to)Post.id
+         300    450                 420
          */
         return new CsvFileInserter( new File( RAW_DATA_DIR + "comment_reply_of_post.csv" ), new CsvLineInserter()
         {
@@ -697,8 +553,8 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
-                        Relationships.REPLY_OF, properties );
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2], Domain.Rel.REPLY_OF,
+                        properties );
             }
         } );
     }
@@ -708,22 +564,10 @@ public class LdbcSocialNeworkNeo4jImporter
             throws FileNotFoundException
     {
         /*
-        Comment (documented)
-            id              int         unique              1   1   sequential
-            creationDate    dateTime    attribute           1   1
-            hasCreator      Person      directed relation   1   1
-            content         string      attribute           1   1
-            browserUsed     string      attribute           0   1   Chrone, IE, Firefox
-            locationIP      string      attribute           1   1
-            isLocatedIn     Country     directed relation   0   1   Person.IsLocatedIn
-            replyOf         Post        directed relation   0   1
-            replyOf         Comment     directed relation   0   1
-        Comment (in file - 2013/07/25)
-            isLocatedIn     Country     directed relation   0   1   Person.IsLocatedIn
+        TODO "locatedIn" not document in schema table
          
-         TODO csv not documented in confluence
-         id     from_comment    to_location
-         00     100             73
+         id     (from)Comment.id    (to)Location.id
+         00     100                 73
          */
         return new CsvFileInserter( new File( RAW_DATA_DIR + "comment_located_location.csv" ), new CsvLineInserter()
         {
@@ -744,7 +588,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
                 batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
-                        Relationships.IS_LOCATED_IN, properties );
+                        Domain.Rel.IS_LOCATED_IN, properties );
             }
         } );
     }
@@ -753,18 +597,10 @@ public class LdbcSocialNeworkNeo4jImporter
             final LocationsBatchIndex locationsIndex ) throws FileNotFoundException
     {
         /*
-        TODO type not mentioned in confluence schema table, only in csv description
-        
-        Location (documented)
-            id      int     unique      1   1                
-            name    string  attribute   1   1   dbpedia
-            TODO type?
-        Location (in file - 2013/07/25)
-            id      int     unique      1   1                
+        TODO "partOf" not document in schema table
          
-        TODO csv not documented in confluence
-        id     from_location   to_location
-        00      11              5170
+        id     (from)Location.id    (to)Location.id
+        00      11                  5170
          */
         return new CsvFileInserter( new File( RAW_DATA_DIR + "location_part_of_location.csv" ), new CsvLineInserter()
         {
@@ -785,7 +621,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
                 batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
-                        Relationships.IS_PART_OF, properties );
+                        Domain.Rel.IS_PART_OF, properties );
             }
         } );
     }
@@ -794,32 +630,10 @@ public class LdbcSocialNeworkNeo4jImporter
             final PersonsBatchIndex personsIndex ) throws FileNotFoundException
     {
         /*
-        Person (documented)
-            id              int             unique              1   1                           sequential       
-            creationDate    dateTime        attribute           1   1   startYear - endYear     random       
-            firstName       string          attribute           1   1   dictionary                                      Person.IsLocatedIn   
-            lastName        string          attribute           1   1   dictionary                                      Person.IsLocatedIn   
-            gender          string          attribute           1   1   male/female (50%)       random       
-            birthday        date            attribute           1   1   1980-1990               random       
-            email           string          attribute           1   N                           top+random                                  F13
-            speaks          string          attribute           1   N   languages            
-            browserUsed     string          attribute           1   1   Chrone, IE, Firefox          
-            locationIP      string          attribute           1   1                
-            isLocatedIn     City            directed relation   1   1                           ?        
-            isLocatedIn     Country         directed relation   1   1                           by country population                       F2,F9
-            studyAt         Organization    directed relation   0   N                           University ranking      Person.IsLocatedIn  F3
-            workAt          Organization    directed relation   0   N                                                   Person.IsLocatedIn  F10
-            hasInterest     Tag             directed relation   1   N                           Singer's popularity     Person.IsLocatedIn  F5,F7
-            likes           Post            directed relation   0   N                                                   Person.IsLocatedIn  F14
-            knows           Person          relation            0   N                           power-law                                   F1
-            follows         Person          directed relation   0   N
-        Person (in file - 2013/07/25)                        
-            id              int             unique              1   1                           sequential       
-            knows           Person          relation            0   N                           power-law                                   F1
+        TODO "knows" not document in schema table
          
-        TODO csv not documented in confluence
-        id      from_person     to_person
-        00      11              5170
+        id      (from)Person.id     (to)Person.id
+        00      11                  5170
          */
         return new CsvFileInserter( new File( RAW_DATA_DIR + "person_knows_person.csv" ), new CsvLineInserter()
         {
@@ -837,7 +651,7 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2], Relationships.KNOWS,
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2], Domain.Rel.KNOWS,
                         properties );
             }
         } );
@@ -848,11 +662,6 @@ public class LdbcSocialNeworkNeo4jImporter
             throws FileNotFoundException
     {
         /*
-        TODO relationship schema table does not specify attribute types
-        studyAt 
-        Person  Organization    classYear   gYear   1   1
-        
-        TODO csv description does not mention column 1, id
         id          Person.id   Organization.id     classYear
         00          75          00                  2004
          */
@@ -878,7 +687,7 @@ public class LdbcSocialNeworkNeo4jImporter
                         properties.put( "id", columnValues[0] );
                         properties.put( "classYear", columnValues[3] );
                         batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
-                                Relationships.STUDY_AT, properties );
+                                Domain.Rel.STUDY_AT, properties );
                     }
                 } );
     }
@@ -888,9 +697,8 @@ public class LdbcSocialNeworkNeo4jImporter
             throws FileNotFoundException
     {
         /*
-        TODO relationship schema table does not specify schema for SPEAKS relationship
+        TODO "speaks" relationship not in schema table
         
-        TODO csv description does not mention column 1, id
         id  Person.id   Language.id
         00  75          7
          */
@@ -911,7 +719,7 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2], Relationships.SPEAKS,
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2], Domain.Rel.SPEAKS,
                         properties );
             }
         } );
@@ -921,11 +729,8 @@ public class LdbcSocialNeworkNeo4jImporter
             final PersonsBatchIndex personsIndex, final CommentsBatchIndex commentsIndex ) throws FileNotFoundException
     {
         /*
-        TODO relationship schema table does not specify schema for HAS_CREATOR relationship
+        TODO "creatorOf" relationship not in schema table
         
-        TODO csv description does not exist for person_creator_of_comment.csv
-        
-        // TODO guess based on assumption (comment)-[:HAS_CREATOR{id:_}]->(person)
         id  Person.id   Comment.id
         00  75          7
          */
@@ -947,7 +752,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
                 batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
-                        Relationships.HAS_CREATOR, properties );
+                        Domain.Rel.HAS_CREATOR, properties );
             }
         } );
     }
@@ -956,11 +761,8 @@ public class LdbcSocialNeworkNeo4jImporter
             final PersonsBatchIndex personsIndex, final PostsBatchIndex postsIndex ) throws FileNotFoundException
     {
         /*
-        TODO relationship schema table does not specify schema for HAS_CREATOR relationship
+        TODO "creatorOf" relationship not in schema table
         
-        TODO csv description does not exist for person_creator_of_post.csv
-        
-        // TODO guess based on assumption (post)-[:HAS_CREATOR{id:_}]->(person)
         id  Person.id   Post.id
         00  75          7
          */
@@ -981,7 +783,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
                 batchInserter.createRelationship( (Long) columnValues[2], (Long) columnValues[1],
-                        Relationships.HAS_CREATOR, properties );
+                        Domain.Rel.HAS_CREATOR, properties );
             }
         } );
     }
@@ -990,11 +792,8 @@ public class LdbcSocialNeworkNeo4jImporter
             final PersonsBatchIndex personsIndex, final ForumsBatchIndex forumsIndex ) throws FileNotFoundException
     {
         /*
-        TODO relationship schema table does not specify schema for HAS_MODERATOR relationship
+        TODO "hasModerator" relationship not in schema table
         
-        TODO csv description does not exist for person_moderator_of_forum.csv
-        
-        // TODO guess based on assumption (forum)-[:HAS_MODERATOR{id:_}]->(person)
         id  Person.id   Forum.id
         00  75          7
          */
@@ -1027,13 +826,13 @@ public class LdbcSocialNeworkNeo4jImporter
             @Override
             public void insert( Object[] columnValues )
             {
-                // remove after data generator fixed
+                // TODO remove after data generator fixed
                 if ( columnValues == null ) return;
 
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
                 batchInserter.createRelationship( (Long) columnValues[2], (Long) columnValues[1],
-                        Relationships.HAS_MODERATOR, properties );
+                        Domain.Rel.HAS_MODERATOR, properties );
             }
         } );
     }
@@ -1043,17 +842,8 @@ public class LdbcSocialNeworkNeo4jImporter
             throws FileNotFoundException
     {
         /*
-        Person (documented)
-            id              int             unique              1   1                           sequential       
-            isLocatedIn     City            directed relation   1   1                           ?        
-            isLocatedIn     Country         directed relation   1   1                           by country population                       F2,F9
-         */
-        /*
-        TODO relationship schema table does not specify schema for IS_LOCATED_IN relationship
+        TODO "isLocatedIn" relationship not in schema table
         
-        TODO csv description does not exist for person_based_near_location.csv
-        
-        // TODO guess based on assumption (person)-[:IS_LOCATED_IN{id:_}]->(location)
         id  Person.id   Location.id
         00  75          7
          */
@@ -1075,7 +865,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
                 batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
-                        Relationships.IS_LOCATED_IN, properties );
+                        Domain.Rel.IS_LOCATED_IN, properties );
             }
         } );
     }
@@ -1085,12 +875,6 @@ public class LdbcSocialNeworkNeo4jImporter
             throws FileNotFoundException
     {
         /*
-        workAt  
-        Person  Organization    1   1
-            workFrom    
-            gYear   
-
-        // TODO csv definition in confluence does not mention column 0 (id)
         id  Person.id   Organization.id     workFrom
         00  75          10                  2016
          */
@@ -1113,8 +897,8 @@ public class LdbcSocialNeworkNeo4jImporter
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
                 properties.put( "workFrom", columnValues[3] );
-                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
-                        Relationships.IS_LOCATED_IN, properties );
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2], Domain.Rel.WORKS_AT,
+                        properties );
             }
         } );
     }
@@ -1123,9 +907,8 @@ public class LdbcSocialNeworkNeo4jImporter
             final PersonsBatchIndex personsIndex, final TagsBatchIndex tagsIndex ) throws FileNotFoundException
     {
         /*
-        TODO no schema definition for HAS_INTEREST relationship
+        TODO "hasInterest" relationship not in schema table
 
-        TODO csv definition in confluence does not mention column 0 (id)
         id  Person.id   Tag.id
         00  75          259
          */
@@ -1146,7 +929,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
                 batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
-                        Relationships.HAS_INTEREST, properties );
+                        Domain.Rel.HAS_INTEREST, properties );
             }
         } );
     }
@@ -1156,10 +939,8 @@ public class LdbcSocialNeworkNeo4jImporter
             throws FileNotFoundException
     {
         /*
-        TODO no schema definition for HAS_EMAIL_ADDRESS relationship - though technically it's not a relationship in the schema
+        TODO "hasEmailAddress" relationship not in schema table
 
-        TODO csv definition in confluence does not mention column 0 (id)
-        has_email   
         id  Person.id   EmailAddress.id
         00  75          259
          */
@@ -1183,7 +964,7 @@ public class LdbcSocialNeworkNeo4jImporter
                         Map<String, Object> properties = new HashMap<String, Object>();
                         properties.put( "id", columnValues[0] );
                         batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
-                                Relationships.HAS_EMAIL_ADDRESS, properties );
+                                Domain.Rel.HAS_EMAIL_ADDRESS, properties );
                     }
                 } );
     }
@@ -1192,10 +973,8 @@ public class LdbcSocialNeworkNeo4jImporter
             final TagsBatchIndex tagsIndex ) throws FileNotFoundException
     {
         /*
-        TODO no schema definition for HAS_TAG relationship - though technically it's not a relationship in the schema
+        TODO "hasTag" relationship not in schema table
 
-        TODO not csv definition in confluence
-        assume...
         id  Post.id     Tag.id
         00  75          259
          */
@@ -1215,8 +994,8 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
-                        Relationships.HAS_TAG, properties );
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2], Domain.Rel.HAS_TAG,
+                        properties );
             }
         } );
     }
@@ -1225,10 +1004,8 @@ public class LdbcSocialNeworkNeo4jImporter
             final PostsBatchIndex postsIndex, final LanguagesBatchIndex languagesIndex ) throws FileNotFoundException
     {
         /*
-        TODO no schema definition for ANNOTATED_WITH relationship - though technically it's not a relationship in the schema
+        TODO "annotatedWith" relationship not in schema table
 
-        TODO no csv definition in confluence
-        assume...
         id  Post.id     Language.id
         00  75          259
          */
@@ -1264,7 +1041,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
                 batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
-                        Relationships.ANNOTATED_WITH, properties );
+                        Domain.Rel.ANNOTATED_WITH, properties );
             }
         } );
     }
@@ -1273,15 +1050,6 @@ public class LdbcSocialNeworkNeo4jImporter
             final PersonsBatchIndex personsIndex, final PostsBatchIndex postsIndex ) throws FileNotFoundException
     {
         /*
-        like    
-        Person  Post    
-            creationDate    dateTime
-            1   1    
-
-        TODO no csv definition in confluence
-        assume...
-        id  Post.id     Language.id
-
         id  Person.id   Post.id     creationDate
         00  1489        00          2011-01-20T11:18:41Z
          */
@@ -1303,9 +1071,8 @@ public class LdbcSocialNeworkNeo4jImporter
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                // TODO dateTime
                 properties.put( "creationDate", columnValues[3] );
-                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2], Relationships.LIKE,
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2], Domain.Rel.LIKE,
                         properties );
             }
         } );
@@ -1315,11 +1082,10 @@ public class LdbcSocialNeworkNeo4jImporter
             final PostsBatchIndex postsIndex, final LocationsBatchIndex locationsIndex ) throws FileNotFoundException
     {
         /*
-        TODO no csv definition in confluence
+        TODO "locatedAt" relationship not in schema table
 
-         TODO csv not documented in confluence
-         id     from_post    to_location
-         00     100             73
+         id     Post.id     Location.Id
+         00     100         73
          */
         return new CsvFileInserter( new File( RAW_DATA_DIR + "post_located_location.csv" ), new CsvLineInserter()
         {
@@ -1339,7 +1105,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
                 batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
-                        Relationships.IS_LOCATED_IN, properties );
+                        Domain.Rel.IS_LOCATED_IN, properties );
             }
         } );
     }
@@ -1348,13 +1114,10 @@ public class LdbcSocialNeworkNeo4jImporter
             final ForumsBatchIndex forumsIndex, final PersonsBatchIndex personsIndex ) throws FileNotFoundException
     {
         /*
-        hasMember   
-            Forum   Person  
-            joinDate    dateTime    
-            1   1
-
-        TODO no csv definition in confluence
-
+         TODO CSV-files documents only:     id     Forum.id    Person.id
+         TODO in reality it's sometimes:    id     Forum.id    Person.id    joinDate
+         TODO on purpose? if so document, if not fix
+         
          id     Forum.id    Person.id   joinDate
          190    40240       1325        2010-11-10T03:40:43Z
          */
@@ -1386,11 +1149,10 @@ public class LdbcSocialNeworkNeo4jImporter
                 properties.put( "id", columnValues[0] );
                 if ( columnValues.length == 4 )
                 {
-                    // TODO dateTime
                     properties.put( "joinDate", columnValues[3] );
                 }
                 batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
-                        Relationships.HAS_MEMBER, properties );
+                        Domain.Rel.HAS_MEMBER, properties );
             }
         } );
     }
@@ -1399,10 +1161,8 @@ public class LdbcSocialNeworkNeo4jImporter
             final ForumsBatchIndex forumsIndex, final PostsBatchIndex postsIndex ) throws FileNotFoundException
     {
         /*
-        TODO no schema definition for CONTAINER_OF in confluence
-
-        TODO no csv definition in confluence
-
+        TODO "containerOf" relationship not documented in schema table
+        
         id  Forum.id    Post.id
         00  40220       00
          */
@@ -1435,13 +1195,13 @@ public class LdbcSocialNeworkNeo4jImporter
             @Override
             public void insert( Object[] columnValues )
             {
-                // remove after data generator fixed
+                // TODO remove after data generator fixed
                 if ( columnValues == null ) return;
 
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
                 batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
-                        Relationships.CONTAINER_OF, properties );
+                        Domain.Rel.CONTAINER_OF, properties );
             }
         } );
     }
@@ -1450,9 +1210,10 @@ public class LdbcSocialNeworkNeo4jImporter
             final TagsBatchIndex tagsIndex ) throws FileNotFoundException
     {
         /*
-        TODO no schema definition for HAS_TAG in confluence
+        TODO "hasTag" relationship not documented in schema table
 
-        TODO no csv definition in confluence
+        TODO CSV-files says:    id  Forum.id    Tag.id
+        TODO in reality it's:   id  Tag.id      Forum.id
 
         id      Tag.id  Forum.id
         303400  505200  1938
@@ -1499,13 +1260,13 @@ public class LdbcSocialNeworkNeo4jImporter
             @Override
             public void insert( Object[] columnValues )
             {
-                // remove after data generator fixed
+                // TODO remove after data generator fixed
                 if ( columnValues == null ) return;
 
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (Long) columnValues[2], (Long) columnValues[1],
-                        Relationships.HAS_TAG, properties );
+                batchInserter.createRelationship( (Long) columnValues[2], (Long) columnValues[1], Domain.Rel.HAS_TAG,
+                        properties );
             }
         } );
     }
@@ -1514,9 +1275,10 @@ public class LdbcSocialNeworkNeo4jImporter
             final TagsBatchIndex tagsIndex, final TagClassesBatchIndex tagClassesIndex ) throws FileNotFoundException
     {
         /*
-        TODO no schema definition for HAS_TAG in confluence
+        TODO "hasType" relationship not documented in schema table
 
-        TODO no csv definition in confluence
+        TODO CSV-files says:    id  Tag.id  TagClass.id
+        TODO in reality it's:   Tag.id  TagClass.id
 
         Tag.id  TagClass.id
         259     211
@@ -1535,8 +1297,8 @@ public class LdbcSocialNeworkNeo4jImporter
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
-                        Relationships.HAS_TYPE, EMPTY_MAP );
+                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1], Domain.Rel.HAS_TYPE,
+                        EMPTY_MAP );
             }
         } );
     }
@@ -1545,13 +1307,11 @@ public class LdbcSocialNeworkNeo4jImporter
             final TagClassesBatchIndex tagClassesIndex ) throws FileNotFoundException
     {
         /*
-        TODO no schema definition for HAS_SUBCLASS_OF in confluence
+        TODO "hasSubClass" relationship not documented in schema table
 
-        TODO no csv definition in confluence
-
-        TODO assume parent/sub order as below
+        TODO parent-sub order should be documented in CSV-files 
         
-        parent_TagClass.id  sub_TagClass.id
+        (parent)TagClass.id  (sub)TagClass.id
         259                 211
          */
         return new CsvFileInserter( new File( RAW_DATA_DIR + "tagclass_is_subclass_of_tagclass.csv" ),
@@ -1571,7 +1331,7 @@ public class LdbcSocialNeworkNeo4jImporter
                     public void insert( Object[] columnValues )
                     {
                         batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
-                                Relationships.HAS_SUBCLASS_OF, EMPTY_MAP );
+                                Domain.Rel.HAS_SUBCLASS_OF, EMPTY_MAP );
                     }
                 } );
     }
@@ -1581,9 +1341,10 @@ public class LdbcSocialNeworkNeo4jImporter
             throws FileNotFoundException
     {
         /*
-        TODO relationship schema table does not specify schema for IS_LOCATED_IN relationship
+        TODO "isLocatedIn" relationship not documented in schema table
 
-        TODO no csv definition in confluence for organisation_based_near_location.csv
+        TODO CSV-files specifies:   id  Person.id       Location.id
+        TODO should be:             id  Organisation.id Location.id
 
         id      Organisation.id     Location.id
         17190   17190               3000
@@ -1592,10 +1353,9 @@ public class LdbcSocialNeworkNeo4jImporter
                 new CsvLineInserter()
                 {
                     @Override
-                    public void insert( Object[] columnValues )
+                    public Object[] transform( Object[] columnValues )
                     {
-                        Map<String, Object> properties = new HashMap<String, Object>();
-                        properties.put( "id", Integer.parseInt( (String) columnValues[0] ) );
+                        int id = Integer.parseInt( (String) columnValues[0] );
                         long fromOrganisationNodeId = organisationsIndex.getIndex().get( "id",
                                 Integer.parseInt( (String) columnValues[1] ) ).getSingle();
                         long toLocationNodeId = 0;
@@ -1611,10 +1371,18 @@ public class LdbcSocialNeworkNeo4jImporter
                              * Location.id column contains ids that are not in location.csv
                              * eg. 301
                              */
-                            return;
+                            return null;
                         }
-                        batchInserter.createRelationship( fromOrganisationNodeId, toLocationNodeId,
-                                Relationships.IS_LOCATED_IN, properties );
+                        return new Object[] { id, fromOrganisationNodeId, toLocationNodeId };
+                    }
+
+                    @Override
+                    public void insert( Object[] columnValues )
+                    {
+                        Map<String, Object> properties = new HashMap<String, Object>();
+                        properties.put( "id", columnValues[0] );
+                        batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
+                                Domain.Rel.IS_LOCATED_IN, properties );
                     }
                 } );
     }
@@ -1659,17 +1427,5 @@ public class LdbcSocialNeworkNeo4jImporter
             tx.finish();
         }
         return relationshipCount;
-    }
-
-    private static String arrayString( Object[] array )
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append( array[0] );
-        for ( int i = 1; i < array.length; i++ )
-        {
-            Object object = array[i];
-            sb.append( "\t|\t" ).append( object.toString() );
-        }
-        return sb.toString();
     }
 }
