@@ -1379,6 +1379,9 @@ public class LdbcSocialNeworkNeo4jImporter
                     @Override
                     public void insert( Object[] columnValues )
                     {
+                        // TODO remove when generator fixed
+                        if ( columnValues == null ) return;
+
                         Map<String, Object> properties = new HashMap<String, Object>();
                         properties.put( "id", columnValues[0] );
                         batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
