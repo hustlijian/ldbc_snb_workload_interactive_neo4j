@@ -83,7 +83,7 @@ Graph Metrics:
   Relationship count = 7,355,787
  */
 
-public class LdbcSocialNeworkNeo4jImporter
+public class LdbcSocialNeworkNeo4jImporterOLD
 {
     /*
      TODO code improvements here
@@ -91,8 +91,6 @@ public class LdbcSocialNeworkNeo4jImporter
        - add readme with links to ldbc projects
        - is it necessary to store the "id" as a property if i want to index it?
           - is it good practice?
-       - in general, relationship schemas not documented
-          - both format and content
      TODO code improvements ldbc_driver
        - add toString for Time and Duration classes
        - use import java.util.concurrent.TimeUnit in my Time class
@@ -104,22 +102,22 @@ public class LdbcSocialNeworkNeo4jImporter
      TODO confluence relationship schema table should have start/end node types
      */
 
-    private final static Logger logger = Logger.getLogger( LdbcSocialNeworkNeo4jImporter.class );
+    private final static Logger logger = Logger.getLogger( LdbcSocialNeworkNeo4jImporterOLD.class );
 
     private final static String DB_DIR = "db";
-    private final static String RAW_DATA_DIR = "/home/alex/workspace/java/ldbc_socialnet_bm/ldbc_socialnet_dbgen/outputDir/";
+    private final static String RAW_DATA_DIR = "/home/alex/workspace/java/ldbc_socialnet_bm_OLD/ldbc_socialnet_dbgen/outputDir/";
     private final static Map<String, Object> EMPTY_MAP = new HashMap<String, Object>();
 
     public static void main( String[] args ) throws IOException
     {
-        LdbcSocialNeworkNeo4jImporter ldbcSocialNetworkLoader = new LdbcSocialNeworkNeo4jImporter( DB_DIR, RAW_DATA_DIR );
+        LdbcSocialNeworkNeo4jImporterOLD ldbcSocialNetworkLoader = new LdbcSocialNeworkNeo4jImporterOLD( DB_DIR, RAW_DATA_DIR );
         ldbcSocialNetworkLoader.load();
     }
 
     private final List<CsvFileInserter> fileInserters;
     private final BatchInserter batchInserter;
 
-    public LdbcSocialNeworkNeo4jImporter( String dbDir, String csvDir ) throws IOException
+    public LdbcSocialNeworkNeo4jImporterOLD( String dbDir, String csvDir ) throws IOException
     {
         logger.info( "Clear DB directory" );
         FileUtils.deleteRecursively( new File( dbDir ) );
@@ -1072,7 +1070,7 @@ public class LdbcSocialNeworkNeo4jImporter
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "id", columnValues[0] );
                 properties.put( "creationDate", columnValues[3] );
-                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2], Domain.Rel.LIKE,
+                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2], Domain.Rel.LIKES,
                         properties );
             }
         } );
@@ -1331,7 +1329,7 @@ public class LdbcSocialNeworkNeo4jImporter
                     public void insert( Object[] columnValues )
                     {
                         batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
-                                Domain.Rel.HAS_SUBCLASS_OF, EMPTY_MAP );
+                                Domain.Rel.IS_SUBCLASS_OF, EMPTY_MAP );
                     }
                 } );
     }

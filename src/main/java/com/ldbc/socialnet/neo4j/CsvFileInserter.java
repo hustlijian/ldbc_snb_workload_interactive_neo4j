@@ -12,6 +12,9 @@ public class CsvFileInserter
     private final CsvFileReader csvReader;
     private final CsvLineInserter lineInserter;
     private final int bufferSize;
+    // TODO take as parameter to constructer
+    // first line == 0
+    private final int startLine = 1;
 
     public CsvFileInserter( File file, CsvLineInserter lineInserter ) throws FileNotFoundException
     {
@@ -26,11 +29,27 @@ public class CsvFileInserter
         this.file = file;
         this.csvReader = new CsvFileReader( file );
         this.lineInserter = lineInserter;
+        advanceCsvReaderToStartLine();
     }
 
     public File getFile()
     {
         return file;
+    }
+
+    private void advanceCsvReaderToStartLine()
+    {
+        for ( int i = 0; i < startLine; i++ )
+        {
+            if ( csvReader.hasNext() )
+            {
+                csvReader.next();
+            }
+            else
+            {
+                return;
+            }
+        }
     }
 
     private int bufferLines()

@@ -19,12 +19,12 @@ public class Domain
         HAS_INTEREST,
         HAS_EMAIL_ADDRESS,
         ANNOTATED_WITH,
-        LIKE,
+        LIKES,
         HAS_MEMBER,
         CONTAINER_OF,
         HAS_TAG,
         HAS_TYPE,
-        HAS_SUBCLASS_OF
+        IS_SUBCLASS_OF
     }
 
     public enum Node implements Label
@@ -46,5 +46,11 @@ public class Domain
         COUNTRY,
         CITY,
         REGION
+    }
+
+    public enum OrganisationType implements Label
+    {
+        UNIVERSITY,
+        COMPANY
     }
 }

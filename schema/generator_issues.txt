@@ -1,0 +1,61 @@
+CONFIRMED
+
+* In CSV files for relationships I assume the order is always from_entity|to_entity, i.e. (from)-->(to)
+  But this is not documented anywhere (as far as I know), I think it should be a note in CSV-files
+* many relationship types are not documented in the schema table
+* schema/csv documentation is inconsistent in many places (for example, attribute naming)
+* post.csv CSV-file documentation is inconsistent with CSV file format
+* "retweet" relationship is in schema table but not in CSV files
+* Tag: (1) does not have "url" in schema table (2) in schema table it has TagClass as an attribute rather than relationship
+* TagClass: does not have "url" in schema table
+* I agree Email makes sense as an attribute, as multiple Person entities will not share one Email
+  I disagree for Language though, because  multiple other Entities connect to it - Person, Post, Comment(?)
+* Location: (1) called "Place" in schema table, should be "Location" (2) "type" attribute not mentioned in schema table, only in CSV
+* Update CSV-files to remove "id" from column0 of relationship files
+* The following relationship types are not documented in schema table
+	repliedTo/replyOf
+	locatedIn/isLocatedIn
+	partOf
+	knows
+	speaks
+	creatorOf
+	hasModerator
+        hasInterest
+        hasTag	
+	containerOf
+	hasType
+	isSubClassOf
+* forum_hasMember_person.csv has columns:	Forum.id    Person.id    joinDate
+  CSV-files.doc only documents:			Forum.id    Person.id 
+* rename CSV files: 
+	forum_container_of_post.csv ---> forum_containerOf_post.csv
+* In CSV-files.doc it states columns are:	Person.id       Location.id
+  But they are actually:			Organisation.id Location.id
+* Suggest removing all file descriptions from CSV-files.doc and only having general information like:
+	Order of columns for relationship files is from_entity|to_entity, i.e. (from)-->(to)
+	Etc.
+* Usually IDs in column 0 of forum.csv (and other .csv files) have 0 suffix
+  In forum.csv some rows do not, for example:
+	2978|Wall of Lei Liu|2010-03-11T03:55:32Z 
+		Instead of
+	29780|Wall of Lei Liu|2010-03-11T03:55:32Z 
+  Then in files like forum_hasModerator_person.csv the ID is 29780, and lookup fails
+* Usually IDs in column 0 of forum_container_of_post.csv (and other .csv files) have 0 suffix
+  In column 0 of forum_container_of_post.csv some rows do not, for example:
+	50294
+		Instead of
+	502940
+  Then when trying to retrieve 50294 (probably supposed to be 502940) from forum.csv it is not found
+
+Notes
+	Query descriptions
+	Substitutions
+		Which parameters
+		From which dictionaries
+		From which ranges
+	What will change in the near future
+		DBGEN will generate JSON file with content of all dictionaries
+	What can I use now to implement a workload with a small amount of queries
+		http://www.ldbc.eu:8090/display/TUC/Substitution+parametars
+		https://github.com/ldbc/ldbc_socialnet_bm/tree/master/ldbc_socialnet_qgen/td_data
+		http://www.ldbc.eu:8090/display/TUC/Interactive+Workload
