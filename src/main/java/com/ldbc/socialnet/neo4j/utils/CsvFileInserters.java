@@ -813,7 +813,7 @@ public class CsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
+                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
                         Domain.Rel.IS_LOCATED_IN, EMPTY_MAP );
             }
         } );
@@ -957,7 +957,7 @@ public class CsvFileInserters
             {
                 // TODO remove after data generator fixed
                 if ( columnValues == null ) return;
-                batchInserter.createRelationship( (Long) columnValues[2], (Long) columnValues[1], Domain.Rel.HAS_TAG,
+                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1], Domain.Rel.HAS_TAG,
                         EMPTY_MAP );
             }
         } );
