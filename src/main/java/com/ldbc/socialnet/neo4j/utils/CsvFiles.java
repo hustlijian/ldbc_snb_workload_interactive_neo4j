@@ -1,47 +1,60 @@
 package com.ldbc.socialnet.neo4j.utils;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.HashSet;
 import java.util.Set;
 
 public class CsvFiles
 {
-    private final static String RAW_DATA_DIR = "/home/alex/workspace/java/ldbc_socialnet_bm/ldbc_socialnet_dbgen/outputDir/";
-
-    public static Set<String> all()
+    public static Set<String> all( String csvDataDir )
     {
+        File csvDataDirFile = new File( csvDataDir );
+        FilenameFilter filenameFilter = new FilenameFilter()
+        {
+            public boolean accept( File directory, String fileName )
+            {
+                return fileName.endsWith( ".csv" );
+            }
+        };
+
         Set<String> files = new HashSet<String>();
-        files.add( RAW_DATA_DIR + "comment.csv" );
-        files.add( RAW_DATA_DIR + "comment_hasCreator_person.csv" );
-        files.add( RAW_DATA_DIR + "comment_isLocatedIn_location.csv" );
-        files.add( RAW_DATA_DIR + "comment_replyOf_comment.csv" );
-        files.add( RAW_DATA_DIR + "comment_replyOf_post.csv" );
-        files.add( RAW_DATA_DIR + "forum.csv" );
-        files.add( RAW_DATA_DIR + "forum_container_of_post.csv" );
-        files.add( RAW_DATA_DIR + "forum_hasMember_person.csv" );
-        files.add( RAW_DATA_DIR + "forum_hasModerator_person.csv" );
-        files.add( RAW_DATA_DIR + "forum_hasTag_tag.csv" );
-        files.add( RAW_DATA_DIR + "location.csv" );
-        files.add( RAW_DATA_DIR + "location_partOf_location.csv" );
-        files.add( RAW_DATA_DIR + "organisation.csv" );
-        files.add( RAW_DATA_DIR + "organisation_isLocatedIn_location.csv" );
-        files.add( RAW_DATA_DIR + "person.csv" );
-        files.add( RAW_DATA_DIR + "person_hasEmail_emailaddress.csv" );
-        files.add( RAW_DATA_DIR + "person_hasInterest_tag.csv" );
-        files.add( RAW_DATA_DIR + "person_isLocatedIn_location.csv" );
-        files.add( RAW_DATA_DIR + "person_knows_person.csv" );
-        files.add( RAW_DATA_DIR + "person_likes_post.csv" );
-        files.add( RAW_DATA_DIR + "person_speaks_language.csv" );
-        files.add( RAW_DATA_DIR + "person_studyAt_organisation.csv" );
-        files.add( RAW_DATA_DIR + "person_workAt_organisation.csv" );
-        files.add( RAW_DATA_DIR + "post.csv" );
-        files.add( RAW_DATA_DIR + "post_hasCreator_person.csv" );
-        files.add( RAW_DATA_DIR + "post_hasTag_tag.csv" );
-        files.add( RAW_DATA_DIR + "post_isLocatedIn_location.csv" );
-        files.add( RAW_DATA_DIR + "tag.csv" );
-        files.add( RAW_DATA_DIR + "tagclass.csv" );
-        files.add( RAW_DATA_DIR + "tagclass_isSubclassOf_tagclass.csv" );
-        files.add( RAW_DATA_DIR + "tag_hasType_tagclass.csv" );
+        for ( File csvFile : csvDataDirFile.listFiles( filenameFilter ) )
+        {
+            files.add( csvFile.getAbsolutePath() );
+        }
+
+        // files.add( csvDataDir + "comment.csv" );
+        // files.add( csvDataDir + "comment_hasCreator_person.csv" );
+        // files.add( csvDataDir + "comment_isLocatedIn_location.csv" );
+        // files.add( csvDataDir + "comment_replyOf_comment.csv" );
+        // files.add( csvDataDir + "comment_replyOf_post.csv" );
+        // files.add( csvDataDir + "forum.csv" );
+        // files.add( csvDataDir + "forum_container_of_post.csv" );
+        // files.add( csvDataDir + "forum_hasMember_person.csv" );
+        // files.add( csvDataDir + "forum_hasModerator_person.csv" );
+        // files.add( csvDataDir + "forum_hasTag_tag.csv" );
+        // files.add( csvDataDir + "location.csv" );
+        // files.add( csvDataDir + "location_partOf_location.csv" );
+        // files.add( csvDataDir + "organisation.csv" );
+        // files.add( csvDataDir + "organisation_isLocatedIn_location.csv" );
+        // files.add( csvDataDir + "person.csv" );
+        // files.add( csvDataDir + "person_hasEmail_emailaddress.csv" );
+        // files.add( csvDataDir + "person_hasInterest_tag.csv" );
+        // files.add( csvDataDir + "person_isLocatedIn_location.csv" );
+        // files.add( csvDataDir + "person_knows_person.csv" );
+        // files.add( csvDataDir + "person_likes_post.csv" );
+        // files.add( csvDataDir + "person_speaks_language.csv" );
+        // files.add( csvDataDir + "person_studyAt_organisation.csv" );
+        // files.add( csvDataDir + "person_workAt_organisation.csv" );
+        // files.add( csvDataDir + "post.csv" );
+        // files.add( csvDataDir + "post_hasCreator_person.csv" );
+        // files.add( csvDataDir + "post_hasTag_tag.csv" );
+        // files.add( csvDataDir + "post_isLocatedIn_location.csv" );
+        // files.add( csvDataDir + "tag.csv" );
+        // files.add( csvDataDir + "tagclass.csv" );
+        // files.add( csvDataDir + "tagclass_isSubclassOf_tagclass.csv" );
+        // files.add( csvDataDir + "tag_hasType_tagclass.csv" );
         return files;
     }
-
 }

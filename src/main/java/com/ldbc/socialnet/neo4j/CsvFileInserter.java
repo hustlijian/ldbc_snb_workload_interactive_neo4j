@@ -12,16 +12,16 @@ public class CsvFileInserter
     private final CsvFileReader csvReader;
     private final CsvLineInserter lineInserter;
     private final int bufferSize;
-    // TODO take as parameter to constructer
     // first line == 0
-    private final int startLine = 1;
+    private final int startLine;
 
     public CsvFileInserter( File file, CsvLineInserter lineInserter ) throws FileNotFoundException
     {
-        this( DEFAULT_BUFFER_SIZE, file, lineInserter );
+        this( DEFAULT_BUFFER_SIZE, file, lineInserter, 1 );
     }
 
-    private CsvFileInserter( int bufferSize, File file, CsvLineInserter lineInserter ) throws FileNotFoundException
+    private CsvFileInserter( int bufferSize, File file, CsvLineInserter lineInserter, int startLine )
+                                                                                                     throws FileNotFoundException
     {
         super();
         this.bufferSize = bufferSize;
@@ -29,6 +29,7 @@ public class CsvFileInserter
         this.file = file;
         this.csvReader = new CsvFileReader( file );
         this.lineInserter = lineInserter;
+        this.startLine = startLine;
         advanceCsvReaderToStartLine();
     }
 

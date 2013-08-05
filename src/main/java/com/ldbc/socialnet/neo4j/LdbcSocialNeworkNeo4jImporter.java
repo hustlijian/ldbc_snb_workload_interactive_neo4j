@@ -1,7 +1,6 @@
 package com.ldbc.socialnet.neo4j;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -21,21 +20,10 @@ import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
+import com.ldbc.socialnet.neo4j.utils.Config;
 import com.ldbc.socialnet.neo4j.utils.CsvFileInserters;
 
-/*
-Buffer (100,000) & transform (relationship get) =   
-Buffer (100,000) & transform (identity) =           
-Buffer (100,000) =                                  
-No Buffer =                                         
- */
-
-/*
-Files
-Graph Metrics:
- */
-
-public class LdbcSocialNeworkNeo4jImporterNEW
+public class LdbcSocialNeworkNeo4jImporter
 {
     /*
      TODO code improvements here
@@ -56,33 +44,25 @@ public class LdbcSocialNeworkNeo4jImporterNEW
        - EMPTY_MAP in MapUtils?
     */
 
-    /*
-    TODO
-    2) To remove the file "emailaddress.csv". Hence, the file "person_has_email_emailaddress.csv" will contain the corresponding email addresses.
-
-    3) To remove the file "language.csv".
-    Therefore:
-    - The file "person_speaks_language.csv" will contain the corresponding language name (because "speaks" is a multi-valued attribute).
-    - The file "post_annotated_language.csv" can be eliminated and the language of a post can be in the file "post.csv" (because "language" is an option and mono-valued attribute) .
-    */
-
-    private final static Logger logger = Logger.getLogger( LdbcSocialNeworkNeo4jImporterNEW.class );
-
-    private final static String DB_DIR = "db";
-    private final static String RAW_DATA_DIR = "/home/alex/workspace/java/ldbc_socialnet_bm/ldbc_socialnet_dbgen/outputDir/";
-    private final static Map<String, Object> EMPTY_MAP = new HashMap<String, Object>();
+    private final static Logger logger = Logger.getLogger( LdbcSocialNeworkNeo4jImporter.class );
 
     public static void main( String[] args ) throws IOException
     {
-        LdbcSocialNeworkNeo4jImporterNEW ldbcSocialNetworkLoader = new LdbcSocialNeworkNeo4jImporterNEW( DB_DIR,
-                RAW_DATA_DIR );
+        LdbcSocialNeworkNeo4jImporter ldbcSocialNetworkLoader = new LdbcSocialNeworkNeo4jImporter( Config.DB_DIR,
+                Config.DATA_DIR );
         ldbcSocialNetworkLoader.load();
     }
 
-    private final List<CsvFileInserter> fileInserters;
-    private final BatchInserter batchInserter;
+    private final String dbDir;
+    private final String csvDataDir;
 
-    public LdbcSocialNeworkNeo4jImporterNEW( String dbDir, String csvDir ) throws IOException
+    public LdbcSocialNeworkNeo4jImporter( String dbDir, String csvDataDir )
+    {
+        this.dbDir = dbDir;
+        this.csvDataDir = csvDataDir;
+    }
+
+    public void load() throws IOException
     {
         logger.info( "Clear DB directory" );
         FileUtils.deleteRecursively( new File( dbDir ) );
@@ -90,7 +70,7 @@ public class LdbcSocialNeworkNeo4jImporterNEW
         logger.info( "Instantiating Neo4j BatchInserter" );
         Map<String, String> config = new HashMap<String, String>();
         config.put( "neostore.nodestore.db.mapped_memory", "90M" );
-        batchInserter = BatchInserters.inserter( DB_DIR, config );
+        BatchInserter batchInserter = BatchInserters.inserter( dbDir, config );
 
         BatchInserterIndexProvider batchIndexProvider = new LuceneBatchInserterIndexProvider( batchInserter );
         // BatchInserterIndexProvider batchIndexProvider = new
@@ -99,22 +79,15 @@ public class LdbcSocialNeworkNeo4jImporterNEW
         /*
         * CSV Files
         */
-        fileInserters = CsvFileInserters.all( batchInserter, batchIndexProvider );
-    }
+        List<CsvFileInserter> fileInserters = CsvFileInserters.all( batchInserter, batchIndexProvider, csvDataDir );
 
-    public void load() throws FileNotFoundException
-    {
         logger.info( "Loading CSV files" );
-
         long startTime = System.currentTimeMillis();
-
         for ( CsvFileInserter fileInserter : fileInserters )
         {
             logger.info( String.format( "\t%s - %s", fileInserter.getFile().getName(), fileInserter.insertAllBuffered() ) );
         }
-
         long runtime = System.currentTimeMillis() - startTime;
-
         System.out.println( String.format(
                 "Time: %d min, %d sec",
                 TimeUnit.MILLISECONDS.toMinutes( runtime ),
@@ -123,7 +96,7 @@ public class LdbcSocialNeworkNeo4jImporterNEW
 
         batchInserter.shutdown();
 
-        GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase( DB_DIR );
+        GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase( dbDir );
 
         logger.info( "Graph Metrics:" );
         logger.info( "\tNode count = " + nodeCount( db ) );

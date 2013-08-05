@@ -29,11 +29,10 @@ import com.ldbc.socialnet.neo4j.domain.TagsBatchIndex;
 public class CsvFileInserters
 {
     private final static Map<String, Object> EMPTY_MAP = new HashMap<String, Object>();
-    private final static String RAW_DATA_DIR = "/home/alex/workspace/java/ldbc_socialnet_bm/ldbc_socialnet_dbgen/outputDir/";
     private final static Logger logger = Logger.getLogger( CsvFileInserters.class );
 
-    public static List<CsvFileInserter> all( BatchInserter batchInserter, BatchInserterIndexProvider batchIndexProvider )
-            throws FileNotFoundException
+    public static List<CsvFileInserter> all( BatchInserter batchInserter,
+            BatchInserterIndexProvider batchIndexProvider, String csvDataDir ) throws FileNotFoundException
     {
         /*
         * Neo4j Batch Index Providers
@@ -53,50 +52,49 @@ public class CsvFileInserters
         * CSV Files
         */
         List<CsvFileInserter> fileInserters = new ArrayList<CsvFileInserter>();
-        fileInserters.add( comments( batchInserter, commentsIndex ) );
-        fileInserters.add( posts( batchInserter, postsIndex ) );
-        fileInserters.add( persons( batchInserter, personsIndex ) );
-        fileInserters.add( forums( batchInserter, forumsIndex ) );
-        fileInserters.add( tags( batchInserter, tagsIndex ) );
-        fileInserters.add( tagClasses( batchInserter, tagClassesIndex ) );
-        fileInserters.add( organisations( batchInserter, organisationsIndex ) );
-        fileInserters.add( locations( batchInserter, locationsIndex ) );
-        fileInserters.add( commentReplyOfComment( batchInserter, commentsIndex ) );
-        fileInserters.add( commentReplyOfPost( batchInserter, commentsIndex, postsIndex ) );
-        fileInserters.add( commentIsLocatedInLocation( batchInserter, commentsIndex, locationsIndex ) );
-        fileInserters.add( locationPartOfLocation( batchInserter, locationsIndex ) );
-        fileInserters.add( personKnowsPerson( batchInserter, personsIndex ) );
-        fileInserters.add( personStudyAtOrganisation( batchInserter, personsIndex, organisationsIndex ) );
-        fileInserters.add( personSpeaksLanguage( batchInserter, personsIndex, languagesIndex ) );
-        fileInserters.add( commentHasCreatorPerson( batchInserter, personsIndex, commentsIndex ) );
-        fileInserters.add( postHasCreatorPerson( batchInserter, personsIndex, postsIndex ) );
-        fileInserters.add( forumHasModeratorPerson( batchInserter, personsIndex, forumsIndex ) );
-        fileInserters.add( personIsLocatedInLocation( batchInserter, personsIndex, locationsIndex ) );
-        fileInserters.add( personWorksAtOrganisation( batchInserter, personsIndex, organisationsIndex ) );
-        fileInserters.add( personHasInterestTag( batchInserter, personsIndex, tagsIndex ) );
-        fileInserters.add( personHasEmailAddress( batchInserter, personsIndex, emailAddressesIndex ) );
-        fileInserters.add( postHasTagTag( batchInserter, postsIndex, tagsIndex ) );
-        fileInserters.add( personLikesPost( batchInserter, personsIndex, postsIndex ) );
-        fileInserters.add( postIsLocatedInLocation( batchInserter, postsIndex, locationsIndex ) );
-        fileInserters.add( forumHasMemberPerson( batchInserter, forumsIndex, personsIndex ) );
-        fileInserters.add( forumContainerOfPost( batchInserter, forumsIndex, postsIndex ) );
-        fileInserters.add( forumHasTag( batchInserter, forumsIndex, tagsIndex ) );
-        fileInserters.add( tagHasTypeTagClass( batchInserter, tagsIndex, tagClassesIndex ) );
-        fileInserters.add( tagClassIsSubclassOfTagClass( batchInserter, tagClassesIndex ) );
-        fileInserters.add( organisationBasedNearLocation( batchInserter, organisationsIndex, locationsIndex ) );
+        fileInserters.add( comments( csvDataDir, batchInserter, commentsIndex ) );
+        fileInserters.add( posts( csvDataDir, batchInserter, postsIndex ) );
+        fileInserters.add( persons( csvDataDir, batchInserter, personsIndex ) );
+        fileInserters.add( forums( csvDataDir, batchInserter, forumsIndex ) );
+        fileInserters.add( tags( csvDataDir, batchInserter, tagsIndex ) );
+        fileInserters.add( tagClasses( csvDataDir, batchInserter, tagClassesIndex ) );
+        fileInserters.add( organisations( csvDataDir, batchInserter, organisationsIndex ) );
+        fileInserters.add( locations( csvDataDir, batchInserter, locationsIndex ) );
+        fileInserters.add( commentReplyOfComment( csvDataDir, batchInserter, commentsIndex ) );
+        fileInserters.add( commentReplyOfPost( csvDataDir, batchInserter, commentsIndex, postsIndex ) );
+        fileInserters.add( commentIsLocatedInLocation( csvDataDir, batchInserter, commentsIndex, locationsIndex ) );
+        fileInserters.add( locationPartOfLocation( csvDataDir, batchInserter, locationsIndex ) );
+        fileInserters.add( personKnowsPerson( csvDataDir, batchInserter, personsIndex ) );
+        fileInserters.add( personStudyAtOrganisation( csvDataDir, batchInserter, personsIndex, organisationsIndex ) );
+        fileInserters.add( personSpeaksLanguage( csvDataDir, batchInserter, personsIndex, languagesIndex ) );
+        fileInserters.add( commentHasCreatorPerson( csvDataDir, batchInserter, personsIndex, commentsIndex ) );
+        fileInserters.add( postHasCreatorPerson( csvDataDir, batchInserter, personsIndex, postsIndex ) );
+        fileInserters.add( forumHasModeratorPerson( csvDataDir, batchInserter, personsIndex, forumsIndex ) );
+        fileInserters.add( personIsLocatedInLocation( csvDataDir, batchInserter, personsIndex, locationsIndex ) );
+        fileInserters.add( personWorksAtOrganisation( csvDataDir, batchInserter, personsIndex, organisationsIndex ) );
+        fileInserters.add( personHasInterestTag( csvDataDir, batchInserter, personsIndex, tagsIndex ) );
+        fileInserters.add( personHasEmailAddress( csvDataDir, batchInserter, personsIndex, emailAddressesIndex ) );
+        fileInserters.add( postHasTagTag( csvDataDir, batchInserter, postsIndex, tagsIndex ) );
+        fileInserters.add( personLikesPost( csvDataDir, batchInserter, personsIndex, postsIndex ) );
+        fileInserters.add( postIsLocatedInLocation( csvDataDir, batchInserter, postsIndex, locationsIndex ) );
+        fileInserters.add( forumHasMemberPerson( csvDataDir, batchInserter, forumsIndex, personsIndex ) );
+        fileInserters.add( forumContainerOfPost( csvDataDir, batchInserter, forumsIndex, postsIndex ) );
+        fileInserters.add( forumHasTag( csvDataDir, batchInserter, forumsIndex, tagsIndex ) );
+        fileInserters.add( tagHasTypeTagClass( csvDataDir, batchInserter, tagsIndex, tagClassesIndex ) );
+        fileInserters.add( tagClassIsSubclassOfTagClass( csvDataDir, batchInserter, tagClassesIndex ) );
+        fileInserters.add( organisationBasedNearLocation( csvDataDir, batchInserter, organisationsIndex, locationsIndex ) );
 
         return fileInserters;
     }
 
-    private static CsvFileInserter comments( final BatchInserter batchInserter, final CommentsBatchIndex commentsIndex )
-            throws FileNotFoundException
+    private static CsvFileInserter comments( final String csvDataDir, final BatchInserter batchInserter,
+            final CommentsBatchIndex commentsIndex ) throws FileNotFoundException
     {
         /*
         id  creationDate            location IP     browserUsed     content
         00  2010-03-11T10:11:18Z    14.134.0.11     Chrome          About Michael Jordan, Association...
          */
-
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "comment.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "comment.csv" ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
@@ -116,14 +114,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter posts( final BatchInserter batchInserter, final PostsBatchIndex postsIndex )
-            throws FileNotFoundException
+    private static CsvFileInserter posts( final String csvDataDir, final BatchInserter batchInserter,
+            final PostsBatchIndex postsIndex ) throws FileNotFoundException
     {
         /*
         id      imageFile   creationDate            locationIP      browserUsed     language    content
         100     photo9.jpg  2010-03-11T05:28:04Z    27.99.128.8     Firefox         zh          About Michael Jordan...
         */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "post.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "post.csv" ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
@@ -132,7 +130,8 @@ public class CsvFileInserters
                 int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "imageFile", columnValues[1] );
-                // TODO dateTime
+                // TODO datetime
+                // 2010-12-28T07:16:25Z
                 properties.put( "creationDate", columnValues[2] );
                 properties.put( "locationIP", columnValues[3] );
                 properties.put( "browserUsed", columnValues[4] );
@@ -144,14 +143,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter persons( final BatchInserter batchInserter, final PersonsBatchIndex personsIndex )
-            throws FileNotFoundException
+    private static CsvFileInserter persons( final String csvDataDir, final BatchInserter batchInserter,
+            final PersonsBatchIndex personsIndex ) throws FileNotFoundException
     {
         /*
         id      firstName   lastName    gender  birthday    creationDate            locationIP      browserUsed
         75      Fernanda    Alves       male    1984-12-15  2010-12-14T11:41:37Z    143.106.0.7     Firefox
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "person.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "person.csv" ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
@@ -163,8 +162,10 @@ public class CsvFileInserters
                 properties.put( "lastName", columnValues[2] );
                 properties.put( "gender", columnValues[3] );
                 // TODO date
+                // 1984-12-15
                 properties.put( "birthday", columnValues[4] );
                 // TODO datetime
+                // 2010-12-28T07:16:25Z
                 properties.put( "creationDate", columnValues[5] );
                 properties.put( "locationIP", columnValues[6] );
                 properties.put( "browserUsed", columnValues[7] );
@@ -174,14 +175,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter forums( final BatchInserter batchInserter, final ForumsBatchIndex forumIndex )
-            throws FileNotFoundException
+    private static CsvFileInserter forums( final String csvDataDir, final BatchInserter batchInserter,
+            final ForumsBatchIndex forumIndex ) throws FileNotFoundException
     {
         /*
             id      title                       creationDate
             150     Wall of Fernanda Alves      2010-12-14T11:41:37Z
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "forum.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "forum.csv" ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
@@ -191,6 +192,7 @@ public class CsvFileInserters
                 properties.put( "id", id );
                 properties.put( "title", columnValues[1] );
                 // TODO datetime
+                // 2010-12-28T07:16:25Z
                 properties.put( "creationDate", columnValues[2] );
                 long forumNodeId = batchInserter.createNode( properties, Domain.Node.FORUM );
                 forumIndex.getIndex().add( forumNodeId, MapUtil.map( "id", id ) );
@@ -198,14 +200,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter tags( final BatchInserter batchInserter, final TagsBatchIndex tagIndex )
-            throws FileNotFoundException
+    private static CsvFileInserter tags( final String csvDataDir, final BatchInserter batchInserter,
+            final TagsBatchIndex tagIndex ) throws FileNotFoundException
     {
         /*
         id      name                url
         259     Gilberto_Gil        http://dbpedia.org/resource/Gilberto_Gil
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "tag.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "tag.csv" ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
@@ -221,14 +223,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter tagClasses( final BatchInserter batchInserter,
+    private static CsvFileInserter tagClasses( final String csvDataDir, final BatchInserter batchInserter,
             final TagClassesBatchIndex tagClassesIndex ) throws FileNotFoundException
     {
         /*
         id      name    url
         211     Person  http://dbpedia.org/ontology/Person
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "tagclass.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "tagclass.csv" ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
@@ -244,14 +246,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter organisations( final BatchInserter batchInserter,
+    private static CsvFileInserter organisations( final String csvDataDir, final BatchInserter batchInserter,
             final OrganisationsBatchIndex organisationsIndex ) throws FileNotFoundException
     {
         /*
         id  type        name                        url
         00  university  Universidade_de_Pernambuco  http://dbpedia.org/resource/Universidade_de_Pernambuco
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "organisation.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "organisation.csv" ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
@@ -260,7 +262,7 @@ public class CsvFileInserters
                 int id = Integer.parseInt( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[2] );
-                // only necessary if connecting to dbpedia
+                // TODO only necessary if connecting to dbpedia
                 // properties.put( "url", columnValues[3] );
                 long organisationNodeId = batchInserter.createNode( properties, Domain.Node.ORGANISATION,
                         Domain.OrganisationType.valueOf( ( (String) columnValues[1] ).toUpperCase() ) );
@@ -269,14 +271,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter locations( final BatchInserter batchInserter, final LocationsBatchIndex locationIndex )
-            throws FileNotFoundException
+    private static CsvFileInserter locations( final String csvDataDir, final BatchInserter batchInserter,
+            final LocationsBatchIndex locationIndex ) throws FileNotFoundException
     {
         /*
         id      name            url                                             type
         5170    South_America   http://dbpedia.org/resource/South_America       REGION
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "location.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "location.csv" ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
@@ -294,14 +296,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter commentReplyOfComment( final BatchInserter batchInserter,
+    private static CsvFileInserter commentReplyOfComment( final String csvDataDir, final BatchInserter batchInserter,
             final CommentsBatchIndex commentsIndex ) throws FileNotFoundException
     {
         /*
         Comment.id  Comment.id
         20          00
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "comment_replyOf_comment.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "comment_replyOf_comment.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -321,14 +323,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter commentReplyOfPost( final BatchInserter batchInserter,
+    private static CsvFileInserter commentReplyOfPost( final String csvDataDir, final BatchInserter batchInserter,
             final CommentsBatchIndex commentsIndex, final PostsBatchIndex postsIndex ) throws FileNotFoundException
     {
         /*
         Comment.id  Post.id
         00          100
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "comment_replyOf_post.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "comment_replyOf_post.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -348,44 +350,43 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter commentIsLocatedInLocation( final BatchInserter batchInserter,
-            final CommentsBatchIndex commentsIndex, final LocationsBatchIndex locationsIndex )
-            throws FileNotFoundException
+    private static CsvFileInserter commentIsLocatedInLocation( final String csvDataDir,
+            final BatchInserter batchInserter, final CommentsBatchIndex commentsIndex,
+            final LocationsBatchIndex locationsIndex ) throws FileNotFoundException
     {
         /*
         Comment.id  Location.id
         100         73
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "comment_isLocatedIn_location.csv" ),
-                new CsvLineInserter()
-                {
-                    @Override
-                    public Object[] transform( Object[] columnValues )
-                    {
-                        long fromCommentNodeId = commentsIndex.getIndex().get( "id",
-                                Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                        long toLocationNodeId = locationsIndex.getIndex().get( "id",
-                                Integer.parseInt( (String) columnValues[1] ) ).getSingle();
-                        return new Object[] { fromCommentNodeId, toLocationNodeId };
-                    }
+        return new CsvFileInserter( new File( csvDataDir + "comment_isLocatedIn_location.csv" ), new CsvLineInserter()
+        {
+            @Override
+            public Object[] transform( Object[] columnValues )
+            {
+                long fromCommentNodeId = commentsIndex.getIndex().get( "id",
+                        Integer.parseInt( (String) columnValues[0] ) ).getSingle();
+                long toLocationNodeId = locationsIndex.getIndex().get( "id",
+                        Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                return new Object[] { fromCommentNodeId, toLocationNodeId };
+            }
 
-                    @Override
-                    public void insert( Object[] columnValues )
-                    {
-                        batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
-                                Domain.Rel.IS_LOCATED_IN, EMPTY_MAP );
-                    }
-                } );
+            @Override
+            public void insert( Object[] columnValues )
+            {
+                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
+                        Domain.Rel.IS_LOCATED_IN, EMPTY_MAP );
+            }
+        } );
     }
 
-    private static CsvFileInserter locationPartOfLocation( final BatchInserter batchInserter,
+    private static CsvFileInserter locationPartOfLocation( final String csvDataDir, final BatchInserter batchInserter,
             final LocationsBatchIndex locationsIndex ) throws FileNotFoundException
     {
         /*
         Location.id Location.id
         11          5170
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "location_partOf_location.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "location_partOf_location.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -406,14 +407,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter personKnowsPerson( final BatchInserter batchInserter,
+    private static CsvFileInserter personKnowsPerson( final String csvDataDir, final BatchInserter batchInserter,
             final PersonsBatchIndex personsIndex ) throws FileNotFoundException
     {
         /*
         Person.id   Person.id
         75          1489
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "person_knows_person.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "person_knows_person.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -432,15 +433,15 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter personStudyAtOrganisation( final BatchInserter batchInserter,
-            final PersonsBatchIndex personsIndex, final OrganisationsBatchIndex organisationsIndex )
-            throws FileNotFoundException
+    private static CsvFileInserter personStudyAtOrganisation( final String csvDataDir,
+            final BatchInserter batchInserter, final PersonsBatchIndex personsIndex,
+            final OrganisationsBatchIndex organisationsIndex ) throws FileNotFoundException
     {
         /*
         Person.id   Organisation.id classYear
         75          00                  2004
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "person_studyAt_organisation.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "person_studyAt_organisation.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -463,7 +464,7 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter personSpeaksLanguage( final BatchInserter batchInserter,
+    private static CsvFileInserter personSpeaksLanguage( final String csvDataDir, final BatchInserter batchInserter,
             final PersonsBatchIndex personsIndex, final LanguagesBatchIndex languagesIndex )
             throws FileNotFoundException
     {
@@ -471,7 +472,7 @@ public class CsvFileInserters
         Person.id   language
         75          pt
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "person_speaks_language.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "person_speaks_language.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -488,14 +489,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter commentHasCreatorPerson( final BatchInserter batchInserter,
+    private static CsvFileInserter commentHasCreatorPerson( final String csvDataDir, final BatchInserter batchInserter,
             final PersonsBatchIndex personsIndex, final CommentsBatchIndex commentsIndex ) throws FileNotFoundException
     {
         /*        
         Comment.id  Person.id
         00          1402
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "comment_hasCreator_person.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "comment_hasCreator_person.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -514,14 +515,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter postHasCreatorPerson( final BatchInserter batchInserter,
+    private static CsvFileInserter postHasCreatorPerson( final String csvDataDir, final BatchInserter batchInserter,
             final PersonsBatchIndex personsIndex, final PostsBatchIndex postsIndex ) throws FileNotFoundException
     {
         /*
         Post.id     Person.id
         00          75
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "post_hasCreator_person.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "post_hasCreator_person.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -540,14 +541,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter forumHasModeratorPerson( final BatchInserter batchInserter,
+    private static CsvFileInserter forumHasModeratorPerson( final String csvDataDir, final BatchInserter batchInserter,
             final PersonsBatchIndex personsIndex, final ForumsBatchIndex forumsIndex ) throws FileNotFoundException
     {
         /*
         Forum.id    Person.id
         1500        75
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "forum_hasModerator_person.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "forum_hasModerator_person.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -560,13 +561,18 @@ public class CsvFileInserters
                 catch ( Exception e )
                 {
                     /*
-                     * TODO remove exception handling after data generator is fixed
-                     * usually ids in colummn 0 of forum.csv (and other .csv files) have 0 suffix
-                     * in forum.csv some rows do not, for example:
-                     *    2978|Wall of Lei Liu|2010-03-11T03:55:32Z
-                     * then files like person_moderator_of_forum.csv attempt to retrieve 29780
-                     */
-                    logger.error( "Forum node not found: " + columnValues[0] );
+                    * TODO remove exception handling after data generator is
+                    fixed
+                    * usually ids in colummn 0 of forum.csv (and other .csv
+                    files) have 0 suffix
+                    * in forum.csv some rows do not, for example:
+                    * 2978|Wall of Lei Liu|2010-03-11T03:55:32Z
+                    * then files like person_moderator_of_forum.csv attempt to
+                    retrieve 29780
+                    */
+                    // TODO uncomment to see broken ID's (still broken)
+                    // logger.error( "Forum node not found: " + columnValues[0]
+                    // );
                     return null;
                 }
                 long personNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
@@ -585,15 +591,15 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter personIsLocatedInLocation( final BatchInserter batchInserter,
-            final PersonsBatchIndex personsIndex, final LocationsBatchIndex locationsIndex )
-            throws FileNotFoundException
+    private static CsvFileInserter personIsLocatedInLocation( final String csvDataDir,
+            final BatchInserter batchInserter, final PersonsBatchIndex personsIndex,
+            final LocationsBatchIndex locationsIndex ) throws FileNotFoundException
     {
         /*        
         Person.id   Location.id
         75          310
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "person_isLocatedIn_location.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "person_isLocatedIn_location.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -612,15 +618,15 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter personWorksAtOrganisation( final BatchInserter batchInserter,
-            final PersonsBatchIndex personsIndex, final OrganisationsBatchIndex organisationsIndex )
-            throws FileNotFoundException
+    private static CsvFileInserter personWorksAtOrganisation( final String csvDataDir,
+            final BatchInserter batchInserter, final PersonsBatchIndex personsIndex,
+            final OrganisationsBatchIndex organisationsIndex ) throws FileNotFoundException
     {
         /*
         Person.id   Organisation.id     workFrom
         75          10                  2016
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "person_workAt_organisation.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "person_workAt_organisation.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -643,14 +649,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter personHasInterestTag( final BatchInserter batchInserter,
+    private static CsvFileInserter personHasInterestTag( final String csvDataDir, final BatchInserter batchInserter,
             final PersonsBatchIndex personsIndex, final TagsBatchIndex tagsIndex ) throws FileNotFoundException
     {
         /*
         Person.id   Tag.id
         75          259
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "person_hasInterest_tag.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "person_hasInterest_tag.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -669,7 +675,7 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter personHasEmailAddress( final BatchInserter batchInserter,
+    private static CsvFileInserter personHasEmailAddress( final String csvDataDir, final BatchInserter batchInserter,
             final PersonsBatchIndex personsIndex, final EmailAddressesBatchIndex emailAddressesIndex )
             throws FileNotFoundException
     {
@@ -677,27 +683,25 @@ public class CsvFileInserters
         Person.id   email
         75          Fernanda75@gmx.com
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "person_hasEmail_emailaddress.csv" ),
-                new CsvLineInserter()
-                {
-                    @Override
-                    public void insert( Object[] columnValues )
-                    {
-                        long personNodeId = personsIndex.getIndex().get( "id",
-                                Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                        batchInserter.setNodeProperty( personNodeId, "email", columnValues[1] );
-                    }
-                } );
+        return new CsvFileInserter( new File( csvDataDir + "person_hasEmail_emailaddress.csv" ), new CsvLineInserter()
+        {
+            @Override
+            public void insert( Object[] columnValues )
+            {
+                long personNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
+                batchInserter.setNodeProperty( personNodeId, "email", columnValues[1] );
+            }
+        } );
     }
 
-    private static CsvFileInserter postHasTagTag( final BatchInserter batchInserter, final PostsBatchIndex postsIndex,
-            final TagsBatchIndex tagsIndex ) throws FileNotFoundException
+    private static CsvFileInserter postHasTagTag( final String csvDataDir, final BatchInserter batchInserter,
+            final PostsBatchIndex postsIndex, final TagsBatchIndex tagsIndex ) throws FileNotFoundException
     {
         /*
         Post.id Tag.id
         100     2903
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "post_hasTag_tag.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "post_hasTag_tag.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -717,60 +721,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter postAnnotatedWithLanguage( final BatchInserter batchInserter,
-            final PostsBatchIndex postsIndex, final LanguagesBatchIndex languagesIndex ) throws FileNotFoundException
-    {
-        /*
-        TODO "annotatedWith" relationship not in schema table
-
-        id  Post.id     Language.id
-        00  75          259
-         */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "post_annotated_language.csv" ), new CsvLineInserter()
-        {
-            @Override
-            public Object[] transform( Object[] columnValues )
-            {
-                int id = Integer.parseInt( (String) columnValues[0] );
-                long fromPostNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
-                long toLanguageNodeId = 0;
-                try
-                {
-                    toLanguageNodeId = languagesIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[2] ) ).getSingle();
-                }
-                catch ( Exception e )
-                {
-                    /*
-                     * TODO remove exception handling after data generator is fixed
-                     * at present sometimes it occurs that languageId == -1
-                     */
-                    return null;
-                }
-                return new Object[] { id, fromPostNodeId, toLanguageNodeId };
-            }
-
-            @Override
-            public void insert( Object[] columnValues )
-            {
-                // TODO remove when data generator fixed
-                if ( columnValues == null ) return;
-
-                Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "id", columnValues[0] );
-                batchInserter.createRelationship( (Long) columnValues[1], (Long) columnValues[2],
-                        Domain.Rel.ANNOTATED_WITH, properties );
-            }
-        } );
-    }
-
-    private static CsvFileInserter personLikesPost( final BatchInserter batchInserter,
+    private static CsvFileInserter personLikesPost( final String csvDataDir, final BatchInserter batchInserter,
             final PersonsBatchIndex personsIndex, final PostsBatchIndex postsIndex ) throws FileNotFoundException
     {
         /*
         Person.id   Post.id     creationDate
         1489        00          2011-01-20T11:18:41Z
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "person_likes_post.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "person_likes_post.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -793,14 +751,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter postIsLocatedInLocation( final BatchInserter batchInserter,
+    private static CsvFileInserter postIsLocatedInLocation( final String csvDataDir, final BatchInserter batchInserter,
             final PostsBatchIndex postsIndex, final LocationsBatchIndex locationsIndex ) throws FileNotFoundException
     {
         /*
         Post.id     Location.id
         00          11
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "post_isLocatedIn_location.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "post_isLocatedIn_location.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -819,56 +777,43 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter forumHasMemberPerson( final BatchInserter batchInserter,
+    private static CsvFileInserter forumHasMemberPerson( final String csvDataDir, final BatchInserter batchInserter,
             final ForumsBatchIndex forumsIndex, final PersonsBatchIndex personsIndex ) throws FileNotFoundException
     {
         /*
         Forum.id    Person.id   joinDate
         150         1489        2011-01-02T01:01:10Z        
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "forum_hasMember_person.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "forum_hasMember_person.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
             {
                 long forumNodeId = forumsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
                 long personNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
-
-                if ( columnValues.length == 3 )
-                {
-                    // TODO dateTime
-                    Object joinDate = columnValues[2];
-                    return new Object[] { forumNodeId, personNodeId, joinDate };
-                }
-                else
-                {
-                    logger.error( "Line only has 2 columns" );
-                    return new Object[] { forumNodeId, personNodeId };
-                }
+                Object joinDate = columnValues[2];
+                return new Object[] { forumNodeId, personNodeId, joinDate };
             }
 
             @Override
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                if ( columnValues.length == 3 )
-                {
-                    properties.put( "joinDate", columnValues[2] );
-                }
+                properties.put( "joinDate", columnValues[2] );
                 batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
                         Domain.Rel.HAS_MEMBER, properties );
             }
         } );
     }
 
-    private static CsvFileInserter forumContainerOfPost( final BatchInserter batchInserter,
+    private static CsvFileInserter forumContainerOfPost( final String csvDataDir, final BatchInserter batchInserter,
             final ForumsBatchIndex forumsIndex, final PostsBatchIndex postsIndex ) throws FileNotFoundException
     {
         /*
         Forum.id    Post.id
         40220       00
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "forum_container_of_post.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "forum_container_of_post.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -887,7 +832,8 @@ public class CsvFileInserters
                      *    50294
                      * then when trying to retrieve 50294 (probably supposed to be 502940) from forum.csv it is not found
                      */
-                    logger.error( "Forum not found: " + columnValues[0] );
+                    // TODO uncomment to see broken IDs (still broken)
+                    // logger.error( "Forum not found: " + columnValues[0] );
                     return null;
                 }
                 long postNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
@@ -905,14 +851,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter forumHasTag( final BatchInserter batchInserter, final ForumsBatchIndex forumsIndex,
-            final TagsBatchIndex tagsIndex ) throws FileNotFoundException
+    private static CsvFileInserter forumHasTag( final String csvDataDir, final BatchInserter batchInserter,
+            final ForumsBatchIndex forumsIndex, final TagsBatchIndex tagsIndex ) throws FileNotFoundException
     {
         /*
         Forum.id    Tag.id
         75          259
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "forum_hasTag_tag.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "forum_hasTag_tag.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -931,24 +877,11 @@ public class CsvFileInserters
                      * 
                      * of 30346 entries only 1028 appear to be valid
                      */
-                    logger.error( "Forum not found: " + columnValues[0] );
+                    // TODO uncomment to see broken IDs (still broken)
+                    // logger.error( "Forum not found: " + columnValues[0] );
                     return null;
                 }
-                long tagNodeId = 0;
-                try
-                {
-                    tagNodeId = tagsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
-                }
-                catch ( Exception e )
-                {
-                    /*
-                     * TODO remove exception handling when generator fixed
-                     * currently forum_hastag_tag.csv contains Tag.id entries in column 1 that are not in tag.csv
-                     * for example: 75 in forum_hastag_tag.csv but the closest to that number in tag.csv is 74
-                     */
-                    logger.error( "Tag not found: " + columnValues[1] );
-                    return null;
-                }
+                long tagNodeId = tagsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
                 return new Object[] { tagNodeId, forumNodeId };
             }
 
@@ -963,14 +896,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter tagHasTypeTagClass( final BatchInserter batchInserter,
+    private static CsvFileInserter tagHasTypeTagClass( final String csvDataDir, final BatchInserter batchInserter,
             final TagsBatchIndex tagsIndex, final TagClassesBatchIndex tagClassesIndex ) throws FileNotFoundException
     {
         /*
         Tag.id  TagClass.id
         259     211
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "tag_hasType_tagclass.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "tag_hasType_tagclass.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -989,14 +922,15 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter tagClassIsSubclassOfTagClass( final BatchInserter batchInserter,
-            final TagClassesBatchIndex tagClassesIndex ) throws FileNotFoundException
+    private static CsvFileInserter tagClassIsSubclassOfTagClass( final String csvDataDir,
+            final BatchInserter batchInserter, final TagClassesBatchIndex tagClassesIndex )
+            throws FileNotFoundException
     {
         /*
         TagClass.id     TagClass.id
         211             239
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "tagclass_isSubclassOf_tagclass.csv" ),
+        return new CsvFileInserter( new File( csvDataDir + "tagclass_isSubclassOf_tagclass.csv" ),
                 new CsvLineInserter()
                 {
                     @Override
@@ -1018,15 +952,15 @@ public class CsvFileInserters
                 } );
     }
 
-    private static CsvFileInserter organisationBasedNearLocation( final BatchInserter batchInserter,
-            final OrganisationsBatchIndex organisationsIndex, final LocationsBatchIndex locationsIndex )
-            throws FileNotFoundException
+    private static CsvFileInserter organisationBasedNearLocation( final String csvDataDir,
+            final BatchInserter batchInserter, final OrganisationsBatchIndex organisationsIndex,
+            final LocationsBatchIndex locationsIndex ) throws FileNotFoundException
     {
         /*
         Organisation.id     Location.id
         00                  301
          */
-        return new CsvFileInserter( new File( RAW_DATA_DIR + "organisation_isLocatedIn_location.csv" ),
+        return new CsvFileInserter( new File( csvDataDir + "organisation_isLocatedIn_location.csv" ),
                 new CsvLineInserter()
                 {
                     @Override
@@ -1047,7 +981,9 @@ public class CsvFileInserters
                              * Location.id column contains ids that are not in location.csv
                              * eg. 301
                              */
-                            logger.error( "Location not found: " + columnValues[1] );
+                            // TODO uncomment to see broken IDs (still broken)
+                            // logger.error( "Location not found: " +
+                            // columnValues[1] );
                             return null;
                         }
                         return new Object[] { organisationNodeId, locationNodeId };

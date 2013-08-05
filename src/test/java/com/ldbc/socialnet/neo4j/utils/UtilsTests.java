@@ -38,7 +38,7 @@ public class UtilsTests
         }
 
         // Then
-        assertThat( filesInCsvFolder, is( CsvFiles.all() ) );
+        assertThat( filesInCsvFolder, is( CsvFiles.all( Config.DATA_DIR ) ) );
     }
 
     @Test
@@ -52,10 +52,10 @@ public class UtilsTests
 
         // When
         Set<String> csvFileInserterFiles = new HashSet<String>( csvFileInsertersToFileNames( CsvFileInserters.all(
-                batchInserter, batchIndexProvider ) ) );
+                batchInserter, batchIndexProvider, Config.DATA_DIR ) ) );
 
         // Then
-        assertThat( csvFileInserterFiles, is( CsvFiles.all() ) );
+        assertThat( csvFileInserterFiles, is( CsvFiles.all( Config.DATA_DIR ) ) );
 
         FileUtils.deleteRecursively( new File( dbDir ) );
     }
@@ -71,7 +71,7 @@ public class UtilsTests
 
         // When
         List<String> allCsvFileInsertersToFileNames = csvFileInsertersToFileNames( CsvFileInserters.all( batchInserter,
-                batchIndexProvider ) );
+                batchIndexProvider, Config.DATA_DIR ) );
 
         Set<String> noDuplcateCsvFileInserterFiles = new HashSet<String>( allCsvFileInsertersToFileNames );
 
