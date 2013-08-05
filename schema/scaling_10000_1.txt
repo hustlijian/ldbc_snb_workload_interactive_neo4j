@@ -1,0 +1,74 @@
+numtotalUser:50000
+startYear:2010
+numYears:1
+
+total 11G
+
+6.4G - comment.csv
+454M - comment_hasCreator_person.csv
+352M - comment_isLocatedIn_location.csv
+366M - comment_replyOf_comment.csv
+194M - comment_replyOf_post.csv
+135M - forum_container_of_post.csv
+ 32M - forum.csv
+437M - forum_hasMember_person.csv
+8.3M - forum_hasModerator_person.csv
+8.9M - forum_hasTag_tag.csv
+278K - location.csv
+ 39K - location_isPartOf_location.csv
+474K - organisation.csv
+ 49K - organisation_isLocatedIn_location.csv
+3.8M - person.csv
+2.2M - person_hasEmail_emailaddress.csv
+1.8M - person_hasInterest_tag.csv
+508K - person_isLocatedIn_location.csv
+ 16M - person_knows_person.csv
+1.1G - person_likes_post.csv
+948K - person_speaks_language.csv
+623K - person_studyAt_organisation.csv
+1.7M - person_workAt_organisation.csv
+1.1G - post.csv
+122M - post_hasCreator_person.csv
+ 89M - post_hasTag_tag.csv
+ 99M - post_isLocatedIn_location.csv
+3.7K - tagclass.csv
+ 524 - tagclass_isSubclassOf_tagclass.csv
+649K - tag.csv
+ 87K - tag_hasType_tagclass.csv
+
+Time: 215 min, 0 sec
+
+Node count = 40,222,927
+Relationship count = 174,631,775
+
+comment.csv - 30850560
+post.csv - 8681189
+person.csv - 50000
+forum.csv - 621547
+tag.csv - 9741
+tagclass.csv - 68
+organisation.csv - 4940
+location.csv - 4881
+comment_replyOf_comment.csv - 19902189
+comment_replyOf_post.csv - 10948371
+comment_isLocatedIn_location.csv - 30850560
+location_isPartOf_location.csv - 4875
+person_knows_person.csv - 1447178
+person_studyAt_organisation.csv - 39954
+person_speaks_language.csv - 110523
+comment_hasCreator_person.csv - 30850560
+post_hasCreator_person.csv - 8681189
+forum_hasModerator_person.csv - 621547
+person_isLocatedIn_location.csv - 50000
+person_workAt_organisation.csv - 111078
+person_hasInterest_tag.csv - 173230
+person_hasEmail_emailaddress.csv - 85335
+post_hasTag_tag.csv - 6749295
+person_likes_post.csv - 33067658
+post_isLocatedIn_location.csv - 8681189
+forum_hasMember_person.csv - 13166176
+forum_container_of_post.csv - 8681189
+forum_hasTag_tag.csv - 744777
+tag_hasType_tagclass.csv - 9741
+tagclass_isSubclassOf_tagclass.csv - 67
+organisation_isLocatedIn_location.csv - 4940

@@ -37,15 +37,15 @@ public class Domain
         TAG_CLASS,
         ORGANISATION,
         LANGUAGE,
-        LOCATION,
+        PLACE,
         EMAIL_ADDRESS
     }
 
-    public enum LocationType implements Label
+    public enum PlaceType implements Label
     {
         COUNTRY,
         CITY,
-        REGION
+        CONTINENT
     }
 
     public enum OrganisationType implements Label

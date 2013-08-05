@@ -19,7 +19,7 @@ public class Config
         try
         {
             applicationConfig = new Properties();
-            applicationConfig.load( Config.class.getResourceAsStream( "/config.properties" ) );
+            applicationConfig.load( Config.class.getResourceAsStream( "/neo4j_importer.properties" ) );
             Map tempNeo4jConfig = new Properties();
             ( (Properties) tempNeo4jConfig ).load( Config.class.getResourceAsStream( "/neo4j.properties" ) );
             NEO4J_CONFIG = tempNeo4jConfig;

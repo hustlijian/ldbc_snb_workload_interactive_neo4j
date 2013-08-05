@@ -19,7 +19,7 @@ import com.ldbc.socialnet.neo4j.domain.Domain;
 import com.ldbc.socialnet.neo4j.domain.EmailAddressesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.ForumsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.LanguagesBatchIndex;
-import com.ldbc.socialnet.neo4j.domain.LocationsBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.PlacesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.OrganisationsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.PersonsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.PostsBatchIndex;
@@ -45,7 +45,7 @@ public class CsvFileInserters
         TagClassesBatchIndex tagClassesIndex = new TagClassesBatchIndex( batchIndexProvider );
         OrganisationsBatchIndex organisationsIndex = new OrganisationsBatchIndex( batchIndexProvider );
         LanguagesBatchIndex languagesIndex = new LanguagesBatchIndex( batchIndexProvider );
-        LocationsBatchIndex locationsIndex = new LocationsBatchIndex( batchIndexProvider );
+        PlacesBatchIndex placesIndex = new PlacesBatchIndex( batchIndexProvider );
         EmailAddressesBatchIndex emailAddressesIndex = new EmailAddressesBatchIndex( batchIndexProvider );
 
         /*
@@ -53,36 +53,36 @@ public class CsvFileInserters
         */
         List<CsvFileInserter> fileInserters = new ArrayList<CsvFileInserter>();
         fileInserters.add( comments( csvDataDir, batchInserter, commentsIndex ) );
-        fileInserters.add( posts( csvDataDir, batchInserter, postsIndex ) );
-        fileInserters.add( persons( csvDataDir, batchInserter, personsIndex ) );
         fileInserters.add( forums( csvDataDir, batchInserter, forumsIndex ) );
-        fileInserters.add( tags( csvDataDir, batchInserter, tagsIndex ) );
-        fileInserters.add( tagClasses( csvDataDir, batchInserter, tagClassesIndex ) );
         fileInserters.add( organisations( csvDataDir, batchInserter, organisationsIndex ) );
-        fileInserters.add( locations( csvDataDir, batchInserter, locationsIndex ) );
+        fileInserters.add( persons( csvDataDir, batchInserter, personsIndex ) );
+        fileInserters.add( places( csvDataDir, batchInserter, placesIndex ) );
+        fileInserters.add( posts( csvDataDir, batchInserter, postsIndex ) );
+        fileInserters.add( tagClasses( csvDataDir, batchInserter, tagClassesIndex ) );
+        fileInserters.add( tags( csvDataDir, batchInserter, tagsIndex ) );
+        fileInserters.add( commentHasCreatorPerson( csvDataDir, batchInserter, personsIndex, commentsIndex ) );
+        fileInserters.add( commentIsLocatedInPlace( csvDataDir, batchInserter, commentsIndex, placesIndex ) );
         fileInserters.add( commentReplyOfComment( csvDataDir, batchInserter, commentsIndex ) );
         fileInserters.add( commentReplyOfPost( csvDataDir, batchInserter, commentsIndex, postsIndex ) );
-        fileInserters.add( commentIsLocatedInLocation( csvDataDir, batchInserter, commentsIndex, locationsIndex ) );
-        fileInserters.add( locationIsPartOfLocation( csvDataDir, batchInserter, locationsIndex ) );
-        fileInserters.add( personKnowsPerson( csvDataDir, batchInserter, personsIndex ) );
-        fileInserters.add( personStudyAtOrganisation( csvDataDir, batchInserter, personsIndex, organisationsIndex ) );
-        fileInserters.add( personSpeaksLanguage( csvDataDir, batchInserter, personsIndex, languagesIndex ) );
-        fileInserters.add( commentHasCreatorPerson( csvDataDir, batchInserter, personsIndex, commentsIndex ) );
-        fileInserters.add( postHasCreatorPerson( csvDataDir, batchInserter, personsIndex, postsIndex ) );
-        fileInserters.add( forumHasModeratorPerson( csvDataDir, batchInserter, personsIndex, forumsIndex ) );
-        fileInserters.add( personIsLocatedInLocation( csvDataDir, batchInserter, personsIndex, locationsIndex ) );
-        fileInserters.add( personWorksAtOrganisation( csvDataDir, batchInserter, personsIndex, organisationsIndex ) );
-        fileInserters.add( personHasInterestTag( csvDataDir, batchInserter, personsIndex, tagsIndex ) );
-        fileInserters.add( personHasEmailAddress( csvDataDir, batchInserter, personsIndex, emailAddressesIndex ) );
-        fileInserters.add( postHasTagTag( csvDataDir, batchInserter, postsIndex, tagsIndex ) );
-        fileInserters.add( personLikesPost( csvDataDir, batchInserter, personsIndex, postsIndex ) );
-        fileInserters.add( postIsLocatedInLocation( csvDataDir, batchInserter, postsIndex, locationsIndex ) );
-        fileInserters.add( forumHasMemberPerson( csvDataDir, batchInserter, forumsIndex, personsIndex ) );
         fileInserters.add( forumContainerOfPost( csvDataDir, batchInserter, forumsIndex, postsIndex ) );
+        fileInserters.add( forumHasMemberPerson( csvDataDir, batchInserter, forumsIndex, personsIndex ) );
+        fileInserters.add( forumHasModeratorPerson( csvDataDir, batchInserter, personsIndex, forumsIndex ) );
         fileInserters.add( forumHasTag( csvDataDir, batchInserter, forumsIndex, tagsIndex ) );
-        fileInserters.add( tagHasTypeTagClass( csvDataDir, batchInserter, tagsIndex, tagClassesIndex ) );
+        fileInserters.add( personHasEmailAddress( csvDataDir, batchInserter, personsIndex, emailAddressesIndex ) );
+        fileInserters.add( personHasInterestTag( csvDataDir, batchInserter, personsIndex, tagsIndex ) );
+        fileInserters.add( personIsLocatedInPlace( csvDataDir, batchInserter, personsIndex, placesIndex ) );
+        fileInserters.add( personKnowsPerson( csvDataDir, batchInserter, personsIndex ) );
+        fileInserters.add( personLikesPost( csvDataDir, batchInserter, personsIndex, postsIndex ) );
+        fileInserters.add( personSpeaksLanguage( csvDataDir, batchInserter, personsIndex, languagesIndex ) );
+        fileInserters.add( personStudyAtOrganisation( csvDataDir, batchInserter, personsIndex, organisationsIndex ) );
+        fileInserters.add( personWorksAtOrganisation( csvDataDir, batchInserter, personsIndex, organisationsIndex ) );
+        fileInserters.add( placeIsPartOfPlace( csvDataDir, batchInserter, placesIndex ) );
+        fileInserters.add( postHasCreatorPerson( csvDataDir, batchInserter, personsIndex, postsIndex ) );
+        fileInserters.add( postHasTagTag( csvDataDir, batchInserter, postsIndex, tagsIndex ) );
+        fileInserters.add( postIsLocatedInPlace( csvDataDir, batchInserter, postsIndex, placesIndex ) );
         fileInserters.add( tagClassIsSubclassOfTagClass( csvDataDir, batchInserter, tagClassesIndex ) );
-        fileInserters.add( organisationBasedNearLocation( csvDataDir, batchInserter, organisationsIndex, locationsIndex ) );
+        fileInserters.add( tagHasTypeTagClass( csvDataDir, batchInserter, tagsIndex, tagClassesIndex ) );
+        fileInserters.add( organisationBasedNearPlace( csvDataDir, batchInserter, organisationsIndex, placesIndex ) );
 
         return fileInserters;
     }
@@ -271,14 +271,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter locations( final String csvDataDir, final BatchInserter batchInserter,
-            final LocationsBatchIndex locationIndex ) throws FileNotFoundException
+    private static CsvFileInserter places( final String csvDataDir, final BatchInserter batchInserter,
+            final PlacesBatchIndex placeIndex ) throws FileNotFoundException
     {
         /*
         id      name            url                                             type
         5170    South_America   http://dbpedia.org/resource/South_America       REGION
          */
-        return new CsvFileInserter( new File( csvDataDir + "location.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "place.csv" ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
@@ -288,10 +288,9 @@ public class CsvFileInserters
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
                 properties.put( "url", columnValues[2] );
-                // LocationType = COUNTRY | CITY | REGION
-                long locationNodeId = batchInserter.createNode( properties, Domain.Node.LOCATION,
-                        Domain.LocationType.valueOf( ( (String) columnValues[3] ).toUpperCase() ) );
-                locationIndex.getIndex().add( locationNodeId, MapUtil.map( "id", id ) );
+                long placeNodeId = batchInserter.createNode( properties, Domain.Node.PLACE,
+                        Domain.PlaceType.valueOf( ( (String) columnValues[3] ).toUpperCase() ) );
+                placeIndex.getIndex().add( placeNodeId, MapUtil.map( "id", id ) );
             }
         } );
     }
@@ -350,24 +349,21 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter commentIsLocatedInLocation( final String csvDataDir,
-            final BatchInserter batchInserter, final CommentsBatchIndex commentsIndex,
-            final LocationsBatchIndex locationsIndex ) throws FileNotFoundException
+    private static CsvFileInserter commentIsLocatedInPlace( final String csvDataDir, final BatchInserter batchInserter,
+            final CommentsBatchIndex commentsIndex, final PlacesBatchIndex placesIndex ) throws FileNotFoundException
     {
         /*
-        Comment.id  Location.id
+        Comment.id  Place.id
         100         73
          */
-        return new CsvFileInserter( new File( csvDataDir + "comment_isLocatedIn_location.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "comment_isLocatedIn_place.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long fromCommentNodeId = commentsIndex.getIndex().get( "id",
-                        Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                long toLocationNodeId = locationsIndex.getIndex().get( "id",
-                        Integer.parseInt( (String) columnValues[1] ) ).getSingle();
-                return new Object[] { fromCommentNodeId, toLocationNodeId };
+                long commentNodeId = commentsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
+                long placeNodeId = placesIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                return new Object[] { commentNodeId, placeNodeId };
             }
 
             @Override
@@ -379,23 +375,21 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter locationIsPartOfLocation( final String csvDataDir,
-            final BatchInserter batchInserter, final LocationsBatchIndex locationsIndex ) throws FileNotFoundException
+    private static CsvFileInserter placeIsPartOfPlace( final String csvDataDir, final BatchInserter batchInserter,
+            final PlacesBatchIndex placesIndex ) throws FileNotFoundException
     {
         /*
-        Location.id Location.id
+        Place.id Place.id
         11          5170
          */
-        return new CsvFileInserter( new File( csvDataDir + "location_isPartOf_location.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "place_isPartOf_place.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long fromLocationNodeId = locationsIndex.getIndex().get( "id",
-                        Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                long toLocationNodeId = locationsIndex.getIndex().get( "id",
-                        Integer.parseInt( (String) columnValues[1] ) ).getSingle();
-                return new Object[] { fromLocationNodeId, toLocationNodeId };
+                long fromPlaceNodeId = placesIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
+                long toPlaceNodeId = placesIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                return new Object[] { fromPlaceNodeId, toPlaceNodeId };
             }
 
             @Override
@@ -571,8 +565,7 @@ public class CsvFileInserters
                     retrieve 29780
                     */
                     // TODO uncomment to see broken ID's (still broken)
-                    // logger.error( "Forum node not found: " + columnValues[0]
-                    // );
+                    logger.error( "Forum node not found: " + columnValues[0] );
                     return null;
                 }
                 long personNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
@@ -591,22 +584,21 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter personIsLocatedInLocation( final String csvDataDir,
-            final BatchInserter batchInserter, final PersonsBatchIndex personsIndex,
-            final LocationsBatchIndex locationsIndex ) throws FileNotFoundException
+    private static CsvFileInserter personIsLocatedInPlace( final String csvDataDir, final BatchInserter batchInserter,
+            final PersonsBatchIndex personsIndex, final PlacesBatchIndex placesIndex ) throws FileNotFoundException
     {
         /*        
-        Person.id   Location.id
+        Person.id   Place.id
         75          310
          */
-        return new CsvFileInserter( new File( csvDataDir + "person_isLocatedIn_location.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "person_isLocatedIn_place.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
             {
                 long personNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                long locationNodeId = locationsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
-                return new Object[] { personNodeId, locationNodeId };
+                long placeNodeId = placesIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                return new Object[] { personNodeId, placeNodeId };
             }
 
             @Override
@@ -683,7 +675,7 @@ public class CsvFileInserters
         Person.id   email
         75          Fernanda75@gmx.com
          */
-        return new CsvFileInserter( new File( csvDataDir + "person_hasEmail_emailaddress.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "person_email_emailaddress.csv" ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
@@ -751,21 +743,21 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter postIsLocatedInLocation( final String csvDataDir, final BatchInserter batchInserter,
-            final PostsBatchIndex postsIndex, final LocationsBatchIndex locationsIndex ) throws FileNotFoundException
+    private static CsvFileInserter postIsLocatedInPlace( final String csvDataDir, final BatchInserter batchInserter,
+            final PostsBatchIndex postsIndex, final PlacesBatchIndex placesIndex ) throws FileNotFoundException
     {
         /*
-        Post.id     Location.id
+        Post.id     Place.id
         00          11
          */
-        return new CsvFileInserter( new File( csvDataDir + "post_isLocatedIn_location.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "post_isLocatedIn_place.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
             {
                 long postNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                long locationNodeId = locationsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
-                return new Object[] { postNodeId, locationNodeId };
+                long placeNodeId = placesIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                return new Object[] { postNodeId, placeNodeId };
             }
 
             @Override
@@ -789,7 +781,21 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long forumNodeId = forumsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
+                long forumNodeId = 0;
+                try
+                {
+                    forumsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
+                }
+                catch ( Exception e )
+                {
+                    /*
+                     * TODO remove exception handling after data generator is fixed
+                     */
+                    // TODO uncomment to see broken IDs (still broken)
+                    logger.error( "Forum not found: " + columnValues[0] );
+                    return null;
+                }
+
                 long personNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
                 Object joinDate = columnValues[2];
                 return new Object[] { forumNodeId, personNodeId, joinDate };
@@ -798,6 +804,8 @@ public class CsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
+                // TODO remove after data generator fixed
+                if ( columnValues == null ) return;
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "joinDate", columnValues[2] );
                 batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
@@ -813,7 +821,7 @@ public class CsvFileInserters
         Forum.id    Post.id
         40220       00
          */
-        return new CsvFileInserter( new File( csvDataDir + "forum_container_of_post.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "forum_containerOf_post.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -833,7 +841,7 @@ public class CsvFileInserters
                      * then when trying to retrieve 50294 (probably supposed to be 502940) from forum.csv it is not found
                      */
                     // TODO uncomment to see broken IDs (still broken)
-                    // logger.error( "Forum not found: " + columnValues[0] );
+                    logger.error( "Forum not found: " + columnValues[0] );
                     return null;
                 }
                 long postNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
@@ -878,7 +886,7 @@ public class CsvFileInserters
                      * of 30346 entries only 1028 appear to be valid
                      */
                     // TODO uncomment to see broken IDs (still broken)
-                    // logger.error( "Forum not found: " + columnValues[0] );
+                    logger.error( "Forum not found: " + columnValues[0] );
                     return null;
                 }
                 long tagNodeId = tagsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
@@ -952,15 +960,15 @@ public class CsvFileInserters
                 } );
     }
 
-    private static CsvFileInserter organisationBasedNearLocation( final String csvDataDir,
+    private static CsvFileInserter organisationBasedNearPlace( final String csvDataDir,
             final BatchInserter batchInserter, final OrganisationsBatchIndex organisationsIndex,
-            final LocationsBatchIndex locationsIndex ) throws FileNotFoundException
+            final PlacesBatchIndex placesIndex ) throws FileNotFoundException
     {
         /*
-        Organisation.id     Location.id
+        Organisation.id     Place.id
         00                  301
          */
-        return new CsvFileInserter( new File( csvDataDir + "organisation_isLocatedIn_location.csv" ),
+        return new CsvFileInserter( new File( csvDataDir + "organisation_isLocatedIn_place.csv" ),
                 new CsvLineInserter()
                 {
                     @Override
@@ -968,25 +976,23 @@ public class CsvFileInserters
                     {
                         long organisationNodeId = organisationsIndex.getIndex().get( "id",
                                 Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                        long locationNodeId = 0;
+                        long placeNodeId = 0;
                         try
                         {
-                            locationNodeId = locationsIndex.getIndex().get( "id",
-                                    Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                            placeNodeId = placesIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
                         }
                         catch ( Exception e )
                         {
                             /*
                              * TODO remove exception handling after generator fixed
-                             * Location.id column contains ids that are not in location.csv
+                             * Place.id column contains ids that are not in place.csv
                              * eg. 301
                              */
                             // TODO uncomment to see broken IDs (still broken)
-                            // logger.error( "Location not found: " +
-                            // columnValues[1] );
+                            logger.error( "Place not found: " + columnValues[1] );
                             return null;
                         }
-                        return new Object[] { organisationNodeId, locationNodeId };
+                        return new Object[] { organisationNodeId, placeNodeId };
                     }
 
                     @Override

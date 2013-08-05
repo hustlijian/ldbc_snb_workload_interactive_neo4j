@@ -3,7 +3,6 @@ package com.ldbc.socialnet.neo4j;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
@@ -32,10 +31,11 @@ public class LdbcSocialNeworkNeo4jImporter
        - support reading series of csv lines and making them all available
           - for example, for when subsequent lines work on the same ID/Node/Rel
        - add class to Domain with AttributeNames for each Entity
+       - make scaling.txt into a spreadsheet
      TODO code improvements ldbc_driver
        - add toString for Time and Duration classes
        - use import java.util.concurrent.TimeUnit in my Time class
-       - EMPTY_MAP in MapUtils?
+       - EMPTY_MAP in MapUtils?       
     */
 
     private final static Logger logger = Logger.getLogger( LdbcSocialNeworkNeo4jImporter.class );

@@ -4,13 +4,13 @@ import org.neo4j.helpers.collection.MapUtil;
 import org.neo4j.unsafe.batchinsert.BatchInserterIndex;
 import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
 
-public class LocationsBatchIndex
+public class PlacesBatchIndex
 {
     private final BatchInserterIndex index;
 
-    public LocationsBatchIndex( BatchInserterIndexProvider batchIndexProvider )
+    public PlacesBatchIndex( BatchInserterIndexProvider batchIndexProvider )
     {
-        index = batchIndexProvider.nodeIndex( Domain.Node.LOCATION.name(), MapUtil.stringMap( "type", "exact" ) );
+        index = batchIndexProvider.nodeIndex( Domain.Node.PLACE.name(), MapUtil.stringMap( "type", "exact" ) );
         // .setCacheCapacity( "name", 100000 );
     }
 

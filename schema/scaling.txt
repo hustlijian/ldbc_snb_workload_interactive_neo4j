@@ -1,0 +1,18 @@
+---------------------------------------------------
+-----------Scaling with respect to users-----------
+---------------------------------------------------
+
+11G (50,000 users, 1 year) / 441M (2,000 users, 1 year) 
+	~= 25 <-- linear scaling with respect to number of users
+	
+---------------------------------------------------
+-----------Scaling with respect to years-----------
+---------------------------------------------------
+
+891M (2,000 users, 2 years) / 441M (2,000 users, 1 year)
+	~= 2 <-- linear scaling with respect to number of years
+	
+Nodes: 
+	1,680,212 --> 3,366,409
+Relationships:
+	7,244,935 --> 14,488,506
