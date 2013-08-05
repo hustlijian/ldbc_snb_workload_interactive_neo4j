@@ -2,7 +2,6 @@ package com.ldbc.socialnet.neo4j;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -27,16 +26,11 @@ public class LdbcSocialNeworkNeo4jImporter
 {
     /*
      TODO code improvements here
-       - add properties file for pointing to resources
        - add readme with links to ldbc projects
        - is it necessary to store the "id" as a property if i want to index it?
           - is it good practice?
        - support reading series of csv lines and making them all available
           - for example, for when subsequent lines work on the same ID/Node/Rel
-       - CsvFiles static field in util class
-       - CsvInserters static field in util class
-       - test that CsvFiles and CsvInserters contain same set of files
-       - test that all CsvFiles are in specified folder, and that no others are in specified folder
        - add class to Domain with AttributeNames for each Entity
      TODO code improvements ldbc_driver
        - add toString for Time and Duration classes
@@ -68,10 +62,7 @@ public class LdbcSocialNeworkNeo4jImporter
         FileUtils.deleteRecursively( new File( dbDir ) );
 
         logger.info( "Instantiating Neo4j BatchInserter" );
-        Map<String, String> config = new HashMap<String, String>();
-        config.put( "neostore.nodestore.db.mapped_memory", "90M" );
-        BatchInserter batchInserter = BatchInserters.inserter( dbDir, config );
-
+        BatchInserter batchInserter = BatchInserters.inserter( dbDir, Config.NEO4J_CONFIG );
         BatchInserterIndexProvider batchIndexProvider = new LuceneBatchInserterIndexProvider( batchInserter );
         // BatchInserterIndexProvider batchIndexProvider = new
         // LuceneBatchInserterIndexProviderNewImpl( batchInserter );

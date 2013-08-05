@@ -1,22 +1,28 @@
 package com.ldbc.socialnet.neo4j.utils;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Properties;
 
 public class Config
 {
     public static String get( String key )
     {
-        return config.getProperty( key );
+        return applicationConfig.getProperty( key );
     }
 
-    private static Properties config = new Properties();
+    private static Properties applicationConfig;
+    public static Map<String, String> NEO4J_CONFIG;
 
     static
     {
         try
         {
-            config.load( Config.class.getResourceAsStream( "/config.properties" ) );
+            applicationConfig = new Properties();
+            applicationConfig.load( Config.class.getResourceAsStream( "/config.properties" ) );
+            Map tempNeo4jConfig = new Properties();
+            ( (Properties) tempNeo4jConfig ).load( Config.class.getResourceAsStream( "/neo4j.properties" ) );
+            NEO4J_CONFIG = tempNeo4jConfig;
         }
         catch ( IOException e )
         {
