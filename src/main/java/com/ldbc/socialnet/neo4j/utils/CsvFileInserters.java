@@ -63,7 +63,7 @@ public class CsvFileInserters
         fileInserters.add( commentReplyOfComment( csvDataDir, batchInserter, commentsIndex ) );
         fileInserters.add( commentReplyOfPost( csvDataDir, batchInserter, commentsIndex, postsIndex ) );
         fileInserters.add( commentIsLocatedInLocation( csvDataDir, batchInserter, commentsIndex, locationsIndex ) );
-        fileInserters.add( locationPartOfLocation( csvDataDir, batchInserter, locationsIndex ) );
+        fileInserters.add( locationIsPartOfLocation( csvDataDir, batchInserter, locationsIndex ) );
         fileInserters.add( personKnowsPerson( csvDataDir, batchInserter, personsIndex ) );
         fileInserters.add( personStudyAtOrganisation( csvDataDir, batchInserter, personsIndex, organisationsIndex ) );
         fileInserters.add( personSpeaksLanguage( csvDataDir, batchInserter, personsIndex, languagesIndex ) );
@@ -379,14 +379,14 @@ public class CsvFileInserters
         } );
     }
 
-    private static CsvFileInserter locationPartOfLocation( final String csvDataDir, final BatchInserter batchInserter,
-            final LocationsBatchIndex locationsIndex ) throws FileNotFoundException
+    private static CsvFileInserter locationIsPartOfLocation( final String csvDataDir,
+            final BatchInserter batchInserter, final LocationsBatchIndex locationsIndex ) throws FileNotFoundException
     {
         /*
         Location.id Location.id
         11          5170
          */
-        return new CsvFileInserter( new File( csvDataDir + "location_partOf_location.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + "location_isPartOf_location.csv" ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
