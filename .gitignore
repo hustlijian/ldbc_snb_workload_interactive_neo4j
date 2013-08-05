@@ -10,3 +10,4 @@ target/
 build.sh~
 README.md~
 db/
+lib/
