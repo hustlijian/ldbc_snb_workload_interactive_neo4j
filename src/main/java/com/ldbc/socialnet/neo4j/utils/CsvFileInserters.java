@@ -100,7 +100,7 @@ public class CsvFileInserters
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( (String) columnValues[0] );
+                long id = Long.parseLong( (String) columnValues[0] );
                 properties.put( "id", id );
                 // TODO convert to datetime
                 // 2010-12-28T07:16:25Z
@@ -127,7 +127,7 @@ public class CsvFileInserters
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( (String) columnValues[0] );
+                long id = Long.parseLong( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "imageFile", columnValues[1] );
                 // TODO datetime
@@ -156,7 +156,7 @@ public class CsvFileInserters
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( (String) columnValues[0] );
+                long id = Long.parseLong( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "firstName", columnValues[1] );
                 properties.put( "lastName", columnValues[2] );
@@ -188,7 +188,7 @@ public class CsvFileInserters
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( (String) columnValues[0] );
+                long id = Long.parseLong( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "title", columnValues[1] );
                 // TODO datetime
@@ -213,7 +213,7 @@ public class CsvFileInserters
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( (String) columnValues[0] );
+                long id = Long.parseLong( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
                 properties.put( "url", columnValues[2] );
@@ -236,7 +236,7 @@ public class CsvFileInserters
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( (String) columnValues[0] );
+                long id = Long.parseLong( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
                 properties.put( "url", columnValues[2] );
@@ -259,7 +259,7 @@ public class CsvFileInserters
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( (String) columnValues[0] );
+                long id = Long.parseLong( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[2] );
                 // TODO only necessary if connecting to dbpedia
@@ -284,7 +284,7 @@ public class CsvFileInserters
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                int id = Integer.parseInt( (String) columnValues[0] );
+                long id = Long.parseLong( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "name", columnValues[1] );
                 properties.put( "url", columnValues[2] );
@@ -307,9 +307,8 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long fromCommentNodeId = commentsIndex.getIndex().get( "id",
-                        Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                long toCommentNodeId = commentsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long fromCommentNodeId = commentsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
+                long toCommentNodeId = commentsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 return new Object[] { fromCommentNodeId, toCommentNodeId };
             }
 
@@ -334,9 +333,8 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long fromCommentNodeId = commentsIndex.getIndex().get( "id",
-                        Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                long toPostNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long fromCommentNodeId = commentsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
+                long toPostNodeId = postsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 return new Object[] { fromCommentNodeId, toPostNodeId };
             }
 
@@ -361,8 +359,8 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long commentNodeId = commentsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                long placeNodeId = placesIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long commentNodeId = commentsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
+                long placeNodeId = placesIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 return new Object[] { commentNodeId, placeNodeId };
             }
 
@@ -387,8 +385,8 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long fromPlaceNodeId = placesIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                long toPlaceNodeId = placesIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long fromPlaceNodeId = placesIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
+                long toPlaceNodeId = placesIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 return new Object[] { fromPlaceNodeId, toPlaceNodeId };
             }
 
@@ -413,8 +411,8 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long fromPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                long toPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long fromPersonNodeId = personsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
+                long toPersonNodeId = personsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 return new Object[] { fromPersonNodeId, toPersonNodeId };
             }
 
@@ -440,9 +438,9 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long fromPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
+                long fromPersonNodeId = personsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
                 long toOrganisationNodeId = organisationsIndex.getIndex().get( "id",
-                        Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                        Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 int classYear = Integer.parseInt( (String) columnValues[2] );
                 return new Object[] { fromPersonNodeId, toOrganisationNodeId, classYear };
             }
@@ -471,7 +469,7 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long personNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
+                long personNodeId = personsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
                 return new Object[] { personNodeId, columnValues[1] };
             }
 
@@ -495,8 +493,8 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long commentNodeId = commentsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                long personNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long commentNodeId = commentsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
+                long personNodeId = personsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 return new Object[] { commentNodeId, personNodeId };
             }
 
@@ -521,8 +519,8 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long postNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                long personNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long postNodeId = postsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
+                long personNodeId = personsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 return new Object[] { postNodeId, personNodeId };
             }
 
@@ -550,7 +548,7 @@ public class CsvFileInserters
                 long forumNodeId = 0;
                 try
                 {
-                    forumNodeId = forumsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
+                    forumNodeId = forumsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
                 }
                 catch ( Exception e )
                 {
@@ -568,7 +566,7 @@ public class CsvFileInserters
                     logger.error( "Forum node not found: " + columnValues[0] );
                     return null;
                 }
-                long personNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long personNodeId = personsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 return new Object[] { forumNodeId, personNodeId };
             }
 
@@ -596,8 +594,8 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long personNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                long placeNodeId = placesIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long personNodeId = personsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
+                long placeNodeId = placesIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 return new Object[] { personNodeId, placeNodeId };
             }
 
@@ -623,9 +621,9 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long personNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
+                long personNodeId = personsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
                 long organisationNodeId = organisationsIndex.getIndex().get( "id",
-                        Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                        Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 int workFrom = Integer.parseInt( (String) columnValues[2] );
                 return new Object[] { personNodeId, organisationNodeId, workFrom };
             }
@@ -653,8 +651,8 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long personNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                long tagNodeId = tagsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long personNodeId = personsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
+                long tagNodeId = tagsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 return new Object[] { personNodeId, tagNodeId };
             }
 
@@ -680,7 +678,7 @@ public class CsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                long personNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
+                long personNodeId = personsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
                 batchInserter.setNodeProperty( personNodeId, "email", columnValues[1] );
             }
         } );
@@ -698,8 +696,8 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long postNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                long tagNodeId = tagsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long postNodeId = postsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
+                long tagNodeId = tagsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 return new Object[] { postNodeId, tagNodeId };
             }
 
@@ -725,8 +723,8 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long fromPersonNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                long toPostNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long fromPersonNodeId = personsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
+                long toPostNodeId = postsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 // TODO dateTime
                 Object creationDate = columnValues[2];
                 return new Object[] { fromPersonNodeId, toPostNodeId, creationDate };
@@ -755,8 +753,8 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long postNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                long placeNodeId = placesIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long postNodeId = postsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
+                long placeNodeId = placesIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 return new Object[] { postNodeId, placeNodeId };
             }
 
@@ -784,7 +782,7 @@ public class CsvFileInserters
                 long forumNodeId = 0;
                 try
                 {
-                    forumsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
+                    forumsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
                 }
                 catch ( Exception e )
                 {
@@ -796,7 +794,7 @@ public class CsvFileInserters
                     return null;
                 }
 
-                long personNodeId = personsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long personNodeId = personsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 Object joinDate = columnValues[2];
                 return new Object[] { forumNodeId, personNodeId, joinDate };
             }
@@ -829,7 +827,7 @@ public class CsvFileInserters
                 long forumNodeId = 0;
                 try
                 {
-                    forumNodeId = forumsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
+                    forumNodeId = forumsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
                 }
                 catch ( Exception e )
                 {
@@ -844,7 +842,7 @@ public class CsvFileInserters
                     logger.error( "Forum not found: " + columnValues[0] );
                     return null;
                 }
-                long postNodeId = postsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long postNodeId = postsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 return new Object[] { forumNodeId, postNodeId };
             }
 
@@ -874,7 +872,7 @@ public class CsvFileInserters
                 long forumNodeId = 0;
                 try
                 {
-                    forumNodeId = forumsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
+                    forumNodeId = forumsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
                 }
                 catch ( Exception e )
                 {
@@ -889,7 +887,7 @@ public class CsvFileInserters
                     logger.error( "Forum not found: " + columnValues[0] );
                     return null;
                 }
-                long tagNodeId = tagsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long tagNodeId = tagsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 return new Object[] { tagNodeId, forumNodeId };
             }
 
@@ -916,8 +914,8 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long tagNodeId = tagsIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[0] ) ).getSingle();
-                long tagClassNodeId = tagClassesIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                long tagNodeId = tagsIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[0] ) ).getSingle();
+                long tagClassNodeId = tagClassesIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                 return new Object[] { tagNodeId, tagClassNodeId };
             }
 
@@ -945,9 +943,9 @@ public class CsvFileInserters
                     public Object[] transform( Object[] columnValues )
                     {
                         long subTagClassNodeId = tagClassesIndex.getIndex().get( "id",
-                                Integer.parseInt( (String) columnValues[0] ) ).getSingle();
+                                Long.parseLong( (String) columnValues[0] ) ).getSingle();
                         long tagClassNodeId = tagClassesIndex.getIndex().get( "id",
-                                Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                                Long.parseLong( (String) columnValues[1] ) ).getSingle();
                         return new Object[] { subTagClassNodeId, tagClassNodeId };
                     }
 
@@ -975,11 +973,11 @@ public class CsvFileInserters
                     public Object[] transform( Object[] columnValues )
                     {
                         long organisationNodeId = organisationsIndex.getIndex().get( "id",
-                                Integer.parseInt( (String) columnValues[0] ) ).getSingle();
+                                Long.parseLong( (String) columnValues[0] ) ).getSingle();
                         long placeNodeId = 0;
                         try
                         {
-                            placeNodeId = placesIndex.getIndex().get( "id", Integer.parseInt( (String) columnValues[1] ) ).getSingle();
+                            placeNodeId = placesIndex.getIndex().get( "id", Long.parseLong( (String) columnValues[1] ) ).getSingle();
                         }
                         catch ( Exception e )
                         {

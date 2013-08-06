@@ -14,7 +14,6 @@ public class Domain
         KNOWS,
         HAS_MODERATOR,
         HAS_CREATOR,
-        SPEAKS,
         WORKS_AT,
         HAS_INTEREST,
         HAS_EMAIL_ADDRESS,

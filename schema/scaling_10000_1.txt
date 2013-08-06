@@ -35,7 +35,7 @@ total 11G
  524 - tagclass_isSubclassOf_tagclass.csv
 649K - tag.csv
  87K - tag_hasType_tagclass.csv
-
+  
 Time: 215 min, 0 sec
 
 Node count = 40,222,927

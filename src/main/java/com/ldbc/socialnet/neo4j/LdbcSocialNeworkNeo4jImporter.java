@@ -32,6 +32,7 @@ public class LdbcSocialNeworkNeo4jImporter
           - for example, for when subsequent lines work on the same ID/Node/Rel
        - add class to Domain with AttributeNames for each Entity
        - make scaling.txt into a spreadsheet
+       - add Message and MessageType.Comment|Post
      TODO code improvements ldbc_driver
        - add toString for Time and Duration classes
        - use import java.util.concurrent.TimeUnit in my Time class
