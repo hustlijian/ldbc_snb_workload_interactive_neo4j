@@ -2,6 +2,7 @@ package com.ldbc.socialnet.neo4j;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 
 public class CsvFileInserter
 {
@@ -79,6 +80,10 @@ public class CsvFileInserter
             for ( int line = 0; line < bufferedLines; line++ )
             {
                 csvReadBuffer[line] = lineInserter.transform( csvReadBuffer[line] );
+            }
+            if ( false == ( lineInserter.sortComparator() == null ) )
+            {
+                Arrays.sort( csvReadBuffer, lineInserter.sortComparator() );
             }
             for ( int line = 0; line < bufferedLines; line++ )
             {

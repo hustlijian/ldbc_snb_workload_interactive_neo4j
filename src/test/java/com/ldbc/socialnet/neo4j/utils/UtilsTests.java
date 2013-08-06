@@ -12,10 +12,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
-import org.neo4j.index.lucene.unsafe.batchinsert.LuceneBatchInserterIndexProvider;
 import org.neo4j.kernel.impl.util.FileUtils;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
-import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
 import com.ldbc.socialnet.neo4j.CsvFileInserter;
@@ -48,11 +46,10 @@ public class UtilsTests
         String dbDir = "testDb1";
         FileUtils.deleteRecursively( new File( dbDir ) );
         BatchInserter batchInserter = BatchInserters.inserter( dbDir );
-        BatchInserterIndexProvider batchIndexProvider = new LuceneBatchInserterIndexProvider( batchInserter );
 
         // When
         Set<String> csvFileInserterFiles = new HashSet<String>( csvFileInsertersToFileNames( CsvFileInserters.all(
-                batchInserter, batchIndexProvider, Config.DATA_DIR ) ) );
+                batchInserter, Config.DATA_DIR ) ) );
 
         // Then
         assertThat( csvFileInserterFiles, is( CsvFiles.all( Config.DATA_DIR ) ) );
@@ -67,11 +64,10 @@ public class UtilsTests
         String dbDir = "testDb2";
         FileUtils.deleteRecursively( new File( dbDir ) );
         BatchInserter batchInserter = BatchInserters.inserter( dbDir );
-        BatchInserterIndexProvider batchIndexProvider = new LuceneBatchInserterIndexProvider( batchInserter );
 
         // When
         List<String> allCsvFileInsertersToFileNames = csvFileInsertersToFileNames( CsvFileInserters.all( batchInserter,
-                batchIndexProvider, Config.DATA_DIR ) );
+                Config.DATA_DIR ) );
 
         Set<String> noDuplcateCsvFileInserterFiles = new HashSet<String>( allCsvFileInsertersToFileNames );
 

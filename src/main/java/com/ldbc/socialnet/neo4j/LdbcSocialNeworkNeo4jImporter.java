@@ -11,11 +11,9 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.helpers.collection.IteratorUtil;
-import org.neo4j.index.lucene.unsafe.batchinsert.LuceneBatchInserterIndexProvider;
 import org.neo4j.kernel.impl.util.FileUtils;
 import org.neo4j.tooling.GlobalGraphOperations;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
-import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
 import com.ldbc.socialnet.neo4j.utils.Config;
@@ -33,6 +31,7 @@ public class LdbcSocialNeworkNeo4jImporter
        - add class to Domain with AttributeNames for each Entity
        - make scaling.txt into a spreadsheet
        - add Message and MessageType.Comment|Post
+       - use Maps instead of Lucene (look at Trove or MapDB)
      TODO code improvements ldbc_driver
        - add toString for Time and Duration classes
        - use import java.util.concurrent.TimeUnit in my Time class
@@ -64,14 +63,11 @@ public class LdbcSocialNeworkNeo4jImporter
 
         logger.info( "Instantiating Neo4j BatchInserter" );
         BatchInserter batchInserter = BatchInserters.inserter( dbDir, Config.NEO4J_CONFIG );
-        BatchInserterIndexProvider batchIndexProvider = new LuceneBatchInserterIndexProvider( batchInserter );
-        // BatchInserterIndexProvider batchIndexProvider = new
-        // LuceneBatchInserterIndexProviderNewImpl( batchInserter );
 
         /*
         * CSV Files
         */
-        List<CsvFileInserter> fileInserters = CsvFileInserters.all( batchInserter, batchIndexProvider, csvDataDir );
+        List<CsvFileInserter> fileInserters = CsvFileInserters.all( batchInserter, csvDataDir );
 
         logger.info( "Loading CSV files" );
         long startTime = System.currentTimeMillis();

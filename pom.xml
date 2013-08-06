@@ -13,6 +13,7 @@
 		<neo4j-version>2.0.0-M03</neo4j-version>
 		<junit-version>4.10</junit-version>
 		<log4j-version>1.2.17</log4j-version>
+		<trove4j-version>3.0.3</trove4j-version>
 	</properties>
 
 
@@ -32,6 +33,11 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>${log4j-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.trove4j</groupId>
+			<artifactId>trove4j</artifactId>
+			<version>${trove4j-version}</version>
 		</dependency>
 	</dependencies>
 
