@@ -13,17 +13,20 @@ import org.neo4j.unsafe.batchinsert.BatchInserter;
 
 import com.ldbc.socialnet.neo4j.CsvFileInserter;
 import com.ldbc.socialnet.neo4j.CsvLineInserter;
+import com.ldbc.socialnet.neo4j.domain.CommentsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.Domain;
-import com.ldbc.socialnet.neo4j.tempindex.CommentsBatchIndex;
-import com.ldbc.socialnet.neo4j.tempindex.EmailAddressesBatchIndex;
-import com.ldbc.socialnet.neo4j.tempindex.ForumsBatchIndex;
-import com.ldbc.socialnet.neo4j.tempindex.LanguagesBatchIndex;
-import com.ldbc.socialnet.neo4j.tempindex.OrganisationsBatchIndex;
-import com.ldbc.socialnet.neo4j.tempindex.PersonsBatchIndex;
-import com.ldbc.socialnet.neo4j.tempindex.PlacesBatchIndex;
-import com.ldbc.socialnet.neo4j.tempindex.PostsBatchIndex;
-import com.ldbc.socialnet.neo4j.tempindex.TagClassesBatchIndex;
-import com.ldbc.socialnet.neo4j.tempindex.TagsBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.EmailAddressesBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.ForumsBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.LanguagesBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.OrganisationsBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.PersonsBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.PlacesBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.PostsBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.TagClassesBatchIndex;
+import com.ldbc.socialnet.neo4j.domain.TagsBatchIndex;
+import com.ldbc.socialnet.neo4j.tempindex.MapDbTempIndexFactory;
+import com.ldbc.socialnet.neo4j.tempindex.TempIndexFactory;
+import com.ldbc.socialnet.neo4j.tempindex.TroveTempIndexFactory;
 
 public class CsvFileInserters
 {
@@ -33,19 +36,23 @@ public class CsvFileInserters
     public static List<CsvFileInserter> all( BatchInserter batchInserter, String csvDataDir )
             throws FileNotFoundException
     {
+        // TempIndexFactory<Long, Long> tempIndexFactory = new
+        // TroveTempIndexFactory();
+        TempIndexFactory<Long, Long> tempIndexFactory = new MapDbTempIndexFactory();
+
         /*
         * Neo4j Batch Index Providers
         */
-        CommentsBatchIndex commentsIndex = new CommentsBatchIndex();
-        PostsBatchIndex postsIndex = new PostsBatchIndex();
-        PersonsBatchIndex personsIndex = new PersonsBatchIndex();
-        ForumsBatchIndex forumsIndex = new ForumsBatchIndex();
-        TagsBatchIndex tagsIndex = new TagsBatchIndex();
-        TagClassesBatchIndex tagClassesIndex = new TagClassesBatchIndex();
-        OrganisationsBatchIndex organisationsIndex = new OrganisationsBatchIndex();
-        LanguagesBatchIndex languagesIndex = new LanguagesBatchIndex();
-        PlacesBatchIndex placesIndex = new PlacesBatchIndex();
-        EmailAddressesBatchIndex emailAddressesIndex = new EmailAddressesBatchIndex();
+        CommentsBatchIndex commentsIndex = new CommentsBatchIndex( tempIndexFactory.create() );
+        PostsBatchIndex postsIndex = new PostsBatchIndex( tempIndexFactory.create() );
+        PersonsBatchIndex personsIndex = new PersonsBatchIndex( tempIndexFactory.create() );
+        ForumsBatchIndex forumsIndex = new ForumsBatchIndex( tempIndexFactory.create() );
+        TagsBatchIndex tagsIndex = new TagsBatchIndex( tempIndexFactory.create() );
+        TagClassesBatchIndex tagClassesIndex = new TagClassesBatchIndex( tempIndexFactory.create() );
+        OrganisationsBatchIndex organisationsIndex = new OrganisationsBatchIndex( tempIndexFactory.create() );
+        LanguagesBatchIndex languagesIndex = new LanguagesBatchIndex( tempIndexFactory.create() );
+        PlacesBatchIndex placesIndex = new PlacesBatchIndex( tempIndexFactory.create() );
+        EmailAddressesBatchIndex emailAddressesIndex = new EmailAddressesBatchIndex( tempIndexFactory.create() );
 
         /*
         * CSV Files
