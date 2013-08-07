@@ -24,6 +24,7 @@ import com.ldbc.socialnet.neo4j.domain.PlacesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.PostsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.TagClassesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.TagsBatchIndex;
+import com.ldbc.socialnet.neo4j.tempindex.DirectMemoryMapDbTempIndexFactory;
 import com.ldbc.socialnet.neo4j.tempindex.MemoryMapDbTempIndexFactory;
 import com.ldbc.socialnet.neo4j.tempindex.PersistentMapDbTempIndexFactory;
 import com.ldbc.socialnet.neo4j.tempindex.TempIndexFactory;
@@ -41,7 +42,13 @@ public class CsvFileInserters
         // -Xmx40g --> 421,000,000
         TempIndexFactory<Long, Long> tempIndexFactory = new TroveTempIndexFactory();
         */
+
+        /*
+        // -Xmx40g --> 421,000,000
         TempIndexFactory<Long, Long> tempIndexFactory = new MemoryMapDbTempIndexFactory();
+         */
+
+        TempIndexFactory<Long, Long> tempIndexFactory = new DirectMemoryMapDbTempIndexFactory();
 
         /*
         * Neo4j Batch Index Providers

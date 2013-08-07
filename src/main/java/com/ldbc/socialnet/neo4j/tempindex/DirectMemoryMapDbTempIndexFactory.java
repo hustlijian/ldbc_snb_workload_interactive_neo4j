@@ -4,7 +4,7 @@ import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
 
-public class MemoryMapDbTempIndexFactory implements TempIndexFactory<Long, Long>
+public class DirectMemoryMapDbTempIndexFactory implements TempIndexFactory<Long, Long>
 {
     private Integer count = 0;
 
@@ -13,17 +13,18 @@ public class MemoryMapDbTempIndexFactory implements TempIndexFactory<Long, Long>
     {
         count++;
         String name = "mapdb" + count.toString();
-        return new MemoryMapDbTempIndex( name );
+        return new DirectMemoryMapDbTempIndex( name );
     }
 
-    public static class MemoryMapDbTempIndex implements TempIndex<Long, Long>
+    public static class DirectMemoryMapDbTempIndex implements TempIndex<Long, Long>
     {
         private final HTreeMap<Long, Long> map;
 
-        public MemoryMapDbTempIndex( String name )
+        public DirectMemoryMapDbTempIndex( String name )
         {
-            DB db = DBMaker.newMemoryDB().writeAheadLogDisable().closeOnJvmShutdown().make();
+            DB db = DBMaker.newDirectMemoryDB().writeAheadLogDisable().asyncFlushDelay( 100 ).make();
             this.map = db.createHashMap( name, false, null, null );
+
         }
 
         @Override
