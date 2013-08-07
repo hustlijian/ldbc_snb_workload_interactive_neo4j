@@ -16,6 +16,8 @@ import org.neo4j.tooling.GlobalGraphOperations;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
+import com.ldbc.socialnet.neo4j.tempindex.TempIndex;
+import com.ldbc.socialnet.neo4j.tempindex.TroveTempIndexFactory;
 import com.ldbc.socialnet.neo4j.utils.Config;
 import com.ldbc.socialnet.neo4j.utils.CsvFileInserters;
 
@@ -52,8 +54,15 @@ public class LdbcSocialNeworkNeo4jImporter
 
     public LdbcSocialNeworkNeo4jImporter( String dbDir, String csvDataDir )
     {
-        this.dbDir = dbDir;
-        this.csvDataDir = csvDataDir;
+        // this.dbDir = dbDir;
+        // this.csvDataDir = csvDataDir;
+
+        TempIndex<Long, Long> x = new TroveTempIndexFactory.TroveTempIndex();
+        for ( long counter = 0;; counter++ )
+        {
+            x.put( counter, 1l );
+            if ( counter % 1000000 == 0 ) System.out.println( counter );
+        }
     }
 
     public void load() throws IOException

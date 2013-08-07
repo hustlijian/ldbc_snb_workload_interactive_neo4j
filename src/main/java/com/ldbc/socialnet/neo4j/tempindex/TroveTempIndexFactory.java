@@ -10,7 +10,7 @@ public class TroveTempIndexFactory implements TempIndexFactory<Long, Long>
         return new TroveTempIndex();
     }
 
-    public class TroveTempIndex implements TempIndex<Long, Long>
+    public static class TroveTempIndex implements TempIndex<Long, Long>
     {
         private final TLongLongHashMap map = new TLongLongHashMap();
 
