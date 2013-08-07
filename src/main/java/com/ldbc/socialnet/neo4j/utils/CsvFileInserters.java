@@ -24,11 +24,7 @@ import com.ldbc.socialnet.neo4j.domain.PlacesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.PostsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.TagClassesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.TagsBatchIndex;
-import com.ldbc.socialnet.neo4j.tempindex.DirectMemoryMapDbTempIndexFactory;
-import com.ldbc.socialnet.neo4j.tempindex.MemoryMapDbTempIndexFactory;
-import com.ldbc.socialnet.neo4j.tempindex.PersistentMapDbTempIndexFactory;
 import com.ldbc.socialnet.neo4j.tempindex.TempIndexFactory;
-import com.ldbc.socialnet.neo4j.tempindex.TroveTempIndexFactory;
 
 public class CsvFileInserters
 {

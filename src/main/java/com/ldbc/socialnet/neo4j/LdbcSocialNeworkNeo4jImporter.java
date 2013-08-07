@@ -53,21 +53,20 @@ public class LdbcSocialNeworkNeo4jImporter
         TempIndex<Long, Long> x = new TroveTempIndexFactory().create();
         */
         /*
-        // very slow
+        // -Xmx40g --> 81,000,000 ? strange behavior, very slow, buggy?
         TempIndex<Long, Long> x = new MemoryMapDbTempIndexFactory().create();
         */
 
-        TempIndex<Long, Long> x = new DirectMemoryMapDbTempIndexFactory().create();
-        for ( long counter = 0;; counter++ )
-        {
-            x.put( counter, 1l );
-            if ( counter % 1000000 == 0 ) System.out.println( counter );
-        }
+        // TempIndex<Long, Long> x = new TroveTempIndexFactory().create();
+        // for ( long counter = 0;; counter++ )
+        // {
+        // x.put( counter, 1l );
+        // if ( counter % 1000000 == 0 ) System.out.println( counter );
+        // }
 
-        // LdbcSocialNeworkNeo4jImporter ldbcSocialNetworkLoader = new
-        // LdbcSocialNeworkNeo4jImporter( Config.DB_DIR,
-        // Config.DATA_DIR );
-        // ldbcSocialNetworkLoader.load();
+        LdbcSocialNeworkNeo4jImporter ldbcSocialNetworkLoader = new LdbcSocialNeworkNeo4jImporter( Config.DB_DIR,
+                Config.DATA_DIR );
+        ldbcSocialNetworkLoader.load();
     }
 
     private final String dbDir;
@@ -90,7 +89,7 @@ public class LdbcSocialNeworkNeo4jImporter
         /*
         * CSV Files
         */
-        TempIndexFactory<Long, Long> tempIndexFactory = new PersistentMapDbTempIndexFactory( new File( dbDir ) );
+        TempIndexFactory<Long, Long> tempIndexFactory = new TroveTempIndexFactory();
         List<CsvFileInserter> fileInserters = CsvFileInserters.all( tempIndexFactory, batchInserter, csvDataDir );
 
         logger.info( "Loading CSV files" );
