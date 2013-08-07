@@ -1,6 +1,7 @@
 package com.ldbc.socialnet.neo4j.tempindex;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
@@ -31,7 +32,7 @@ public class PersistentMapDbTempIndexFactory implements TempIndexFactory<Long, L
 
         public PersistentMapDbTempIndex( File dbFile, String name )
         {
-            DB db = DBMaker.newFileDB( dbFile ).writeAheadLogDisable().closeOnJvmShutdown().make();
+            DB db = DBMaker.newFileDB( dbFile ).writeAheadLogDisable().asyncFlushDelay( 100 ).closeOnJvmShutdown().make();
             this.map = db.createHashMap( name, false, null, null );
         }
 

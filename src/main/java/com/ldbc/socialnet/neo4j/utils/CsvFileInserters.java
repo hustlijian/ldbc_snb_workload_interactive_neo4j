@@ -35,21 +35,9 @@ public class CsvFileInserters
     private final static Map<String, Object> EMPTY_MAP = new HashMap<String, Object>();
     private final static Logger logger = Logger.getLogger( CsvFileInserters.class );
 
-    public static List<CsvFileInserter> all( BatchInserter batchInserter, String csvDataDir )
-            throws FileNotFoundException
+    public static List<CsvFileInserter> all( TempIndexFactory<Long, Long> tempIndexFactory,
+            BatchInserter batchInserter, String csvDataDir ) throws FileNotFoundException
     {
-        /*
-        // -Xmx40g --> 421,000,000
-        TempIndexFactory<Long, Long> tempIndexFactory = new TroveTempIndexFactory();
-        */
-
-        /*
-        // -Xmx40g --> 421,000,000
-        TempIndexFactory<Long, Long> tempIndexFactory = new MemoryMapDbTempIndexFactory();
-         */
-
-        TempIndexFactory<Long, Long> tempIndexFactory = new DirectMemoryMapDbTempIndexFactory();
-
         /*
         * Neo4j Batch Index Providers
         */

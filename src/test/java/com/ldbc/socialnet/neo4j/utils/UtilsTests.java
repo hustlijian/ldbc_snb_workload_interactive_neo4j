@@ -17,6 +17,8 @@ import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
 import com.ldbc.socialnet.neo4j.CsvFileInserter;
+import com.ldbc.socialnet.neo4j.tempindex.PersistentMapDbTempIndexFactory;
+import com.ldbc.socialnet.neo4j.tempindex.TroveTempIndexFactory;
 
 public class UtilsTests
 {
@@ -43,18 +45,24 @@ public class UtilsTests
     public void shouldBeNoDifferenceBetweenSetsOfCsvFilesAndFilesInCsvFileInserters() throws IOException
     {
         // Given
-        String dbDir = "testDb1";
-        FileUtils.deleteRecursively( new File( dbDir ) );
-        BatchInserter batchInserter = BatchInserters.inserter( dbDir );
+        String dbDirPath = "testDb1";
+        FileUtils.deleteRecursively( new File( dbDirPath ) );
+        BatchInserter batchInserter = BatchInserters.inserter( dbDirPath );
+
+        String indexPath = "testIndex1/";
+        FileUtils.deleteRecursively( new File( indexPath ) );
+        File indexDir = new File( indexPath );
+        indexDir.mkdir();
 
         // When
         Set<String> csvFileInserterFiles = new HashSet<String>( csvFileInsertersToFileNames( CsvFileInserters.all(
-                batchInserter, Config.DATA_DIR ) ) );
+                new PersistentMapDbTempIndexFactory( indexDir ), batchInserter, Config.DATA_DIR ) ) );
 
         // Then
         assertThat( csvFileInserterFiles, is( CsvFiles.all( Config.DATA_DIR ) ) );
 
-        FileUtils.deleteRecursively( new File( dbDir ) );
+        FileUtils.deleteRecursively( new File( dbDirPath ) );
+        FileUtils.deleteRecursively( new File( indexPath ) );
     }
 
     @Test
@@ -65,9 +73,14 @@ public class UtilsTests
         FileUtils.deleteRecursively( new File( dbDir ) );
         BatchInserter batchInserter = BatchInserters.inserter( dbDir );
 
+        String indexPath = "testIndex1/";
+        FileUtils.deleteRecursively( new File( indexPath ) );
+        File indexDir = new File( indexPath );
+        indexDir.mkdir();
+
         // When
-        List<String> allCsvFileInsertersToFileNames = csvFileInsertersToFileNames( CsvFileInserters.all( batchInserter,
-                Config.DATA_DIR ) );
+        List<String> allCsvFileInsertersToFileNames = csvFileInsertersToFileNames( CsvFileInserters.all(
+                new PersistentMapDbTempIndexFactory( indexDir ), batchInserter, Config.DATA_DIR ) );
 
         Set<String> noDuplcateCsvFileInserterFiles = new HashSet<String>( allCsvFileInsertersToFileNames );
 
@@ -75,6 +88,7 @@ public class UtilsTests
         assertThat( noDuplcateCsvFileInserterFiles.size(), is( allCsvFileInsertersToFileNames.size() ) );
 
         FileUtils.deleteRecursively( new File( dbDir ) );
+        FileUtils.deleteRecursively( new File( indexPath ) );
     }
 
     private List<String> csvFileInsertersToFileNames( List<CsvFileInserter> csvFileInserters )
