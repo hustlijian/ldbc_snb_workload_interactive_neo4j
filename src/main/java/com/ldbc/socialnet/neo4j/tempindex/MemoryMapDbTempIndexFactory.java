@@ -1,16 +1,13 @@
 package com.ldbc.socialnet.neo4j.tempindex;
 
-import java.io.File;
-
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
-import org.mapdb.Utils;
 
 /*
 then if nothing happens in 30 minutes I'll move back to Trove (i moved away from Trove only due to memory limitations, but maybe you can help me configure the importer to use less memory) */
 
-public class MapDbTempIndexFactory implements TempIndexFactory<Long, Long>
+public class MemoryMapDbTempIndexFactory implements TempIndexFactory<Long, Long>
 {
     @Override
     public TempIndex<Long, Long> create()
@@ -24,8 +21,7 @@ public class MapDbTempIndexFactory implements TempIndexFactory<Long, Long>
 
         public MapDbTempIndex()
         {
-            File dbFile = Utils.tempDbFile();
-            DB db = DBMaker.newFileDB( dbFile ).writeAheadLogDisable().closeOnJvmShutdown().make();
+            DB db = DBMaker.newMemoryDB().writeAheadLogDisable().closeOnJvmShutdown().make();
             this.map = db.createHashMap( "name", false, null, null );
 
             // DB db1 =

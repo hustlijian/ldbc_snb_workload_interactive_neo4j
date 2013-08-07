@@ -24,7 +24,8 @@ import com.ldbc.socialnet.neo4j.domain.PlacesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.PostsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.TagClassesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.TagsBatchIndex;
-import com.ldbc.socialnet.neo4j.tempindex.MapDbTempIndexFactory;
+import com.ldbc.socialnet.neo4j.tempindex.MemoryMapDbTempIndexFactory;
+import com.ldbc.socialnet.neo4j.tempindex.PersistentMapDbTempIndexFactory;
 import com.ldbc.socialnet.neo4j.tempindex.TempIndexFactory;
 import com.ldbc.socialnet.neo4j.tempindex.TroveTempIndexFactory;
 
@@ -36,9 +37,11 @@ public class CsvFileInserters
     public static List<CsvFileInserter> all( BatchInserter batchInserter, String csvDataDir )
             throws FileNotFoundException
     {
-        // TempIndexFactory<Long, Long> tempIndexFactory = new
-        // TroveTempIndexFactory();
-        TempIndexFactory<Long, Long> tempIndexFactory = new MapDbTempIndexFactory();
+        /*
+        // -Xmx40g --> 421,000,000
+        TempIndexFactory<Long, Long> tempIndexFactory = new TroveTempIndexFactory();
+        */
+        TempIndexFactory<Long, Long> tempIndexFactory = new MemoryMapDbTempIndexFactory();
 
         /*
         * Neo4j Batch Index Providers
