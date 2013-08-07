@@ -1,0 +1,90 @@
+package com.ldbc.socialnet.neo4j.utils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Test;
+import org.neo4j.kernel.impl.util.FileUtils;
+
+import com.ldbc.socialnet.neo4j.tempindex.DirectMemoryMapDbTempIndexFactory;
+import com.ldbc.socialnet.neo4j.tempindex.MemoryMapDbTempIndexFactory;
+import com.ldbc.socialnet.neo4j.tempindex.PersistentMapDbTempIndexFactory;
+import com.ldbc.socialnet.neo4j.tempindex.TempIndex;
+import com.ldbc.socialnet.neo4j.tempindex.TroveTempIndexFactory;
+
+public class PerfTests
+{
+    /*
+    // -Xmx40g --> 421,000,000
+    TempIndex<Long, Long> x = new TroveTempIndexFactory().create();
+    */
+    /*
+    // -Xmx40g --> 81,000,000 ? strange behavior, very slow, buggy?
+    TempIndex<Long, Long> x = new MemoryMapDbTempIndexFactory().create();
+    */
+
+    @Test
+    public void shouldPerfTestTempIndexes() throws IOException
+    {
+        // Given
+        String indexPath = "testIndex1/";
+        FileUtils.deleteRecursively( new File( indexPath ) );
+        File indexDir = new File( indexPath );
+        indexDir.mkdir();
+
+        // When
+        List<TempIndex<Long, Long>> indexes = new ArrayList<TempIndex<Long, Long>>();
+        indexes.add( new PersistentMapDbTempIndexFactory( indexDir ).create() );
+        indexes.add( new MemoryMapDbTempIndexFactory().create() );
+        indexes.add( new DirectMemoryMapDbTempIndexFactory().create() );
+        indexes.add( new TroveTempIndexFactory().create() );
+
+        // Then
+        for ( TempIndex<Long, Long> index : indexes )
+        {
+            doWritePerfTest( index );
+            doReadPerfTest( index );
+            index.shutdown();
+            System.out.println();
+        }
+    }
+
+    private void doWritePerfTest( TempIndex<Long, Long> index )
+    {
+        long startTime = System.currentTimeMillis();
+        for ( long counter = 0; counter < 10000000; counter++ )
+        {
+            index.put( counter, 1l );
+        }
+        long runtime = System.currentTimeMillis() - startTime;
+        System.out.println( "Write["
+                            + index.getClass().getSimpleName()
+                            + "]: "
+                            + String.format(
+                                    "Time: %d min, %d sec",
+                                    TimeUnit.MILLISECONDS.toMinutes( runtime ),
+                                    TimeUnit.MILLISECONDS.toSeconds( runtime )
+                                            - TimeUnit.MINUTES.toSeconds( TimeUnit.MILLISECONDS.toMinutes( runtime ) ) ) );
+    }
+
+    private void doReadPerfTest( TempIndex<Long, Long> index )
+    {
+        long startTime = System.currentTimeMillis();
+        for ( long counter = 0; counter < 10000000; counter++ )
+        {
+            index.get( counter );
+        }
+        long runtime = System.currentTimeMillis() - startTime;
+        System.out.println( "Read["
+                            + index.getClass().getSimpleName()
+                            + "]: "
+                            + String.format(
+                                    "Time: %d min, %d sec",
+                                    TimeUnit.MILLISECONDS.toMinutes( runtime ),
+                                    TimeUnit.MILLISECONDS.toSeconds( runtime )
+                                            - TimeUnit.MINUTES.toSeconds( TimeUnit.MILLISECONDS.toMinutes( runtime ) ) ) );
+    }
+}

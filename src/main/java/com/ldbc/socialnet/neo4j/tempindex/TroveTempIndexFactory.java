@@ -12,7 +12,7 @@ public class TroveTempIndexFactory implements TempIndexFactory<Long, Long>
 
     public static class TroveTempIndex implements TempIndex<Long, Long>
     {
-        private final TLongLongHashMap map = new TLongLongHashMap();
+        private TLongLongHashMap map = new TLongLongHashMap();
 
         @Override
         public void put( Long k, Long v )
@@ -24,6 +24,13 @@ public class TroveTempIndexFactory implements TempIndexFactory<Long, Long>
         public Long get( Long k )
         {
             return map.get( k );
+        }
+
+        @Override
+        public void shutdown()
+        {
+            map.clear();
+            map = null;
         }
     }
 }

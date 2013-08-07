@@ -28,7 +28,7 @@ public class PersistentMapDbTempIndexFactory implements TempIndexFactory<Long, L
 
     public static class PersistentMapDbTempIndex implements TempIndex<Long, Long>
     {
-        private final HTreeMap<Long, Long> map;
+        private HTreeMap<Long, Long> map;
 
         public PersistentMapDbTempIndex( File dbFile, String name )
         {
@@ -46,6 +46,14 @@ public class PersistentMapDbTempIndexFactory implements TempIndexFactory<Long, L
         public Long get( Long k )
         {
             return map.get( k );
+        }
+
+        @Override
+        public void shutdown()
+        {
+            map.clear();
+            map.close();
+            map = null;
         }
     }
 }

@@ -16,10 +16,6 @@ import org.neo4j.tooling.GlobalGraphOperations;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
-import com.ldbc.socialnet.neo4j.tempindex.DirectMemoryMapDbTempIndexFactory;
-import com.ldbc.socialnet.neo4j.tempindex.MemoryMapDbTempIndexFactory;
-import com.ldbc.socialnet.neo4j.tempindex.PersistentMapDbTempIndexFactory;
-import com.ldbc.socialnet.neo4j.tempindex.TempIndex;
 import com.ldbc.socialnet.neo4j.tempindex.TempIndexFactory;
 import com.ldbc.socialnet.neo4j.tempindex.TroveTempIndexFactory;
 import com.ldbc.socialnet.neo4j.utils.Config;
@@ -48,22 +44,6 @@ public class LdbcSocialNeworkNeo4jImporter
 
     public static void main( String[] args ) throws IOException
     {
-        /*
-        // -Xmx40g --> 421,000,000
-        TempIndex<Long, Long> x = new TroveTempIndexFactory().create();
-        */
-        /*
-        // -Xmx40g --> 81,000,000 ? strange behavior, very slow, buggy?
-        TempIndex<Long, Long> x = new MemoryMapDbTempIndexFactory().create();
-        */
-
-        // TempIndex<Long, Long> x = new TroveTempIndexFactory().create();
-        // for ( long counter = 0;; counter++ )
-        // {
-        // x.put( counter, 1l );
-        // if ( counter % 1000000 == 0 ) System.out.println( counter );
-        // }
-
         LdbcSocialNeworkNeo4jImporter ldbcSocialNetworkLoader = new LdbcSocialNeworkNeo4jImporter( Config.DB_DIR,
                 Config.DATA_DIR );
         ldbcSocialNetworkLoader.load();
@@ -109,9 +89,9 @@ public class LdbcSocialNeworkNeo4jImporter
 
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase( dbDir );
 
-        // logger.info( "Graph Metrics:" );
-        // logger.info( "\tNode count = " + nodeCount( db ) );
-        // logger.info( "\tRelationship count = " + relationshipCount( db ) );
+        logger.info( "Graph Metrics:" );
+        logger.info( "\tNode count = " + nodeCount( db ) );
+        logger.info( "\tRelationship count = " + relationshipCount( db ) );
 
         db.shutdown();
     }

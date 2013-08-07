@@ -1,9 +1,8 @@
 package com.ldbc.socialnet.neo4j.tempindex;
 
-import java.util.AbstractMap;
-
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
+import org.mapdb.HTreeMap;
 
 public class DirectMemoryMapDbTempIndexFactory implements TempIndexFactory<Long, Long>
 {
@@ -19,7 +18,7 @@ public class DirectMemoryMapDbTempIndexFactory implements TempIndexFactory<Long,
 
     public static class DirectMemoryMapDbTempIndex implements TempIndex<Long, Long>
     {
-        private final AbstractMap<Long, Long> map;
+        private HTreeMap<Long, Long> map;
 
         public DirectMemoryMapDbTempIndex( String name )
         {
@@ -37,6 +36,14 @@ public class DirectMemoryMapDbTempIndexFactory implements TempIndexFactory<Long,
         public Long get( Long k )
         {
             return map.get( k );
+        }
+
+        @Override
+        public void shutdown()
+        {
+            map.clear();
+            map.close();
+            map = null;
         }
     }
 }

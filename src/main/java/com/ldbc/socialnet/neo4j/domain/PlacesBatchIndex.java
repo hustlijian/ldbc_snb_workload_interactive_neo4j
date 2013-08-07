@@ -22,4 +22,10 @@ public class PlacesBatchIndex implements TempIndex<Long, Long>
     {
         return tempIndex.get( k );
     }
+
+    @Override
+    public void shutdown()
+    {
+        tempIndex.shutdown();
+    }
 }

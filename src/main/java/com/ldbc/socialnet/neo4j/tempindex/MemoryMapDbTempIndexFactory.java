@@ -18,7 +18,7 @@ public class MemoryMapDbTempIndexFactory implements TempIndexFactory<Long, Long>
 
     public static class MemoryMapDbTempIndex implements TempIndex<Long, Long>
     {
-        private final HTreeMap<Long, Long> map;
+        private HTreeMap<Long, Long> map;
 
         public MemoryMapDbTempIndex( String name )
         {
@@ -36,6 +36,14 @@ public class MemoryMapDbTempIndexFactory implements TempIndexFactory<Long, Long>
         public Long get( Long k )
         {
             return map.get( k );
+        }
+
+        @Override
+        public void shutdown()
+        {
+            map.clear();
+            map.close();
+            map = null;
         }
     }
 }
