@@ -1,7 +1,6 @@
 package com.ldbc.socialnet.neo4j.tempindex;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.mapdb.DB;
 import org.mapdb.DBMaker;

@@ -22,7 +22,7 @@ public class DirectMemoryMapDbTempIndexFactory implements TempIndexFactory<Long,
 
         public DirectMemoryMapDbTempIndex( String name )
         {
-            DB db = DBMaker.newDirectMemoryDB().writeAheadLogDisable().asyncFlushDelay( 100 ).make();
+            DB db = DBMaker.newDirectMemoryDB().writeAheadLogDisable().asyncFlushDelay( 100 ).closeOnJvmShutdown().make();
             this.map = db.getHashMap( name );
         }
 
