@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.neo4j;
+package com.ldbc.socialnet.neo4j.testscripts;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import com.ldbc.socialnet.neo4j.tempindex.PersistentMapDbTempIndexFactory;
 import com.ldbc.socialnet.neo4j.tempindex.TempIndex;
 import com.ldbc.socialnet.neo4j.tempindex.TroveTempIndexFactory;
 
-public class TempIndexMaxCapacity
+public class TempIndexMaxCapacityTest
 {
     public static void main( String[] args ) throws IOException
     {
