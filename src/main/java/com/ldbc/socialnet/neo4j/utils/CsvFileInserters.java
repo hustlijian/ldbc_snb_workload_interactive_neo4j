@@ -2,8 +2,11 @@ package com.ldbc.socialnet.neo4j.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +31,13 @@ import com.ldbc.socialnet.neo4j.tempindex.TempIndexFactory;
 
 public class CsvFileInserters
 {
+    private static final Logger logger = Logger.getLogger( CsvFileInserters.class );
+
     private final static Map<String, Object> EMPTY_MAP = new HashMap<String, Object>();
-    private final static Logger logger = Logger.getLogger( CsvFileInserters.class );
+    private final static String DATE_TIME_FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    private final static SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat( DATE_TIME_FORMAT_STRING );
+    private final static String DATE_FORMAT_STRING = "yyyy-MM-dd";
+    private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat( DATE_FORMAT_STRING );
 
     public static List<CsvFileInserter> all( TempIndexFactory<Long, Long> tempIndexFactory,
             BatchInserter batchInserter, String csvDataDir ) throws FileNotFoundException
@@ -102,9 +110,20 @@ public class CsvFileInserters
                 Map<String, Object> properties = new HashMap<String, Object>();
                 long id = Long.parseLong( (String) columnValues[0] );
                 properties.put( "id", id );
-                // TODO convert to datetime
-                // 2010-12-28T07:16:25Z
-                properties.put( "creationDate", columnValues[1] );
+                String creationDateString = (String) columnValues[1];
+                try
+                {
+                    // 2010-12-28T07:16:25Z
+                    Date creationDate = DATE_TIME_FORMAT.parse( creationDateString );
+                    properties.put( "creationDate", creationDate.getTime() );
+                }
+                catch ( ParseException e )
+                {
+                    long now = System.currentTimeMillis();
+                    properties.put( "creationDate", now );
+                    logger.error( String.format( "Invalid DateTime string: %s\nSet creationDate to now instead\n%s",
+                            creationDateString, e ) );
+                }
                 properties.put( "locationIP", columnValues[2] );
                 properties.put( "browserUsed", columnValues[3] );
                 properties.put( "content", columnValues[4] );
@@ -130,9 +149,20 @@ public class CsvFileInserters
                 long id = Long.parseLong( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "imageFile", columnValues[1] );
-                // TODO datetime
-                // 2010-12-28T07:16:25Z
-                properties.put( "creationDate", columnValues[2] );
+                String creationDateString = (String) columnValues[2];
+                try
+                {
+                    // 2010-12-28T07:16:25Z
+                    Date creationDate = DATE_TIME_FORMAT.parse( creationDateString );
+                    properties.put( "creationDate", creationDate.getTime() );
+                }
+                catch ( ParseException e )
+                {
+                    long now = System.currentTimeMillis();
+                    properties.put( "creationDate", now );
+                    logger.error( String.format( "Invalid DateTime string: %s\nSet creationDate to now instead\n%s",
+                            creationDateString, e ) );
+                }
                 properties.put( "locationIP", columnValues[3] );
                 properties.put( "browserUsed", columnValues[4] );
                 properties.put( "language", columnValues[5] );
@@ -161,12 +191,34 @@ public class CsvFileInserters
                 properties.put( "firstName", columnValues[1] );
                 properties.put( "lastName", columnValues[2] );
                 properties.put( "gender", columnValues[3] );
-                // TODO date
-                // 1984-12-15
-                properties.put( "birthday", columnValues[4] );
-                // TODO datetime
-                // 2010-12-28T07:16:25Z
-                properties.put( "creationDate", columnValues[5] );
+                String birthdayString = (String) columnValues[4];
+                try
+                {
+                    // 1984-12-15
+                    Date birthday = DATE_FORMAT.parse( birthdayString );
+                    properties.put( "birthday", birthday.getTime() );
+                }
+                catch ( ParseException e )
+                {
+                    long now = System.currentTimeMillis();
+                    properties.put( "birthday", now );
+                    logger.error( String.format( "Invalid Date string: %s\nSet birthday to now instead\n%s",
+                            birthdayString, e ) );
+                }
+                String creationDateString = (String) columnValues[5];
+                try
+                {
+                    // 2010-12-28T07:16:25Z
+                    Date creationDate = DATE_TIME_FORMAT.parse( creationDateString );
+                    properties.put( "creationDate", creationDate.getTime() );
+                }
+                catch ( ParseException e )
+                {
+                    long now = System.currentTimeMillis();
+                    properties.put( "creationDate", now );
+                    logger.error( String.format( "Invalid DateTime string: %s\nSet creationDate to now instead\n%s",
+                            creationDateString, e ) );
+                }
                 properties.put( "locationIP", columnValues[6] );
                 properties.put( "browserUsed", columnValues[7] );
                 long personNodeId = batchInserter.createNode( properties, Domain.Node.PERSON );
@@ -191,9 +243,20 @@ public class CsvFileInserters
                 long id = Long.parseLong( (String) columnValues[0] );
                 properties.put( "id", id );
                 properties.put( "title", columnValues[1] );
-                // TODO datetime
-                // 2010-12-28T07:16:25Z
-                properties.put( "creationDate", columnValues[2] );
+                String creationDateString = (String) columnValues[2];
+                try
+                {
+                    // 2010-12-28T07:16:25Z
+                    Date creationDate = DATE_TIME_FORMAT.parse( creationDateString );
+                    properties.put( "creationDate", creationDate.getTime() );
+                }
+                catch ( ParseException e )
+                {
+                    long now = System.currentTimeMillis();
+                    properties.put( "creationDate", now );
+                    logger.error( String.format( "Invalid DateTime string: %s\nSet creationDate to now instead\n%s",
+                            creationDateString, e ) );
+                }
                 long forumNodeId = batchInserter.createNode( properties, Domain.Node.FORUM );
                 forumIndex.put( id, forumNodeId );
             }
@@ -465,17 +528,19 @@ public class CsvFileInserters
          */
         return new CsvFileInserter( new File( csvDataDir + "person_speaks_language.csv" ), new CsvLineInserter()
         {
-            @Override
-            public Object[] transform( Object[] columnValues )
-            {
-                long personNodeId = personsIndex.get( Long.parseLong( (String) columnValues[0] ) );
-                return new Object[] { personNodeId, columnValues[1] };
-            }
-
+            /*
+             * TODO file needs to have better format
+             * updating nodes, especially resizing arrays, does not encourage vendors to load big datasets
+             */
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.setNodeProperty( (Long) columnValues[0], "language", columnValues[1] );
+                long personNodeId = personsIndex.get( Long.parseLong( (String) columnValues[0] ) );
+                Map<String, Object> personNodeProperties = batchInserter.getNodeProperties( personNodeId );
+                String[] languages = (String[]) personNodeProperties.get( "language" );
+                String newLanguages = (String) columnValues[1];
+                String[] langaugesPlusNewLanguage = Utils.copyArrayAndAddElement( languages, newLanguages );
+                batchInserter.setNodeProperty( personNodeId, "language", langaugesPlusNewLanguage );
             }
         } );
     }
@@ -544,27 +609,7 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long forumNodeId = 0;
-                try
-                {
-                    forumNodeId = forumsIndex.get( Long.parseLong( (String) columnValues[0] ) );
-                }
-                catch ( Exception e )
-                {
-                    /*
-                    * TODO remove exception handling after data generator is
-                    fixed
-                    * usually ids in colummn 0 of forum.csv (and other .csv
-                    files) have 0 suffix
-                    * in forum.csv some rows do not, for example:
-                    * 2978|Wall of Lei Liu|2010-03-11T03:55:32Z
-                    * then files like person_moderator_of_forum.csv attempt to
-                    retrieve 29780
-                    */
-                    // TODO uncomment to see broken ID's (still broken)
-                    logger.error( "Forum node not found: " + columnValues[0] );
-                    return null;
-                }
+                long forumNodeId = forumsIndex.get( Long.parseLong( (String) columnValues[0] ) );
                 long personNodeId = personsIndex.get( Long.parseLong( (String) columnValues[1] ) );
                 return new Object[] { forumNodeId, personNodeId };
             }
@@ -572,9 +617,6 @@ public class CsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                // TODO remove after data generator fixed
-                if ( columnValues == null ) return;
-
                 batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
                         Domain.Rel.HAS_MODERATOR, EMPTY_MAP );
             }
@@ -673,11 +715,19 @@ public class CsvFileInserters
          */
         return new CsvFileInserter( new File( csvDataDir + "person_email_emailaddress.csv" ), new CsvLineInserter()
         {
+            /*
+             * TODO file needs to have better format
+             * updating nodes, especially resizing arrays, does not encourage vendors to load big datasets
+             */
             @Override
             public void insert( Object[] columnValues )
             {
                 long personNodeId = personsIndex.get( Long.parseLong( (String) columnValues[0] ) );
-                batchInserter.setNodeProperty( personNodeId, "email", columnValues[1] );
+                Map<String, Object> personNodeProperties = batchInserter.getNodeProperties( personNodeId );
+                String[] emailAddresses = (String[]) personNodeProperties.get( "email" );
+                String newEmailAddress = (String) columnValues[1];
+                String[] emailAddressPlusNewAddress = Utils.copyArrayAndAddElement( emailAddresses, newEmailAddress );
+                batchInserter.setNodeProperty( personNodeId, "email", emailAddressPlusNewAddress );
             }
         } );
     }
@@ -702,7 +752,6 @@ public class CsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                // TODO should Tag be a Label too?
                 batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1], Domain.Rel.HAS_TAG,
                         EMPTY_MAP );
             }
@@ -723,9 +772,21 @@ public class CsvFileInserters
             {
                 long fromPersonNodeId = personsIndex.get( Long.parseLong( (String) columnValues[0] ) );
                 long toPostNodeId = postsIndex.get( Long.parseLong( (String) columnValues[1] ) );
-                // TODO dateTime
-                Object creationDate = columnValues[2];
-                return new Object[] { fromPersonNodeId, toPostNodeId, creationDate };
+                String creationDateString = (String) columnValues[2];
+                long creationDateAsTime;
+                try
+                {
+                    // 2010-12-28T07:16:25Z
+                    creationDateAsTime = DATE_TIME_FORMAT.parse( creationDateString ).getTime();
+                }
+                catch ( ParseException e )
+                {
+                    long now = System.currentTimeMillis();
+                    creationDateAsTime = now;
+                    logger.error( String.format( "Invalid DateTime string: %s\nSet creationDate to now instead\n%s",
+                            creationDateString, e ) );
+                }
+                return new Object[] { fromPersonNodeId, toPostNodeId, creationDateAsTime };
             }
 
             @Override
@@ -777,31 +838,28 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long forumNodeId = 0;
+                long forumNodeId = forumsIndex.get( Long.parseLong( (String) columnValues[0] ) );
+                long personNodeId = personsIndex.get( Long.parseLong( (String) columnValues[1] ) );
+                String joinDateString = (String) columnValues[2];
+                long joinDateAsTime;
                 try
                 {
-                    forumsIndex.get( Long.parseLong( (String) columnValues[0] ) );
+                    // 2010-12-28T07:16:25Z
+                    joinDateAsTime = DATE_TIME_FORMAT.parse( joinDateString ).getTime();
                 }
-                catch ( Exception e )
+                catch ( ParseException e )
                 {
-                    /*
-                     * TODO remove exception handling after data generator is fixed
-                     */
-                    // TODO uncomment to see broken IDs (still broken)
-                    logger.error( "Forum not found: " + columnValues[0] );
-                    return null;
+                    long now = System.currentTimeMillis();
+                    joinDateAsTime = now;
+                    logger.error( String.format( "Invalid DateTime string: %s\nSet joinDate to now instead\n%s",
+                            joinDateString, e ) );
                 }
-
-                long personNodeId = personsIndex.get( Long.parseLong( (String) columnValues[1] ) );
-                Object joinDate = columnValues[2];
-                return new Object[] { forumNodeId, personNodeId, joinDate };
+                return new Object[] { forumNodeId, personNodeId, joinDateAsTime };
             }
 
             @Override
             public void insert( Object[] columnValues )
             {
-                // TODO remove after data generator fixed
-                if ( columnValues == null ) return;
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( "joinDate", columnValues[2] );
                 batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
@@ -822,24 +880,7 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long forumNodeId = 0;
-                try
-                {
-                    forumNodeId = forumsIndex.get( Long.parseLong( (String) columnValues[0] ) );
-                }
-                catch ( Exception e )
-                {
-                    /*
-                     * TODO remove exception handling after data generator is fixed
-                     * usually ids in colummn 1 of forum_container_of_post.csv (and other .csv files) have 0 suffix
-                     * in forum_container_of_post.csv some rows do not, for example:
-                     *    50294
-                     * then when trying to retrieve 50294 (probably supposed to be 502940) from forum.csv it is not found
-                     */
-                    // TODO uncomment to see broken IDs (still broken)
-                    logger.error( "Forum not found: " + columnValues[0] );
-                    return null;
-                }
+                long forumNodeId = forumsIndex.get( Long.parseLong( (String) columnValues[0] ) );
                 long postNodeId = postsIndex.get( Long.parseLong( (String) columnValues[1] ) );
                 return new Object[] { forumNodeId, postNodeId };
             }
@@ -847,8 +888,6 @@ public class CsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                // TODO remove after data generator fixed
-                if ( columnValues == null ) return;
                 batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
                         Domain.Rel.CONTAINER_OF, EMPTY_MAP );
             }
@@ -867,24 +906,7 @@ public class CsvFileInserters
             @Override
             public Object[] transform( Object[] columnValues )
             {
-                long forumNodeId = 0;
-                try
-                {
-                    forumNodeId = forumsIndex.get( Long.parseLong( (String) columnValues[0] ) );
-                }
-                catch ( Exception e )
-                {
-                    /*
-                     * TODO remove exception handling when generator is fixed
-                     * almost ALL entries in forum_hastag_tag.csv column 2, Forum.id, contain id values that are not in forum.csv
-                     * they have no 0 suffix either e.g. 6358
-                     * 
-                     * of 30346 entries only 1028 appear to be valid
-                     */
-                    // TODO uncomment to see broken IDs (still broken)
-                    logger.error( "Forum not found: " + columnValues[0] );
-                    return null;
-                }
+                long forumNodeId = forumsIndex.get( Long.parseLong( (String) columnValues[0] ) );
                 long tagNodeId = tagsIndex.get( Long.parseLong( (String) columnValues[1] ) );
                 return new Object[] { tagNodeId, forumNodeId };
             }
@@ -892,8 +914,6 @@ public class CsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                // TODO remove after data generator fixed
-                if ( columnValues == null ) return;
                 batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1], Domain.Rel.HAS_TAG,
                         EMPTY_MAP );
             }
@@ -969,30 +989,13 @@ public class CsvFileInserters
                     public Object[] transform( Object[] columnValues )
                     {
                         long organisationNodeId = organisationsIndex.get( Long.parseLong( (String) columnValues[0] ) );
-                        long placeNodeId = 0;
-                        try
-                        {
-                            placeNodeId = placesIndex.get( Long.parseLong( (String) columnValues[1] ) );
-                        }
-                        catch ( Exception e )
-                        {
-                            /*
-                             * TODO remove exception handling after generator fixed
-                             * Place.id column contains ids that are not in place.csv
-                             * eg. 301
-                             */
-                            // TODO uncomment to see broken IDs (still broken)
-                            logger.error( "Place not found: " + columnValues[1] );
-                            return null;
-                        }
+                        long placeNodeId = placesIndex.get( Long.parseLong( (String) columnValues[1] ) );
                         return new Object[] { organisationNodeId, placeNodeId };
                     }
 
                     @Override
                     public void insert( Object[] columnValues )
                     {
-                        // TODO remove when generator fixed
-                        if ( columnValues == null ) return;
                         batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
                                 Domain.Rel.IS_LOCATED_IN, EMPTY_MAP );
                     }

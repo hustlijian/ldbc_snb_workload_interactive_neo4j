@@ -2,7 +2,6 @@ package com.ldbc.socialnet.neo4j.utils;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.matchers.JUnitMatchers.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,11 +17,28 @@ import org.neo4j.unsafe.batchinsert.BatchInserters;
 
 import com.ldbc.socialnet.neo4j.CsvFileInserter;
 import com.ldbc.socialnet.neo4j.tempindex.PersistentMapDbTempIndexFactory;
-import com.ldbc.socialnet.neo4j.tempindex.TroveTempIndexFactory;
 
 public class UtilsTests
 {
     private final static String RAW_DATA_DIR = "/home/alex/workspace/java/ldbc_socialnet_bm/ldbc_socialnet_dbgen/outputDir/";
+
+    @Test
+    public void shouldCopyAndAppendElementToNewArrayWhenOldArrayNotNull() throws IOException
+    {
+        String[] oldArray = { "1", "2", "3" };
+        String newElement = "4";
+        String[] newArray = Utils.copyArrayAndAddElement( oldArray, newElement );
+        assertThat( newArray, equalTo( new String[] { "1", "2", "3", "4" } ) );
+    }
+
+    @Test
+    public void shouldCopyAndAppendElementToNewArrayWhenOldArrayNull() throws IOException
+    {
+        String[] oldArray = null;
+        String newElement = "4";
+        String[] newArray = Utils.copyArrayAndAddElement( oldArray, newElement );
+        assertThat( newArray, equalTo( new String[] { "4" } ) );
+    }
 
     @Test
     public void shouldBeNoDifferenceBetweenContentsOfGeneratedFilesFolderAndCsvFiles() throws IOException

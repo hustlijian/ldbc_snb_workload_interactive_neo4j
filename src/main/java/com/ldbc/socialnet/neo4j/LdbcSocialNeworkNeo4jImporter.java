@@ -2,7 +2,9 @@ package com.ldbc.socialnet.neo4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
@@ -33,7 +35,7 @@ public class LdbcSocialNeworkNeo4jImporter
        - add class to Domain with AttributeNames for each Entity
        - make scaling.txt into a spreadsheet
        - add Message and MessageType.Comment|Post
-       - use Maps instead of Lucene (look at Trove or MapDB)
+       - make it possible/easier to free a TempIndex midway through load to free memory
      TODO code improvements ldbc_driver
        - add toString for Time and Duration classes
        - use import java.util.concurrent.TimeUnit in my Time class
@@ -76,6 +78,9 @@ public class LdbcSocialNeworkNeo4jImporter
         long startTime = System.currentTimeMillis();
         for ( CsvFileInserter fileInserter : fileInserters )
         {
+            // logger.info( String.format( "\t%s - %s",
+            // fileInserter.getFile().getName(),
+            // fileInserter.insertAllBuffered() ) );
             logger.info( String.format( "\t%s - %s", fileInserter.getFile().getName(), fileInserter.insertAllBuffered() ) );
         }
         long runtime = System.currentTimeMillis() - startTime;
