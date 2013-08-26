@@ -5,12 +5,10 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.helpers.collection.IteratorUtil;
-import org.neo4j.tooling.GlobalGraphOperations;
 
 import com.ldbc.socialnet.neo4j.utils.Config;
+import com.ldbc.socialnet.neo4j.utils.GraphStatistics;
 
 public class OpenAndClose
 {
@@ -35,51 +33,9 @@ public class OpenAndClose
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase( dbDir );
 
         logger.info( "Calculating Graph Metrics:" );
-        logger.info( "\tNode count = " + nodeCount( db ) );
-        logger.info( "\tRelationship count = " + relationshipCount( db ) );
+        logger.info( "\tNode count = " + GraphStatistics.nodeCount( db, 1000000 ) );
+        logger.info( "\tRelationship count = " + GraphStatistics.relationshipCount( db, 1000000 ) );
 
         db.shutdown();
-    }
-
-    private long nodeCount( GraphDatabaseService db )
-    {
-        GlobalGraphOperations globalOperations = GlobalGraphOperations.at( db );
-        long nodeCount = -1;
-        Transaction tx = db.beginTx();
-        try
-        {
-            nodeCount = IteratorUtil.count( globalOperations.getAllNodes() );
-            tx.success();
-        }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( e.getCause() );
-        }
-        finally
-        {
-            tx.finish();
-        }
-        return nodeCount;
-    }
-
-    private long relationshipCount( GraphDatabaseService db )
-    {
-        GlobalGraphOperations globalOperations = GlobalGraphOperations.at( db );
-        long relationshipCount = -1;
-        Transaction tx = db.beginTx();
-        try
-        {
-            relationshipCount = IteratorUtil.count( globalOperations.getAllRelationships() );
-            tx.success();
-        }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( e.getCause() );
-        }
-        finally
-        {
-            tx.finish();
-        }
-        return relationshipCount;
     }
 }
