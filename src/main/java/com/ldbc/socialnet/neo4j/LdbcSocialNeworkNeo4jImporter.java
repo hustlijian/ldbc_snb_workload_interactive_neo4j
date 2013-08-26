@@ -22,6 +22,7 @@ import com.ldbc.socialnet.neo4j.tempindex.TempIndexFactory;
 import com.ldbc.socialnet.neo4j.tempindex.TroveTempIndexFactory;
 import com.ldbc.socialnet.neo4j.utils.Config;
 import com.ldbc.socialnet.neo4j.utils.CsvFileInserters;
+import com.ldbc.socialnet.neo4j.utils.GraphStatistics;
 
 public class LdbcSocialNeworkNeo4jImporter
 {
@@ -95,51 +96,9 @@ public class LdbcSocialNeworkNeo4jImporter
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase( dbDir );
 
         logger.info( "Graph Metrics:" );
-        logger.info( "\tNode count = " + nodeCount( db ) );
-        logger.info( "\tRelationship count = " + relationshipCount( db ) );
+        logger.info( "\tNode count = " + GraphStatistics.nodeCount( db, 10000000 ) );
+        logger.info( "\tRelationship count = " + GraphStatistics.relationshipCount( db, 10000000 ) );
 
         db.shutdown();
-    }
-
-    private static long nodeCount( GraphDatabaseService db )
-    {
-        GlobalGraphOperations globalOperations = GlobalGraphOperations.at( db );
-        long nodeCount = -1;
-        Transaction tx = db.beginTx();
-        try
-        {
-            nodeCount = IteratorUtil.count( globalOperations.getAllNodes() );
-            tx.success();
-        }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( e.getCause() );
-        }
-        finally
-        {
-            tx.finish();
-        }
-        return nodeCount;
-    }
-
-    private static long relationshipCount( GraphDatabaseService db )
-    {
-        GlobalGraphOperations globalOperations = GlobalGraphOperations.at( db );
-        long relationshipCount = -1;
-        Transaction tx = db.beginTx();
-        try
-        {
-            relationshipCount = IteratorUtil.count( globalOperations.getAllRelationships() );
-            tx.success();
-        }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( e.getCause() );
-        }
-        finally
-        {
-            tx.finish();
-        }
-        return relationshipCount;
     }
 }

@@ -33,8 +33,8 @@ public class OpenAndClose
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase( dbDir );
 
         logger.info( "Calculating Graph Metrics:" );
-        logger.info( "\tNode count = " + GraphStatistics.nodeCount( db, 1000000 ) );
-        logger.info( "\tRelationship count = " + GraphStatistics.relationshipCount( db, 1000000 ) );
+        logger.info( "\tNode count = " + GraphStatistics.nodeCount( db, 10000000 ) );
+        logger.info( "\tRelationship count = " + GraphStatistics.relationshipCount( db, 10000000 ) );
 
         db.shutdown();
     }
