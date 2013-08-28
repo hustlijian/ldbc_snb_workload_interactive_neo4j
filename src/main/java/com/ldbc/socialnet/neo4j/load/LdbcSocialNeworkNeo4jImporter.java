@@ -1,27 +1,21 @@
-package com.ldbc.socialnet.neo4j;
+package com.ldbc.socialnet.neo4j.load;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.helpers.collection.IteratorUtil;
 import org.neo4j.kernel.impl.util.FileUtils;
-import org.neo4j.tooling.GlobalGraphOperations;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
-import com.ldbc.socialnet.neo4j.tempindex.TempIndexFactory;
-import com.ldbc.socialnet.neo4j.tempindex.TroveTempIndexFactory;
+import com.ldbc.socialnet.neo4j.load.tempindex.TempIndexFactory;
+import com.ldbc.socialnet.neo4j.load.tempindex.TroveTempIndexFactory;
 import com.ldbc.socialnet.neo4j.utils.Config;
-import com.ldbc.socialnet.neo4j.utils.CsvFileInserters;
 import com.ldbc.socialnet.neo4j.utils.GraphStatistics;
 
 public class LdbcSocialNeworkNeo4jImporter
@@ -73,7 +67,7 @@ public class LdbcSocialNeworkNeo4jImporter
         * CSV Files
         */
         TempIndexFactory<Long, Long> tempIndexFactory = new TroveTempIndexFactory();
-        List<CsvFileInserter> fileInserters = CsvFileInserters.all( tempIndexFactory, batchInserter, csvDataDir );
+        List<CsvFileInserter> fileInserters = LdbcSocialNetworkCsvFileInserters.all( tempIndexFactory, batchInserter, csvDataDir );
 
         logger.info( "Loading CSV files" );
         long startTime = System.currentTimeMillis();

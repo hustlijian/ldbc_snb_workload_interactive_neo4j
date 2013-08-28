@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.neo4j.tempindex;
+package com.ldbc.socialnet.neo4j.load.tempindex;
 
 import org.mapdb.DB;
 import org.mapdb.DBMaker;

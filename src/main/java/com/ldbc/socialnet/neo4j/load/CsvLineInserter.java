@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.neo4j;
+package com.ldbc.socialnet.neo4j.load;
 
 import java.util.Comparator;
 

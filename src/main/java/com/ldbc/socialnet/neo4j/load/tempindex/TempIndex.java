@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.neo4j.tempindex;
+package com.ldbc.socialnet.neo4j.load.tempindex;
 
 public interface TempIndex<K, V>
 {

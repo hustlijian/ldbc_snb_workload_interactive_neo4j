@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.neo4j.utils;
+package com.ldbc.socialnet.neo4j.load;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,10 +14,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 
-import com.ldbc.socialnet.neo4j.CsvFileInserter;
-import com.ldbc.socialnet.neo4j.CsvLineInserter;
-import com.ldbc.socialnet.neo4j.domain.CommentsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.Domain;
+import com.ldbc.socialnet.neo4j.domain.CommentsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.EmailAddressesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.ForumsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.LanguagesBatchIndex;
@@ -27,11 +25,12 @@ import com.ldbc.socialnet.neo4j.domain.PlacesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.PostsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.TagClassesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.TagsBatchIndex;
-import com.ldbc.socialnet.neo4j.tempindex.TempIndexFactory;
+import com.ldbc.socialnet.neo4j.load.tempindex.TempIndexFactory;
+import com.ldbc.socialnet.neo4j.utils.Utils;
 
-public class CsvFileInserters
+public class LdbcSocialNetworkCsvFileInserters
 {
-    private static final Logger logger = Logger.getLogger( CsvFileInserters.class );
+    private static final Logger logger = Logger.getLogger( LdbcSocialNetworkCsvFileInserters.class );
 
     private final static Map<String, Object> EMPTY_MAP = new HashMap<String, Object>();
     private final static String DATE_TIME_FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ss'Z'";
@@ -102,31 +101,32 @@ public class CsvFileInserters
         id  creationDate            location IP     browserUsed     content
         00  2010-03-11T10:11:18Z    14.134.0.11     Chrome          About Michael Jordan, Association...
          */
-        return new CsvFileInserter( new File( csvDataDir + "comment.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.COMMENT ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 long id = Long.parseLong( (String) columnValues[0] );
-                properties.put( "id", id );
+                // TODO remove?
+                // properties.put( Domain.Comment.ID, id );
                 String creationDateString = (String) columnValues[1];
                 try
                 {
                     // 2010-12-28T07:16:25Z
                     Date creationDate = DATE_TIME_FORMAT.parse( creationDateString );
-                    properties.put( "creationDate", creationDate.getTime() );
+                    properties.put( Domain.Comment.CREATION_DATE, creationDate.getTime() );
                 }
                 catch ( ParseException e )
                 {
                     long now = System.currentTimeMillis();
-                    properties.put( "creationDate", now );
+                    properties.put( Domain.Comment.CREATION_DATE, now );
                     logger.error( String.format( "Invalid DateTime string: %s\nSet creationDate to now instead\n%s",
                             creationDateString, e ) );
                 }
-                properties.put( "locationIP", columnValues[2] );
-                properties.put( "browserUsed", columnValues[3] );
-                properties.put( "content", columnValues[4] );
+                properties.put( Domain.Comment.LOCATION_IP, columnValues[2] );
+                properties.put( Domain.Comment.BROWSER_USED, columnValues[3] );
+                properties.put( Domain.Comment.CONTENT, columnValues[4] );
                 long commentNodeId = batchInserter.createNode( properties, Domain.Node.COMMENT );
                 commentsIndex.put( id, commentNodeId );
             }
@@ -140,33 +140,34 @@ public class CsvFileInserters
         id      imageFile   creationDate            locationIP      browserUsed     language    content
         100     photo9.jpg  2010-03-11T05:28:04Z    27.99.128.8     Firefox         zh          About Michael Jordan...
         */
-        return new CsvFileInserter( new File( csvDataDir + "post.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.POST ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 long id = Long.parseLong( (String) columnValues[0] );
-                properties.put( "id", id );
-                properties.put( "imageFile", columnValues[1] );
+                // TODO remove?
+                // properties.put( "id", id );
+                properties.put( Domain.Post.IMAGE_FILE, columnValues[1] );
                 String creationDateString = (String) columnValues[2];
                 try
                 {
                     // 2010-12-28T07:16:25Z
                     Date creationDate = DATE_TIME_FORMAT.parse( creationDateString );
-                    properties.put( "creationDate", creationDate.getTime() );
+                    properties.put( Domain.Post.CREATION_DATE, creationDate.getTime() );
                 }
                 catch ( ParseException e )
                 {
                     long now = System.currentTimeMillis();
-                    properties.put( "creationDate", now );
+                    properties.put( Domain.Post.CREATION_DATE, now );
                     logger.error( String.format( "Invalid DateTime string: %s\nSet creationDate to now instead\n%s",
                             creationDateString, e ) );
                 }
-                properties.put( "locationIP", columnValues[3] );
-                properties.put( "browserUsed", columnValues[4] );
-                properties.put( "language", columnValues[5] );
-                properties.put( "content", columnValues[6] );
+                properties.put( Domain.Post.LOCATION_IP, columnValues[3] );
+                properties.put( Domain.Post.BROWSER_USED, columnValues[4] );
+                properties.put( Domain.Post.LANGUAGE, columnValues[5] );
+                properties.put( Domain.Post.CONTENT, columnValues[6] );
                 long postNodeId = batchInserter.createNode( properties, Domain.Node.POST );
                 postsIndex.put( id, postNodeId );
             }
@@ -180,28 +181,29 @@ public class CsvFileInserters
         id      firstName   lastName    gender  birthday    creationDate            locationIP      browserUsed
         75      Fernanda    Alves       male    1984-12-15  2010-12-14T11:41:37Z    143.106.0.7     Firefox
          */
-        return new CsvFileInserter( new File( csvDataDir + "person.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.PERSON ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 long id = Long.parseLong( (String) columnValues[0] );
-                properties.put( "id", id );
-                properties.put( "firstName", columnValues[1] );
-                properties.put( "lastName", columnValues[2] );
-                properties.put( "gender", columnValues[3] );
+                // TODO remove?
+                properties.put( Domain.Person.ID, id );
+                properties.put( Domain.Person.FIRST_NAME, columnValues[1] );
+                properties.put( Domain.Person.LAST_NAME, columnValues[2] );
+                properties.put( Domain.Person.GENDER, columnValues[3] );
                 String birthdayString = (String) columnValues[4];
                 try
                 {
                     // 1984-12-15
                     Date birthday = DATE_FORMAT.parse( birthdayString );
-                    properties.put( "birthday", birthday.getTime() );
+                    properties.put( Domain.Person.BIRTHDAY, birthday.getTime() );
                 }
                 catch ( ParseException e )
                 {
                     long now = System.currentTimeMillis();
-                    properties.put( "birthday", now );
+                    properties.put( Domain.Person.BIRTHDAY, now );
                     logger.error( String.format( "Invalid Date string: %s\nSet birthday to now instead\n%s",
                             birthdayString, e ) );
                 }
@@ -210,17 +212,17 @@ public class CsvFileInserters
                 {
                     // 2010-12-28T07:16:25Z
                     Date creationDate = DATE_TIME_FORMAT.parse( creationDateString );
-                    properties.put( "creationDate", creationDate.getTime() );
+                    properties.put( Domain.Person.CREATION_DATE, creationDate.getTime() );
                 }
                 catch ( ParseException e )
                 {
                     long now = System.currentTimeMillis();
-                    properties.put( "creationDate", now );
+                    properties.put( Domain.Person.CREATION_DATE, now );
                     logger.error( String.format( "Invalid DateTime string: %s\nSet creationDate to now instead\n%s",
                             creationDateString, e ) );
                 }
-                properties.put( "locationIP", columnValues[6] );
-                properties.put( "browserUsed", columnValues[7] );
+                properties.put( Domain.Person.LOCATION_IP, columnValues[6] );
+                properties.put( Domain.Person.BROWSER_USED, columnValues[7] );
                 long personNodeId = batchInserter.createNode( properties, Domain.Node.PERSON );
                 personsIndex.put( id, personNodeId );
             }
@@ -234,26 +236,27 @@ public class CsvFileInserters
             id      title                       creationDate
             150     Wall of Fernanda Alves      2010-12-14T11:41:37Z
          */
-        return new CsvFileInserter( new File( csvDataDir + "forum.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.FORUM ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 long id = Long.parseLong( (String) columnValues[0] );
-                properties.put( "id", id );
-                properties.put( "title", columnValues[1] );
+                // TODO remove?
+                // properties.put( "id", id );
+                properties.put( Domain.Forum.TITLE, columnValues[1] );
                 String creationDateString = (String) columnValues[2];
                 try
                 {
                     // 2010-12-28T07:16:25Z
                     Date creationDate = DATE_TIME_FORMAT.parse( creationDateString );
-                    properties.put( "creationDate", creationDate.getTime() );
+                    properties.put( Domain.Forum.CREATION_DATE, creationDate.getTime() );
                 }
                 catch ( ParseException e )
                 {
                     long now = System.currentTimeMillis();
-                    properties.put( "creationDate", now );
+                    properties.put( Domain.Forum.CREATION_DATE, now );
                     logger.error( String.format( "Invalid DateTime string: %s\nSet creationDate to now instead\n%s",
                             creationDateString, e ) );
                 }
@@ -270,16 +273,17 @@ public class CsvFileInserters
         id      name                url
         259     Gilberto_Gil        http://dbpedia.org/resource/Gilberto_Gil
          */
-        return new CsvFileInserter( new File( csvDataDir + "tag.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.TAG ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 long id = Long.parseLong( (String) columnValues[0] );
-                properties.put( "id", id );
-                properties.put( "name", columnValues[1] );
-                properties.put( "url", columnValues[2] );
+                // TODO remove?
+                // properties.put( "id", id );
+                properties.put( Domain.Tag.NAME, columnValues[1] );
+                properties.put( Domain.Tag.URL, columnValues[2] );
                 long tagNodeId = batchInserter.createNode( properties, Domain.Node.TAG );
                 tagIndex.put( id, tagNodeId );
             }
@@ -293,16 +297,17 @@ public class CsvFileInserters
         id      name    url
         211     Person  http://dbpedia.org/ontology/Person
          */
-        return new CsvFileInserter( new File( csvDataDir + "tagclass.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.TAGCLASS ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 long id = Long.parseLong( (String) columnValues[0] );
-                properties.put( "id", id );
-                properties.put( "name", columnValues[1] );
-                properties.put( "url", columnValues[2] );
+                // TODO remove?
+                // properties.put( "id", id );
+                properties.put( Domain.TagClass.NAME, columnValues[1] );
+                properties.put( Domain.TagClass.URL, columnValues[2] );
                 long tagClassNodeId = batchInserter.createNode( properties, Domain.Node.TAG_CLASS );
                 tagClassesIndex.put( id, tagClassNodeId );
             }
@@ -316,19 +321,20 @@ public class CsvFileInserters
         id  type        name                        url
         00  university  Universidade_de_Pernambuco  http://dbpedia.org/resource/Universidade_de_Pernambuco
          */
-        return new CsvFileInserter( new File( csvDataDir + "organisation.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.ORGANISATION ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 long id = Long.parseLong( (String) columnValues[0] );
-                properties.put( "id", id );
-                properties.put( "name", columnValues[2] );
+                // TODO remove?
+                // properties.put( "id", id );
+                properties.put( Domain.Organisation.NAME, columnValues[2] );
                 // TODO only necessary if connecting to dbpedia
                 // properties.put( "url", columnValues[3] );
                 long organisationNodeId = batchInserter.createNode( properties, Domain.Node.ORGANISATION,
-                        Domain.OrganisationType.valueOf( ( (String) columnValues[1] ).toUpperCase() ) );
+                        Domain.Organisation.Type.valueOf( ( (String) columnValues[1] ).toUpperCase() ) );
                 organisationsIndex.put( id, organisationNodeId );
             }
         } );
@@ -341,18 +347,19 @@ public class CsvFileInserters
         id      name            url                                             type
         5170    South_America   http://dbpedia.org/resource/South_America       REGION
          */
-        return new CsvFileInserter( new File( csvDataDir + "place.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.PLACE ), new CsvLineInserter()
         {
             @Override
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 long id = Long.parseLong( (String) columnValues[0] );
-                properties.put( "id", id );
-                properties.put( "name", columnValues[1] );
-                properties.put( "url", columnValues[2] );
-                long placeNodeId = batchInserter.createNode( properties, Domain.Node.PLACE,
-                        Domain.PlaceType.valueOf( ( (String) columnValues[3] ).toUpperCase() ) );
+                // TODO remove?
+                // properties.put( "id", id );
+                properties.put( Domain.Place.NAME, columnValues[1] );
+                properties.put( Domain.Place.URL, columnValues[2] );
+                Domain.Place.Type placeType = Domain.Place.Type.valueOf( ( (String) columnValues[3] ).toUpperCase() );
+                long placeNodeId = batchInserter.createNode( properties, Domain.Node.PLACE, placeType );
                 placeIndex.put( id, placeNodeId );
             }
         } );
@@ -365,7 +372,7 @@ public class CsvFileInserters
         Comment.id  Comment.id
         20          00
          */
-        return new CsvFileInserter( new File( csvDataDir + "comment_replyOf_comment.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.COMMENT_REPLY_OF_COMMENT ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -391,7 +398,7 @@ public class CsvFileInserters
         Comment.id  Post.id
         00          100
          */
-        return new CsvFileInserter( new File( csvDataDir + "comment_replyOf_post.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.COMMENT_REPLY_OF_POST ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -417,7 +424,7 @@ public class CsvFileInserters
         Comment.id  Place.id
         100         73
          */
-        return new CsvFileInserter( new File( csvDataDir + "comment_isLocatedIn_place.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.COMMENT_LOCATED_IN_PLACE ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -443,7 +450,7 @@ public class CsvFileInserters
         Place.id Place.id
         11          5170
          */
-        return new CsvFileInserter( new File( csvDataDir + "place_isPartOf_place.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.PLACE_IS_PART_OF_PLACE ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -469,7 +476,7 @@ public class CsvFileInserters
         Person.id   Person.id
         75          1489
          */
-        return new CsvFileInserter( new File( csvDataDir + "person_knows_person.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.PERSON_KNOWS_PERSON ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -496,26 +503,27 @@ public class CsvFileInserters
         Person.id   Organisation.id classYear
         75          00                  2004
          */
-        return new CsvFileInserter( new File( csvDataDir + "person_studyAt_organisation.csv" ), new CsvLineInserter()
-        {
-            @Override
-            public Object[] transform( Object[] columnValues )
-            {
-                long fromPersonNodeId = personsIndex.get( Long.parseLong( (String) columnValues[0] ) );
-                long toOrganisationNodeId = organisationsIndex.get( Long.parseLong( (String) columnValues[1] ) );
-                int classYear = Integer.parseInt( (String) columnValues[2] );
-                return new Object[] { fromPersonNodeId, toOrganisationNodeId, classYear };
-            }
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.PERSON_STUDIES_AT_ORGANISATION ),
+                new CsvLineInserter()
+                {
+                    @Override
+                    public Object[] transform( Object[] columnValues )
+                    {
+                        long fromPersonNodeId = personsIndex.get( Long.parseLong( (String) columnValues[0] ) );
+                        long toOrganisationNodeId = organisationsIndex.get( Long.parseLong( (String) columnValues[1] ) );
+                        int classYear = Integer.parseInt( (String) columnValues[2] );
+                        return new Object[] { fromPersonNodeId, toOrganisationNodeId, classYear };
+                    }
 
-            @Override
-            public void insert( Object[] columnValues )
-            {
-                Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "classYear", columnValues[2] );
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1], Domain.Rel.STUDY_AT,
-                        properties );
-            }
-        } );
+                    @Override
+                    public void insert( Object[] columnValues )
+                    {
+                        Map<String, Object> properties = new HashMap<String, Object>();
+                        properties.put( Domain.StudiesAt.CLASS_YEAR, columnValues[2] );
+                        batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
+                                Domain.Rel.STUDY_AT, properties );
+                    }
+                } );
     }
 
     private static CsvFileInserter personSpeaksLanguage( final String csvDataDir, final BatchInserter batchInserter,
@@ -526,7 +534,7 @@ public class CsvFileInserters
         Person.id   language
         75          pt
          */
-        return new CsvFileInserter( new File( csvDataDir + "person_speaks_language.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.PERSON_SPEAKS_LANGUAGE ), new CsvLineInserter()
         {
             /*
              * TODO file needs to have better format
@@ -537,10 +545,10 @@ public class CsvFileInserters
             {
                 long personNodeId = personsIndex.get( Long.parseLong( (String) columnValues[0] ) );
                 Map<String, Object> personNodeProperties = batchInserter.getNodeProperties( personNodeId );
-                String[] languages = (String[]) personNodeProperties.get( "language" );
+                String[] languages = (String[]) personNodeProperties.get( Domain.Person.LANGUAGES );
                 String newLanguages = (String) columnValues[1];
                 String[] langaugesPlusNewLanguage = Utils.copyArrayAndAddElement( languages, newLanguages );
-                batchInserter.setNodeProperty( personNodeId, "language", langaugesPlusNewLanguage );
+                batchInserter.setNodeProperty( personNodeId, Domain.Person.LANGUAGES, langaugesPlusNewLanguage );
             }
         } );
     }
@@ -552,7 +560,7 @@ public class CsvFileInserters
         Comment.id  Person.id
         00          1402
          */
-        return new CsvFileInserter( new File( csvDataDir + "comment_hasCreator_person.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.COMMENT_HAS_CREATOR_PERSON ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -578,7 +586,7 @@ public class CsvFileInserters
         Post.id     Person.id
         00          75
          */
-        return new CsvFileInserter( new File( csvDataDir + "post_hasCreator_person.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.POST_HAS_CREATOR_PERSON ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -604,7 +612,7 @@ public class CsvFileInserters
         Forum.id    Person.id
         1500        75
          */
-        return new CsvFileInserter( new File( csvDataDir + "forum_hasModerator_person.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.FORUM_HAS_MODERATOR_PERSON ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -630,7 +638,7 @@ public class CsvFileInserters
         Person.id   Place.id
         75          310
          */
-        return new CsvFileInserter( new File( csvDataDir + "person_isLocatedIn_place.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.PERSON_IS_LOCATED_IN_PLACE ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -657,26 +665,27 @@ public class CsvFileInserters
         Person.id   Organisation.id     workFrom
         75          10                  2016
          */
-        return new CsvFileInserter( new File( csvDataDir + "person_workAt_organisation.csv" ), new CsvLineInserter()
-        {
-            @Override
-            public Object[] transform( Object[] columnValues )
-            {
-                long personNodeId = personsIndex.get( Long.parseLong( (String) columnValues[0] ) );
-                long organisationNodeId = organisationsIndex.get( Long.parseLong( (String) columnValues[1] ) );
-                int workFrom = Integer.parseInt( (String) columnValues[2] );
-                return new Object[] { personNodeId, organisationNodeId, workFrom };
-            }
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.PERSON_WORKS_AT_ORGANISATION ),
+                new CsvLineInserter()
+                {
+                    @Override
+                    public Object[] transform( Object[] columnValues )
+                    {
+                        long personNodeId = personsIndex.get( Long.parseLong( (String) columnValues[0] ) );
+                        long organisationNodeId = organisationsIndex.get( Long.parseLong( (String) columnValues[1] ) );
+                        int workFrom = Integer.parseInt( (String) columnValues[2] );
+                        return new Object[] { personNodeId, organisationNodeId, workFrom };
+                    }
 
-            @Override
-            public void insert( Object[] columnValues )
-            {
-                Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "workFrom", columnValues[2] );
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1], Domain.Rel.WORKS_AT,
-                        properties );
-            }
-        } );
+                    @Override
+                    public void insert( Object[] columnValues )
+                    {
+                        Map<String, Object> properties = new HashMap<String, Object>();
+                        properties.put( Domain.WorksAt.WORK_FROM, columnValues[2] );
+                        batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
+                                Domain.Rel.WORKS_AT, properties );
+                    }
+                } );
     }
 
     private static CsvFileInserter personHasInterestTag( final String csvDataDir, final BatchInserter batchInserter,
@@ -686,7 +695,7 @@ public class CsvFileInserters
         Person.id   Tag.id
         75          259
          */
-        return new CsvFileInserter( new File( csvDataDir + "person_hasInterest_tag.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.PERSON_HAS_INTEREST_TAG ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -713,7 +722,7 @@ public class CsvFileInserters
         Person.id   email
         75          Fernanda75@gmx.com
          */
-        return new CsvFileInserter( new File( csvDataDir + "person_email_emailaddress.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.PERSON_EMAIL_ADDRESS ), new CsvLineInserter()
         {
             /*
              * TODO file needs to have better format
@@ -724,10 +733,10 @@ public class CsvFileInserters
             {
                 long personNodeId = personsIndex.get( Long.parseLong( (String) columnValues[0] ) );
                 Map<String, Object> personNodeProperties = batchInserter.getNodeProperties( personNodeId );
-                String[] emailAddresses = (String[]) personNodeProperties.get( "email" );
+                String[] emailAddresses = (String[]) personNodeProperties.get( Domain.Person.EMAIL_ADDRESSES );
                 String newEmailAddress = (String) columnValues[1];
                 String[] emailAddressPlusNewAddress = Utils.copyArrayAndAddElement( emailAddresses, newEmailAddress );
-                batchInserter.setNodeProperty( personNodeId, "email", emailAddressPlusNewAddress );
+                batchInserter.setNodeProperty( personNodeId, Domain.Person.EMAIL_ADDRESSES, emailAddressPlusNewAddress );
             }
         } );
     }
@@ -739,7 +748,7 @@ public class CsvFileInserters
         Post.id Tag.id
         100     2903
          */
-        return new CsvFileInserter( new File( csvDataDir + "post_hasTag_tag.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.POST_HAS_TAG_TAG ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -765,7 +774,7 @@ public class CsvFileInserters
         Person.id   Post.id     creationDate
         1489        00          2011-01-20T11:18:41Z
          */
-        return new CsvFileInserter( new File( csvDataDir + "person_likes_post.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.PERSON_LIKES_POST ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -793,7 +802,7 @@ public class CsvFileInserters
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "creationDate", columnValues[2] );
+                properties.put( Domain.Likes.CREATION_DATE, columnValues[2] );
                 batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1], Domain.Rel.LIKES,
                         properties );
             }
@@ -807,7 +816,7 @@ public class CsvFileInserters
         Post.id     Place.id
         00          11
          */
-        return new CsvFileInserter( new File( csvDataDir + "post_isLocatedIn_place.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.POST_IS_LOCATED_IN_PLACE ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -833,7 +842,7 @@ public class CsvFileInserters
         Forum.id    Person.id   joinDate
         150         1489        2011-01-02T01:01:10Z        
          */
-        return new CsvFileInserter( new File( csvDataDir + "forum_hasMember_person.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.FORUM_HAS_MEMBER_PERSON ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -861,7 +870,7 @@ public class CsvFileInserters
             public void insert( Object[] columnValues )
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put( "joinDate", columnValues[2] );
+                properties.put( Domain.HasMember.JOIN_DATE, columnValues[2] );
                 batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
                         Domain.Rel.HAS_MEMBER, properties );
             }
@@ -875,7 +884,7 @@ public class CsvFileInserters
         Forum.id    Post.id
         40220       00
          */
-        return new CsvFileInserter( new File( csvDataDir + "forum_containerOf_post.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.FORUMS_CONTAINER_OF_POST ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -901,7 +910,7 @@ public class CsvFileInserters
         Forum.id    Tag.id
         75          259
          */
-        return new CsvFileInserter( new File( csvDataDir + "forum_hasTag_tag.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.FORUM_HAS_TAG_TAG ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -927,7 +936,7 @@ public class CsvFileInserters
         Tag.id  TagClass.id
         259     211
          */
-        return new CsvFileInserter( new File( csvDataDir + "tag_hasType_tagclass.csv" ), new CsvLineInserter()
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.TAG_HAS_TYPE_TAGCLASS ), new CsvLineInserter()
         {
             @Override
             public Object[] transform( Object[] columnValues )
@@ -954,7 +963,7 @@ public class CsvFileInserters
         TagClass.id     TagClass.id
         211             239
          */
-        return new CsvFileInserter( new File( csvDataDir + "tagclass_isSubclassOf_tagclass.csv" ),
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.TAGCLASS_IS_SUBCLASS_OF_TAGCLASS ),
                 new CsvLineInserter()
                 {
                     @Override
@@ -982,7 +991,7 @@ public class CsvFileInserters
         Organisation.id     Place.id
         00                  301
          */
-        return new CsvFileInserter( new File( csvDataDir + "organisation_isLocatedIn_place.csv" ),
+        return new CsvFileInserter( new File( csvDataDir + CsvFiles.ORGANISATION_IS_LOCATED_IN_PLACE ),
                 new CsvLineInserter()
                 {
                     @Override

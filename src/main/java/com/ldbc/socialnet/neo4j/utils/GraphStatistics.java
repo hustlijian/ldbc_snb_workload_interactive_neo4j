@@ -11,7 +11,7 @@ public class GraphStatistics
     public static long nodeCount( GraphDatabaseService db, long transactionSize )
     {
         GlobalGraphOperations globalOperations = GlobalGraphOperations.at( db );
-        long nodeCount = -1;
+        long nodeCount = 0;
         Transaction tx = db.beginTx();
         try
         {

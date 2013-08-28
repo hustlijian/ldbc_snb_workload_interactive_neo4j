@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.neo4j.testscripts;
+package com.ldbc.socialnet.neo4j.utils.testscripts;
 
 import java.io.IOException;
 

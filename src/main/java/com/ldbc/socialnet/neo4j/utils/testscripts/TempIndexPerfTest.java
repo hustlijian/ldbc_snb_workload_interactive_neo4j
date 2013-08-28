@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.neo4j.testscripts;
+package com.ldbc.socialnet.neo4j.utils.testscripts;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,12 +9,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.neo4j.kernel.impl.util.FileUtils;
 
-import com.ldbc.socialnet.neo4j.tempindex.DirectMemoryMapDbTempIndexFactory;
-import com.ldbc.socialnet.neo4j.tempindex.HashMapTempIndexFactory;
-import com.ldbc.socialnet.neo4j.tempindex.MemoryMapDbTempIndexFactory;
-import com.ldbc.socialnet.neo4j.tempindex.PersistentMapDbTempIndexFactory;
-import com.ldbc.socialnet.neo4j.tempindex.TempIndex;
-import com.ldbc.socialnet.neo4j.tempindex.TroveTempIndexFactory;
+import com.ldbc.socialnet.neo4j.load.tempindex.DirectMemoryMapDbTempIndexFactory;
+import com.ldbc.socialnet.neo4j.load.tempindex.HashMapTempIndexFactory;
+import com.ldbc.socialnet.neo4j.load.tempindex.MemoryMapDbTempIndexFactory;
+import com.ldbc.socialnet.neo4j.load.tempindex.PersistentMapDbTempIndexFactory;
+import com.ldbc.socialnet.neo4j.load.tempindex.TempIndex;
+import com.ldbc.socialnet.neo4j.load.tempindex.TroveTempIndexFactory;
 
 public class TempIndexPerfTest
 {

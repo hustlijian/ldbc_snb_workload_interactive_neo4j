@@ -1,6 +1,6 @@
 package com.ldbc.socialnet.neo4j.domain;
 
-import com.ldbc.socialnet.neo4j.tempindex.TempIndex;
+import com.ldbc.socialnet.neo4j.load.tempindex.TempIndex;
 
 public class PostsBatchIndex implements TempIndex<Long, Long>
 {

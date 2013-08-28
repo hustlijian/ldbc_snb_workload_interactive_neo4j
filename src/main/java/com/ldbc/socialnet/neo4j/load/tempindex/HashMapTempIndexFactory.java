@@ -1,18 +1,19 @@
-package com.ldbc.socialnet.neo4j.tempindex;
+package com.ldbc.socialnet.neo4j.load.tempindex;
 
-import gnu.trove.map.hash.TLongLongHashMap;
+import java.util.HashMap;
+import java.util.Map;
 
-public class TroveTempIndexFactory implements TempIndexFactory<Long, Long>
+public class HashMapTempIndexFactory implements TempIndexFactory<Long, Long>
 {
     @Override
     public TempIndex<Long, Long> create()
     {
-        return new TroveTempIndex();
+        return new HashMapTempIndex();
     }
 
-    public static class TroveTempIndex implements TempIndex<Long, Long>
+    public static class HashMapTempIndex implements TempIndex<Long, Long>
     {
-        private TLongLongHashMap map = new TLongLongHashMap();
+        private Map<Long, Long> map = new HashMap<Long, Long>();
 
         @Override
         public void put( Long k, Long v )
