@@ -5,6 +5,8 @@ import static org.hamcrest.CoreMatchers.*;
 
 import org.junit.Test;
 
+import com.ldbc.socialnet.workload.neo4j.utils.Config;
+
 
 public class ConfigTests
 {

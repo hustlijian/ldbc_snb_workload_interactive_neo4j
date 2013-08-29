@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ldbc.socialnet.neo4j.domain.Domain;
-
 // TODO generator should mention cardinalities
 
 public class Queries
@@ -70,9 +68,9 @@ public class Queries
 
                     + " person.%s, person.%s, person.%s, person.%s, person.%s,\n"
 
-                    + " personCity.%s, uni.%s, studyAt.%s, uniCity.%s, company.%s, worksAt.%s\n"
+                    + " personCity.%s, uni.%s, studyAt.%s, uniCity.%s, company.%s, worksAt.%s,\n"
 
-                    + "companyCountry.%s",
+                    + " companyCountry.%s",
 
             Domain.Person.FIRST_NAME, Domain.Person.LAST_NAME, Domain.Person.BIRTHDAY, Domain.Person.CREATION_DATE,
                     Domain.Person.GENDER, Domain.Person.LANGUAGES, Domain.Person.BROWSER_USED,

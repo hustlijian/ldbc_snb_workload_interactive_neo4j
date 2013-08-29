@@ -1,5 +1,6 @@
 package com.ldbc.socialnet.workload.neo4j;
 
+import java.io.File;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -41,7 +42,7 @@ public class Neo4jDb extends Db
         logger.info( "*** Neo4j Properties ***" );
         logger.info( "database type = " + dbType );
         logger.info( "url = " + url );
-        logger.info( "path = " + path );
+        logger.info( "path = " + new File( path ).getAbsolutePath() );
         logger.info( "************************" );
 
         if ( dbType.equals( "server" ) )

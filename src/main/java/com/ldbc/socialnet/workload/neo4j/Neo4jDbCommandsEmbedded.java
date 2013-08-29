@@ -7,9 +7,12 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import com.ldbc.driver.Db;
 import com.ldbc.driver.DbConnectionState;
 import com.ldbc.driver.DbException;
-import com.ldbc.socialnet.workload.operations.LdbcQuery1;
-import com.ldbc.socialnet.workload.operations.LdbcQuery3;
-import com.ldbc.socialnet.workload.operations.LdbcQuery4;
+import com.ldbc.socialnet.workload.LdbcQuery1;
+import com.ldbc.socialnet.workload.LdbcQuery3;
+import com.ldbc.socialnet.workload.LdbcQuery4;
+import com.ldbc.socialnet.workload.neo4j.transaction.EmbeddedNeo4jLdbcQuery1Handler;
+import com.ldbc.socialnet.workload.neo4j.transaction.EmbeddedNeo4jLdbcQuery3Handler;
+import com.ldbc.socialnet.workload.neo4j.transaction.EmbeddedNeo4jLdbcQuery4Handler;
 
 public class Neo4jDbCommandsEmbedded extends Neo4jDbCommands
 {

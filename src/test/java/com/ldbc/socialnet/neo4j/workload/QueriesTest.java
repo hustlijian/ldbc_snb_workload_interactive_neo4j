@@ -14,9 +14,9 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
-import com.ldbc.socialnet.neo4j.domain.Domain;
-import com.ldbc.socialnet.neo4j.utils.Config;
+import com.ldbc.socialnet.workload.Domain;
 import com.ldbc.socialnet.workload.Queries;
+import com.ldbc.socialnet.workload.neo4j.utils.Config;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -39,15 +39,13 @@ public class QueriesTest
         db.shutdown();
     }
 
-    @Ignore
     @Test
     public void query1()
     {
         Map<String, Object> queryParams = Queries.LdbcInteractive.Query1.buildParams( "Chen" );
-        execute( Queries.LdbcInteractive.Query1.QUERY_TEMPLATE, queryParams, 2, 10, true );
+        execute( Queries.LdbcInteractive.Query1.QUERY_TEMPLATE, queryParams, 2, 5, true );
     }
 
-    @Ignore
     @Test
     public void query3()
     {
@@ -65,9 +63,7 @@ public class QueriesTest
 
         Map<String, Object> queryParams = Queries.LdbcInteractive.Query3.buildParams( personId, countryX, countryY,
                 startDate, durationDays );
-        // execute( Queries.LdbcInteractive.Query3.PERSONS_FOR_PARAMS_TEMPLATE,
-        // queryParams, 0, 1, true );
-        execute( Queries.LdbcInteractive.Query3.QUERY_TEMPLATE, queryParams, 2, 3, true );
+        execute( Queries.LdbcInteractive.Query3.QUERY_TEMPLATE, queryParams, 2, 5, true );
     }
 
     @Test

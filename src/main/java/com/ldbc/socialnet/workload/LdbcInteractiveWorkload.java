@@ -20,11 +20,11 @@ import com.ldbc.driver.generator.Generator;
 import com.ldbc.driver.generator.GeneratorBuilder;
 import com.ldbc.driver.generator.GeneratorException;
 import com.ldbc.driver.generator.wrapper.FilterGeneratorWrapper;
+import com.ldbc.driver.generator.wrapper.StartTimeOperationGeneratorWrapper;
+import com.ldbc.driver.util.GeneratorUtils;
 import com.ldbc.driver.util.Pair;
+import com.ldbc.driver.util.temporal.Time;
 import com.ldbc.driver.workloads.simple.UpdateOperation;
-import com.ldbc.socialnet.workload.operations.LdbcQuery1;
-import com.ldbc.socialnet.workload.operations.LdbcQuery3;
-import com.ldbc.socialnet.workload.operations.LdbcQuery4;
 
 public class LdbcInteractiveWorkload extends Workload
 {
@@ -95,7 +95,10 @@ public class LdbcInteractiveWorkload extends Workload
         Generator<Operation<?>> filteredGenerator = new FilterGeneratorWrapper<Operation<?>>( operationGenerator,
                 filter );
 
-        return filteredGenerator;
+        Generator<Time> startTimeGenerator = GeneratorUtils.randomTimeGeneratorFromNow( generatorBuilder, Time.now(),
+                Time.fromMilli( 100 ).asMilli(), Time.fromMilli( 1000 ).asMilli() );
+
+        return new StartTimeOperationGeneratorWrapper( startTimeGenerator, filteredGenerator );
     }
 
     class Query1Generator extends Generator<Operation<?>>

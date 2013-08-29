@@ -1,0 +1,42 @@
+package com.ldbc.socialnet.workload.neo4j.transaction;
+
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.ldbc.driver.DbException;
+import com.ldbc.driver.OperationHandler;
+import com.ldbc.driver.OperationResult;
+import com.ldbc.socialnet.workload.LdbcQuery3;
+import com.ldbc.socialnet.workload.Queries;
+import com.ldbc.socialnet.workload.neo4j.Neo4jConnectionStateEmbedded;
+
+public class EmbeddedNeo4jLdbcQuery3Handler extends OperationHandler<LdbcQuery3>
+{
+    private final static Logger logger = Logger.getLogger( EmbeddedNeo4jLdbcQuery3Handler.class );
+
+    @Override
+    protected OperationResult executeOperation( LdbcQuery3 operation ) throws DbException
+    {
+        String query = Queries.LdbcInteractive.Query3.QUERY_TEMPLATE;
+        Map<String, Object> params = Queries.LdbcInteractive.Query3.buildParams( operation.getPersonId(),
+                operation.getCountryX(), operation.getCountryY(), operation.getStartDate(), operation.getDurationDays() );
+
+        // TODO find way to do this
+        int resultCode = 0;
+        try
+        {
+            ( (Neo4jConnectionStateEmbedded) getDbConnectionState() ).getExecutionEngine().execute( query, params );
+        }
+        catch ( Exception e )
+        {
+            logger.error( String.format( "Error encountered executing %s\n%s", getClass().getSimpleName(),
+                    e.getMessage() ) );
+            resultCode = -1;
+        }
+
+        // TODO return what query actually returns
+        int result = 0;
+        return operation.buildResult( resultCode, result );
+    }
+}

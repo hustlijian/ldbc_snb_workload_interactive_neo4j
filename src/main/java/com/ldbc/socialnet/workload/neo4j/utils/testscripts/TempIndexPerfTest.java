@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.neo4j.utils;
+package com.ldbc.socialnet.workload.neo4j.utils.testscripts;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Ignore;
-import org.junit.Test;
 import org.neo4j.kernel.impl.util.FileUtils;
 
 import com.ldbc.socialnet.workload.neo4j.load.tempindex.DirectMemoryMapDbTempIndexFactory;
@@ -18,52 +16,40 @@ import com.ldbc.socialnet.workload.neo4j.load.tempindex.PersistentMapDbTempIndex
 import com.ldbc.socialnet.workload.neo4j.load.tempindex.TempIndex;
 import com.ldbc.socialnet.workload.neo4j.load.tempindex.TroveTempIndexFactory;
 
-@Ignore
-public class PerfTests
+public class TempIndexPerfTest
 {
-    /*
-    // -Xmx40g --> 421,000,000
-    TempIndex<Long, Long> x = new TroveTempIndexFactory().create();
-    */
-    /*
-    // -Xmx40g --> 81,000,000 ? strange behavior, very slow, buggy?
-    TempIndex<Long, Long> x = new MemoryMapDbTempIndexFactory().create();
-    */
-
-    @Test
-    public void shouldPerfTestTempIndexes() throws IOException
+    public static void main( String[] args ) throws IOException
     {
-        // Given
-        String indexPath = "testIndex1/";
-        FileUtils.deleteRecursively( new File( indexPath ) );
-        File indexDir = new File( indexPath );
-        indexDir.mkdir();
+        long size = Long.parseLong( args[0] );
 
-        // When
+        File file = new File( "tempDir/" );
+        file.mkdir();
+
+        System.out.println( "Test size = " + size );
+
         List<TempIndex<Long, Long>> indexes = new ArrayList<TempIndex<Long, Long>>();
-        indexes.add( new PersistentMapDbTempIndexFactory( indexDir ).create() );
+        indexes.add( new PersistentMapDbTempIndexFactory( file ).create() );
         indexes.add( new MemoryMapDbTempIndexFactory().create() );
         indexes.add( new DirectMemoryMapDbTempIndexFactory().create() );
         indexes.add( new TroveTempIndexFactory().create() );
         indexes.add( new HashMapTempIndexFactory().create() );
 
-        // Then
         for ( TempIndex<Long, Long> index : indexes )
         {
-            doWritePerfTest( index );
-            doReadPerfTest( index );
+            doWritePerfTest( size, index );
+            doReadPerfTest( size, index );
             index.shutdown();
             System.out.println();
         }
 
-        FileUtils.deleteRecursively( new File( indexPath ) );
+        FileUtils.deleteRecursively( file );
     }
 
-    private void doWritePerfTest( TempIndex<Long, Long> index )
+    private static void doWritePerfTest( long size, TempIndex<Long, Long> index )
     {
         Random random = new Random( 42l );
         long startTime = System.currentTimeMillis();
-        for ( long counter = 0; counter < 10000000; counter++ )
+        for ( long counter = 0; counter < size; counter++ )
         {
             index.put( counter, random.nextLong() );
         }
@@ -78,10 +64,10 @@ public class PerfTests
                                             - TimeUnit.MINUTES.toSeconds( TimeUnit.MILLISECONDS.toMinutes( runtime ) ) ) );
     }
 
-    private void doReadPerfTest( TempIndex<Long, Long> index )
+    private static void doReadPerfTest( long size, TempIndex<Long, Long> index )
     {
         long startTime = System.currentTimeMillis();
-        for ( long counter = 0; counter < 10000000; counter++ )
+        for ( long counter = 0; counter < size; counter++ )
         {
             index.get( counter );
         }
