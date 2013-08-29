@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.neo4j.load.tempindex;
+package com.ldbc.socialnet.load.neo4j.tempindex;
 
 import java.util.HashMap;
 import java.util.Map;

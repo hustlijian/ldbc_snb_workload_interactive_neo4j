@@ -11,10 +11,12 @@ import org.junit.Test;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import com.ldbc.socialnet.neo4j.domain.Domain;
 import com.ldbc.socialnet.neo4j.utils.Config;
+import com.ldbc.socialnet.workload.Queries;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -41,10 +43,11 @@ public class QueriesTest
     @Test
     public void query1()
     {
-        Map<String, Object> queryParams = Queries.LdbcInteractive.query1Params( "Chen" );
-        execute( Queries.LdbcInteractive.QUERY_1_TEMPLATE, queryParams, 2, 10 );
+        Map<String, Object> queryParams = Queries.LdbcInteractive.Query1.buildParams( "Chen" );
+        execute( Queries.LdbcInteractive.Query1.QUERY_TEMPLATE, queryParams, 2, 10, true );
     }
 
+    @Ignore
     @Test
     public void query3()
     {
@@ -60,14 +63,13 @@ public class QueriesTest
         Date startDate = calendar.getTime();
         int durationDays = 365 * 2;
 
-        Map<String, Object> queryParams = Queries.LdbcInteractive.query2Params( personId, countryX, countryY,
+        Map<String, Object> queryParams = Queries.LdbcInteractive.Query3.buildParams( personId, countryX, countryY,
                 startDate, durationDays );
-        // execute( Queries.LdbcInteractive.QUERY_3_TEMPLATE_x, queryParams, 0,
-        // 1 );
-        execute( Queries.LdbcInteractive.QUERY_3_TEMPLATE, queryParams, 1, 2 );
+        // execute( Queries.LdbcInteractive.Query3.PERSONS_FOR_PARAMS_TEMPLATE,
+        // queryParams, 0, 1, true );
+        execute( Queries.LdbcInteractive.Query3.QUERY_TEMPLATE, queryParams, 2, 3, true );
     }
 
-    @Ignore
     @Test
     public void query4()
     {
@@ -75,39 +77,69 @@ public class QueriesTest
         // be fixed so tags are grouped by NAME first, and then counted
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set( 2011, Calendar.NOVEMBER, 1 );
+        calendar.set( 2011, Calendar.JANUARY, 1 );
 
         long personId = 143;
         Date startDate = calendar.getTime();
-        int durationDays = 10;
+        int durationDays = 300;
 
-        Map<String, Object> queryParams = Queries.LdbcInteractive.query4Params( personId, startDate, durationDays );
-        execute( Queries.LdbcInteractive.QUERY_4_TEMPLATE, queryParams, 0, 1 );
+        Map<String, Object> queryParams = Queries.LdbcInteractive.Query4.buildParams( personId, startDate, durationDays );
+        execute( Queries.LdbcInteractive.Query4.QUERY_TEMPLATE, queryParams, 2, 5, true );
     }
 
     @Ignore
     @Test
-    public void createIndexes()
+    public void index()
     {
-        queryEngine.execute( "DROP INDEX ON :" + Domain.Node.PERSON + "(" + Domain.Person.ID + ")" );
-        queryEngine.execute( "DROP INDEX ON :" + Domain.Node.PERSON + "(" + Domain.Person.FIRST_NAME + ")" );
-        queryEngine.execute( "DROP INDEX ON :" + Domain.Node.PERSON + "(" + Domain.Person.LAST_NAME + ")" );
-        queryEngine.execute( "DROP INDEX ON :" + Domain.Node.PLACE + "(" + Domain.Place.NAME + ")" );
-        queryEngine.execute( "DROP INDEX ON :" + Domain.Place.Type.CITY + "(" + Domain.Place.NAME + ")" );
-        queryEngine.execute( "DROP INDEX ON :" + Domain.Place.Type.COUNTRY + "(" + Domain.Place.NAME + ")" );
+        tryToDropIndex( Domain.Node.PERSON, Domain.Person.ID );
+        tryToDropIndex( Domain.Node.PERSON, Domain.Person.FIRST_NAME );
+        tryToDropIndex( Domain.Node.PERSON, Domain.Person.LAST_NAME );
+        tryToDropIndex( Domain.Node.PLACE, Domain.Place.NAME );
+        tryToDropIndex( Domain.Place.Type.CITY, Domain.Place.NAME );
+        tryToDropIndex( Domain.Place.Type.COUNTRY, Domain.Place.NAME );
 
-        queryEngine.execute( "CREATE INDEX ON :" + Domain.Node.PERSON + "(" + Domain.Person.ID + ")" );
-        queryEngine.execute( "CREATE INDEX ON :" + Domain.Node.PERSON + "(" + Domain.Person.FIRST_NAME + ")" );
-        queryEngine.execute( "CREATE INDEX ON :" + Domain.Node.PERSON + "(" + Domain.Person.LAST_NAME + ")" );
-        queryEngine.execute( "CREATE INDEX ON :" + Domain.Node.PLACE + "(" + Domain.Place.NAME + ")" );
-        queryEngine.execute( "CREATE INDEX ON :" + Domain.Place.Type.CITY + "(" + Domain.Place.NAME + ")" );
-        queryEngine.execute( "CREATE INDEX ON :" + Domain.Place.Type.COUNTRY + "(" + Domain.Place.NAME + ")" );
+        tryToCreateIndex( Domain.Node.PERSON, Domain.Person.ID );
+        tryToCreateIndex( Domain.Node.PERSON, Domain.Person.FIRST_NAME );
+        tryToCreateIndex( Domain.Node.PERSON, Domain.Person.LAST_NAME );
+        tryToCreateIndex( Domain.Node.PLACE, Domain.Place.NAME );
+        tryToCreateIndex( Domain.Place.Type.CITY, Domain.Place.NAME );
+        tryToCreateIndex( Domain.Place.Type.COUNTRY, Domain.Place.NAME );
     }
 
-    private void execute( String queryString, Map<String, Object> queryParams, long warmup, long iterations )
+    private void tryToDropIndex( Label label, String property )
+    {
+        try
+        {
+            String queryString = "DROP INDEX ON :" + label + "(" + property + ")";
+            System.out.println( queryString );
+            queryEngine.execute( queryString );
+        }
+        catch ( Exception e )
+        {
+            System.out.println( e.getMessage() );
+        }
+    }
+
+    private void tryToCreateIndex( Label label, String property )
+    {
+        try
+        {
+            String queryString = "CREATE INDEX ON :" + label + "(" + property + ")";
+            System.out.println( queryString );
+            queryEngine.execute( queryString );
+        }
+        catch ( Exception e )
+        {
+            System.out.println( e.getMessage() );
+        }
+    }
+
+    private void execute( String queryString, Map<String, Object> queryParams, long warmup, long iterations,
+            boolean experimental )
     {
         System.out.println( queryParams.toString() );
         System.out.println();
+        queryString = ( experimental ) ? "cypher experimental\n" + queryString : queryString;
         System.out.println( queryString );
         for ( int i = 0; i < warmup; i++ )
         {

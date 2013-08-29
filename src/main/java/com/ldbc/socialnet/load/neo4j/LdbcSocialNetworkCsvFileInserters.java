@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.neo4j.load;
+package com.ldbc.socialnet.load.neo4j;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,6 +14,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 
+import com.ldbc.socialnet.load.neo4j.tempindex.TempIndexFactory;
 import com.ldbc.socialnet.neo4j.domain.Domain;
 import com.ldbc.socialnet.neo4j.domain.CommentsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.EmailAddressesBatchIndex;
@@ -25,7 +26,6 @@ import com.ldbc.socialnet.neo4j.domain.PlacesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.PostsBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.TagClassesBatchIndex;
 import com.ldbc.socialnet.neo4j.domain.TagsBatchIndex;
-import com.ldbc.socialnet.neo4j.load.tempindex.TempIndexFactory;
 import com.ldbc.socialnet.neo4j.utils.Utils;
 
 public class LdbcSocialNetworkCsvFileInserters

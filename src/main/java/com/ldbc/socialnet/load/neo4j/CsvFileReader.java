@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.neo4j.load;
+package com.ldbc.socialnet.load.neo4j;
 
 import java.io.BufferedReader;
 import java.io.File;

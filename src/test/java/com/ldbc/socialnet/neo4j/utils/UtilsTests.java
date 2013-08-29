@@ -16,10 +16,10 @@ import org.neo4j.kernel.impl.util.FileUtils;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
-import com.ldbc.socialnet.neo4j.load.CsvFileInserter;
-import com.ldbc.socialnet.neo4j.load.LdbcSocialNetworkCsvFileInserters;
-import com.ldbc.socialnet.neo4j.load.CsvFiles;
-import com.ldbc.socialnet.neo4j.load.tempindex.PersistentMapDbTempIndexFactory;
+import com.ldbc.socialnet.load.neo4j.CsvFileInserter;
+import com.ldbc.socialnet.load.neo4j.CsvFiles;
+import com.ldbc.socialnet.load.neo4j.LdbcSocialNetworkCsvFileInserters;
+import com.ldbc.socialnet.load.neo4j.tempindex.PersistentMapDbTempIndexFactory;
 
 public class UtilsTests
 {

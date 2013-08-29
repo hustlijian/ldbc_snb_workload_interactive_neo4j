@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-import com.ldbc.socialnet.neo4j.load.tempindex.DirectMemoryMapDbTempIndexFactory;
-import com.ldbc.socialnet.neo4j.load.tempindex.HashMapTempIndexFactory;
-import com.ldbc.socialnet.neo4j.load.tempindex.MemoryMapDbTempIndexFactory;
-import com.ldbc.socialnet.neo4j.load.tempindex.PersistentMapDbTempIndexFactory;
-import com.ldbc.socialnet.neo4j.load.tempindex.TempIndex;
-import com.ldbc.socialnet.neo4j.load.tempindex.TroveTempIndexFactory;
+import com.ldbc.socialnet.load.neo4j.tempindex.DirectMemoryMapDbTempIndexFactory;
+import com.ldbc.socialnet.load.neo4j.tempindex.HashMapTempIndexFactory;
+import com.ldbc.socialnet.load.neo4j.tempindex.MemoryMapDbTempIndexFactory;
+import com.ldbc.socialnet.load.neo4j.tempindex.PersistentMapDbTempIndexFactory;
+import com.ldbc.socialnet.load.neo4j.tempindex.TempIndex;
+import com.ldbc.socialnet.load.neo4j.tempindex.TroveTempIndexFactory;
 
 public class TempIndexMaxCapacityTest
 {

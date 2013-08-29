@@ -16,10 +16,16 @@
 		<log4j-version>1.2.17</log4j-version>
 		<trove4j-version>3.0.3</trove4j-version>
 		<mapdb-version>0.9.3</mapdb-version>
+		<ldbc.driver.version>0.1-SNAPSHOT</ldbc.driver.version>
 	</properties>
 
 
 	<dependencies>
+		<dependency>
+			<groupId>com.ldbc.driver</groupId>
+			<artifactId>core</artifactId>
+			<version>${ldbc.driver.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j</artifactId>
@@ -59,6 +65,22 @@
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
+		</repository>
+
+		<!-- TO UPDATE IN-PROJECT REPOSITORY -->
+		<!-- mvn install:install-file -DlocalRepositoryPath=lib -DcreateChecksum=true 
+			-Dpackaging=jar -Dfile=/home/alex/workspace/java/ldbc_driver/core/target/core-0.1.jar 
+			-DgroupId=com.ldbc.driver -DartifactId=core -Dversion=0.1 -->
+		<!--http://blog.dub.podval.org/2010/01/maven-in-project-repository.html, 
+			http://stackoverflow.com/questions/364114/can-i-add-jars-to-maven-2-build-classpath-without-installing-them -->
+		<repository>
+			<id>in-project-repository</id>
+			<url>file://${project.basedir}/lib</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
 		</repository>
 	</repositories>
 

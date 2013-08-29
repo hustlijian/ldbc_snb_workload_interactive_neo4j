@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.neo4j.load;
+package com.ldbc.socialnet.load.neo4j;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +13,8 @@ import org.neo4j.kernel.impl.util.FileUtils;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
-import com.ldbc.socialnet.neo4j.load.tempindex.TempIndexFactory;
-import com.ldbc.socialnet.neo4j.load.tempindex.TroveTempIndexFactory;
+import com.ldbc.socialnet.load.neo4j.tempindex.TempIndexFactory;
+import com.ldbc.socialnet.load.neo4j.tempindex.TroveTempIndexFactory;
 import com.ldbc.socialnet.neo4j.utils.Config;
 import com.ldbc.socialnet.neo4j.utils.GraphStatistics;
 
