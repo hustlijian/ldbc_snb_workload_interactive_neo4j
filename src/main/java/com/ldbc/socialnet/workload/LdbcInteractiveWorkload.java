@@ -9,13 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.math3.random.RandomDataGenerator;
-
 import com.google.common.base.Predicate;
 import com.ldbc.driver.Operation;
 import com.ldbc.driver.Workload;
 import com.ldbc.driver.WorkloadException;
-import com.ldbc.driver.data.ByteIterator;
 import com.ldbc.driver.generator.Generator;
 import com.ldbc.driver.generator.GeneratorBuilder;
 import com.ldbc.driver.generator.GeneratorException;
@@ -24,7 +21,6 @@ import com.ldbc.driver.generator.wrapper.StartTimeOperationGeneratorWrapper;
 import com.ldbc.driver.util.GeneratorUtils;
 import com.ldbc.driver.util.Pair;
 import com.ldbc.driver.util.temporal.Time;
-import com.ldbc.driver.workloads.simple.UpdateOperation;
 
 public class LdbcInteractiveWorkload extends Workload
 {
