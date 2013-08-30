@@ -5,6 +5,7 @@
 .classpath
 .settings/
 .gitignore~
+.gitmodules~
 *.class
 target/
 build.sh~
