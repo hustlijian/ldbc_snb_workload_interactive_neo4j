@@ -3,6 +3,7 @@ package com.ldbc.socialnet.neo4j.workload;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -21,6 +22,7 @@ import com.ldbc.socialnet.workload.neo4j.utils.Config;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+@Ignore
 public class QueriesTest
 {
     public static GraphDatabaseService db = null;
@@ -81,6 +83,18 @@ public class QueriesTest
 
         Map<String, Object> queryParams = Queries.LdbcInteractive.Query4.buildParams( personId, startDate, durationDays );
         execute( Queries.LdbcInteractive.Query4.QUERY_TEMPLATE, queryParams, 2, 5, true );
+    }
+
+    @Test
+    public void time()
+    {
+        long durationMs = 70015;
+        long m = TimeUnit.MILLISECONDS.toMinutes( durationMs );
+        long s = TimeUnit.MILLISECONDS.toSeconds( durationMs ) - TimeUnit.MINUTES.toSeconds( m );
+        long ms = durationMs - TimeUnit.MINUTES.toMillis( m ) - TimeUnit.SECONDS.toMillis( s );
+
+        System.out.println( String.format( "%d(m):%02d(s):%03d(ms)", m, s, ms ) );
+        System.out.println( String.format( "%02d:%02d.%03d (m:s.ms)", m, s, ms ) );
     }
 
     @Ignore
