@@ -22,6 +22,7 @@ import com.ldbc.socialnet.workload.neo4j.utils.Config;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+@Ignore
 public class QueriesTest
 {
     public static GraphDatabaseService db = null;

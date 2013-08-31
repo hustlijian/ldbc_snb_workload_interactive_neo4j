@@ -5,11 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Ignore;
-
 // TODO generator should mention cardinalities
 
-@Ignore
 public class Queries
 {
     public static class LdbcInteractive
