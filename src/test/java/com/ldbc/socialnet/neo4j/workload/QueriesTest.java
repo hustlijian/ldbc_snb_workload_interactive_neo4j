@@ -12,14 +12,10 @@ import org.junit.Test;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
-import com.ldbc.socialnet.workload.Domain;
 import com.ldbc.socialnet.workload.Queries;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
-import com.ldbc.socialnet.workload.neo4j.utils.GraphUtils;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -40,32 +36,6 @@ public class QueriesTest
     public static void closeDb()
     {
         db.shutdown();
-    }
-
-    @Ignore
-    @Test
-    public void personTest()
-    {
-        Map<String, Object> queryParams = Queries.LdbcInteractive.PersonTestQuery.buildParams( 75 );
-        execute( Queries.LdbcInteractive.PersonTestQuery.QUERY_TEMPLATE_WITH_INDEX, queryParams, 2, 10, true, false );
-        execute( Queries.LdbcInteractive.PersonTestQuery.QUERY_TEMPLATE_WITHOUT_INDEX, queryParams, 2, 10, true, false );
-    }
-
-    @Test
-    public void countryTest1()
-    {
-        Map<String, Object> queryParams = Queries.LdbcInteractive.CountryTestQuery.buildParams( "Brazil" );
-        execute( Queries.LdbcInteractive.CountryTestQuery.QUERY_TEMPLATE_WITH_INDEX, queryParams, 0, 1, true, false );
-        execute( Queries.LdbcInteractive.CountryTestQuery.QUERY_TEMPLATE_WITHOUT_INDEX, queryParams, 0, 1, true, false );
-    }
-
-    @Ignore
-    @Test
-    public void countryTest2()
-    {
-        Map<String, Object> queryParams = Queries.LdbcInteractive.CountryTestQuery.buildParams( "United_States" );
-        execute( Queries.LdbcInteractive.CountryTestQuery.QUERY_TEMPLATE_WITH_INDEX, queryParams, 0, 1, true, false );
-        execute( Queries.LdbcInteractive.CountryTestQuery.QUERY_TEMPLATE_WITHOUT_INDEX, queryParams, 0, 1, true, false );
     }
 
     @Ignore

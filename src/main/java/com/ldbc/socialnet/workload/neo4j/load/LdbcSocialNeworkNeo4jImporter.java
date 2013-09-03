@@ -97,7 +97,7 @@ public class LdbcSocialNeworkNeo4jImporter
 
         runtime = System.currentTimeMillis() - startTime;
         System.out.println( String.format(
-                "Indexes build in: %d min, %d sec",
+                "Indexes built in: %d min, %d sec",
                 TimeUnit.MILLISECONDS.toMinutes( runtime ),
                 TimeUnit.MILLISECONDS.toSeconds( runtime )
                         - TimeUnit.MINUTES.toSeconds( TimeUnit.MILLISECONDS.toMinutes( runtime ) ) ) );

@@ -18,121 +18,13 @@ import java.util.Map;
          It would be nice to have a blocking one with no "duration" parameter, 
          i.e. "take as long as you need, but don't return before indices are online"
          
-     (3) is there any way to create schema indexes during import, rather than after?
-         
-CREATE INDEX ON :COUNTRY(name)
-         
-org.neo4j.cypher.IndexHintException: No such index found.
-Label: `COUNTRY`
-Property name: `name`
- */
-
-/*
-{place_name=Brazil}
- 
-cypher experimental
-MATCH (country:COUNTRY)
-WHERE country.name={place_name}
-RETURN country
-.
-    runtimeTotal=1265
-    runtimeRuns=1
-    runtimeMin=1265
-    runtimeMax=1265
-+---------+
-| country |
-+---------+
-+---------+
-0 row
-
--------------------------------------------
-
-{place_name=Brazil}
-
-cypher experimental
-MATCH (country:COUNTRY)
-RETURN country
-.
-    runtimeTotal=1146
-    runtimeRuns=1
-    runtimeMin=1146
-    runtimeMax=1146
-+---------------------------------------------------------------------------------------------------------------------------+
-| country                                                                                                                   |
-+---------------------------------------------------------------------------------------------------------------------------+
-| Node[1321155]{name:"Brazil",url:"http://dbpedia.org/resource/Brazil"}                                                     |
-| Node[1321158]{name:"Singapore",url:"http://dbpedia.org/resource/Singapore"}                                               |
-| ...
-+---------------------------------------------------------------------------------------------------------------------------+
-111 rows
-
-
+     (3) is there any way to create schema indexes during import, rather than after?         
  */
 
 public class Queries
 {
     public static class LdbcInteractive
     {
-        public static class PersonTestQuery
-        {
-            public static final String QUERY_TEMPLATE_WITH_INDEX =
-
-            "MATCH (person:" + Domain.Node.PERSON + ")\n"
-
-            + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.ID + ")\n"
-
-            + "WHERE person." + Domain.Person.ID + "={person_id}\n"
-
-            + "RETURN person";
-
-            public static final String QUERY_TEMPLATE_WITHOUT_INDEX =
-
-            "MATCH (person:" + Domain.Node.PERSON + ")\n"
-
-            + "WHERE person." + Domain.Person.ID + "={person_id}\n"
-
-            + "RETURN person";
-
-            public static final Map<String, Object> buildParams( long personId )
-            {
-                Map<String, Object> queryParams = new HashMap<String, Object>();
-                queryParams.put( "person_id", personId );
-                return queryParams;
-            }
-
-        }
-
-        public static class CountryTestQuery
-        {
-            public static final String QUERY_TEMPLATE_WITH_INDEX =
-
-            "MATCH (country:" + Domain.Place.Type.COUNTRY + ")\n"
-
-            + "USING INDEX country:" + Domain.Place.Type.COUNTRY + "(" + Domain.Place.NAME + ")\n"
-
-            + "WHERE country." + Domain.Place.NAME + "={place_name}\n"
-
-            + "RETURN country";
-
-            public static final String QUERY_TEMPLATE_WITHOUT_INDEX =
-
-            "MATCH (country:" + Domain.Place.Type.COUNTRY + ")\n"
-
-            + "WITH country\n"
-
-            + "WHERE country." + Domain.Place.NAME + "={place_name}\n"
-
-            + "RETURN country, country." + Domain.Place.NAME + "={place_name}";
-
-            public static final Map<String, Object> buildParams( String countryName )
-            {
-                Map<String, Object> queryParams = new HashMap<String, Object>();
-                queryParams.put( "place_name", countryName );
-                return queryParams;
-            }
-
-        }
-
         public static class Query1
         {
             /*

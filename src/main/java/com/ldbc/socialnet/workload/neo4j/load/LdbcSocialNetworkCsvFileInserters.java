@@ -65,12 +65,16 @@ public class LdbcSocialNetworkCsvFileInserters
         fileInserters.add( forumHasMemberPerson( csvDataDir, batchInserter, forumsIndex, personsIndex ) );
         fileInserters.add( forumHasModeratorPerson( csvDataDir, batchInserter, personsIndex, forumsIndex ) );
         fileInserters.add( forumHasTag( csvDataDir, batchInserter, forumsIndex, tagsIndex ) );
-        fileInserters.add( personHasEmailAddress( csvDataDir, batchInserter, personsIndex, emailAddressesIndex ) );
+        // TODO uncomment when batchinserter fixed
+        // fileInserters.add( personHasEmailAddress( csvDataDir, batchInserter,
+        // personsIndex, emailAddressesIndex ) );
         fileInserters.add( personHasInterestTag( csvDataDir, batchInserter, personsIndex, tagsIndex ) );
         fileInserters.add( personIsLocatedInPlace( csvDataDir, batchInserter, personsIndex, placesIndex ) );
         fileInserters.add( personKnowsPerson( csvDataDir, batchInserter, personsIndex ) );
         fileInserters.add( personLikesPost( csvDataDir, batchInserter, personsIndex, postsIndex ) );
-        fileInserters.add( personSpeaksLanguage( csvDataDir, batchInserter, personsIndex, languagesIndex ) );
+        // TODO uncomment when batchinserter fixed
+        // fileInserters.add( personSpeaksLanguage( csvDataDir, batchInserter,
+        // personsIndex, languagesIndex ) );
         fileInserters.add( personStudyAtOrganisation( csvDataDir, batchInserter, personsIndex, organisationsIndex ) );
         fileInserters.add( personWorksAtOrganisation( csvDataDir, batchInserter, personsIndex, organisationsIndex ) );
         fileInserters.add( placeIsPartOfPlace( csvDataDir, batchInserter, placesIndex ) );
@@ -721,10 +725,13 @@ public class LdbcSocialNetworkCsvFileInserters
             public void insert( Object[] columnValues )
             {
                 long personNodeId = personsIndex.get( Long.parseLong( (String) columnValues[0] ) );
+                System.out.println( "Updating: " + personNodeId + " adding '" + (String) columnValues[1] + "'" );
                 Map<String, Object> personNodeProperties = batchInserter.getNodeProperties( personNodeId );
                 String[] emailAddresses = (String[]) personNodeProperties.get( Domain.Person.EMAIL_ADDRESSES );
                 String newEmailAddress = (String) columnValues[1];
                 String[] emailAddressPlusNewAddress = Utils.copyArrayAndAddElement( emailAddresses, newEmailAddress );
+                System.out.println( "Setting to " + emailAddressPlusNewAddress + " ("
+                                    + emailAddressPlusNewAddress.length + ")" );
                 batchInserter.setNodeProperty( personNodeId, Domain.Person.EMAIL_ADDRESSES, emailAddressPlusNewAddress );
             }
         } );
