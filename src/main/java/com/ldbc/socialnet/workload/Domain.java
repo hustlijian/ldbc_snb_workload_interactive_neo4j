@@ -1,10 +1,38 @@
 package com.ldbc.socialnet.workload;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.RelationshipType;
 
+import com.ldbc.driver.util.Pair;
+
 public class Domain
 {
+    public static Iterable<Pair<Label, String>> labelPropertyPairsToIndex()
+    {
+        List<Pair<Label, String>> labelPropertyPairsToIndex = new ArrayList<Pair<Label, String>>();
+        labelPropertyPairsToIndex.add( new Pair<Label, String>( Node.PERSON, Person.ID ) );
+        labelPropertyPairsToIndex.add( new Pair<Label, String>( Node.PERSON, Person.FIRST_NAME ) );
+        labelPropertyPairsToIndex.add( new Pair<Label, String>( Node.PERSON, Person.LAST_NAME ) );
+        labelPropertyPairsToIndex.add( new Pair<Label, String>( Domain.Node.PLACE, Domain.Place.NAME ) );
+        labelPropertyPairsToIndex.add( new Pair<Label, String>( Domain.Place.Type.CITY, Domain.Place.NAME ) );
+        labelPropertyPairsToIndex.add( new Pair<Label, String>( Domain.Place.Type.COUNTRY, Domain.Place.NAME ) );
+        return labelPropertyPairsToIndex;
+    }
+
+    public static Set<Label> labelsToIndex()
+    {
+        Set<Label> labelsToIndex = new HashSet<Label>();
+        for ( Pair<Label, String> labelPropertyPair : labelPropertyPairsToIndex() )
+        {
+            labelsToIndex.add( labelPropertyPair._1() );
+        }
+        return labelsToIndex;
+    }
 
     public enum Rel implements RelationshipType
     {
@@ -142,4 +170,5 @@ public class Domain
     {
         public static final String JOIN_DATE = "joinDate";
     }
+
 }

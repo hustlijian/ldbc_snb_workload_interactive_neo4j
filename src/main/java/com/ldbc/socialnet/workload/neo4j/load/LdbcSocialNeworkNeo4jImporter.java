@@ -13,10 +13,11 @@ import org.neo4j.kernel.impl.util.FileUtils;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
+import com.ldbc.socialnet.workload.Domain;
 import com.ldbc.socialnet.workload.neo4j.load.tempindex.TempIndexFactory;
 import com.ldbc.socialnet.workload.neo4j.load.tempindex.TroveTempIndexFactory;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
-import com.ldbc.socialnet.workload.neo4j.utils.GraphStatistics;
+import com.ldbc.socialnet.workload.neo4j.utils.GraphUtils;
 
 public class LdbcSocialNeworkNeo4jImporter
 {
@@ -67,31 +68,43 @@ public class LdbcSocialNeworkNeo4jImporter
         * CSV Files
         */
         TempIndexFactory<Long, Long> tempIndexFactory = new TroveTempIndexFactory();
-        List<CsvFileInserter> fileInserters = LdbcSocialNetworkCsvFileInserters.all( tempIndexFactory, batchInserter, csvDataDir );
+        List<CsvFileInserter> fileInserters = LdbcSocialNetworkCsvFileInserters.all( tempIndexFactory, batchInserter,
+                csvDataDir );
 
         logger.info( "Loading CSV files" );
         long startTime = System.currentTimeMillis();
         for ( CsvFileInserter fileInserter : fileInserters )
         {
-            // logger.info( String.format( "\t%s - %s",
-            // fileInserter.getFile().getName(),
-            // fileInserter.insertAllBuffered() ) );
             logger.info( String.format( "\t%s - %s", fileInserter.getFile().getName(), fileInserter.insertAllBuffered() ) );
         }
         long runtime = System.currentTimeMillis() - startTime;
         System.out.println( String.format(
-                "Time: %d min, %d sec",
+                "Data imported in: %d min, %d sec",
                 TimeUnit.MILLISECONDS.toMinutes( runtime ),
                 TimeUnit.MILLISECONDS.toSeconds( runtime )
                         - TimeUnit.MINUTES.toSeconds( TimeUnit.MILLISECONDS.toMinutes( runtime ) ) ) );
+
+        logger.info( "Creating Indexes" );
+        startTime = System.currentTimeMillis();
+
+        GraphUtils.createDeferredSchemaIndexesUsingBatchInserter( batchInserter, Domain.labelPropertyPairsToIndex() );
 
         batchInserter.shutdown();
 
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase( dbDir );
 
+        GraphUtils.waitForIndexesToBeOnline( db, Domain.labelsToIndex() );
+
+        runtime = System.currentTimeMillis() - startTime;
+        System.out.println( String.format(
+                "Indexes build in: %d min, %d sec",
+                TimeUnit.MILLISECONDS.toMinutes( runtime ),
+                TimeUnit.MILLISECONDS.toSeconds( runtime )
+                        - TimeUnit.MINUTES.toSeconds( TimeUnit.MILLISECONDS.toMinutes( runtime ) ) ) );
+
         logger.info( "Graph Metrics:" );
-        logger.info( "\tNode count = " + GraphStatistics.nodeCount( db, 10000000 ) );
-        logger.info( "\tRelationship count = " + GraphStatistics.relationshipCount( db, 10000000 ) );
+        logger.info( "\tNode count = " + GraphUtils.nodeCount( db, 10000000 ) );
+        logger.info( "\tRelationship count = " + GraphUtils.relationshipCount( db, 10000000 ) );
 
         db.shutdown();
     }

@@ -11,6 +11,11 @@ import com.ldbc.driver.WorkloadParams;
 import com.ldbc.socialnet.workload.LdbcInteractiveWorkload;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
 
+/*
+sudo java -Xmx10G -cp ldbc_driver/core/target/core-0.1-SNAPSHOT.jar:target/neo4j_importer-0.1-SNAPSHOT.jar com.ldbc.driver.Client 
+-oc 10 -rc -1 -tc 10 -s -tu MILLISECONDS -p neo4j.path=/var/neodata/ldbc/socialnet_small/ neo4j.dbtype=embedded 
+-db com.ldbc.socialnet.workload.neo4j.Neo4jDb -w com.ldbc.socialnet.workload.LdbcInteractiveWorkload
+ */
 public class DoTransactionWorkload
 {
     public static void main( String[] args ) throws ClientException

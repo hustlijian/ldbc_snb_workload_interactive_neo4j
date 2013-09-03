@@ -29,21 +29,21 @@ public class LdbcSocialNetworkCsvFileInserters
     private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat( DATE_FORMAT_STRING );
 
     public static List<CsvFileInserter> all( TempIndexFactory<Long, Long> tempIndexFactory,
-            BatchInserter batchInserter, String csvDataDir ) throws FileNotFoundException
+            final BatchInserter batchInserter, String csvDataDir ) throws FileNotFoundException
     {
         /*
         * Neo4j Batch Index Providers
         */
-        CommentsBatchIndex commentsIndex = new CommentsBatchIndex( tempIndexFactory.create() );
-        PostsBatchIndex postsIndex = new PostsBatchIndex( tempIndexFactory.create() );
-        PersonsBatchIndex personsIndex = new PersonsBatchIndex( tempIndexFactory.create() );
-        ForumsBatchIndex forumsIndex = new ForumsBatchIndex( tempIndexFactory.create() );
-        TagsBatchIndex tagsIndex = new TagsBatchIndex( tempIndexFactory.create() );
-        TagClassesBatchIndex tagClassesIndex = new TagClassesBatchIndex( tempIndexFactory.create() );
-        OrganisationsBatchIndex organisationsIndex = new OrganisationsBatchIndex( tempIndexFactory.create() );
-        LanguagesBatchIndex languagesIndex = new LanguagesBatchIndex( tempIndexFactory.create() );
-        PlacesBatchIndex placesIndex = new PlacesBatchIndex( tempIndexFactory.create() );
-        EmailAddressesBatchIndex emailAddressesIndex = new EmailAddressesBatchIndex( tempIndexFactory.create() );
+        CommentsTempIndex commentsIndex = new CommentsTempIndex( tempIndexFactory.create() );
+        PostsTempIndex postsIndex = new PostsTempIndex( tempIndexFactory.create() );
+        PersonsTempIndex personsIndex = new PersonsTempIndex( tempIndexFactory.create() );
+        ForumsTempIndex forumsIndex = new ForumsTempIndex( tempIndexFactory.create() );
+        TagsTempIndex tagsIndex = new TagsTempIndex( tempIndexFactory.create() );
+        TagClassesTempIndex tagClassesIndex = new TagClassesTempIndex( tempIndexFactory.create() );
+        OrganisationsTempIndex organisationsIndex = new OrganisationsTempIndex( tempIndexFactory.create() );
+        LanguagesTempIndex languagesIndex = new LanguagesTempIndex( tempIndexFactory.create() );
+        PlacesTempIndex placesIndex = new PlacesTempIndex( tempIndexFactory.create() );
+        EmailAddressesTempIndex emailAddressesIndex = new EmailAddressesTempIndex( tempIndexFactory.create() );
 
         /*
         * CSV Files
@@ -85,7 +85,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter comments( final String csvDataDir, final BatchInserter batchInserter,
-            final CommentsBatchIndex commentsIndex ) throws FileNotFoundException
+            final CommentsTempIndex commentsIndex ) throws FileNotFoundException
     {
         /*
         id  creationDate            location IP     browserUsed     content
@@ -124,7 +124,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter posts( final String csvDataDir, final BatchInserter batchInserter,
-            final PostsBatchIndex postsIndex ) throws FileNotFoundException
+            final PostsTempIndex postsIndex ) throws FileNotFoundException
     {
         /*
         id      imageFile   creationDate            locationIP      browserUsed     language    content
@@ -165,7 +165,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter persons( final String csvDataDir, final BatchInserter batchInserter,
-            final PersonsBatchIndex personsIndex ) throws FileNotFoundException
+            final PersonsTempIndex personsIndex ) throws FileNotFoundException
     {
         /*
         id      firstName   lastName    gender  birthday    creationDate            locationIP      browserUsed
@@ -220,7 +220,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter forums( final String csvDataDir, final BatchInserter batchInserter,
-            final ForumsBatchIndex forumIndex ) throws FileNotFoundException
+            final ForumsTempIndex forumIndex ) throws FileNotFoundException
     {
         /*
             id      title                       creationDate
@@ -257,7 +257,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter tags( final String csvDataDir, final BatchInserter batchInserter,
-            final TagsBatchIndex tagIndex ) throws FileNotFoundException
+            final TagsTempIndex tagIndex ) throws FileNotFoundException
     {
         /*
         id      name                url
@@ -281,7 +281,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter tagClasses( final String csvDataDir, final BatchInserter batchInserter,
-            final TagClassesBatchIndex tagClassesIndex ) throws FileNotFoundException
+            final TagClassesTempIndex tagClassesIndex ) throws FileNotFoundException
     {
         /*
         id      name    url
@@ -305,7 +305,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter organisations( final String csvDataDir, final BatchInserter batchInserter,
-            final OrganisationsBatchIndex organisationsIndex ) throws FileNotFoundException
+            final OrganisationsTempIndex organisationsIndex ) throws FileNotFoundException
     {
         /*
         id  type        name                        url
@@ -331,7 +331,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter places( final String csvDataDir, final BatchInserter batchInserter,
-            final PlacesBatchIndex placeIndex ) throws FileNotFoundException
+            final PlacesTempIndex placeIndex ) throws FileNotFoundException
     {
         /*
         id      name            url                                             type
@@ -356,7 +356,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter commentReplyOfComment( final String csvDataDir, final BatchInserter batchInserter,
-            final CommentsBatchIndex commentsIndex ) throws FileNotFoundException
+            final CommentsTempIndex commentsIndex ) throws FileNotFoundException
     {
         /*
         Comment.id  Comment.id
@@ -382,7 +382,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter commentReplyOfPost( final String csvDataDir, final BatchInserter batchInserter,
-            final CommentsBatchIndex commentsIndex, final PostsBatchIndex postsIndex ) throws FileNotFoundException
+            final CommentsTempIndex commentsIndex, final PostsTempIndex postsIndex ) throws FileNotFoundException
     {
         /*
         Comment.id  Post.id
@@ -408,7 +408,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter commentIsLocatedInPlace( final String csvDataDir, final BatchInserter batchInserter,
-            final CommentsBatchIndex commentsIndex, final PlacesBatchIndex placesIndex ) throws FileNotFoundException
+            final CommentsTempIndex commentsIndex, final PlacesTempIndex placesIndex ) throws FileNotFoundException
     {
         /*
         Comment.id  Place.id
@@ -434,7 +434,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter placeIsPartOfPlace( final String csvDataDir, final BatchInserter batchInserter,
-            final PlacesBatchIndex placesIndex ) throws FileNotFoundException
+            final PlacesTempIndex placesIndex ) throws FileNotFoundException
     {
         /*
         Place.id Place.id
@@ -460,7 +460,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter personKnowsPerson( final String csvDataDir, final BatchInserter batchInserter,
-            final PersonsBatchIndex personsIndex ) throws FileNotFoundException
+            final PersonsTempIndex personsIndex ) throws FileNotFoundException
     {
         /*
         Person.id   Person.id
@@ -486,8 +486,8 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter personStudyAtOrganisation( final String csvDataDir,
-            final BatchInserter batchInserter, final PersonsBatchIndex personsIndex,
-            final OrganisationsBatchIndex organisationsIndex ) throws FileNotFoundException
+            final BatchInserter batchInserter, final PersonsTempIndex personsIndex,
+            final OrganisationsTempIndex organisationsIndex ) throws FileNotFoundException
     {
         /*
         Person.id   Organisation.id classYear
@@ -517,8 +517,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter personSpeaksLanguage( final String csvDataDir, final BatchInserter batchInserter,
-            final PersonsBatchIndex personsIndex, final LanguagesBatchIndex languagesIndex )
-            throws FileNotFoundException
+            final PersonsTempIndex personsIndex, final LanguagesTempIndex languagesIndex ) throws FileNotFoundException
     {
         /*        
         Person.id   language
@@ -544,7 +543,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter commentHasCreatorPerson( final String csvDataDir, final BatchInserter batchInserter,
-            final PersonsBatchIndex personsIndex, final CommentsBatchIndex commentsIndex ) throws FileNotFoundException
+            final PersonsTempIndex personsIndex, final CommentsTempIndex commentsIndex ) throws FileNotFoundException
     {
         /*        
         Comment.id  Person.id
@@ -570,7 +569,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter postHasCreatorPerson( final String csvDataDir, final BatchInserter batchInserter,
-            final PersonsBatchIndex personsIndex, final PostsBatchIndex postsIndex ) throws FileNotFoundException
+            final PersonsTempIndex personsIndex, final PostsTempIndex postsIndex ) throws FileNotFoundException
     {
         /*
         Post.id     Person.id
@@ -596,7 +595,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter forumHasModeratorPerson( final String csvDataDir, final BatchInserter batchInserter,
-            final PersonsBatchIndex personsIndex, final ForumsBatchIndex forumsIndex ) throws FileNotFoundException
+            final PersonsTempIndex personsIndex, final ForumsTempIndex forumsIndex ) throws FileNotFoundException
     {
         /*
         Forum.id    Person.id
@@ -622,7 +621,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter personIsLocatedInPlace( final String csvDataDir, final BatchInserter batchInserter,
-            final PersonsBatchIndex personsIndex, final PlacesBatchIndex placesIndex ) throws FileNotFoundException
+            final PersonsTempIndex personsIndex, final PlacesTempIndex placesIndex ) throws FileNotFoundException
     {
         /*        
         Person.id   Place.id
@@ -648,8 +647,8 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter personWorksAtOrganisation( final String csvDataDir,
-            final BatchInserter batchInserter, final PersonsBatchIndex personsIndex,
-            final OrganisationsBatchIndex organisationsIndex ) throws FileNotFoundException
+            final BatchInserter batchInserter, final PersonsTempIndex personsIndex,
+            final OrganisationsTempIndex organisationsIndex ) throws FileNotFoundException
     {
         /*
         Person.id   Organisation.id     workFrom
@@ -679,7 +678,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter personHasInterestTag( final String csvDataDir, final BatchInserter batchInserter,
-            final PersonsBatchIndex personsIndex, final TagsBatchIndex tagsIndex ) throws FileNotFoundException
+            final PersonsTempIndex personsIndex, final TagsTempIndex tagsIndex ) throws FileNotFoundException
     {
         /*
         Person.id   Tag.id
@@ -705,7 +704,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter personHasEmailAddress( final String csvDataDir, final BatchInserter batchInserter,
-            final PersonsBatchIndex personsIndex, final EmailAddressesBatchIndex emailAddressesIndex )
+            final PersonsTempIndex personsIndex, final EmailAddressesTempIndex emailAddressesIndex )
             throws FileNotFoundException
     {
         /*
@@ -732,7 +731,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter postHasTagTag( final String csvDataDir, final BatchInserter batchInserter,
-            final PostsBatchIndex postsIndex, final TagsBatchIndex tagsIndex ) throws FileNotFoundException
+            final PostsTempIndex postsIndex, final TagsTempIndex tagsIndex ) throws FileNotFoundException
     {
         /*
         Post.id Tag.id
@@ -758,7 +757,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter personLikesPost( final String csvDataDir, final BatchInserter batchInserter,
-            final PersonsBatchIndex personsIndex, final PostsBatchIndex postsIndex ) throws FileNotFoundException
+            final PersonsTempIndex personsIndex, final PostsTempIndex postsIndex ) throws FileNotFoundException
     {
         /*
         Person.id   Post.id     creationDate
@@ -800,7 +799,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter postIsLocatedInPlace( final String csvDataDir, final BatchInserter batchInserter,
-            final PostsBatchIndex postsIndex, final PlacesBatchIndex placesIndex ) throws FileNotFoundException
+            final PostsTempIndex postsIndex, final PlacesTempIndex placesIndex ) throws FileNotFoundException
     {
         /*
         Post.id     Place.id
@@ -826,7 +825,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter forumHasMemberPerson( final String csvDataDir, final BatchInserter batchInserter,
-            final ForumsBatchIndex forumsIndex, final PersonsBatchIndex personsIndex ) throws FileNotFoundException
+            final ForumsTempIndex forumsIndex, final PersonsTempIndex personsIndex ) throws FileNotFoundException
     {
         /*
         Forum.id    Person.id   joinDate
@@ -868,7 +867,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter forumContainerOfPost( final String csvDataDir, final BatchInserter batchInserter,
-            final ForumsBatchIndex forumsIndex, final PostsBatchIndex postsIndex ) throws FileNotFoundException
+            final ForumsTempIndex forumsIndex, final PostsTempIndex postsIndex ) throws FileNotFoundException
     {
         /*
         Forum.id    Post.id
@@ -894,7 +893,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter forumHasTag( final String csvDataDir, final BatchInserter batchInserter,
-            final ForumsBatchIndex forumsIndex, final TagsBatchIndex tagsIndex ) throws FileNotFoundException
+            final ForumsTempIndex forumsIndex, final TagsTempIndex tagsIndex ) throws FileNotFoundException
     {
         /*
         Forum.id    Tag.id
@@ -920,7 +919,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter tagHasTypeTagClass( final String csvDataDir, final BatchInserter batchInserter,
-            final TagsBatchIndex tagsIndex, final TagClassesBatchIndex tagClassesIndex ) throws FileNotFoundException
+            final TagsTempIndex tagsIndex, final TagClassesTempIndex tagClassesIndex ) throws FileNotFoundException
     {
         /*
         Tag.id  TagClass.id
@@ -946,8 +945,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter tagClassIsSubclassOfTagClass( final String csvDataDir,
-            final BatchInserter batchInserter, final TagClassesBatchIndex tagClassesIndex )
-            throws FileNotFoundException
+            final BatchInserter batchInserter, final TagClassesTempIndex tagClassesIndex ) throws FileNotFoundException
     {
         /*
         TagClass.id     TagClass.id
@@ -974,8 +972,8 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter organisationBasedNearPlace( final String csvDataDir,
-            final BatchInserter batchInserter, final OrganisationsBatchIndex organisationsIndex,
-            final PlacesBatchIndex placesIndex ) throws FileNotFoundException
+            final BatchInserter batchInserter, final OrganisationsTempIndex organisationsIndex,
+            final PlacesTempIndex placesIndex ) throws FileNotFoundException
     {
         /*
         Organisation.id     Place.id

@@ -8,7 +8,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
-import com.ldbc.socialnet.workload.neo4j.utils.GraphStatistics;
+import com.ldbc.socialnet.workload.neo4j.utils.GraphUtils;
 
 public class OpenAndClose
 {
@@ -33,8 +33,8 @@ public class OpenAndClose
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase( dbDir );
 
         logger.info( "Calculating Graph Metrics:" );
-        logger.info( "\tNode count = " + GraphStatistics.nodeCount( db, 10000000 ) );
-        logger.info( "\tRelationship count = " + GraphStatistics.relationshipCount( db, 10000000 ) );
+        logger.info( "\tNode count = " + GraphUtils.nodeCount( db, 10000000 ) );
+        logger.info( "\tRelationship count = " + GraphUtils.relationshipCount( db, 10000000 ) );
 
         db.shutdown();
     }

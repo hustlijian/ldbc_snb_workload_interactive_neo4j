@@ -22,9 +22,6 @@ import com.ldbc.driver.util.GeneratorUtils;
 import com.ldbc.driver.util.Pair;
 import com.ldbc.driver.util.temporal.Time;
 
-/*
-sudo java -cp ldbc_driver/core/target/core-0.1-SNAPSHOT.jar:target/neo4j_importer-0.1-SNAPSHOT.jar com.ldbc.driver.Client -oc 1 -rc -1 -tc 1 -s -tu MILLISECONDS -p neo4j.path=/var/neodata/ldbc/socialnet_50000_users_10_years_FIX/neo4jdb/ neo4j.dbtype=embedded -db com.ldbc.socialnet.workload.neo4j.Neo4jDb -w com.ldbc.socialnet.workload.LdbcInteractiveWorkload
- */
 public class LdbcInteractiveWorkload extends Workload
 {
 

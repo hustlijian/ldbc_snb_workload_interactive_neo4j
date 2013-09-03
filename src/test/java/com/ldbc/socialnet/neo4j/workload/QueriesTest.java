@@ -13,16 +13,17 @@ import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import com.ldbc.socialnet.workload.Domain;
 import com.ldbc.socialnet.workload.Queries;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
+import com.ldbc.socialnet.workload.neo4j.utils.GraphUtils;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
-@Ignore
 public class QueriesTest
 {
     public static GraphDatabaseService db = null;
@@ -41,13 +42,41 @@ public class QueriesTest
         db.shutdown();
     }
 
+    @Ignore
+    @Test
+    public void personTest()
+    {
+        Map<String, Object> queryParams = Queries.LdbcInteractive.PersonTestQuery.buildParams( 75 );
+        execute( Queries.LdbcInteractive.PersonTestQuery.QUERY_TEMPLATE_WITH_INDEX, queryParams, 2, 10, true, false );
+        execute( Queries.LdbcInteractive.PersonTestQuery.QUERY_TEMPLATE_WITHOUT_INDEX, queryParams, 2, 10, true, false );
+    }
+
+    @Test
+    public void countryTest1()
+    {
+        Map<String, Object> queryParams = Queries.LdbcInteractive.CountryTestQuery.buildParams( "Brazil" );
+        execute( Queries.LdbcInteractive.CountryTestQuery.QUERY_TEMPLATE_WITH_INDEX, queryParams, 0, 1, true, false );
+        execute( Queries.LdbcInteractive.CountryTestQuery.QUERY_TEMPLATE_WITHOUT_INDEX, queryParams, 0, 1, true, false );
+    }
+
+    @Ignore
+    @Test
+    public void countryTest2()
+    {
+        Map<String, Object> queryParams = Queries.LdbcInteractive.CountryTestQuery.buildParams( "United_States" );
+        execute( Queries.LdbcInteractive.CountryTestQuery.QUERY_TEMPLATE_WITH_INDEX, queryParams, 0, 1, true, false );
+        execute( Queries.LdbcInteractive.CountryTestQuery.QUERY_TEMPLATE_WITHOUT_INDEX, queryParams, 0, 1, true, false );
+    }
+
+    @Ignore
     @Test
     public void query1()
     {
         Map<String, Object> queryParams = Queries.LdbcInteractive.Query1.buildParams( "Chen" );
-        execute( Queries.LdbcInteractive.Query1.QUERY_TEMPLATE, queryParams, 2, 5, true );
+        execute( Queries.LdbcInteractive.Query1.QUERY_TEMPLATE, queryParams, 2, 5, true, false );
     }
 
+    @Ignore
     @Test
     public void query3()
     {
@@ -65,9 +94,12 @@ public class QueriesTest
 
         Map<String, Object> queryParams = Queries.LdbcInteractive.Query3.buildParams( personId, countryX, countryY,
                 startDate, durationDays );
-        execute( Queries.LdbcInteractive.Query3.QUERY_TEMPLATE, queryParams, 2, 5, true );
+        execute( Queries.LdbcInteractive.Query3.QUERY_TEMPLATE_x, queryParams, 0, 1, true, false );
+        // execute( Queries.LdbcInteractive.Query3.QUERY_TEMPLATE, queryParams,
+        // 0, 1, true, false );
     }
 
+    @Ignore
     @Test
     public void query4()
     {
@@ -82,9 +114,10 @@ public class QueriesTest
         int durationDays = 300;
 
         Map<String, Object> queryParams = Queries.LdbcInteractive.Query4.buildParams( personId, startDate, durationDays );
-        execute( Queries.LdbcInteractive.Query4.QUERY_TEMPLATE, queryParams, 2, 5, true );
+        execute( Queries.LdbcInteractive.Query4.QUERY_TEMPLATE_x, queryParams, 2, 5, true, false );
     }
 
+    @Ignore
     @Test
     public void time()
     {
@@ -97,58 +130,12 @@ public class QueriesTest
         System.out.println( String.format( "%02d:%02d.%03d (m:s.ms)", m, s, ms ) );
     }
 
-    @Ignore
-    @Test
-    public void index()
-    {
-        tryToDropIndex( Domain.Node.PERSON, Domain.Person.ID );
-        tryToDropIndex( Domain.Node.PERSON, Domain.Person.FIRST_NAME );
-        tryToDropIndex( Domain.Node.PERSON, Domain.Person.LAST_NAME );
-        tryToDropIndex( Domain.Node.PLACE, Domain.Place.NAME );
-        tryToDropIndex( Domain.Place.Type.CITY, Domain.Place.NAME );
-        tryToDropIndex( Domain.Place.Type.COUNTRY, Domain.Place.NAME );
-
-        tryToCreateIndex( Domain.Node.PERSON, Domain.Person.ID );
-        tryToCreateIndex( Domain.Node.PERSON, Domain.Person.FIRST_NAME );
-        tryToCreateIndex( Domain.Node.PERSON, Domain.Person.LAST_NAME );
-        tryToCreateIndex( Domain.Node.PLACE, Domain.Place.NAME );
-        tryToCreateIndex( Domain.Place.Type.CITY, Domain.Place.NAME );
-        tryToCreateIndex( Domain.Place.Type.COUNTRY, Domain.Place.NAME );
-    }
-
-    private void tryToDropIndex( Label label, String property )
-    {
-        try
-        {
-            String queryString = "DROP INDEX ON :" + label + "(" + property + ")";
-            System.out.println( queryString );
-            queryEngine.execute( queryString );
-        }
-        catch ( Exception e )
-        {
-            System.out.println( e.getMessage() );
-        }
-    }
-
-    private void tryToCreateIndex( Label label, String property )
-    {
-        try
-        {
-            String queryString = "CREATE INDEX ON :" + label + "(" + property + ")";
-            System.out.println( queryString );
-            queryEngine.execute( queryString );
-        }
-        catch ( Exception e )
-        {
-            System.out.println( e.getMessage() );
-        }
-    }
-
     private void execute( String queryString, Map<String, Object> queryParams, long warmup, long iterations,
-            boolean experimental )
+            boolean experimental, boolean profile )
     {
         System.out.println( queryParams.toString() );
         System.out.println();
+        queryString = ( profile ) ? "profile\n" + queryString : queryString;
         queryString = ( experimental ) ? "cypher experimental\n" + queryString : queryString;
         System.out.println( queryString );
         for ( int i = 0; i < warmup; i++ )

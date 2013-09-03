@@ -15,3 +15,4 @@ db/
 lib/
 run.sh~
 openAndClose.sh~
+tempDb/

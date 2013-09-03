@@ -2,11 +2,11 @@ package com.ldbc.socialnet.workload.neo4j.load;
 
 import com.ldbc.socialnet.workload.neo4j.load.tempindex.TempIndex;
 
-public class TagClassesBatchIndex implements TempIndex<Long, Long>
+public class PersonsTempIndex implements TempIndex<Long, Long>
 {
     private final TempIndex<Long, Long> tempIndex;
 
-    public TagClassesBatchIndex( TempIndex<Long, Long> tempIndex )
+    public PersonsTempIndex( TempIndex<Long, Long> tempIndex )
     {
         this.tempIndex = tempIndex;
     }
