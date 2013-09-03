@@ -39,37 +39,38 @@ public class SchemaIndexCreationTest
     @After
     public void deleteDirAfter() throws IOException
     {
-//        FileUtils.deleteRecursively( new File( dbDir ) );
+        // FileUtils.deleteRecursively( new File( dbDir ) );
     }
 
     public enum TestLabels implements Label
     {
-        TEST_LABEL
+        TEST_LABEL_1,
+        TEST_LABEL_2
     }
 
     @Test
     public void nodesShouldBeIndexed()
     {
-        long nodeCount = 1000000;
+        long nodeCount = 1000;
         System.out.println( "Loading " + nodeCount + " nodes..." );
         BatchInserter batchInserter = BatchInserters.inserter( "tempDb" );
         for ( int i = 0; i < nodeCount; i++ )
         {
-            batchInserter.createNode( MapUtil.map( "id", i ), TestLabels.TEST_LABEL );
+            batchInserter.createNode( MapUtil.map( "id", i ), TestLabels.TEST_LABEL_1 );
         }
         System.out.println( "Nodes loaded" );
         System.out.println( "Create schema indexes" );
-        batchInserter.createDeferredSchemaIndex( TestLabels.TEST_LABEL ).on( "id" ).create();
+        batchInserter.createDeferredSchemaIndex( TestLabels.TEST_LABEL_1 ).on( "id" ).create();
         System.out.print( "Shut down batch inserter..." );
         batchInserter.shutdown();
         System.out.println( "Batch inserter shut down" );
         System.out.print( "Open GraphDatabaseFactory..." );
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase( "tempDb" );
         System.out.println( "GraphDatabaseFactory open" );
-        Transaction tx = db.beginTx();
-        try
+
+        try (Transaction tx = db.beginTx())
         {
-            for ( IndexDefinition indexDefinition : db.schema().getIndexes( TestLabels.TEST_LABEL ) )
+            for ( IndexDefinition indexDefinition : db.schema().getIndexes( TestLabels.TEST_LABEL_1 ) )
             {
                 IndexState indexState = db.schema().getIndexState( indexDefinition );
                 System.out.println( String.format( "%s == %s", indexDefinition.toString(), indexState ) );
@@ -82,73 +83,80 @@ public class SchemaIndexCreationTest
         }
         catch ( Exception e )
         {
-            tx.failure();
+            db.shutdown();
             throw e;
-        }
-        finally
-        {
-            tx.finish();
         }
 
         ExecutionEngine queryEngine = new ExecutionEngine( db );
 
         String queryStringWithIndex =
 
-        "MATCH (n:" + TestLabels.TEST_LABEL + ")\n"
+        "MATCH (n:" + TestLabels.TEST_LABEL_1 + ")\n"
 
-        + "USING INDEX n:" + TestLabels.TEST_LABEL + "(id)\n"
+        + "USING INDEX n:" + TestLabels.TEST_LABEL_1 + "(id)\n"
 
         + "WHERE n.id=42\n"
 
-        + "RETURN n";
+        + "RETURN n.id AS id";
 
         String queryStringWithoutIndex =
 
-        "MATCH (n:" + TestLabels.TEST_LABEL + ")\n"
+        "MATCH (n:" + TestLabels.TEST_LABEL_1 + ")\n"
 
-        + "USING INDEX n:" + TestLabels.TEST_LABEL + "(id)\n"
+        + "USING INDEX n:" + TestLabels.TEST_LABEL_1 + "(id)\n"
 
         + "WHERE n.id={id}\n"
 
-        + "RETURN n";
+        + "RETURN n.id AS id";
 
-        Map<String, Object> queryParams = MapUtil.map( "id", 42 );
-        ExecutionResult resultWithIndex = execute( queryEngine, queryStringWithIndex, queryParams );
-        ExecutionResult resultWithoutIndex = execute( queryEngine, queryStringWithoutIndex, queryParams );
+        try (Transaction tx = db.beginTx())
+        {
+            Map<String, Object> queryParams = MapUtil.map( "id", 42 );
+            ExecutionResult resultWithIndex = execute( queryEngine, queryStringWithIndex, queryParams );
+            ExecutionResult resultWithoutIndex = execute( queryEngine, queryStringWithoutIndex, queryParams );
 
-        assertThat( IteratorUtil.count( resultWithIndex.columnAs( "id" ) ), is( 1 ) );
-        assertThat( IteratorUtil.count( resultWithoutIndex.columnAs( "id" ) ), is( 1 ) );
-
-        db.shutdown();
+            assertThat( IteratorUtil.count( resultWithIndex.columnAs( "id" ) ), is( 1 ) );
+            assertThat( IteratorUtil.count( resultWithoutIndex.columnAs( "id" ) ), is( 1 ) );
+        }
+        catch ( Exception e )
+        {
+            throw e;
+        }
+        finally
+        {
+            db.shutdown();
+        }
     }
 
     @Test
     public void nodesShouldBeIndexedInMultipleIndexes()
     {
-        long nodeCount = 1000000;
+        long nodeCount = 1000;
         System.out.println( "Loading " + nodeCount + " nodes..." );
         BatchInserter batchInserter = BatchInserters.inserter( "tempDb" );
         for ( int i = 0; i < nodeCount; i++ )
         {
             batchInserter.createNode(
                     MapUtil.map( "id", i, "name", Integer.toString( i ), "id_name", String.format( "%s_%s", i, i ) ),
-                    TestLabels.TEST_LABEL );
+                    TestLabels.TEST_LABEL_1, TestLabels.TEST_LABEL_2 );
         }
         System.out.println( "Nodes loaded" );
         System.out.println( "Create schema indexes" );
-        batchInserter.createDeferredSchemaIndex( TestLabels.TEST_LABEL ).on( "id" ).create();
-        batchInserter.createDeferredSchemaIndex( TestLabels.TEST_LABEL ).on( "name" ).create();
-        batchInserter.createDeferredSchemaIndex( TestLabels.TEST_LABEL ).on( "id_name" ).create();
+        batchInserter.createDeferredSchemaIndex( TestLabels.TEST_LABEL_1 ).on( "id" ).create();
+        batchInserter.createDeferredSchemaIndex( TestLabels.TEST_LABEL_1 ).on( "name" ).create();
+        batchInserter.createDeferredSchemaIndex( TestLabels.TEST_LABEL_1 ).on( "id_name" ).create();
+        batchInserter.createDeferredSchemaIndex( TestLabels.TEST_LABEL_2 ).on( "id" ).create();
+        batchInserter.createDeferredSchemaIndex( TestLabels.TEST_LABEL_2 ).on( "name" ).create();
+        batchInserter.createDeferredSchemaIndex( TestLabels.TEST_LABEL_2 ).on( "id_name" ).create();
         System.out.print( "Shut down batch inserter..." );
         batchInserter.shutdown();
         System.out.println( "Batch inserter shut down" );
         System.out.print( "Open GraphDatabaseFactory..." );
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase( "tempDb" );
         System.out.println( "GraphDatabaseFactory open" );
-        Transaction tx = db.beginTx();
-        try
+        try (Transaction tx = db.beginTx())
         {
-            for ( IndexDefinition indexDefinition : db.schema().getIndexes( TestLabels.TEST_LABEL ) )
+            for ( IndexDefinition indexDefinition : db.schema().getIndexes() )
             {
                 IndexState indexState = db.schema().getIndexState( indexDefinition );
                 System.out.println( String.format( "%s == %s", indexDefinition.toString(), indexState ) );
@@ -161,75 +169,145 @@ public class SchemaIndexCreationTest
         }
         catch ( Exception e )
         {
-            tx.failure();
+            db.shutdown();
             throw e;
-        }
-        finally
-        {
-            tx.finish();
         }
 
         ExecutionEngine queryEngine = new ExecutionEngine( db );
 
-        String idQueryStringWithIndex =
+        try (Transaction tx = db.beginTx())
+        {
+            Map<String, Object> queryParams = MapUtil.map( "id", 42, "name", "42", "id_name", "42_42" );
 
-        "MATCH (n:" + TestLabels.TEST_LABEL + ")\n"
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_1, "id", QueryVersion.WITH ), queryParams ).columnAs(
+                            "id" ) ), is( 1 ) );
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_1, "id", QueryVersion.USING ), queryParams ).columnAs(
+                            "id" ) ), is( 1 ) );
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_1, "id", QueryVersion.NONE ), queryParams ).columnAs(
+                            "id" ) ), is( 1 ) );
 
-        + "USING INDEX n:" + TestLabels.TEST_LABEL + "(id)\n"
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_1, "name", QueryVersion.WITH ), queryParams ).columnAs(
+                            "name" ) ), is( 1 ) );
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_1, "name", QueryVersion.USING ), queryParams ).columnAs(
+                            "name" ) ), is( 1 ) );
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_1, "name", QueryVersion.NONE ), queryParams ).columnAs(
+                            "name" ) ), is( 1 ) );
 
-        + "WHERE n.id={id}\n"
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_1, "id_name", QueryVersion.WITH ), queryParams ).columnAs(
+                            "id_name" ) ), is( 1 ) );
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_1, "id_name", QueryVersion.USING ), queryParams ).columnAs(
+                            "id_name" ) ), is( 1 ) );
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_1, "id_name", QueryVersion.NONE ), queryParams ).columnAs(
+                            "id_name" ) ), is( 1 ) );
 
-        + "RETURN n.id AS id";
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_2, "id", QueryVersion.WITH ), queryParams ).columnAs(
+                            "id" ) ), is( 1 ) );
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_2, "id", QueryVersion.USING ), queryParams ).columnAs(
+                            "id" ) ), is( 1 ) );
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_2, "id", QueryVersion.NONE ), queryParams ).columnAs(
+                            "id" ) ), is( 1 ) );
 
-        String idQueryStringWithoutIndex =
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_2, "name", QueryVersion.WITH ), queryParams ).columnAs(
+                            "name" ) ), is( 1 ) );
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_2, "name", QueryVersion.USING ), queryParams ).columnAs(
+                            "name" ) ), is( 1 ) );
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_2, "name", QueryVersion.NONE ), queryParams ).columnAs(
+                            "name" ) ), is( 1 ) );
 
-        "MATCH (n:" + TestLabels.TEST_LABEL + ")\n"
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_2, "id_name", QueryVersion.WITH ), queryParams ).columnAs(
+                            "id_name" ) ), is( 1 ) );
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_2, "id_name", QueryVersion.USING ), queryParams ).columnAs(
+                            "id_name" ) ), is( 1 ) );
+            assertThat(
+                    IteratorUtil.count( execute( queryEngine,
+                            buildQueryString( TestLabels.TEST_LABEL_2, "id_name", QueryVersion.NONE ), queryParams ).columnAs(
+                            "id_name" ) ), is( 1 ) );
+        }
+        catch ( Exception e )
+        {
+            throw e;
+        }
+        finally
+        {
+            db.shutdown();
+        }
+    }
 
-        + "WHERE n.id={id}\n"
+    enum QueryVersion
+    {
+        WITH,
+        USING,
+        NONE
+    }
 
-        + "RETURN n.id AS id";
+    private String buildQueryString( Label label, String property, QueryVersion queryVersion )
+    {
+        String s = null;
+        switch ( queryVersion )
+        {
+        case WITH:
+            s = "WITH n\n";
+            break;
+        case USING:
+            s = "USING INDEX n:" + label + "(" + property + ")\n";
+            break;
 
-        String nameQueryStringWithIndex =
+        case NONE:
+            s = "";
+            break;
+        }
+        return String.format(
 
-        "MATCH (n:" + TestLabels.TEST_LABEL + ")\n"
+        "MATCH (n:" + label + ")\n"
 
-        + "USING INDEX n:" + TestLabels.TEST_LABEL + "(name)\n"
+        + "%s"
 
-        + "WHERE n.name={name}\n"
+        + "WHERE n." + property + "={" + property + "}\n"
 
-        + "RETURN n.name AS name";
+        + "RETURN n." + property + " AS " + property + "",
 
-        String nameQueryStringWithoutIndex =
+        s );
 
-        "MATCH (n:" + TestLabels.TEST_LABEL + ")\n"
-
-        + "WHERE n.name={name}\n"
-
-        + "RETURN n.name AS name";
-
-        Map<String, Object> queryParams = MapUtil.map( "id", 42, "name", "42", "id_name", "42_42" );
-
-        assertThat( IteratorUtil.count( execute( queryEngine, idQueryStringWithIndex, queryParams ).columnAs( "id" ) ),
-                is( 1 ) );
-        assertThat(
-                IteratorUtil.count( execute( queryEngine, idQueryStringWithoutIndex, queryParams ).columnAs( "id" ) ),
-                is( 1 ) );
-        assertThat(
-                IteratorUtil.count( execute( queryEngine, nameQueryStringWithIndex, queryParams ).columnAs( "name" ) ),
-                is( 1 ) );
-        assertThat(
-                IteratorUtil.count( execute( queryEngine, nameQueryStringWithoutIndex, queryParams ).columnAs( "name" ) ),
-                is( 1 ) );
-
-        db.shutdown();
     }
 
     private ExecutionResult execute( ExecutionEngine queryEngine, String queryString, Map<String, Object> queryParams )
     {
-        queryString = "cypher experimental\n" + queryString;
-        System.out.println( queryString );
+        System.out.println( queryString + "\n" );
         ExecutionResult result = queryEngine.execute( queryString, queryParams );
-        // System.out.println( result.dumpToString() );
         return result;
     }
 

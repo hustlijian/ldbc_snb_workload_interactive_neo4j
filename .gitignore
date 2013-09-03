@@ -13,6 +13,5 @@ build.sh~
 README.md~
 db/
 lib/
-run.sh~
-openAndClose.sh~
+batch-bork_neo4j.sh~
 tempDb/

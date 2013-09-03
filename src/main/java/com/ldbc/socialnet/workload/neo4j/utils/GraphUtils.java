@@ -3,7 +3,7 @@ package com.ldbc.socialnet.workload.neo4j.utils;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
-import org.neo4j.cypher.CouldNotDropIndexException;
+//import org.neo4j.cypher.CouldNotDropIndexException;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
@@ -49,7 +49,8 @@ public class GraphUtils
                     {
                         queryEngine.execute( "DROP INDEX ON :" + label + "(" + property + ")" );
                     }
-                    catch ( CouldNotDropIndexException e )
+                    catch ( Exception e )
+                    // catch ( CouldNotDropIndexException e )
                     {
                         logger.info( String.format( "Index does not exist on Label[%s] Property[%s] - can not drop",
                                 label, property ) );

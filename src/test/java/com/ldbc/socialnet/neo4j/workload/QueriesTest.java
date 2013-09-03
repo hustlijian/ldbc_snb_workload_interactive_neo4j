@@ -130,13 +130,13 @@ public class QueriesTest
         System.out.println( String.format( "%02d:%02d.%03d (m:s.ms)", m, s, ms ) );
     }
 
+    // TODO remove experimental
     private void execute( String queryString, Map<String, Object> queryParams, long warmup, long iterations,
             boolean experimental, boolean profile )
     {
         System.out.println( queryParams.toString() );
         System.out.println();
         queryString = ( profile ) ? "profile\n" + queryString : queryString;
-        queryString = ( experimental ) ? "cypher experimental\n" + queryString : queryString;
         System.out.println( queryString );
         for ( int i = 0; i < warmup; i++ )
         {
