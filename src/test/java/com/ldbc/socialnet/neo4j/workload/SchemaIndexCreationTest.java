@@ -215,8 +215,8 @@ public class SchemaIndexCreationTest
 
     private ExecutionResult execute( ExecutionEngine queryEngine, String queryString, Map<String, Object> queryParams )
     {
-        if ( PRINT ) System.out.println( queryString + "\n" );
         ExecutionResult result = queryEngine.execute( queryString, queryParams );
+        if ( PRINT ) System.out.println( queryString + "\n" );
         return result;
     }
 

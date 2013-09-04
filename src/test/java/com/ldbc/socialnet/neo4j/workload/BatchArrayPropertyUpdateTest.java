@@ -31,7 +31,7 @@ public class BatchArrayPropertyUpdateTest
     }
 
     @Test
-    public void one()
+    public void shouldUpdateStringArrayPropertiesOnNodesUsingBatchInserter()
     {
         BatchInserter batchInserter = BatchInserters.inserter( "tempDb" );
 
