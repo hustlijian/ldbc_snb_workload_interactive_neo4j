@@ -86,11 +86,12 @@ public class BatchArrayPropertyUpdateTest
         long id1 = batchInserter.createNode( MapUtil.map( "array", array1 ) );
         long id2 = batchInserter.createNode( MapUtil.map( "array", array1 ) );
 
-        batchInserter.getNodeProperties( id1 ).get( "array" );
+        batchInserter.getNodeProperties( id2 ).get( "array" );
         batchInserter.setNodeProperty( id2, "array", array1 );
         batchInserter.setNodeProperty( id2, "array", array1 );
         batchInserter.setNodeProperty( id2, "array", array1 );
 
+        // NOTE, for some reason this needs to be, and needs to be id1
         batchInserter.getNodeProperties( id1 ).get( "array" );
 
         boolean invalidRecord = false;
