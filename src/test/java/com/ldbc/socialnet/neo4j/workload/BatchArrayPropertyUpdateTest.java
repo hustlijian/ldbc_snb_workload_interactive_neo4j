@@ -30,8 +30,10 @@ public class BatchArrayPropertyUpdateTest
         FileUtils.deleteRecursively( new File( dbDir ) );
     }
 
+    // org.neo4j.kernel.impl.nioneo.store.InvalidRecordException:
+    // DynamicRecord Not in use, blockId[1]
     @Test
-    public void shouldUpdateStringArrayPropertiesOnNodesUsingBatchInserter()
+    public void shouldUpdateStringArrayPropertiesOnNodesUsingBatchInserter1()
     {
         BatchInserter batchInserter = BatchInserters.inserter( "tempDb" );
 
@@ -40,17 +42,40 @@ public class BatchArrayPropertyUpdateTest
         long id2 = batchInserter.createNode( MapUtil.map( "array", array1 ) );
 
         batchInserter.getNodeProperties( id1 ).get( "array" );
-        batchInserter.getNodeProperties( id2 ).get( "array" );
         batchInserter.setNodeProperty( id1, "array", array1 );
         batchInserter.setNodeProperty( id2, "array", array1 );
 
         batchInserter.getNodeProperties( id1 ).get( "array" );
-        batchInserter.getNodeProperties( id2 ).get( "array" );
         batchInserter.setNodeProperty( id1, "array", array1 );
         batchInserter.setNodeProperty( id2, "array", array1 );
 
         batchInserter.getNodeProperties( id1 ).get( "array" );
-        // batchInserter.getNodeProperties( id2 ).get( "array" );
+
+        batchInserter.shutdown();
+    }
+
+    // org.neo4j.kernel.impl.nioneo.store.InvalidRecordException:
+    // DynamicRecord Not in use, blockId[2]
+    @Test
+    public void shouldUpdateStringArrayPropertiesOnNodesUsingBatchInserter2()
+    {
+        BatchInserter batchInserter = BatchInserters.inserter( "tempDb" );
+
+        String[] array1 = { "1" };
+        long id1 = batchInserter.createNode( MapUtil.map( "array", array1 ) );
+        long id2 = batchInserter.createNode( MapUtil.map( "array", array1 ) );
+
+        batchInserter.getNodeProperties( id1 ).get( "array" );
+        batchInserter.setNodeProperty( id2, "array", array1 );
+        batchInserter.setNodeProperty( id2, "array", array1 );
+        batchInserter.setNodeProperty( id2, "array", array1 );
+
+        batchInserter.getNodeProperties( id1 ).get( "array" );
+        batchInserter.setNodeProperty( id2, "array", array1 );
+        batchInserter.setNodeProperty( id2, "array", array1 );
+        batchInserter.setNodeProperty( id2, "array", array1 );
+
+        batchInserter.getNodeProperties( id1 ).get( "array" );
 
         batchInserter.shutdown();
     }
