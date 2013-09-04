@@ -74,8 +74,9 @@ public class LdbcSocialNetworkCsvFileInserters
         fileInserters.add( personLikesPost( csvDataDir, batchInserter, personsIndex, postsIndex ) );
         // TODO uncomment when batchinserter fixed
         // fileInserters.add( personSpeaksLanguage( csvDataDir, batchInserter,
-        // personsIndex, languagesIndex ) );
-        fileInserters.add( personStudyAtOrganisation( csvDataDir, batchInserter, personsIndex, organisationsIndex ) );
+        // personsIndex, languagesIndex ) ); fileInserters.add(
+        // personStudyAtOrganisation( csvDataDir, batchInserter, personsIndex,
+        // organisationsIndex ) );
         fileInserters.add( personWorksAtOrganisation( csvDataDir, batchInserter, personsIndex, organisationsIndex ) );
         fileInserters.add( placeIsPartOfPlace( csvDataDir, batchInserter, placesIndex ) );
         fileInserters.add( postHasCreatorPerson( csvDataDir, batchInserter, personsIndex, postsIndex ) );

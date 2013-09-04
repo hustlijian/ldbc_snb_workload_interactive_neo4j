@@ -7,6 +7,8 @@ import java.util.Map;
 
 // TODO generator should mention cardinalities
 
+// TODO different relationship types for different relationships (cypher may be faster)
+
 /*
     TODO cypher questions
     
@@ -58,6 +60,8 @@ public class Queries
             public static final String QUERY_TEMPLATE = String.format(
 
             "MATCH person:" + Domain.Node.PERSON + "\n"
+
+            + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.FIRST_NAME + ")\n"
 
             + "WHERE person." + Domain.Person.FIRST_NAME + "={ person_first_name }\n"
 
@@ -138,14 +142,14 @@ public class Queries
 
             );
 
-            public static final String QUERY_TEMPLATE_x = String.format(
+            public static final String QUERY_TEMPLATE = String.format(
 
             "MATCH (person:" + Domain.Node.PERSON + ")-[:" + Domain.Rel.KNOWS + "*1..2]-(f:" + Domain.Node.PERSON
                     + ")\n"
 
                     + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.ID + ")\n"
 
-                    + "WHERE person." + Domain.Person.ID + "={person_id} AND NOT f=person\n"
+                    + "WHERE person." + Domain.Person.ID + "={person_id} AND NOT(f=person)\n"
 
                     + "WITH DISTINCT f AS friend\n"
 
@@ -176,24 +180,16 @@ public class Queries
 
             );
 
-            public static final String QUERY_TEMPLATE = String.format(
+            public static final String QUERY_TEMPLATE_michael = String.format(
 
-            "MATCH (person:"
-                    + Domain.Node.PERSON
-                    + "), (countryX:"
-                    + Domain.Place.Type.COUNTRY
-                    + "), (countryY:"
-                    + Domain.Place.Type.COUNTRY
-                    + ")\n"
+            "MATCH (person:" + Domain.Node.PERSON + "), (countryX:" + Domain.Place.Type.COUNTRY + "), (countryY:"
+                    + Domain.Place.Type.COUNTRY + ")\n"
 
-                    // + "USING INDEX countryX:" + Domain.Place.Type.COUNTRY +
-                    // "(" + Domain.Place.NAME + ")\n"
-                    //
-                    // + "USING INDEX countryY:" + Domain.Place.Type.COUNTRY +
-                    // "(" + Domain.Place.NAME + ")\n"
-                    //
-                    // + "USING INDEX person:" + Domain.Node.PERSON + "(" +
-                    // Domain.Person.ID + ")\n"
+                    + "USING INDEX countryX:" + Domain.Place.Type.COUNTRY + "(" + Domain.Place.NAME + ")\n"
+
+                    + "USING INDEX countryY:" + Domain.Place.Type.COUNTRY + "(" + Domain.Place.NAME + ")\n"
+
+                    + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.ID + ")\n"
 
                     + "WHERE person." + Domain.Person.ID + "={person_id} AND countryX." + Domain.Place.NAME
                     + "={country_x} AND countryY." + Domain.Place.NAME + "={country_y}\n"
@@ -230,27 +226,6 @@ public class Queries
                     + "RETURN friendsName, xCount, yCount, xCount + yCount AS xyCount\n"
 
             );
-
-            /*
-            MATCH (person:PERSON),(countryX:COUNTRY),(countryY:COUNTRY)  
-            USING INDEX countryX:COUNTRY(name) 
-            USING INDEX countryY:COUNTRY(name) 
-            USING INDEX person:PERSON(id)            
-            WHERE person.id={person_id} AND countryX.name={country_x} AND countryY.name={country_y}            
-            WITH person, countryX, countryY
-            MATCH (person)-[:KNOWS*1..2]-(f)            
-            WITH DISTINCT f AS friend,countryX,countryY            
-            MATCH (friend)<-[:HAS_CREATOR]-(postX)             
-            WHERE postX:POST AND postX.creationDate>={min_date} AND postX.creationDate<={max_date}            
-            WITH DISTINCT friend, postX, countryX, countryY            
-            MATCH (postX)-[:IS_LOCATED_IN]->(countryX)            
-            WITH friend, count(DISTINCT postX) AS xCount, countryY
-            MATCH (friend)<-[:HAS_CREATOR]-(postY)             
-            WHERE postY:POST AND postY.creationDate>={min_date} AND postY.creationDate<={max_date}            
-            WITH DISTINCT friend, postY, countryY, xCount            
-            MATCH (postY)-[:IS_LOCATED_IN]->(countryY)            
-            WITH friend.firstName +' '+ friend.lastName AS friendsName , xCount, count(DISTINCT postY) AS yCount            
-            RETURN friendsName, xCount, yCount, xCount + yCount AS xyCount;             */
 
             public static final Map<String, Object> buildParams( long personId, String countryX, String countryY,
                     Date startDate, int durationDays )
@@ -303,11 +278,13 @@ public class Queries
             count
              */
 
-            public static final String QUERY_TEMPLATE_x = String.format(
+            public static final String QUERY_TEMPLATE = String.format(
 
             "MATCH (person:" + Domain.Node.PERSON + ")-[:" + Domain.Rel.KNOWS + "]-(friend:" + Domain.Node.PERSON
                     + ")<-[:" + Domain.Rel.HAS_CREATOR + "]-(post:" + Domain.Node.POST + ")-[" + Domain.Rel.HAS_TAG
                     + "]->(tag:" + Domain.Node.TAG + ")\n"
+
+                    + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.ID + ")\n"
 
                     + "WHERE person." + Domain.Person.ID + "={person_id} AND post." + Domain.Post.CREATION_DATE
                     + ">={min_date} AND post." + Domain.Post.CREATION_DATE + "<={max_date}\n"
@@ -322,32 +299,36 @@ public class Queries
 
             );
 
-            public static final String QUERY_TEMPLATE = String.format(
+            public static final String QUERY_TEMPLATE_michael = String.format(
 
-            "MATCH (person:PERSON" + Domain.Node.PERSON + ")"
+            "MATCH (person:" + Domain.Node.PERSON + ")\n"
 
-            + "WHERE person." + Domain.Person.ID + "={person_id}"
+            + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.ID + ")\n"
 
-            + "WITH person"
+            + "WHERE person." + Domain.Person.ID + "={person_id}\n"
 
-            + "MATCH (person)-[:" + Domain.Rel.KNOWS + "*1..2]-(f)"
+            + "WITH person\n"
 
-            + "WITH DISTINCT f AS friend"
+            + "MATCH (person)-[:" + Domain.Rel.KNOWS + "*1..2]-(f)\n"
 
-            + "MATCH (friend)<-[:" + Domain.Rel.HAS_CREATOR + "]-(post:" + Domain.Node.POST + ")"
+            + "WITH DISTINCT f AS friend\n"
+
+            + "MATCH (friend)<-[:" + Domain.Rel.HAS_CREATOR + "]-(post:" + Domain.Node.POST + ")\n"
 
             + "WHERE post." + Domain.Post.CREATION_DATE + ">={min_date} AND post." + Domain.Post.CREATION_DATE
-                    + "<={max_date}"
+                    + "<={max_date}\n"
 
-                    + "WITH distinct post"
+                    + "WITH distinct post\n"
 
-                    + "MATCH (post)-[:" + Domain.Rel.HAS_TAG + "]->(tag)"
+                    + "MATCH (post)-[:" + Domain.Rel.HAS_TAG + "]->(tag)\n"
 
-                    + "RETURN tag." + Domain.Tag.NAME + " AS tagName, count(*) AS tagCount"
+                    + "RETURN tag." + Domain.Tag.NAME + " AS tagName, count(*) AS tagCount\n"
 
-                    + "ORDER BY tagCount DESC"
+                    + "ORDER BY tagCount DESC\n"
 
-                    + "LIMIT 10" );
+                    + "LIMIT 10"
+
+            );
 
             /*
             MATCH (person:PERSON)            

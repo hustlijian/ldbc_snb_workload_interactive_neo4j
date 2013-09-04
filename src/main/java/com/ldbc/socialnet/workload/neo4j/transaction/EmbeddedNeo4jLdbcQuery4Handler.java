@@ -18,7 +18,7 @@ public class EmbeddedNeo4jLdbcQuery4Handler extends OperationHandler<LdbcQuery4>
     @Override
     protected OperationResult executeOperation( LdbcQuery4 operation ) throws DbException
     {
-        String query = Queries.LdbcInteractive.Query4.QUERY_TEMPLATE_x;
+        String query = Queries.LdbcInteractive.Query4.QUERY_TEMPLATE;
         Map<String, Object> params = Queries.LdbcInteractive.Query4.buildParams( operation.getPersonId(),
                 operation.getStartDate(), operation.getDurationDays() );
 
