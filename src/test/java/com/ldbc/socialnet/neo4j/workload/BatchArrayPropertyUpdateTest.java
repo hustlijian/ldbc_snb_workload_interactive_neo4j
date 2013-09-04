@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.neo4j.helpers.collection.MapUtil;
+import org.neo4j.kernel.impl.nioneo.store.InvalidRecordException;
 import org.neo4j.kernel.impl.util.FileUtils;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
@@ -35,9 +36,12 @@ public class BatchArrayPropertyUpdateTest
     @Test
     public void shouldUpdateStringArrayPropertiesOnNodesUsingBatchInserter1()
     {
-        BatchInserter batchInserter = BatchInserters.inserter( "tempDb" );
+        // Given
+        BatchInserter batchInserter = BatchInserters.inserter( dbDir );
 
         String[] array1 = { "1" };
+
+        // When
         long id1 = batchInserter.createNode( MapUtil.map( "array", array1 ) );
         long id2 = batchInserter.createNode( MapUtil.map( "array", array1 ) );
 
@@ -49,9 +53,23 @@ public class BatchArrayPropertyUpdateTest
         batchInserter.setNodeProperty( id1, "array", array1 );
         batchInserter.setNodeProperty( id2, "array", array1 );
 
-        batchInserter.getNodeProperties( id1 ).get( "array" );
+        boolean invalidRecord = false;
+        try
+        {
+            batchInserter.getNodeProperties( id1 ).get( "array" );
+        }
+        catch ( InvalidRecordException e )
+        {
+            System.out.println( e.getMessage() );
+            invalidRecord = true;
+        }
+        finally
+        {
+            batchInserter.shutdown();
+        }
 
-        batchInserter.shutdown();
+        // Then
+        assertThat( invalidRecord, is( true ) );
     }
 
     // org.neo4j.kernel.impl.nioneo.store.InvalidRecordException:
@@ -59,9 +77,12 @@ public class BatchArrayPropertyUpdateTest
     @Test
     public void shouldUpdateStringArrayPropertiesOnNodesUsingBatchInserter2()
     {
+        // Given
         BatchInserter batchInserter = BatchInserters.inserter( "tempDb" );
 
         String[] array1 = { "1" };
+
+        // When
         long id1 = batchInserter.createNode( MapUtil.map( "array", array1 ) );
         long id2 = batchInserter.createNode( MapUtil.map( "array", array1 ) );
 
@@ -71,12 +92,23 @@ public class BatchArrayPropertyUpdateTest
         batchInserter.setNodeProperty( id2, "array", array1 );
 
         batchInserter.getNodeProperties( id1 ).get( "array" );
-        batchInserter.setNodeProperty( id2, "array", array1 );
-        batchInserter.setNodeProperty( id2, "array", array1 );
-        batchInserter.setNodeProperty( id2, "array", array1 );
 
-        batchInserter.getNodeProperties( id1 ).get( "array" );
+        boolean invalidRecord = false;
+        try
+        {
+            batchInserter.setNodeProperty( id2, "array", array1 );
+        }
+        catch ( InvalidRecordException e )
+        {
+            System.out.println( e.getMessage() );
+            invalidRecord = true;
+        }
+        finally
+        {
+            batchInserter.shutdown();
+        }
 
-        batchInserter.shutdown();
+        // Then
+        assertThat( invalidRecord, is( true ) );
     }
 }
