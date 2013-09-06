@@ -23,6 +23,7 @@ import com.ldbc.socialnet.workload.Queries;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+@Ignore
 public class QueryCorrectnessTest
 {
     public static String dbDir = "tempDb";
