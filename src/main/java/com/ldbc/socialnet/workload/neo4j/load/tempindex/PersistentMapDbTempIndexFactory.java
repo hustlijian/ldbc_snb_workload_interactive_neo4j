@@ -50,7 +50,6 @@ public class PersistentMapDbTempIndexFactory implements TempIndexFactory<Long, L
         @Override
         public void shutdown()
         {
-            map.clear();
             map.close();
             map = null;
         }

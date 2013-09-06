@@ -4,11 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -28,65 +26,323 @@ public class LdbcSocialNetworkCsvFileInserters
     private final static String DATE_FORMAT_STRING = "yyyy-MM-dd";
     private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat( DATE_FORMAT_STRING );
 
-    public static List<CsvFileInserter> all( TempIndexFactory<Long, Long> tempIndexFactory,
+    private final CommentsTempIndex commentsIndex;
+    private final PostsTempIndex postsIndex;
+    private final PersonsTempIndex personsIndex;
+    private final ForumsTempIndex forumsIndex;
+    private final TagsTempIndex tagsIndex;
+    private final TagClassesTempIndex tagClassesIndex;
+    private final OrganisationsTempIndex organisationsIndex;
+    private final LanguagesTempIndex languagesIndex;
+    private final PlacesTempIndex placesIndex;
+    private final EmailAddressesTempIndex emailAddressesIndex;
+
+    private final CsvFileInserter commentsInserter;
+    private final CsvFileInserter forumsInserter;
+    private final CsvFileInserter organisationsInserter;
+    private final CsvFileInserter personsInserter;
+    private final CsvFileInserter placesInserter;
+    private final CsvFileInserter postsInserter;
+    private final CsvFileInserter tagClassesInserter;
+    private final CsvFileInserter tagsInserter;
+    private final CsvFileInserter commentHasCreatorPersonInserter;
+    private final CsvFileInserter commentIsLocatedInPlaceInserter;
+    private final CsvFileInserter commentReplyOfCommentInserter;
+    private final CsvFileInserter commentReplyOfPostInserter;
+    private final CsvFileInserter forumContainerOfPostInserter;
+    private final CsvFileInserter forumHasMemberPersonInserter;
+    private final CsvFileInserter forumHasModeratorPersonInserter;
+    private final CsvFileInserter forumHasTagInserter;
+    private final CsvFileInserter personHasEmailAddressInserter;
+    private final CsvFileInserter personHasInterestTagInserter;
+    private final CsvFileInserter personIsLocatedInPlaceInserter;
+    private final CsvFileInserter personKnowsPersonInserter;
+    private final CsvFileInserter personLikesPostInserter;
+    private final CsvFileInserter personSpeaksLanguageInserter;
+    private final CsvFileInserter personStudyAtOrganisationInserter;
+    private final CsvFileInserter personWorksAtOrganisationInserter;
+    private final CsvFileInserter placeIsPartOfPlaceInserter;
+    private final CsvFileInserter postHasCreatorPersonInserter;
+    private final CsvFileInserter postHasTagTagInserter;
+    private final CsvFileInserter postIsLocatedInPlaceInserter;
+    private final CsvFileInserter tagClassIsSubclassOfTagClassInserter;
+    private final CsvFileInserter tagHasTypeTagClassInserter;
+    private final CsvFileInserter organisationBasedNearPlaceInserter;
+
+    public LdbcSocialNetworkCsvFileInserters( TempIndexFactory<Long, Long> tempIndexFactory,
             final BatchInserter batchInserter, String csvDataDir ) throws FileNotFoundException
     {
         /*
-        * Neo4j Batch Index Providers
-        */
-        CommentsTempIndex commentsIndex = new CommentsTempIndex( tempIndexFactory.create() );
-        PostsTempIndex postsIndex = new PostsTempIndex( tempIndexFactory.create() );
-        PersonsTempIndex personsIndex = new PersonsTempIndex( tempIndexFactory.create() );
-        ForumsTempIndex forumsIndex = new ForumsTempIndex( tempIndexFactory.create() );
-        TagsTempIndex tagsIndex = new TagsTempIndex( tempIndexFactory.create() );
-        TagClassesTempIndex tagClassesIndex = new TagClassesTempIndex( tempIndexFactory.create() );
-        OrganisationsTempIndex organisationsIndex = new OrganisationsTempIndex( tempIndexFactory.create() );
-        LanguagesTempIndex languagesIndex = new LanguagesTempIndex( tempIndexFactory.create() );
-        PlacesTempIndex placesIndex = new PlacesTempIndex( tempIndexFactory.create() );
-        EmailAddressesTempIndex emailAddressesIndex = new EmailAddressesTempIndex( tempIndexFactory.create() );
+         * Temp Node ID Indexes
+         */
+        this.commentsIndex = new CommentsTempIndex( tempIndexFactory.create() );
+        this.postsIndex = new PostsTempIndex( tempIndexFactory.create() );
+        this.personsIndex = new PersonsTempIndex( tempIndexFactory.create() );
+        this.forumsIndex = new ForumsTempIndex( tempIndexFactory.create() );
+        this.tagsIndex = new TagsTempIndex( tempIndexFactory.create() );
+        this.tagClassesIndex = new TagClassesTempIndex( tempIndexFactory.create() );
+        this.organisationsIndex = new OrganisationsTempIndex( tempIndexFactory.create() );
+        this.languagesIndex = new LanguagesTempIndex( tempIndexFactory.create() );
+        this.placesIndex = new PlacesTempIndex( tempIndexFactory.create() );
+        this.emailAddressesIndex = new EmailAddressesTempIndex( tempIndexFactory.create() );
 
         /*
-        * CSV Files
-        */
-        List<CsvFileInserter> fileInserters = new ArrayList<CsvFileInserter>();
-        fileInserters.add( comments( csvDataDir, batchInserter, commentsIndex ) );
-        fileInserters.add( forums( csvDataDir, batchInserter, forumsIndex ) );
-        fileInserters.add( organisations( csvDataDir, batchInserter, organisationsIndex ) );
-        fileInserters.add( persons( csvDataDir, batchInserter, personsIndex ) );
-        fileInserters.add( places( csvDataDir, batchInserter, placesIndex ) );
-        fileInserters.add( posts( csvDataDir, batchInserter, postsIndex ) );
-        fileInserters.add( tagClasses( csvDataDir, batchInserter, tagClassesIndex ) );
-        fileInserters.add( tags( csvDataDir, batchInserter, tagsIndex ) );
-        fileInserters.add( commentHasCreatorPerson( csvDataDir, batchInserter, personsIndex, commentsIndex ) );
-        fileInserters.add( commentIsLocatedInPlace( csvDataDir, batchInserter, commentsIndex, placesIndex ) );
-        fileInserters.add( commentReplyOfComment( csvDataDir, batchInserter, commentsIndex ) );
-        fileInserters.add( commentReplyOfPost( csvDataDir, batchInserter, commentsIndex, postsIndex ) );
-        fileInserters.add( forumContainerOfPost( csvDataDir, batchInserter, forumsIndex, postsIndex ) );
-        fileInserters.add( forumHasMemberPerson( csvDataDir, batchInserter, forumsIndex, personsIndex ) );
-        fileInserters.add( forumHasModeratorPerson( csvDataDir, batchInserter, personsIndex, forumsIndex ) );
-        fileInserters.add( forumHasTag( csvDataDir, batchInserter, forumsIndex, tagsIndex ) );
-        // TODO uncomment when batchinserter fixed
-        // fileInserters.add( personHasEmailAddress( csvDataDir, batchInserter,
-        // personsIndex, emailAddressesIndex ) );
-        fileInserters.add( personHasInterestTag( csvDataDir, batchInserter, personsIndex, tagsIndex ) );
-        fileInserters.add( personIsLocatedInPlace( csvDataDir, batchInserter, personsIndex, placesIndex ) );
-        fileInserters.add( personKnowsPerson( csvDataDir, batchInserter, personsIndex ) );
-        fileInserters.add( personLikesPost( csvDataDir, batchInserter, personsIndex, postsIndex ) );
-        // TODO uncomment when batchinserter fixed
-        // fileInserters.add( personSpeaksLanguage( csvDataDir, batchInserter,
-        // personsIndex, languagesIndex ) ); fileInserters.add(
-        // personStudyAtOrganisation( csvDataDir, batchInserter, personsIndex,
-        // organisationsIndex ) );
-        fileInserters.add( personWorksAtOrganisation( csvDataDir, batchInserter, personsIndex, organisationsIndex ) );
-        fileInserters.add( placeIsPartOfPlace( csvDataDir, batchInserter, placesIndex ) );
-        fileInserters.add( postHasCreatorPerson( csvDataDir, batchInserter, personsIndex, postsIndex ) );
-        fileInserters.add( postHasTagTag( csvDataDir, batchInserter, postsIndex, tagsIndex ) );
-        fileInserters.add( postIsLocatedInPlace( csvDataDir, batchInserter, postsIndex, placesIndex ) );
-        fileInserters.add( tagClassIsSubclassOfTagClass( csvDataDir, batchInserter, tagClassesIndex ) );
-        fileInserters.add( tagHasTypeTagClass( csvDataDir, batchInserter, tagsIndex, tagClassesIndex ) );
-        fileInserters.add( organisationBasedNearPlace( csvDataDir, batchInserter, organisationsIndex, placesIndex ) );
+         * Node File Inserters
+         */
+        this.commentsInserter = comments( csvDataDir, batchInserter, commentsIndex );
+        this.forumsInserter = forums( csvDataDir, batchInserter, forumsIndex );
+        this.organisationsInserter = organisations( csvDataDir, batchInserter, organisationsIndex );
+        this.personsInserter = persons( csvDataDir, batchInserter, personsIndex );
+        this.placesInserter = places( csvDataDir, batchInserter, placesIndex );
+        this.postsInserter = posts( csvDataDir, batchInserter, postsIndex );
+        this.tagClassesInserter = tagClasses( csvDataDir, batchInserter, tagClassesIndex );
+        this.tagsInserter = tags( csvDataDir, batchInserter, tagsIndex );
 
-        return fileInserters;
+        /*
+         * Property File Inserters
+         */
+        this.personHasEmailAddressInserter = personHasEmailAddress( csvDataDir, batchInserter, personsIndex,
+                emailAddressesIndex );
+        this.personSpeaksLanguageInserter = personSpeaksLanguage( csvDataDir, batchInserter, personsIndex,
+                languagesIndex );
+
+        /*
+         * Relationship File Inserters
+         */
+        this.commentHasCreatorPersonInserter = commentHasCreatorPerson( csvDataDir, batchInserter, personsIndex,
+                commentsIndex );
+        this.commentIsLocatedInPlaceInserter = commentIsLocatedInPlace( csvDataDir, batchInserter, commentsIndex,
+                placesIndex );
+        this.commentReplyOfCommentInserter = commentReplyOfComment( csvDataDir, batchInserter, commentsIndex );
+        this.commentReplyOfPostInserter = commentReplyOfPost( csvDataDir, batchInserter, commentsIndex, postsIndex );
+        this.forumContainerOfPostInserter = forumContainerOfPost( csvDataDir, batchInserter, forumsIndex, postsIndex );
+        this.forumHasMemberPersonInserter = forumHasMemberPerson( csvDataDir, batchInserter, forumsIndex, personsIndex );
+        this.forumHasModeratorPersonInserter = forumHasModeratorPerson( csvDataDir, batchInserter, personsIndex,
+                forumsIndex );
+        this.forumHasTagInserter = forumHasTag( csvDataDir, batchInserter, forumsIndex, tagsIndex );
+        this.personHasInterestTagInserter = personHasInterestTag( csvDataDir, batchInserter, personsIndex, tagsIndex );
+        this.personIsLocatedInPlaceInserter = personIsLocatedInPlace( csvDataDir, batchInserter, personsIndex,
+                placesIndex );
+        this.personKnowsPersonInserter = personKnowsPerson( csvDataDir, batchInserter, personsIndex );
+        this.personLikesPostInserter = personLikesPost( csvDataDir, batchInserter, personsIndex, postsIndex );
+        this.personStudyAtOrganisationInserter = personStudyAtOrganisation( csvDataDir, batchInserter, personsIndex,
+                organisationsIndex );
+        this.personWorksAtOrganisationInserter = personWorksAtOrganisation( csvDataDir, batchInserter, personsIndex,
+                organisationsIndex );
+        this.placeIsPartOfPlaceInserter = placeIsPartOfPlace( csvDataDir, batchInserter, placesIndex );
+        this.postHasCreatorPersonInserter = postHasCreatorPerson( csvDataDir, batchInserter, personsIndex, postsIndex );
+        this.postHasTagTagInserter = postHasTagTag( csvDataDir, batchInserter, postsIndex, tagsIndex );
+        this.postIsLocatedInPlaceInserter = postIsLocatedInPlace( csvDataDir, batchInserter, postsIndex, placesIndex );
+        this.tagClassIsSubclassOfTagClassInserter = tagClassIsSubclassOfTagClass( csvDataDir, batchInserter,
+                tagClassesIndex );
+        this.tagHasTypeTagClassInserter = tagHasTypeTagClass( csvDataDir, batchInserter, tagsIndex, tagClassesIndex );
+        this.organisationBasedNearPlaceInserter = organisationBasedNearPlace( csvDataDir, batchInserter,
+                organisationsIndex, placesIndex );
+    }
+
+    public CommentsTempIndex getCommentsIndex()
+    {
+        return commentsIndex;
+    }
+
+    public PostsTempIndex getPostsIndex()
+    {
+        return postsIndex;
+    }
+
+    public PersonsTempIndex getPersonsIndex()
+    {
+        return personsIndex;
+    }
+
+    public ForumsTempIndex getForumsIndex()
+    {
+        return forumsIndex;
+    }
+
+    public TagsTempIndex getTagsIndex()
+    {
+        return tagsIndex;
+    }
+
+    public TagClassesTempIndex getTagClassesIndex()
+    {
+        return tagClassesIndex;
+    }
+
+    public OrganisationsTempIndex getOrganisationsIndex()
+    {
+        return organisationsIndex;
+    }
+
+    public LanguagesTempIndex getLanguagesIndex()
+    {
+        return languagesIndex;
+    }
+
+    public PlacesTempIndex getPlacesIndex()
+    {
+        return placesIndex;
+    }
+
+    public EmailAddressesTempIndex getEmailAddressesIndex()
+    {
+        return emailAddressesIndex;
+    }
+
+    public CsvFileInserter getCommentsInserter()
+    {
+        return commentsInserter;
+    }
+
+    public CsvFileInserter getForumsInserter()
+    {
+        return forumsInserter;
+    }
+
+    public CsvFileInserter getOrganisationsInserter()
+    {
+        return organisationsInserter;
+    }
+
+    public CsvFileInserter getPersonsInserter()
+    {
+        return personsInserter;
+    }
+
+    public CsvFileInserter getPlacesInserter()
+    {
+        return placesInserter;
+    }
+
+    public CsvFileInserter getPostsInserter()
+    {
+        return postsInserter;
+    }
+
+    public CsvFileInserter getTagClassesInserter()
+    {
+        return tagClassesInserter;
+    }
+
+    public CsvFileInserter getTagsInserter()
+    {
+        return tagsInserter;
+    }
+
+    public CsvFileInserter getCommentHasCreatorPersonInserter()
+    {
+        return commentHasCreatorPersonInserter;
+    }
+
+    public CsvFileInserter getCommentIsLocatedInPlaceInserter()
+    {
+        return commentIsLocatedInPlaceInserter;
+    }
+
+    public CsvFileInserter getCommentReplyOfCommentInserter()
+    {
+        return commentReplyOfCommentInserter;
+    }
+
+    public CsvFileInserter getCommentReplyOfPostInserter()
+    {
+        return commentReplyOfPostInserter;
+    }
+
+    public CsvFileInserter getForumContainerOfPostInserter()
+    {
+        return forumContainerOfPostInserter;
+    }
+
+    public CsvFileInserter getForumHasMemberPersonInserter()
+    {
+        return forumHasMemberPersonInserter;
+    }
+
+    public CsvFileInserter getForumHasModeratorPersonInserter()
+    {
+        return forumHasModeratorPersonInserter;
+    }
+
+    public CsvFileInserter getForumHasTagInserter()
+    {
+        return forumHasTagInserter;
+    }
+
+    public CsvFileInserter getPersonHasEmailAddressInserter()
+    {
+        return personHasEmailAddressInserter;
+    }
+
+    public CsvFileInserter getPersonHasInterestTagInserter()
+    {
+        return personHasInterestTagInserter;
+    }
+
+    public CsvFileInserter getPersonIsLocatedInPlaceInserter()
+    {
+        return personIsLocatedInPlaceInserter;
+    }
+
+    public CsvFileInserter getPersonKnowsPersonInserter()
+    {
+        return personKnowsPersonInserter;
+    }
+
+    public CsvFileInserter getPersonLikesPostInserter()
+    {
+        return personLikesPostInserter;
+    }
+
+    public CsvFileInserter getPersonSpeaksLanguageInserter()
+    {
+        return personSpeaksLanguageInserter;
+    }
+
+    public CsvFileInserter getPersonStudyAtOrganisationInserter()
+    {
+        return personStudyAtOrganisationInserter;
+    }
+
+    public CsvFileInserter getPersonWorksAtOrganisationInserter()
+    {
+        return personWorksAtOrganisationInserter;
+    }
+
+    public CsvFileInserter getPlaceIsPartOfPlaceInserter()
+    {
+        return placeIsPartOfPlaceInserter;
+    }
+
+    public CsvFileInserter getPostHasCreatorPersonInserter()
+    {
+        return postHasCreatorPersonInserter;
+    }
+
+    public CsvFileInserter getPostHasTagTagInserter()
+    {
+        return postHasTagTagInserter;
+    }
+
+    public CsvFileInserter getPostIsLocatedInPlaceInserter()
+    {
+        return postIsLocatedInPlaceInserter;
+    }
+
+    public CsvFileInserter getTagClassIsSubclassOfTagClassInserter()
+    {
+        return tagClassIsSubclassOfTagClassInserter;
+    }
+
+    public CsvFileInserter getTagHasTypeTagClassInserter()
+    {
+        return tagHasTypeTagClassInserter;
+    }
+
+    public CsvFileInserter getOrganisationBasedNearPlaceInserter()
+    {
+        return organisationBasedNearPlaceInserter;
     }
 
     private static CsvFileInserter comments( final String csvDataDir, final BatchInserter batchInserter,
@@ -191,7 +447,6 @@ public class LdbcSocialNetworkCsvFileInserters
                 String birthdayString = (String) columnValues[4];
                 try
                 {
-                    // 1984-12-15
                     Date birthday = DATE_FORMAT.parse( birthdayString );
                     properties.put( Domain.Person.BIRTHDAY, birthday.getTime() );
                 }
@@ -205,7 +460,6 @@ public class LdbcSocialNetworkCsvFileInserters
                 String creationDateString = (String) columnValues[5];
                 try
                 {
-                    // 2010-12-28T07:16:25Z
                     Date creationDate = DATE_TIME_FORMAT.parse( creationDateString );
                     properties.put( Domain.Person.CREATION_DATE, creationDate.getTime() );
                 }
@@ -244,7 +498,6 @@ public class LdbcSocialNetworkCsvFileInserters
                 String creationDateString = (String) columnValues[2];
                 try
                 {
-                    // 2010-12-28T07:16:25Z
                     Date creationDate = DATE_TIME_FORMAT.parse( creationDateString );
                     properties.put( Domain.Forum.CREATION_DATE, creationDate.getTime() );
                 }
@@ -726,13 +979,10 @@ public class LdbcSocialNetworkCsvFileInserters
             public void insert( Object[] columnValues )
             {
                 long personNodeId = personsIndex.get( Long.parseLong( (String) columnValues[0] ) );
-                System.out.println( "Updating: " + personNodeId + " adding '" + (String) columnValues[1] + "'" );
                 Map<String, Object> personNodeProperties = batchInserter.getNodeProperties( personNodeId );
                 String[] emailAddresses = (String[]) personNodeProperties.get( Domain.Person.EMAIL_ADDRESSES );
                 String newEmailAddress = (String) columnValues[1];
                 String[] emailAddressPlusNewAddress = Utils.copyArrayAndAddElement( emailAddresses, newEmailAddress );
-                System.out.println( "Setting to " + emailAddressPlusNewAddress + " ("
-                                    + emailAddressPlusNewAddress.length + ")" );
                 batchInserter.setNodeProperty( personNodeId, Domain.Person.EMAIL_ADDRESSES, emailAddressPlusNewAddress );
             }
         } );
@@ -782,7 +1032,6 @@ public class LdbcSocialNetworkCsvFileInserters
                 long creationDateAsTime;
                 try
                 {
-                    // 2010-12-28T07:16:25Z
                     creationDateAsTime = DATE_TIME_FORMAT.parse( creationDateString ).getTime();
                 }
                 catch ( ParseException e )
@@ -850,7 +1099,6 @@ public class LdbcSocialNetworkCsvFileInserters
                 long joinDateAsTime;
                 try
                 {
-                    // 2010-12-28T07:16:25Z
                     joinDateAsTime = DATE_TIME_FORMAT.parse( joinDateString ).getTime();
                 }
                 catch ( ParseException e )
@@ -1017,5 +1265,4 @@ public class LdbcSocialNetworkCsvFileInserters
             return minRelOfO1.compareTo( minRelOfO2 );
         }
     }
-
 }

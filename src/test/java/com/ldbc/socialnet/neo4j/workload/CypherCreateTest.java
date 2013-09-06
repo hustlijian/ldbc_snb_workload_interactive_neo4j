@@ -103,11 +103,7 @@ public class CypherCreateTest
         boolean exceptionThrown = false;
         try (Transaction tx = db.beginTx())
         {
-            String queryString = "MATCH (n1:SomeLabel)\n"
-
-            + "WITH n1\n"
-
-            + "MATCH (n1)-[r]->(nx)\n"
+            String queryString = "MATCH (n1:SomeLabel), (n1)-[r]->(nx)\n"
 
             + "RETURN n1, r, nx";
 

@@ -41,7 +41,6 @@ public class DirectMemoryMapDbTempIndexFactory implements TempIndexFactory<Long,
         @Override
         public void shutdown()
         {
-            map.clear();
             map.close();
             map = null;
         }

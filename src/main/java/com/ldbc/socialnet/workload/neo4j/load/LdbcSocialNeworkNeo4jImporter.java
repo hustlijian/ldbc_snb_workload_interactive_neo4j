@@ -1,8 +1,8 @@
 package com.ldbc.socialnet.workload.neo4j.load;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
@@ -64,15 +64,124 @@ public class LdbcSocialNeworkNeo4jImporter
         * CSV Files
         */
         TempIndexFactory<Long, Long> tempIndexFactory = new TroveTempIndexFactory();
-        List<CsvFileInserter> fileInserters = LdbcSocialNetworkCsvFileInserters.all( tempIndexFactory, batchInserter,
-                csvDataDir );
+
+        LdbcSocialNetworkCsvFileInserters fileInserters = new LdbcSocialNetworkCsvFileInserters( tempIndexFactory,
+                batchInserter, csvDataDir );
 
         logger.info( "Loading CSV files" );
         long startTime = System.currentTimeMillis();
-        for ( CsvFileInserter fileInserter : fileInserters )
-        {
-            logger.info( String.format( "\t%s - %s", fileInserter.getFile().getName(), fileInserter.insertAllBuffered() ) );
-        }
+
+        // Node (Comment)
+        insertFile( fileInserters.getCommentsInserter() );
+        // Node (Person)
+        insertFile( fileInserters.getPersonsInserter() );
+        // Node (Place)
+        insertFile( fileInserters.getPlacesInserter() );
+        // Node (Post)
+        insertFile( fileInserters.getPostsInserter() );
+
+        // Relationship (Comment, Person)
+        insertFile( fileInserters.getCommentHasCreatorPersonInserter() );
+        // Relationship (Comment, Place)
+        insertFile( fileInserters.getCommentIsLocatedInPlaceInserter() );
+        // Relationship (Comment, Comment)
+        insertFile( fileInserters.getCommentReplyOfCommentInserter() );
+        // Relationship (Comment, Post)
+        insertFile( fileInserters.getCommentReplyOfPostInserter() );
+
+        // Free (Comment)
+        logger.info( "Freeing comments index" );
+        fileInserters.getCommentsIndex().shutdown();
+
+        // Node (Forum)
+        insertFile( fileInserters.getForumsInserter() );
+        // Node (Tag)
+        insertFile( fileInserters.getTagsInserter() );
+
+        // Relationship (Forum, Post)
+        insertFile( fileInserters.getForumContainerOfPostInserter() );
+        // Relationship (Person, Post)
+        insertFile( fileInserters.getPersonLikesPostInserter() );
+        // Relationship (Post, Person)
+        insertFile( fileInserters.getPostHasCreatorPersonInserter() );
+        // Relationship (Post, Tag)
+        insertFile( fileInserters.getPostHasTagTagInserter() );
+        // Relationship (Post, Place)
+        insertFile( fileInserters.getPostIsLocatedInPlaceInserter() );
+
+        // Free (Post)
+        logger.info( "Freeing posts index" );
+        fileInserters.getPostsIndex().shutdown();
+
+        // Relationship (Forum, Person)
+        insertFile( fileInserters.getForumHasMemberPersonInserter() );
+        // Relationship (Forum, Person)
+        insertFile( fileInserters.getForumHasModeratorPersonInserter() );
+        // Relationship (Forum, Tag)
+        insertFile( fileInserters.getForumHasTagInserter() );
+
+        // Free (Forum)
+        logger.info( "Freeing forums index" );
+        fileInserters.getForumsIndex().shutdown();
+
+        // Node (TagClass)
+        insertFile( fileInserters.getTagClassesInserter() );
+
+        // Relationship (Tag, TagClass)
+        insertFile( fileInserters.getTagClassIsSubclassOfTagClassInserter() );
+        // Relationship (Tag, TagClass)
+        insertFile( fileInserters.getTagHasTypeTagClassInserter() );
+
+        // Free (TagClass)
+        logger.info( "Freeing tag classes index" );
+        fileInserters.getTagClassesIndex().shutdown();
+
+        // Node (Organisation)
+        insertFile( fileInserters.getOrganisationsInserter() );
+
+        // Relationship (Person, Tag)
+        insertFile( fileInserters.getPersonHasInterestTagInserter() );
+
+        // Relationship (Person, Place)
+        insertFile( fileInserters.getPersonIsLocatedInPlaceInserter() );
+        // Relationship (Person, Person)
+        insertFile( fileInserters.getPersonKnowsPersonInserter() );
+        // Relationship (Place, Place)
+        insertFile( fileInserters.getPlaceIsPartOfPlaceInserter() );
+
+        // Node Property (Person)
+        insertFile( fileInserters.getPersonHasEmailAddressInserter() );
+        // Node Property (Person)
+        insertFile( fileInserters.getPersonSpeaksLanguageInserter() );
+
+        // Relationship (Person, Organisation)
+        insertFile( fileInserters.getPersonStudyAtOrganisationInserter() );
+        // Relationship (Person, Organisation)
+        insertFile( fileInserters.getPersonWorksAtOrganisationInserter() );
+        // Relationship (Organisation, Place)
+        insertFile( fileInserters.getOrganisationBasedNearPlaceInserter() );
+
+        // Free (Person)
+        logger.info( "Freeing persons index" );
+        fileInserters.getPersonsIndex().shutdown();
+        // Free (Tag)
+        logger.info( "Freeing tags index" );
+        fileInserters.getTagsIndex().shutdown();
+        // Free (Organisation)
+        logger.info( "Freeing organisations index" );
+        fileInserters.getOrganisationsIndex().shutdown();
+        // Free (Place)
+        logger.info( "Freeing places index" );
+        fileInserters.getPlacesIndex().shutdown();
+
+        // TODO why are these indexed? They should not be!
+        // Free (Langauge)
+        logger.info( "Freeing languages index" );
+        fileInserters.getLanguagesIndex().shutdown();
+        // Free (EmailAddress)
+        logger.info( "Freeing email addresses index" );
+        fileInserters.getEmailAddressesIndex().shutdown();
+
         long runtime = System.currentTimeMillis() - startTime;
         System.out.println( String.format(
                 "Data imported in: %d min, %d sec",
@@ -103,5 +212,10 @@ public class LdbcSocialNeworkNeo4jImporter
         logger.info( "\tRelationship count = " + GraphUtils.relationshipCount( db, 10000000 ) );
 
         db.shutdown();
+    }
+
+    private void insertFile( CsvFileInserter fileInserter ) throws FileNotFoundException
+    {
+        logger.info( String.format( "\t%s - %s", fileInserter.getFile().getName(), fileInserter.insertAllBuffered() ) );
     }
 }

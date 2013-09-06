@@ -29,7 +29,6 @@ public class TroveTempIndexFactory implements TempIndexFactory<Long, Long>
         @Override
         public void shutdown()
         {
-            map.clear();
             map = null;
         }
     }
