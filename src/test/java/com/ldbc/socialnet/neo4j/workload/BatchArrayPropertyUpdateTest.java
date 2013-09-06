@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.neo4j.helpers.collection.MapUtil;
 import org.neo4j.kernel.impl.nioneo.store.InvalidRecordException;
@@ -15,6 +16,7 @@ import org.neo4j.unsafe.batchinsert.BatchInserters;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+@Ignore
 public class BatchArrayPropertyUpdateTest
 {
     public static String dbDir = "tempDb";

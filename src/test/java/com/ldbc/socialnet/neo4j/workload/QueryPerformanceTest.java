@@ -43,7 +43,7 @@ public class QueryPerformanceTest
     @Test
     public void query1()
     {
-        Map<String, Object> queryParams = Queries.LdbcInteractive.Query1.buildParams( "Chen" );
+        Map<String, Object> queryParams = Queries.LdbcInteractive.Query1.buildParams( "Chen", 10 );
         execute( "Query1", Queries.LdbcInteractive.Query1.QUERY_TEMPLATE, queryParams, 2, 5, false );
     }
 

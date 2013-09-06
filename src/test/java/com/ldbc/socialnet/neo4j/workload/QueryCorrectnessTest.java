@@ -1,5 +1,7 @@
 package com.ldbc.socialnet.neo4j.workload;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 import org.junit.AfterClass;
@@ -12,32 +14,110 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.helpers.collection.IteratorUtil;
+import org.neo4j.helpers.collection.MapUtil;
+import org.neo4j.kernel.impl.util.FileUtils;
 
-import com.ldbc.socialnet.workload.neo4j.utils.Config;
+import com.ldbc.driver.util.MapUtils;
+import com.ldbc.socialnet.workload.Queries;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
-// TODO build simple graph as part of test class rather than relying on real imported graph
-@Ignore
 public class QueryCorrectnessTest
 {
+    public static String dbDir = "tempDb";
     public static GraphDatabaseService db = null;
     public static ExecutionEngine queryEngine = null;
 
     @BeforeClass
-    public static void openDb()
+    public static void openDb() throws IOException
     {
-        db = new GraphDatabaseFactory().newEmbeddedDatabase( Config.DB_DIR );
+        FileUtils.deleteRecursively( new File( dbDir ) );
+        db = new GraphDatabaseFactory().newEmbeddedDatabase( dbDir );
         queryEngine = new ExecutionEngine( db );
+        buildGraph( queryEngine );
     }
 
     @AfterClass
-    public static void closeDb()
+    public static void closeDb() throws IOException
     {
         db.shutdown();
+        FileUtils.deleteRecursively( new File( dbDir ) );
     }
 
+    private static void buildGraph( ExecutionEngine engine )
+    {
+        try (Transaction tx = db.beginTx())
+        {
+            System.out.println( MapUtils.prettyPrint( TestGraph.Creator.createGraphQueryParams() ) );
+            System.out.println( TestGraph.Creator.createGraphQuery() );
+            engine.execute( TestGraph.Creator.createGraphQuery(), TestGraph.Creator.createGraphQueryParams() );
+
+            tx.success();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+        try (Transaction tx = db.beginTx())
+        {
+            for ( String createIndexQuery : TestGraph.Creator.createIndexQueries() )
+            {
+                engine.execute( createIndexQuery );
+            }
+            tx.success();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void query1ShouldReturnExpectedResult()
+    {
+        boolean exceptionThrown = false;
+        try (Transaction tx = db.beginTx())
+        {
+            Map<String, Object> queryParams = Queries.LdbcInteractive.Query1.buildParams( "alex", 10 );
+            String queryString = Queries.LdbcInteractive.Query1.QUERY_TEMPLATE;
+
+            // Map<String, Object> queryParams = MapUtil.map();
+            // String queryString =
+            // "MATCH (p:PERSON) WHERE p.firstName='alex' RETURN p";
+
+            System.out.println( queryParams );
+            System.out.println( queryString );
+
+            ExecutionResult result = queryEngine.execute( queryString, queryParams );
+
+            System.out.println( result.dumpToString() );
+
+            // String firstName = (String) result.columnAs( "person." +
+            // Domain.Person.FIRST_NAME ).next();
+            //
+            // assertThat( firstName, is( "alex" ) );
+
+            /*
+            person.%s, person.%s, person.%s, person.%s,\n"
+
+                    + " person.%s, person.%s, person.%s, person.%s, person.%s,\n"
+
+                    + " personCity.%s, uni.%s, studyAt.%s, uniCity.%s, company.%s, worksAt.%s,\n"
+
+                    + " companyCountry.%s"             */
+
+            tx.success();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+            exceptionThrown = true;
+        }
+        assertThat( exceptionThrown, is( false ) );
+    }
+
+    @Ignore
     @Test
     public void personIdTest()
     {
@@ -52,6 +132,7 @@ public class QueryCorrectnessTest
                 is( 1 ) );
     }
 
+    @Ignore
     @Test
     public void personFirstNameTest()
     {
@@ -66,6 +147,7 @@ public class QueryCorrectnessTest
                         "person" ), is( 2 ) );
     }
 
+    @Ignore
     @Test
     public void personLastNameTest()
     {
@@ -80,6 +162,7 @@ public class QueryCorrectnessTest
                         "person" ), is( 2 ) );
     }
 
+    @Ignore
     @Test
     public void cityPlaceNameTest()
     {
@@ -94,6 +177,7 @@ public class QueryCorrectnessTest
                         "place" ), is( 1 ) );
     }
 
+    @Ignore
     @Test
     public void countryPlaceNameTest()
     {
@@ -108,6 +192,7 @@ public class QueryCorrectnessTest
                         "place" ), is( 1 ) );
     }
 
+    @Ignore
     @Test
     public void cityNameTest()
     {
@@ -122,6 +207,7 @@ public class QueryCorrectnessTest
                 is( 1 ) );
     }
 
+    @Ignore
     @Test
     public void countryNameTest()
     {

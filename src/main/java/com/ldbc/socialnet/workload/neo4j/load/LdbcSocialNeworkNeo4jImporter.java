@@ -23,18 +23,14 @@ public class LdbcSocialNeworkNeo4jImporter
 {
     /*
      TODO code improvements here
+       - make it possible/easier to free a TempIndex midway through load to free memory
        - add readme with links to ldbc projects
-       - is it necessary to store the "id" as a property if i want to index it?
-          - is it good practice?
        - support reading series of csv lines and making them all available
           - for example, for when subsequent lines work on the same ID/Node/Rel
        - add class to Domain with AttributeNames for each Entity
        - make scaling.txt into a spreadsheet
        - add Message and MessageType.Comment|Post
-       - make it possible/easier to free a TempIndex midway through load to free memory
      TODO code improvements ldbc_driver
-       - add toString for Time and Duration classes
-       - use import java.util.concurrent.TimeUnit in my Time class
        - EMPTY_MAP in MapUtils?       
     */
 

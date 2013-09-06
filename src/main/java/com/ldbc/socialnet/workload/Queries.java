@@ -59,47 +59,64 @@ public class Queries
 
             public static final String QUERY_TEMPLATE = String.format(
 
-            "MATCH person:" + Domain.Node.PERSON + "\n"
+                    "MATCH person:" + Domain.Node.PERSON + "\n"
 
-            + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.FIRST_NAME + ")\n"
+                    + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.FIRST_NAME + ")\n"
 
-            + "WHERE person." + Domain.Person.FIRST_NAME + "={ person_first_name }\n"
+                    + "WHERE person." + Domain.Person.FIRST_NAME + "={ person_first_name }\n"
 
-            + "WITH person\n"
+                    + "WITH person\n"
 
-            + "ORDER BY person." + Domain.Person.LAST_NAME + "\n"
+                    + "ORDER BY person." + Domain.Person.LAST_NAME + "\n"
 
-            + "LIMIT 10\n"
+                    + "LIMIT {limit}\n"
 
-            + "MATCH (uniCity:" + Domain.Node.PLACE + ":" + Domain.Place.Type.CITY + ")<-[:" + Domain.Rel.IS_LOCATED_IN
-                    + "]-(uni:" + Domain.Node.ORGANISATION + ":" + Domain.Organisation.Type.UNIVERSITY + ")<-[studyAt:"
-                    + Domain.Rel.STUDY_AT + "]-(person),\n"
+                    // + "MATCH (uniCity:" + Domain.Place.Type.CITY + ")<-[:" +
+                    // Domain.Rel.IS_LOCATED_IN + "]-(uni:"
+                    // + Domain.Organisation.Type.UNIVERSITY + ")<-[studyAt:" +
+                    // Domain.Rel.STUDY_AT + "]-(person)\n"
+                            + "MATCH (x)-[y*1..1]-(person)\n"
 
-                    + "(company:" + Domain.Node.ORGANISATION + ":" + Domain.Organisation.Type.COMPANY + ")<-[worksAt:"
-                    + Domain.Rel.WORKS_AT + "]-(person)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(personCity:"
-                    + Domain.Node.PLACE + ":" + Domain.Place.Type.CITY + "),\n"
+                            // + "(company:" + Domain.Organisation.Type.COMPANY
+                            // +
+                            // ")<-[worksAt:" + Domain.Rel.WORKS_AT
+                            // + "]-(person)-[:" + Domain.Rel.IS_LOCATED_IN +
+                            // "]->(personCity:" + Domain.Node.PLACE + ":"
+                            // + Domain.Place.Type.CITY + "),\n"
+                            //
+                            // + "(company)-[:" + Domain.Rel.IS_LOCATED_IN +
+                            // "]->(companyCountry:" + Domain.Node.PLACE + ":"
+                            // + Domain.Place.Type.COUNTRY + ")\n"
+                            //
+                            // +
+                            // "RETURN person.%s, person.%s, person.%s, person.%s,\n"
+                            //
+                            // +
+                            // " person.%s, person.%s, person.%s, person.%s, person.%s,\n"
+                            //
+                            // +
+                            // " personCity.%s, uni.%s, studyAt.%s, uniCity.%s, company.%s, worksAt.%s,\n"
+                            //
+                            // + " companyCountry.%s",
 
-                    + "(company)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(companyCountry:" + Domain.Node.PLACE + ":"
-                    + Domain.Place.Type.COUNTRY + ")\n"
+                            + "RETURN person.%s, person.%s, person.%s, person.%s,\n"
 
-                    + "RETURN person.%s, person.%s, person.%s, person.%s,\n"
+                            + " person.%s, person.%s, person.%s, person.%s, person.%s,\n"
 
-                    + " person.%s, person.%s, person.%s, person.%s, person.%s,\n"
+                     + " x, y" ,
+                    
 
-                    + " personCity.%s, uni.%s, studyAt.%s, uniCity.%s, company.%s, worksAt.%s,\n"
+                    Domain.Person.FIRST_NAME, Domain.Person.LAST_NAME, Domain.Person.BIRTHDAY,
+                    Domain.Person.CREATION_DATE, Domain.Person.GENDER, Domain.Person.LANGUAGES,
+                    Domain.Person.BROWSER_USED, Domain.Person.LOCATION_IP, Domain.Person.EMAIL_ADDRESSES,
+                    Domain.Place.NAME, Domain.Organisation.NAME, Domain.StudiesAt.CLASS_YEAR, Domain.Place.NAME,
+                    Domain.Organisation.NAME, Domain.WorksAt.WORK_FROM, Domain.Place.NAME );
 
-                    + " companyCountry.%s",
-
-            Domain.Person.FIRST_NAME, Domain.Person.LAST_NAME, Domain.Person.BIRTHDAY, Domain.Person.CREATION_DATE,
-                    Domain.Person.GENDER, Domain.Person.LANGUAGES, Domain.Person.BROWSER_USED,
-                    Domain.Person.LOCATION_IP, Domain.Person.EMAIL_ADDRESSES, Domain.Place.NAME,
-                    Domain.Organisation.NAME, Domain.StudiesAt.CLASS_YEAR, Domain.Place.NAME, Domain.Organisation.NAME,
-                    Domain.WorksAt.WORK_FROM, Domain.Place.NAME );
-
-            public static final Map<String, Object> buildParams( String firstName )
+            public static final Map<String, Object> buildParams( String firstName, int limit )
             {
                 Map<String, Object> queryParams = new HashMap<String, Object>();
                 queryParams.put( "person_first_name", firstName );
+                queryParams.put( "limit", limit );
                 return queryParams;
             }
         }

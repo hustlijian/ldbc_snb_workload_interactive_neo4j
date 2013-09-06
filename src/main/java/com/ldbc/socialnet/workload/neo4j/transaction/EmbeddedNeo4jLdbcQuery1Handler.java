@@ -19,7 +19,9 @@ public class EmbeddedNeo4jLdbcQuery1Handler extends OperationHandler<LdbcQuery1>
     protected OperationResult executeOperation( LdbcQuery1 operation ) throws DbException
     {
         String query = Queries.LdbcInteractive.Query1.QUERY_TEMPLATE;
-        Map<String, Object> params = Queries.LdbcInteractive.Query1.buildParams( operation.getFirstName() );
+        // TODO make limit param later?
+        int limit = 10;
+        Map<String, Object> params = Queries.LdbcInteractive.Query1.buildParams( operation.getFirstName(), limit );
         // TODO find way to do this
         int resultCode = 0;
         try
