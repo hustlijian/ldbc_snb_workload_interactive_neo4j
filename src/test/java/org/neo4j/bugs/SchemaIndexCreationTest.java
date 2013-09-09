@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.neo4j.workload;
+package org.neo4j.bugs;
 
 import java.io.File;
 import java.io.IOException;
