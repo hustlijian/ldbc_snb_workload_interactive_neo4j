@@ -59,58 +59,47 @@ public class Queries
 
             public static final String QUERY_TEMPLATE = String.format(
 
-                    "MATCH person:" + Domain.Node.PERSON + "\n"
+            "MATCH person:" + Domain.Node.PERSON + "\n"
 
-                    + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.FIRST_NAME + ")\n"
+            + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.FIRST_NAME + ")\n"
 
-                    + "WHERE person." + Domain.Person.FIRST_NAME + "={ person_first_name }\n"
+            + "WHERE person." + Domain.Person.FIRST_NAME + "={ person_first_name }\n"
 
-                    + "WITH person\n"
+            + "WITH person\n"
 
-                    + "ORDER BY person." + Domain.Person.LAST_NAME + "\n"
+            + "ORDER BY person." + Domain.Person.LAST_NAME + "\n"
 
-                    + "LIMIT {limit}\n"
+            + "LIMIT {limit}\n"
 
-                    // + "MATCH (uniCity:" + Domain.Place.Type.CITY + ")<-[:" +
-                    // Domain.Rel.IS_LOCATED_IN + "]-(uni:"
-                    // + Domain.Organisation.Type.UNIVERSITY + ")<-[studyAt:" +
-                    // Domain.Rel.STUDY_AT + "]-(person)\n"
-                            + "MATCH (x)-[y*1..1]-(person)\n"
+            + "MATCH (person)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(personCity:" + Domain.Node.PLACE + ":"
+                    + Domain.Place.Type.CITY + ")\n"
 
-                            // + "(company:" + Domain.Organisation.Type.COMPANY
-                            // +
-                            // ")<-[worksAt:" + Domain.Rel.WORKS_AT
-                            // + "]-(person)-[:" + Domain.Rel.IS_LOCATED_IN +
-                            // "]->(personCity:" + Domain.Node.PLACE + ":"
-                            // + Domain.Place.Type.CITY + "),\n"
-                            //
-                            // + "(company)-[:" + Domain.Rel.IS_LOCATED_IN +
-                            // "]->(companyCountry:" + Domain.Node.PLACE + ":"
-                            // + Domain.Place.Type.COUNTRY + ")\n"
-                            //
-                            // +
-                            // "RETURN person.%s, person.%s, person.%s, person.%s,\n"
-                            //
-                            // +
-                            // " person.%s, person.%s, person.%s, person.%s, person.%s,\n"
-                            //
-                            // +
-                            // " personCity.%s, uni.%s, studyAt.%s, uniCity.%s, company.%s, worksAt.%s,\n"
-                            //
-                            // + " companyCountry.%s",
+                    + "WITH person, personCity\n"
 
-                            + "RETURN person.%s, person.%s, person.%s, person.%s,\n"
+                    + "MATCH (uniCity:" + Domain.Place.Type.CITY + ")<-[:" + Domain.Rel.IS_LOCATED_IN + "]-(uni:"
+                    + Domain.Organisation.Type.UNIVERSITY + ")<-[studyAt:" + Domain.Rel.STUDY_AT + "]-(person)\n"
 
-                            + " person.%s, person.%s, person.%s, person.%s, person.%s,\n"
+                    + "WITH COLLECT( DISTINCT(uni." + Domain.Organisation.NAME + " + ', ' + uniCity."
+                    + Domain.Place.NAME + "+ '(' + studyAt." + Domain.StudiesAt.CLASS_YEAR
+                    + " + ')') ) AS unis, person, personCity\n"
 
-                     + " x, y" ,
-                    
+                    + "MATCH (companyCountry:" + Domain.Node.PLACE + ":" + Domain.Place.Type.COUNTRY + ")<-[:"
+                    + Domain.Rel.IS_LOCATED_IN + "]-(company:" + Domain.Organisation.Type.COMPANY + ")<-[worksAt:"
+                    + Domain.Rel.WORKS_AT + "]-(person)\n"
 
-                    Domain.Person.FIRST_NAME, Domain.Person.LAST_NAME, Domain.Person.BIRTHDAY,
-                    Domain.Person.CREATION_DATE, Domain.Person.GENDER, Domain.Person.LANGUAGES,
-                    Domain.Person.BROWSER_USED, Domain.Person.LOCATION_IP, Domain.Person.EMAIL_ADDRESSES,
-                    Domain.Place.NAME, Domain.Organisation.NAME, Domain.StudiesAt.CLASS_YEAR, Domain.Place.NAME,
-                    Domain.Organisation.NAME, Domain.WorksAt.WORK_FROM, Domain.Place.NAME );
+                    + "WITH COLLECT( DISTINCT ( company." + Domain.Organisation.NAME + " + ', ' + companyCountry."
+                    + Domain.Place.NAME + " + '(' + worksAt." + Domain.WorksAt.WORK_FROM
+                    + " + ')') ) AS companies, unis, person, personCity\n"
+
+                    + "RETURN person.%s AS firstName, person.%s AS lastName, person.%s AS birthday,\n"
+
+                    + " person.%s AS creation, person.%s AS gender, person.%s AS languages, person.%s AS browser,\n"
+
+                    + " person.%s AS ip, person.%s AS emails, personCity.%s AS personCity, unis, companies",
+
+            Domain.Person.FIRST_NAME, Domain.Person.LAST_NAME, Domain.Person.BIRTHDAY, Domain.Person.CREATION_DATE,
+                    Domain.Person.GENDER, Domain.Person.LANGUAGES, Domain.Person.BROWSER_USED,
+                    Domain.Person.LOCATION_IP, Domain.Person.EMAIL_ADDRESSES, Domain.Place.NAME );
 
             public static final Map<String, Object> buildParams( String firstName, int limit )
             {
@@ -133,15 +122,15 @@ public class Queries
             Person.Id
             CountryX.Name
             CountryY.Name
-            startDate - the beginning of the requested period
+            startDate - the beginning of the requested period (the latest date)
             Duration - the duration of the requested period
              
             RETURN:
             
             Person.Id
-            ct1 - the number of post from the first country
-            ct2 - the number of post from the second country
-            ct - ct1 + ct2
+            ct1 = the number of post from the first country
+            ct2 = the number of post from the second country
+            ct = ct1 + ct2
              */
 
             public static final String PERSONS_FOR_PARAMS_TEMPLATE = String.format(
@@ -151,7 +140,7 @@ public class Queries
                     + Domain.Node.PLACE + ":" + Domain.Place.Type.COUNTRY + ")\n"
 
                     + "WHERE country." + Domain.Place.NAME + "={country_x} OR country." + Domain.Place.NAME
-                    + "={country_y} \n"
+                    + "={country_y}\n"
 
                     + "RETURN person." + Domain.Person.ID + ", country." + Domain.Place.NAME + "\n"
 
@@ -171,8 +160,7 @@ public class Queries
                     + "WITH DISTINCT f AS friend\n"
 
                     + "MATCH (friend)<-[:" + Domain.Rel.HAS_CREATOR + "]-(postX:" + Domain.Node.POST + ")-[:"
-                    + Domain.Rel.IS_LOCATED_IN + "]->(countryX:" + Domain.Node.PLACE + ":" + Domain.Place.Type.COUNTRY
-                    + ")\n"
+                    + Domain.Rel.IS_LOCATED_IN + "]->(countryX:" + Domain.Place.Type.COUNTRY + ")\n"
 
                     + "USING INDEX countryX:" + Domain.Place.Type.COUNTRY + "(" + Domain.Place.NAME + ")\n"
 
@@ -182,76 +170,30 @@ public class Queries
                     + "WITH friend, count(DISTINCT postX) AS xCount\n"
 
                     + "MATCH (friend)<-[:" + Domain.Rel.HAS_CREATOR + "]-(postY:" + Domain.Node.POST + ")-[:"
-                    + Domain.Rel.IS_LOCATED_IN + "]->(countryY:" + Domain.Node.PLACE + ":" + Domain.Place.Type.COUNTRY
-                    + ")\n"
+                    + Domain.Rel.IS_LOCATED_IN + "]->(countryY:" + Domain.Place.Type.COUNTRY + ")\n"
 
                     + "USING INDEX countryY:" + Domain.Place.Type.COUNTRY + "(" + Domain.Place.NAME + ")\n"
 
                     + "WHERE countryY." + Domain.Place.NAME + "={country_y} AND postY." + Domain.Post.CREATION_DATE
                     + ">={min_date} AND postY." + Domain.Post.CREATION_DATE + "<={max_date}\n"
 
-                    + "WITH friend." + Domain.Person.FIRST_NAME + " +' '+ friend." + Domain.Person.LAST_NAME
-                    + " AS friendsName , xCount, count(DISTINCT postY) AS yCount\n"
+                    + "WITH friend." + Domain.Person.FIRST_NAME + " + ' ' + friend." + Domain.Person.LAST_NAME
+                    + " AS friendName , xCount, count(DISTINCT postY) AS yCount\n"
 
-                    + "RETURN friendsName, xCount, yCount, xCount + yCount AS xyCount"
+                    + "RETURN friendName, xCount, yCount, xCount + yCount AS xyCount\n"
 
-            );
-
-            public static final String QUERY_TEMPLATE_michael = String.format(
-
-            "MATCH (person:" + Domain.Node.PERSON + "), (countryX:" + Domain.Place.Type.COUNTRY + "), (countryY:"
-                    + Domain.Place.Type.COUNTRY + ")\n"
-
-                    + "USING INDEX countryX:" + Domain.Place.Type.COUNTRY + "(" + Domain.Place.NAME + ")\n"
-
-                    + "USING INDEX countryY:" + Domain.Place.Type.COUNTRY + "(" + Domain.Place.NAME + ")\n"
-
-                    + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.ID + ")\n"
-
-                    + "WHERE person." + Domain.Person.ID + "={person_id} AND countryX." + Domain.Place.NAME
-                    + "={country_x} AND countryY." + Domain.Place.NAME + "={country_y}\n"
-
-                    + "WITH person, countryX, countryY\n"
-
-                    + "MATCH (person)-[:" + Domain.Rel.KNOWS + "*1..2]-(f)\n"
-
-                    + "WITH DISTINCT f AS friend, countryX, countryY\n"
-
-                    + "MATCH (friend)<-[:" + Domain.Rel.HAS_CREATOR + "]-(postX)\n"
-
-                    + "WHERE postX:" + Domain.Node.POST + " AND postX." + Domain.Post.CREATION_DATE
-                    + ">={min_date} AND postX." + Domain.Post.CREATION_DATE + "<={max_date}\n"
-
-                    + "WITH DISTINCT friend, postX, countryX, countryY\n"
-
-                    + "MATCH (postX)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(countryX)\n"
-
-                    + "WITH friend, count(DISTINCT postX) AS xCount, countryY\n"
-
-                    + "MATCH (friend)<-[:" + Domain.Rel.HAS_CREATOR + "]-(postY)\n"
-
-                    + "WHERE postY:" + Domain.Node.POST + " AND postY." + Domain.Post.CREATION_DATE
-                    + ">={min_date} AND postY." + Domain.Post.CREATION_DATE + "<={max_date}\n"
-
-                    + "WITH DISTINCT friend, postY, countryY, xCount\n"
-
-                    + "MATCH (postY)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(countryY)\n"
-
-                    + "WITH friend." + Domain.Person.FIRST_NAME + " +' '+ friend." + Domain.Person.LAST_NAME
-                    + " AS friendsName , xCount, count(DISTINCT postY) AS yCount\n"
-
-                    + "RETURN friendsName, xCount, yCount, xCount + yCount AS xyCount\n"
+                    + "ORDER BY xyCount DESC"
 
             );
 
             public static final Map<String, Object> buildParams( long personId, String countryX, String countryY,
-                    Date startDate, int durationDays )
+                    Date endDate, int durationDays )
             {
-                long minDateInMilli = startDate.getTime();
+                long maxDateInMilli = endDate.getTime();
                 Calendar c = Calendar.getInstance();
-                c.setTime( startDate );
-                c.add( Calendar.DATE, durationDays );
-                long maxDateInMilli = c.getTimeInMillis();
+                c.setTime( endDate );
+                c.add( Calendar.DATE, -durationDays );
+                long minDateInMilli = c.getTimeInMillis();
                 Map<String, Object> queryParams = new HashMap<String, Object>();
                 queryParams.put( "person_id", personId );
                 queryParams.put( "country_x", countryX );

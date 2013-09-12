@@ -21,7 +21,6 @@ import org.neo4j.kernel.impl.util.FileUtils;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
-@Ignore
 public class CypherCreateTest
 {
     public static String dbDir = "tempDb";

@@ -13,6 +13,7 @@ import com.ldbc.socialnet.workload.LdbcQuery4;
 import com.ldbc.socialnet.workload.neo4j.transaction.EmbeddedNeo4jLdbcQuery1Handler;
 import com.ldbc.socialnet.workload.neo4j.transaction.EmbeddedNeo4jLdbcQuery3Handler;
 import com.ldbc.socialnet.workload.neo4j.transaction.EmbeddedNeo4jLdbcQuery4Handler;
+import com.ldbc.socialnet.workload.neo4j.utils.Config;
 
 public class Neo4jDbCommandsEmbedded extends Neo4jDbCommands
 {
@@ -29,7 +30,7 @@ public class Neo4jDbCommandsEmbedded extends Neo4jDbCommands
     @Override
     public void init()
     {
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder( path ).newGraphDatabase();
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder( path ).setConfig( Config.NEO4J_RUN_CONFIG ).newGraphDatabase();
         queryEngine = new ExecutionEngine( db );
         dbConnectionState = new Neo4jConnectionStateEmbedded( db, queryEngine );
         registerShutdownHook( db );

@@ -33,9 +33,7 @@ public class LdbcSocialNetworkCsvFileInserters
     private final TagsTempIndex tagsIndex;
     private final TagClassesTempIndex tagClassesIndex;
     private final OrganisationsTempIndex organisationsIndex;
-    private final LanguagesTempIndex languagesIndex;
     private final PlacesTempIndex placesIndex;
-    private final EmailAddressesTempIndex emailAddressesIndex;
 
     private final CsvFileInserter commentsInserter;
     private final CsvFileInserter forumsInserter;
@@ -82,9 +80,7 @@ public class LdbcSocialNetworkCsvFileInserters
         this.tagsIndex = new TagsTempIndex( tempIndexFactory.create() );
         this.tagClassesIndex = new TagClassesTempIndex( tempIndexFactory.create() );
         this.organisationsIndex = new OrganisationsTempIndex( tempIndexFactory.create() );
-        this.languagesIndex = new LanguagesTempIndex( tempIndexFactory.create() );
         this.placesIndex = new PlacesTempIndex( tempIndexFactory.create() );
-        this.emailAddressesIndex = new EmailAddressesTempIndex( tempIndexFactory.create() );
 
         /*
          * Node File Inserters
@@ -101,10 +97,8 @@ public class LdbcSocialNetworkCsvFileInserters
         /*
          * Property File Inserters
          */
-        this.personHasEmailAddressInserter = personHasEmailAddress( csvDataDir, batchInserter, personsIndex,
-                emailAddressesIndex );
-        this.personSpeaksLanguageInserter = personSpeaksLanguage( csvDataDir, batchInserter, personsIndex,
-                languagesIndex );
+        this.personHasEmailAddressInserter = personHasEmailAddress( csvDataDir, batchInserter, personsIndex );
+        this.personSpeaksLanguageInserter = personSpeaksLanguage( csvDataDir, batchInserter, personsIndex );
 
         /*
          * Relationship File Inserters
@@ -175,19 +169,9 @@ public class LdbcSocialNetworkCsvFileInserters
         return organisationsIndex;
     }
 
-    public LanguagesTempIndex getLanguagesIndex()
-    {
-        return languagesIndex;
-    }
-
     public PlacesTempIndex getPlacesIndex()
     {
         return placesIndex;
-    }
-
-    public EmailAddressesTempIndex getEmailAddressesIndex()
-    {
-        return emailAddressesIndex;
     }
 
     public CsvFileInserter getCommentsInserter()
@@ -775,7 +759,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter personSpeaksLanguage( final String csvDataDir, final BatchInserter batchInserter,
-            final PersonsTempIndex personsIndex, final LanguagesTempIndex languagesIndex ) throws FileNotFoundException
+            final PersonsTempIndex personsIndex ) throws FileNotFoundException
     {
         /*        
         Person.id   language
@@ -962,8 +946,7 @@ public class LdbcSocialNetworkCsvFileInserters
     }
 
     private static CsvFileInserter personHasEmailAddress( final String csvDataDir, final BatchInserter batchInserter,
-            final PersonsTempIndex personsIndex, final EmailAddressesTempIndex emailAddressesIndex )
-            throws FileNotFoundException
+            final PersonsTempIndex personsIndex ) throws FileNotFoundException
     {
         /*
         Person.id   email

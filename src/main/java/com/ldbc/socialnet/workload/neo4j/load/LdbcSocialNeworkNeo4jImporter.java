@@ -58,7 +58,7 @@ public class LdbcSocialNeworkNeo4jImporter
         FileUtils.deleteRecursively( new File( dbDir ) );
 
         logger.info( "Instantiating Neo4j BatchInserter" );
-        BatchInserter batchInserter = BatchInserters.inserter( dbDir, Config.NEO4J_CONFIG );
+        BatchInserter batchInserter = BatchInserters.inserter( dbDir, Config.NEO4J_IMPORT_CONFIG );
 
         /*
         * CSV Files
@@ -173,14 +173,6 @@ public class LdbcSocialNeworkNeo4jImporter
         // Free (Place)
         logger.info( "Freeing places index" );
         fileInserters.getPlacesIndex().shutdown();
-
-        // TODO why are these indexed? They should not be!
-        // Free (Langauge)
-        logger.info( "Freeing languages index" );
-        fileInserters.getLanguagesIndex().shutdown();
-        // Free (EmailAddress)
-        logger.info( "Freeing email addresses index" );
-        fileInserters.getEmailAddressesIndex().shutdown();
 
         long runtime = System.currentTimeMillis() - startTime;
         System.out.println( String.format(

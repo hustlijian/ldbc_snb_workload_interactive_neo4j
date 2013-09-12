@@ -12,17 +12,21 @@ public class Config
     }
 
     private static Properties applicationConfig;
-    public static Map<String, String> NEO4J_CONFIG;
+    public static Map<String, String> NEO4J_IMPORT_CONFIG;
+    public static Map<String, String> NEO4J_RUN_CONFIG;
 
     static
     {
         try
         {
             applicationConfig = new Properties();
-            applicationConfig.load( Config.class.getResourceAsStream( "/neo4j_importer.properties" ) );
-            Map tempNeo4jConfig = new Properties();
-            ( (Properties) tempNeo4jConfig ).load( Config.class.getResourceAsStream( "/neo4j.properties" ) );
-            NEO4J_CONFIG = tempNeo4jConfig;
+            applicationConfig.load( Config.class.getResourceAsStream( "/ldbc_neo4j.properties" ) );
+            Map tempNeo4jImportConfig = new Properties();
+            ( (Properties) tempNeo4jImportConfig ).load( Config.class.getResourceAsStream( get( "neo4j_import_config" ) ) );
+            NEO4J_IMPORT_CONFIG = tempNeo4jImportConfig;
+            Map tempNeo4jRunConfig = new Properties();
+            ( (Properties) tempNeo4jRunConfig ).load( Config.class.getResourceAsStream( get( "neo4j_run_config" ) ) );
+            NEO4J_RUN_CONFIG = tempNeo4jRunConfig;
         }
         catch ( IOException e )
         {
