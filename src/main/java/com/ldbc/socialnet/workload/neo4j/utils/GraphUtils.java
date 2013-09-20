@@ -72,10 +72,6 @@ public class GraphUtils
             tx.failure();
             throw e;
         }
-        finally
-        {
-            tx.finish();
-        }
 
     }
 
@@ -115,10 +111,6 @@ public class GraphUtils
             e.printStackTrace();
             throw new RuntimeException( e.getCause() );
         }
-        finally
-        {
-            tx.finish();
-        }
     }
 
     public static long nodeCount( GraphDatabaseService db, long transactionSize )
@@ -134,7 +126,6 @@ public class GraphUtils
                 if ( nodeCount % transactionSize == 0 )
                 {
                     tx.success();
-                    tx.finish();
                     tx = db.beginTx();
                 }
             }
@@ -143,10 +134,6 @@ public class GraphUtils
         catch ( Exception e )
         {
             throw new RuntimeException( e.getCause() );
-        }
-        finally
-        {
-            tx.finish();
         }
         return nodeCount;
     }
@@ -164,7 +151,6 @@ public class GraphUtils
                 if ( relationshipCount % transactionSize == 0 )
                 {
                     tx.success();
-                    tx.finish();
                     tx = db.beginTx();
                 }
             }
@@ -173,10 +159,6 @@ public class GraphUtils
         catch ( Exception e )
         {
             throw new RuntimeException( e.getCause() );
-        }
-        finally
-        {
-            tx.finish();
         }
         return relationshipCount;
     }

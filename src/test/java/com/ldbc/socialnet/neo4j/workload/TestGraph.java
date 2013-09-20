@@ -11,14 +11,26 @@ import org.neo4j.helpers.collection.MapUtil;
 
 import com.ldbc.driver.util.Pair;
 import com.ldbc.socialnet.neo4j.workload.TestGraph.Nodes.Cities;
+import com.ldbc.socialnet.neo4j.workload.TestGraph.Nodes.Comments;
 import com.ldbc.socialnet.neo4j.workload.TestGraph.Nodes.Companies;
 import com.ldbc.socialnet.neo4j.workload.TestGraph.Nodes.Countries;
+import com.ldbc.socialnet.neo4j.workload.TestGraph.Nodes.Forums;
 import com.ldbc.socialnet.neo4j.workload.TestGraph.Nodes.Persons;
 import com.ldbc.socialnet.neo4j.workload.TestGraph.Nodes.Posts;
+import com.ldbc.socialnet.neo4j.workload.TestGraph.Nodes.Tags;
 import com.ldbc.socialnet.neo4j.workload.TestGraph.Nodes.Universities;
+import com.ldbc.socialnet.neo4j.workload.TestGraph.Rels.HasMember;
 import com.ldbc.socialnet.neo4j.workload.TestGraph.Rels.StudyAt;
 import com.ldbc.socialnet.neo4j.workload.TestGraph.Rels.WorksAt;
 import com.ldbc.socialnet.workload.Domain;
+
+/*
+ * what graphlab is
+ * what audience
+ * what we presented
+ * what the reaction was
+ * contacts made
+ */
 
 public class TestGraph
 {
@@ -26,215 +38,652 @@ public class TestGraph
     {
         /*
         September 4-8 (4 days), Sweden, New Zealand, Alex
+        
+        September 6-8 (2/3 days), Alex
+        pie     3
+        lol     2
+        yolo    1
+        wtf     1
+        cake    1
+        
+        cakesAndPies - 2013, Calendar.OCTOBER, 2
+            Alex - 2013, Calendar.OCTOBER, 2 
+            Aiya - 2013, Calendar.OCTOBER, 3
+            Stranger - 2013, Calendar.OCTOBER, 4
+            Jake - 2013, Calendar.OCTOBER, 8 
+
+        redditAddicts - 2013, Calendar.OCTOBER, 22
+            Jake - 2013, Calendar.OCTOBER, 22
+
+        floatingBoats - 2013, Calendar.NOVEMBER, 13
+            Jake - 2013, Calendar.NOVEMBER, 13 
+            Alex - 2013, Calendar.NOVEMBER, 14
+            Peter -  2013, Calendar.NOVEMBER, 16 
+
+        kiwisSheepAndBungyJumping - 2013, Calendar.NOVEMBER, 1
+            Aiya - 2013, Calendar.NOVEMBER, 1
+            Alex - 2013, Calendar.NOVEMBER, 4
+
+        POSTS
 
         Friend
             Jake       Sweden
-                5 September, New Zealand,  hello       *   jakePost1
-                5 September, Sweden,       hej         *   jakePost2
-                7 September, Sweden,       tjena           jakePost3
+                5 September, New Zealand,  hello            [cake,yolo]     jakePost1           cakesAndPies                
+                5 September, Sweden,       hej              [yolo]          jakePost2           cakesAndPies
+                
+                    Aiya        6 September     aiyaComment1        hi back
+                    Stranger    7 September     strangerComment1    i don't know you
+                        Aiya 7 September aiyaComment2 so?
+                    
+                7 September, Sweden,       tjena            [wtf,lol,pie]   jakePost3       4   floatingBoats
             Peter      Germany
-                7 September, Germany,      hallo            peterPost1
+                7 September, Germany,      hallo            [pie,lol]       peterPost1      4   floatingBoats
+                
+                    Jake        7 September     jakeComment1        pity you couldn't come
+                    
             Aiya       New Zealand
-                6 September, Sweden,       kia ora     *    aiyaPost1
-                9 September, New Zealand,  bro              aiyaPost2
-                5 September, New Zealand,  chur        *    aiyaPost3
-        
+                6 September, Sweden,       kia ora          [pie,cake,yolo] aiyaPost1       4   cakesAndPies
+                9 September, New Zealand,  bro              [lol]           aiyaPost2           cakesAndPies
+                5 September, New Zealand,  chur             [cake, pie]     aiyaPost3           kiwisSheepAndBungyJumping
+                
+                    Alex        6 September     alexComment1        chur bro
+                    
+        Friend Of Friend             
+            Nicky England
+                5 September, England,    I live in england    [lol,cake,wtf]           nickyPost1       cakesAndPies
+                                
         Not Friend             
             Stranger   Sweden
-                2 September, Australia,    gidday           strangerPost1
-                5 September, Australia,    I heart sheep    strangerPost2
+                2 September, Australia,    gidday           [pie, cake]     strangerPost1       cakesAndPies
+                5 September, Australia,    I heart sheep    [lol]           strangerPost2       cakesAndPies                
         */
 
         public static String createGraphQuery()
         {
             return "CREATE\n"
 
+            + "\n// --- NODES ---\n\n"
+
             /*
-             --- NODES ---
+             * Forums
              */
 
-            /*
-             * Persons
-             */
+            + " (cakesAndPiesForum:"
+                   + Domain.Node.FORUM
+                   + " {cakesAndPiesForum}),"
 
-            + " (alex:" + Domain.Node.PERSON + " {alex}), (aiya:" + Domain.Node.PERSON + " {aiya}),\n"
+                   + " (redditAddictsForum:"
+                   + Domain.Node.FORUM
+                   + " {redditAddictsForum}),\n"
 
-            + " (jake:" + Domain.Node.PERSON + " {jake}), (peter:" + Domain.Node.PERSON + " {peter}),\n"
+                   + " (floatingBoatsForum:"
+                   + Domain.Node.FORUM
+                   + " {floatingBoatsForum}),"
 
-            + " (stranger:" + Domain.Node.PERSON + " {stranger}),\n"
+                   + " (kiwisSheepAndBungyJumpingForum:"
+                   + Domain.Node.FORUM
+                   + " {kiwisSheepAndBungyJumpingForum}),\n"
 
-            /*
-            * Cities
-            */
+                   /*
+                    * Tags
+                    */
 
-            + " (auckland:" + Domain.Node.PLACE + ":" + Domain.Place.Type.CITY + " {auckland}), (stockholm:"
-                   + Domain.Node.PLACE + ":" + Domain.Place.Type.CITY + " {stockholm}),\n"
+                   + " (cake:"
+                   + Domain.Node.TAG
+                   + " {cake}), (pie:"
+                   + Domain.Node.TAG
+                   + " {pie}),\n"
 
-                   + " (munich:" + Domain.Node.PLACE + ":" + Domain.Place.Type.CITY + " {munich}), (melbourne:"
-                   + Domain.Node.PLACE + ":" + Domain.Place.Type.CITY + " {melbourne}),\n"
+                   + " (lol:"
+                   + Domain.Node.TAG
+                   + " {lol}), (yolo:"
+                   + Domain.Node.TAG
+                   + " {yolo}),\n"
+
+                   + " (wtf:"
+                   + Domain.Node.TAG
+                   + " {wtf}),\n"
+
+                   /*
+                    * Persons
+                    */
+
+                   + " (alex:"
+                   + Domain.Node.PERSON
+                   + " {alex}), (aiya:"
+                   + Domain.Node.PERSON
+                   + " {aiya}),\n"
+
+                   + " (jake:"
+                   + Domain.Node.PERSON
+                   + " {jake}), (peter:"
+                   + Domain.Node.PERSON
+                   + " {peter}),\n"
+
+                   + " (stranger:"
+                   + Domain.Node.PERSON
+                   + " {stranger}), (nicky:"
+                   + Domain.Node.PERSON
+                   + " {nicky}),\n"
+
+                   /*
+                   * Cities
+                   */
+
+                   + " (auckland:"
+                   + Domain.Node.PLACE
+                   + ":"
+                   + Domain.Place.Type.CITY
+                   + " {auckland}),"
+
+                   + " (stockholm:"
+                   + Domain.Node.PLACE
+                   + ":"
+                   + Domain.Place.Type.CITY
+                   + " {stockholm}),\n"
+
+                   + " (munich:"
+                   + Domain.Node.PLACE
+                   + ":"
+                   + Domain.Place.Type.CITY
+                   + " {munich}),"
+
+                   + " (melbourne:"
+                   + Domain.Node.PLACE
+                   + ":"
+                   + Domain.Place.Type.CITY
+                   + " {melbourne}),\n"
 
                    /*
                    * Countries
                    */
 
-                   + " (se:" + Domain.Node.PLACE + ":" + Domain.Place.Type.COUNTRY + " {sweden}), (nz:"
-                   + Domain.Node.PLACE + ":" + Domain.Place.Type.COUNTRY + " {new_zealand}),\n"
+                   + " (se:"
+                   + Domain.Node.PLACE
+                   + ":"
+                   + Domain.Place.Type.COUNTRY
+                   + " {sweden}),"
 
-                   + " (de:" + Domain.Node.PLACE + ":" + Domain.Place.Type.COUNTRY + " {germany}), (au:"
-                   + Domain.Node.PLACE + ":" + Domain.Place.Type.COUNTRY + " {australia}),\n"
+                   + " (nz:"
+                   + Domain.Node.PLACE
+                   + ":"
+                   + Domain.Place.Type.COUNTRY
+                   + " {new_zealand}),\n"
+
+                   + " (de:"
+                   + Domain.Node.PLACE
+                   + ":"
+                   + Domain.Place.Type.COUNTRY
+                   + " {germany}),"
+
+                   + " (au:"
+                   + Domain.Node.PLACE
+                   + ":"
+                   + Domain.Place.Type.COUNTRY
+                   + " {australia}),\n"
+
+                   + " (uk:"
+                   + Domain.Node.PLACE
+                   + ":"
+                   + Domain.Place.Type.COUNTRY
+                   + " {england}),\n"
 
                    /*
                    * Universities
                    */
 
-                   + " (aut:" + Domain.Node.ORGANISATION + ":" + Domain.Organisation.Type.UNIVERSITY + " {aut}), (kth:"
-                   + Domain.Node.ORGANISATION + ":" + Domain.Organisation.Type.UNIVERSITY + " {kth}),\n"
+                   + " (aut:"
+                   + Domain.Node.ORGANISATION
+                   + ":"
+                   + Domain.Organisation.Type.UNIVERSITY
+                   + " {aut}),"
+
+                   + " (kth:"
+                   + Domain.Node.ORGANISATION
+                   + ":"
+                   + Domain.Organisation.Type.UNIVERSITY
+                   + " {kth}),\n"
 
                    /*
                    * Companies
                    */
 
-                   + " (sics:" + Domain.Node.ORGANISATION + ":" + Domain.Organisation.Type.COMPANY + " {sics}), (neo:"
-                   + Domain.Node.ORGANISATION + ":" + Domain.Organisation.Type.COMPANY + " {neo}), (hot:"
-                   + Domain.Node.ORGANISATION + ":" + Domain.Organisation.Type.COMPANY + " {hot}),\n"
+                   + " (sics:"
+                   + Domain.Node.ORGANISATION
+                   + ":"
+                   + Domain.Organisation.Type.COMPANY
+                   + " {sics}),"
+
+                   + " (neo:"
+                   + Domain.Node.ORGANISATION
+                   + ":"
+                   + Domain.Organisation.Type.COMPANY
+                   + " {neo}),"
+
+                   + " (hot:"
+                   + Domain.Node.ORGANISATION
+                   + ":"
+                   + Domain.Organisation.Type.COMPANY
+                   + " {hot}),\n"
 
                    /*
                    * Posts
                    */
 
-                   + " (jakePost1:" + Domain.Node.POST + " {jakePost1}), (jakePost2:" + Domain.Node.POST
-                   + " {jakePost2}), (jakePost3:" + Domain.Node.POST + " {jakePost3}),\n"
+                   + " (jakePost1:"
+                   + Domain.Node.POST
+                   + " {jakePost1}), (jakePost2:"
+                   + Domain.Node.POST
+                   + " {jakePost2}),"
 
-                   + " (peterPost1:" + Domain.Node.POST + " {peterPost1}), (aiyaPost1:" + Domain.Node.POST
-                   + " {aiyaPost1}), (aiyaPost2:" + Domain.Node.POST + " {aiyaPost2}), (aiyaPost3:" + Domain.Node.POST
+                   + " (jakePost3:"
+                   + Domain.Node.POST
+                   + " {jakePost3}),\n"
+
+                   + " (peterPost1:"
+                   + Domain.Node.POST
+                   + " {peterPost1}), (aiyaPost1:"
+                   + Domain.Node.POST
+                   + " {aiyaPost1}),"
+
+                   + " (aiyaPost2:"
+                   + Domain.Node.POST
+                   + " {aiyaPost2}), (aiyaPost3:"
+                   + Domain.Node.POST
                    + " {aiyaPost3}),\n"
 
-                   + " (strangerPost1:" + Domain.Node.POST + " {strangerPost1}), (strangerPost2:" + Domain.Node.POST
+                   + " (strangerPost1:"
+                   + Domain.Node.POST
+                   + " {strangerPost1}),"
+
+                   + " (strangerPost2:"
+                   + Domain.Node.POST
                    + " {strangerPost2}),\n"
 
-                   /*
-                   --- RELATIONSHIPS ---
-                   */
+                   + " (nickyPost1:"
+                   + Domain.Node.POST
+                   + " {nickyPost1}),\n"
 
-                   + "\n"
+                   /*
+                   * Comments
+                   */
+                   + " (aiyaComment1:"
+                   + Domain.Node.COMMENT
+                   + " {aiyaComment1}),"
+
+                   + " (aiyaComment2:"
+                   + Domain.Node.COMMENT
+                   + " {aiyaComment2}),\n"
+
+                   + " (strangerComment1:"
+                   + Domain.Node.COMMENT
+                   + " {strangerComment1}),"
+
+                   + " (jakeComment1:"
+                   + Domain.Node.COMMENT
+                   + " {jakeComment1}),"
+
+                   + " (alexComment1:"
+                   + Domain.Node.COMMENT
+                   + " {alexComment1}),\n"
+
+                   + "\n// --- RELATIONSHIPS ---\n\n"
 
                    /*
                     * City-Country
                     */
 
-                   + " (stockholm)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(se), (auckland)-[:" + Domain.Rel.IS_LOCATED_IN
+                   + " (stockholm)-[:"
+                   + Domain.Rel.IS_LOCATED_IN
+                   + "]->(se),"
+
+                   + " (auckland)-[:"
+                   + Domain.Rel.IS_LOCATED_IN
                    + "]->(nz),\n"
 
-                   + " (munich)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(de), (melbourne)-[:" + Domain.Rel.IS_LOCATED_IN
+                   + " (munich)-[:"
+                   + Domain.Rel.IS_LOCATED_IN
+                   + "]->(de),"
+
+                   + " (melbourne)-[:"
+                   + Domain.Rel.IS_LOCATED_IN
                    + "]->(au),\n"
 
                    /*
                     * Organisation-Country
                     */
 
-                   + " (neo)<-[:" + Domain.Rel.WORKS_AT + "{alexWorkAtNeo}]-(alex), (stockholm)<-[:"
-                   + Domain.Rel.IS_LOCATED_IN + "]-(kth),\n"
+                   + " (neo)<-[:"
+                   + Domain.Rel.WORKS_AT
+                   + " {alexWorkAtNeo}]-(alex),"
 
-                   + " (auckland)<-[:" + Domain.Rel.IS_LOCATED_IN + "]-(aut), (se)<-[:" + Domain.Rel.IS_LOCATED_IN
+                   + " (stockholm)<-[:"
+                   + Domain.Rel.IS_LOCATED_IN
+                   + "]-(kth),\n"
+
+                   + " (auckland)<-[:"
+                   + Domain.Rel.IS_LOCATED_IN
+                   + "]-(aut),"
+
+                   + " (se)<-[:"
+                   + Domain.Rel.IS_LOCATED_IN
                    + "]-(sics),\n"
 
-                   + " (nz)<-[:" + Domain.Rel.IS_LOCATED_IN + "]-(hot),\n"
+                   + " (nz)<-[:"
+                   + Domain.Rel.IS_LOCATED_IN
+                   + "]-(hot),\n"
+
+                   /*
+                    * Nicky
+                    */
+
+                   + " (nicky)-[:"
+                   + Domain.Rel.IS_LOCATED_IN
+                   + "]->(uk),\n"
 
                    /*
                     * Alex
                     */
 
-                   + " (alex)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(stockholm),\n"
+                   + " (alex)-[:"
+                   + Domain.Rel.IS_LOCATED_IN
+                   + "]->(stockholm),\n"
 
-                   + " (se)<-[:" + Domain.Rel.IS_LOCATED_IN + "]-(neo),\n"
+                   + " (se)<-[:"
+                   + Domain.Rel.IS_LOCATED_IN
+                   + "]-(neo),\n"
 
-                   + " (kth)<-[:" + Domain.Rel.STUDY_AT + " {alexStudyAtKth}]-(alex),\n"
+                   + " (kth)<-[:"
+                   + Domain.Rel.STUDY_AT
+                   + " {alexStudyAtKth}]-(alex),\n"
 
-                   + " (aut)<-[:" + Domain.Rel.STUDY_AT + " {alexStudyAtAut}]-(alex),\n"
+                   + " (aut)<-[:"
+                   + Domain.Rel.STUDY_AT
+                   + " {alexStudyAtAut}]-(alex),\n"
 
-                   + " (sics)<-[:" + Domain.Rel.WORKS_AT + "{alexWorkAtSics}]-(alex),\n"
+                   + " (sics)<-[:"
+                   + Domain.Rel.WORKS_AT
+                   + " {alexWorkAtSics}]-(alex),\n"
 
                    /*
                     * Aiya
                     */
 
-                   + " (aiya)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(auckland),\n"
+                   + " (aiya)-[:"
+                   + Domain.Rel.IS_LOCATED_IN
+                   + "]->(auckland),\n"
 
-                   + " (hot)<-[:" + Domain.Rel.WORKS_AT + "{aiyaWorkAtHot}]-(aiya),\n"
+                   + " (hot)<-[:"
+                   + Domain.Rel.WORKS_AT
+                   + " {aiyaWorkAtHot}]-(aiya),\n"
 
                    /*
                     * Jake
                     */
 
-                   + " (jake)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(stockholm),\n"
+                   + " (jake)-[:"
+                   + Domain.Rel.IS_LOCATED_IN
+                   + "]->(stockholm),\n"
 
                    /*
                    * Peter
                    */
 
-                   + " (peter)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(munich),\n"
+                   + " (peter)-[:"
+                   + Domain.Rel.IS_LOCATED_IN
+                   + "]->(munich),\n"
 
                    /*
                     * Stranger
                     */
 
-                   + " (stranger)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(melbourne)\n"
+                   + " (stranger)-[:"
+                   + Domain.Rel.IS_LOCATED_IN
+                   + "]->(melbourne),\n"
+
+                   /*
+                    * Forum-Person (moderator)
+                    */
+
+                   + " (cakesAndPiesForum)-[:"
+                   + Domain.Rel.HAS_MODERATOR
+                   + "]->(alex),"
+
+                   + " (redditAddictsForum)-[:"
+                   + Domain.Rel.HAS_MODERATOR
+                   + "]->(jake),\n"
+
+                   + " (floatingBoatsForum)-[:"
+                   + Domain.Rel.HAS_MODERATOR
+                   + "]->(jake),"
+
+                   + " (kiwisSheepAndBungyJumpingForum)-[:"
+                   + Domain.Rel.HAS_MODERATOR
+                   + "]->(aiya),\n"
+
+                   /*
+                    * Forum-Person (member)
+                    */
+
+                   + " (cakesAndPiesForum)-[:"
+                   + Domain.Rel.HAS_MEMBER
+                   + " {cakesAndPiesHasMemberAlex}]->(alex),"
+
+                   + " (cakesAndPiesForum)-[:"
+                   + Domain.Rel.HAS_MEMBER
+                   + " {cakesAndPiesHasMemberAiya}]->(aiya),\n"
+
+                   + " (cakesAndPiesForum)-[:"
+                   + Domain.Rel.HAS_MEMBER
+                   + " {cakesAndPiesHasMemberStranger}]->(stranger),"
+
+                   + " (cakesAndPiesForum)-[:"
+                   + Domain.Rel.HAS_MEMBER
+                   + " {cakesAndPiesHasMemberJake}]->(jake),\n"
+
+                   + " (cakesAndPiesForum)-[:"
+                   + Domain.Rel.HAS_MEMBER
+                   + " {cakesAndPiesHasMemberNicky}]->(nicky),\n"
+
+                   + " (redditAddictsForum)-[:"
+                   + Domain.Rel.HAS_MEMBER
+                   + " {redditAddictsHasMemberJake}]->(jake),"
+
+                   + " (floatingBoatsForum)-[:"
+                   + Domain.Rel.HAS_MEMBER
+                   + " {floatingBoatsHasMemberAlex}]->(alex),\n"
+
+                   + " (floatingBoatsForum)-[:"
+                   + Domain.Rel.HAS_MEMBER
+                   + " {floatingBoatsHasMemberJake}]->(jake),"
+
+                   + " (floatingBoatsForum)-[:"
+                   + Domain.Rel.HAS_MEMBER
+                   + " {floatingBoatsHasMemberPeter}]->(peter),\n"
+
+                   + " (kiwisSheepAndBungyJumpingForum)-[:"
+                   + Domain.Rel.HAS_MEMBER
+                   + " {kiwisSheepAndBungyJumpingHasMemberAiya}]->(aiya),\n"
+
+                   + " (kiwisSheepAndBungyJumpingForum)-[:"
+                   + Domain.Rel.HAS_MEMBER
+                   + " {kiwisSheepAndBungyJumpingHasMemberAlex}]->(alex)\n"
 
                    /*
                    * Person-Person
                    */
 
-                   + "FOREACH (n IN [jake, aiya, peter]| CREATE (alex)-[:" + Domain.Rel.KNOWS + "]->(n) )\n"
+                   + "FOREACH (n IN [jake, aiya, peter] | CREATE (alex)-[:"
+                   + Domain.Rel.KNOWS
+                   + "]->(n) )\n"
+
+                   + "FOREACH (n IN [nicky] | CREATE (aiya)-[:"
+                   + Domain.Rel.KNOWS
+                   + "]->(n) )\n"
 
                    /*
-                   * Post-City
+                   * Post-Country
                    */
 
-                   + "FOREACH (n IN [jakePost1]| CREATE (n)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(nz) )\n"
+                   + "FOREACH (n IN [jakePost1,aiyaPost2, aiyaPost3] | CREATE (n)-[:"
+                   + Domain.Rel.IS_LOCATED_IN
+                   + "]->(nz) )\n"
 
-                   + "FOREACH (n IN [jakePost2, jakePost3]| CREATE (n)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(se) )\n"
+                   + "FOREACH (n IN [jakePost2, jakePost3, aiyaPost1] | CREATE (n)-[:"
+                   + Domain.Rel.IS_LOCATED_IN
+                   + "]->(se) )\n"
 
-                   + "FOREACH (n IN [aiyaPost1]| CREATE (n)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(se) )\n"
+                   + "FOREACH (n IN [peterPost1] | CREATE (n)-[:"
+                   + Domain.Rel.IS_LOCATED_IN
+                   + "]->(de) )\n"
 
-                   + "FOREACH (n IN [aiyaPost2, aiyaPost3]| CREATE (n)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(nz) )\n"
-
-                   + "FOREACH (n IN [peterPost1]| CREATE (n)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(de) )\n"
-
-                   + "FOREACH (n IN [strangerPost1, strangerPost2]| CREATE (n)-[:" + Domain.Rel.IS_LOCATED_IN
+                   + "FOREACH (n IN [strangerPost1, strangerPost2] | CREATE (n)-[:"
+                   + Domain.Rel.IS_LOCATED_IN
                    + "]->(au) )\n"
+
+                   + "FOREACH (n IN [nickyPost1] | CREATE (n)-[:"
+                   + Domain.Rel.IS_LOCATED_IN
+                   + "]->(uk) )\n"
 
                    /*
                    * Post-Person
                    */
 
-                   + "FOREACH (n IN [jakePost1, jakePost2, jakePost3]| CREATE (n)-[:" + Domain.Rel.HAS_CREATOR
+                   + "FOREACH (n IN [jakePost1, jakePost2, jakePost3] | CREATE (n)-[:"
+                   + Domain.Rel.HAS_CREATOR
                    + "]->(jake) )\n"
 
-                   + "FOREACH (n IN [aiyaPost1, aiyaPost2, aiyaPost3]| CREATE (n)-[:" + Domain.Rel.HAS_CREATOR
+                   + "FOREACH (n IN [aiyaPost1, aiyaPost2, aiyaPost3] | CREATE (n)-[:"
+                   + Domain.Rel.HAS_CREATOR
                    + "]->(aiya) )\n"
 
-                   + "FOREACH (n IN [peterPost1]| CREATE (n)-[:" + Domain.Rel.HAS_CREATOR + "]->(peter) )\n"
+                   + "FOREACH (n IN [peterPost1] | CREATE (n)-[:"
+                   + Domain.Rel.HAS_CREATOR
+                   + "]->(peter) )\n"
 
-                   + "FOREACH (n IN [strangerPost1, strangerPost2]| CREATE (n)-[:" + Domain.Rel.HAS_CREATOR
+                   + "FOREACH (n IN [strangerPost1, strangerPost2] | CREATE (n)-[:"
+                   + Domain.Rel.HAS_CREATOR
                    + "]->(stranger) )\n"
 
-            ;
+                   + "FOREACH (n IN [nickyPost1] | CREATE (n)-[:"
+                   + Domain.Rel.HAS_CREATOR
+                   + "]->(nicky) )\n"
+
+                   /*
+                   * Post-Tag
+                   */
+
+                   + "FOREACH (n IN [cake, yolo] | CREATE (jakePost1)-[:"
+                   + Domain.Rel.HAS_TAG
+                   + "]->(n) )\n"
+
+                   + "FOREACH (n IN [yolo] | CREATE (jakePost2)-[:"
+                   + Domain.Rel.HAS_TAG
+                   + "]->(n) )\n"
+
+                   + "FOREACH (n IN [wtf, lol, pie] | CREATE (jakePost3)-[:"
+                   + Domain.Rel.HAS_TAG
+                   + "]->(n) )\n"
+
+                   + "FOREACH (n IN [pie, lol] | CREATE (peterPost1)-[:"
+                   + Domain.Rel.HAS_TAG
+                   + "]->(n) )\n"
+
+                   + "FOREACH (n IN [pie, cake, yolo] | CREATE (aiyaPost1)-[:"
+                   + Domain.Rel.HAS_TAG
+                   + "]->(n) )\n"
+
+                   + "FOREACH (n IN [lol] | CREATE (aiyaPost2)-[:"
+                   + Domain.Rel.HAS_TAG
+                   + "]->(n) )\n"
+
+                   + "FOREACH (n IN [cake, pie] | CREATE (aiyaPost3)-[:"
+                   + Domain.Rel.HAS_TAG
+                   + "]->(n) )\n"
+
+                   + "FOREACH (n IN [pie, cake] | CREATE (strangerPost1)-[:"
+                   + Domain.Rel.HAS_TAG
+                   + "]->(n) )\n"
+
+                   + "FOREACH (n IN [lol] | CREATE (strangerPost2)-[:"
+                   + Domain.Rel.HAS_TAG
+                   + "]->(n) )\n"
+
+                   + "FOREACH (n IN [lol,cake,wtf] | CREATE (nickyPost1)-[:"
+                   + Domain.Rel.HAS_TAG
+                   + "]->(n) )\n"
+
+                   /*
+                    * Post-Forum
+                    */
+
+                   + "FOREACH (n IN [jakePost1, jakePost2, aiyaPost1, aiyaPost2, strangerPost1, strangerPost2, nickyPost1]|"
+                   + " CREATE (cakesAndPiesForum)-[:" + Domain.Rel.CONTAINER_OF + "]->(n) )\n"
+
+                   + "FOREACH (n IN [jakePost3, peterPost1] | CREATE (floatingBoatsForum)-[:" + Domain.Rel.CONTAINER_OF
+                   + "]->(n) )\n"
+
+                   + "FOREACH (n IN [aiyaPost3] | CREATE (kiwisSheepAndBungyJumpingForum)-[:" + Domain.Rel.CONTAINER_OF
+                   + "]->(n) )\n"
+
+                   /*
+                    * Comment-Person
+                    */
+
+                   + "FOREACH (n IN [aiyaComment1, aiyaComment2] | CREATE (n)-[:" + Domain.Rel.HAS_CREATOR
+                   + "]->(aiya) )\n"
+
+                   + "FOREACH (n IN [alexComment1] | CREATE (n)-[:" + Domain.Rel.HAS_CREATOR + "]->(alex) )\n"
+
+                   + "FOREACH (n IN [jakeComment1] | CREATE (n)-[:" + Domain.Rel.HAS_CREATOR + "]->(jake) )\n"
+
+                   + "FOREACH (n IN [strangerComment1] | CREATE (n)-[:" + Domain.Rel.HAS_CREATOR + "]->(stranger) )\n"
+
+                   /*
+                    * Comment-Post
+                    */
+
+                   + "FOREACH (n IN [aiyaComment1, strangerComment1] | CREATE (n)-[:" + Domain.Rel.REPLY_OF
+                   + "]->(jakePost2) )\n"
+
+                   + "FOREACH (n IN [aiyaComment2] | CREATE (n)-[:" + Domain.Rel.REPLY_OF + "]->(strangerComment1) )\n"
+
+                   + "FOREACH (n IN [jakeComment1] | CREATE (n)-[:" + Domain.Rel.REPLY_OF + "]->(peterPost1) )\n"
+
+                   + "FOREACH (n IN [alexComment1] | CREATE (n)-[:" + Domain.Rel.REPLY_OF + "]->(aiyaPost2) )\n";
         }
 
         public static Map<String, Object> createGraphQueryParams()
         {
-            return MapUtil.map( "alex", Persons.alex(), "aiya", Persons.aiya(), "jake", Persons.jake(), "peter",
-                    Persons.peter(), "stranger", Persons.stranger(), "auckland", Cities.auckland(), "stockholm",
+            return MapUtil.map( "cakesAndPiesForum", Forums.cakesAndPies(), "redditAddictsForum",
+                    Forums.redditAddicts(), "floatingBoatsForum", Forums.floatingBoats(),
+                    "kiwisSheepAndBungyJumpingForum", Forums.kiwisSheepAndBungyJumping(), "cake", Tags.cake(), "pie",
+                    Tags.pie(), "lol", Tags.lol(), "yolo", Tags.yolo(), "wtf", Tags.wtf(), "alex", Persons.alex(),
+                    "aiya", Persons.aiya(), "jake", Persons.jake(), "peter", Persons.peter(), "stranger",
+                    Persons.stranger(), "nicky", Persons.nicky(), "auckland", Cities.auckland(), "stockholm",
                     Cities.stockholm(), "munich", Cities.munich(), "melbourne", Cities.melbourne(), "sweden",
                     Countries.sweden(), "new_zealand", Countries.newZealand(), "germany", Countries.germany(),
-                    "australia", Countries.australia(), "aut", Universities.aut(), "kth", Universities.kth(), "sics",
-                    Companies.sics(), "neo", Companies.neo(), "hot", Companies.hot(), "alexWorkAtSics",
-                    WorksAt.alexWorkAtSics(), "alexWorkAtNeo", WorksAt.alexWorkAtNeo(), "aiyaWorkAtHot",
-                    WorksAt.aiyaWorkAtHot(), "alexStudyAtAut", StudyAt.alexStudyAtAut(), "alexStudyAtKth",
-                    StudyAt.alexStudyAtKth(), "jakePost1", Posts.jakePost1(), "jakePost2", Posts.jakePost2(),
-                    "jakePost3", Posts.jakePost3(), "peterPost1", Posts.peterPost1(), "aiyaPost1", Posts.aiyaPost1(),
-                    "aiyaPost2", Posts.aiyaPost2(), "aiyaPost3", Posts.aiyaPost3(), "strangerPost1",
-                    Posts.strangerPost1(), "strangerPost2", Posts.strangerPost2() );
+                    "australia", Countries.australia(), "england", Countries.england(), "aut", Universities.aut(),
+                    "kth", Universities.kth(), "sics", Companies.sics(), "neo", Companies.neo(), "hot",
+                    Companies.hot(), "alexWorkAtSics", WorksAt.alexWorkAtSics(), "alexWorkAtNeo",
+                    WorksAt.alexWorkAtNeo(), "aiyaWorkAtHot", WorksAt.aiyaWorkAtHot(), "alexStudyAtAut",
+                    StudyAt.alexStudyAtAut(), "alexStudyAtKth", StudyAt.alexStudyAtKth(), "jakePost1", Posts.jake1(),
+                    "jakePost2", Posts.jake2(), "jakePost3", Posts.jake3(), "peterPost1", Posts.peter1(), "aiyaPost1",
+                    Posts.aiya1(), "aiyaPost2", Posts.aiya2(), "aiyaPost3", Posts.aiya3(), "strangerPost1",
+                    Posts.stranger1(), "strangerPost2", Posts.stranger2(), "nickyPost1", Posts.nicky1(),
+                    "cakesAndPiesHasMemberAlex", HasMember.cakesAndPiesHasMemberAlex(), "cakesAndPiesHasMemberAiya",
+                    HasMember.cakesAndPiesHasMemberAiya(), "cakesAndPiesHasMemberStranger",
+                    HasMember.cakesAndPiesHasMemberStranger(), "cakesAndPiesHasMemberJake",
+                    HasMember.cakesAndPiesHasMemberJake(), "cakesAndPiesHasMemberNicky",
+                    HasMember.cakesAndPiesHasMemberNicky(), "redditAddictsHasMemberJake",
+                    HasMember.redditAddictsHasMemberJake(), "floatingBoatsHasMemberJake",
+                    HasMember.floatingBoatsHasMemberJake(), "floatingBoatsHasMemberAlex",
+                    HasMember.floatingBoatsHasMemberAlex(), "floatingBoatsHasMemberPeter",
+                    HasMember.floatingBoatsHasMemberPeter(), "kiwisSheepAndBungyJumpingHasMemberAiya",
+                    HasMember.kiwisSheepAndBungyJumpingHasMemberAiya(), "kiwisSheepAndBungyJumpingHasMemberAlex",
+                    HasMember.kiwisSheepAndBungyJumpingHasMemberAlex(), "aiyaComment1", Comments.aiya1(),
+                    "aiyaComment2", Comments.aiya2(), "strangerComment1", Comments.stranger1(), "jakeComment1",
+                    Comments.jake1(), "alexComment1", Comments.alex1() );
         }
 
         public static Iterable<String> createIndexQueries()
@@ -250,6 +699,102 @@ public class TestGraph
 
     protected static class Rels
     {
+        protected static class HasMember
+        {
+
+            // cakesAndPies - 2013, Calendar.OCTOBER, 2
+            protected static Map<String, Object> cakesAndPiesHasMemberAlex()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.OCTOBER, 2 );
+                long joinDate = c.getTimeInMillis();
+                return MapUtil.map( Domain.HasMember.JOIN_DATE, joinDate );
+            }
+
+            protected static Map<String, Object> cakesAndPiesHasMemberAiya()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.OCTOBER, 3 );
+                long joinDate = c.getTimeInMillis();
+                return MapUtil.map( Domain.HasMember.JOIN_DATE, joinDate );
+            }
+
+            protected static Map<String, Object> cakesAndPiesHasMemberStranger()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.OCTOBER, 4 );
+                long joinDate = c.getTimeInMillis();
+                return MapUtil.map( Domain.HasMember.JOIN_DATE, joinDate );
+            }
+
+            protected static Map<String, Object> cakesAndPiesHasMemberJake()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.OCTOBER, 8 );
+                long joinDate = c.getTimeInMillis();
+                return MapUtil.map( Domain.HasMember.JOIN_DATE, joinDate );
+            }
+
+            protected static Map<String, Object> cakesAndPiesHasMemberNicky()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.OCTOBER, 9 );
+                long joinDate = c.getTimeInMillis();
+                return MapUtil.map( Domain.HasMember.JOIN_DATE, joinDate );
+            }
+
+            // redditAddicts - 2013, Calendar.OCTOBER, 22
+            protected static Map<String, Object> redditAddictsHasMemberJake()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.OCTOBER, 22 );
+                long joinDate = c.getTimeInMillis();
+                return MapUtil.map( Domain.HasMember.JOIN_DATE, joinDate );
+            }
+
+            // floatingBoats - 2013, Calendar.NOVEMBER, 13
+            protected static Map<String, Object> floatingBoatsHasMemberJake()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.NOVEMBER, 13 );
+                long joinDate = c.getTimeInMillis();
+                return MapUtil.map( Domain.HasMember.JOIN_DATE, joinDate );
+            }
+
+            protected static Map<String, Object> floatingBoatsHasMemberAlex()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.NOVEMBER, 14 );
+                long joinDate = c.getTimeInMillis();
+                return MapUtil.map( Domain.HasMember.JOIN_DATE, joinDate );
+            }
+
+            protected static Map<String, Object> floatingBoatsHasMemberPeter()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.NOVEMBER, 16 );
+                long joinDate = c.getTimeInMillis();
+                return MapUtil.map( Domain.HasMember.JOIN_DATE, joinDate );
+            }
+
+            // kiwisSheepAndBungyJumping - 2013, Calendar.NOVEMBER, 1
+            protected static Map<String, Object> kiwisSheepAndBungyJumpingHasMemberAiya()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.NOVEMBER, 1 );
+                long joinDate = c.getTimeInMillis();
+                return MapUtil.map( Domain.HasMember.JOIN_DATE, joinDate );
+            }
+
+            protected static Map<String, Object> kiwisSheepAndBungyJumpingHasMemberAlex()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.NOVEMBER, 4 );
+                long joinDate = c.getTimeInMillis();
+                return MapUtil.map( Domain.HasMember.JOIN_DATE, joinDate );
+            }
+        }
+
         protected static class WorksAt
         {
             protected static Map<String, Object> alexWorkAtSics()
@@ -335,6 +880,11 @@ public class TestGraph
             protected static Map<String, Object> australia()
             {
                 return MapUtil.map( Domain.Place.NAME, "australia" );
+            }
+
+            protected static Map<String, Object> england()
+            {
+                return MapUtil.map( Domain.Place.NAME, "england" );
             }
         }
 
@@ -464,8 +1014,8 @@ public class TestGraph
             {
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put( Domain.Person.ID, 5L );
-                params.put( Domain.Person.FIRST_NAME, "strange" );
-                params.put( Domain.Person.LAST_NAME, "guy" );
+                params.put( Domain.Person.FIRST_NAME, "stranger" );
+                params.put( Domain.Person.LAST_NAME, "dude" );
                 Calendar c = Calendar.getInstance();
                 c.set( 2012, Calendar.OCTOBER, 15 );
                 long creationDate = c.getTimeInMillis();
@@ -480,18 +1030,40 @@ public class TestGraph
                 params.put( Domain.Person.LOCATION_IP, "12.24.158.11" );
                 return params;
             }
+
+            protected static Map<String, Object> nicky()
+            {
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put( Domain.Person.ID, 6L );
+                params.put( Domain.Person.FIRST_NAME, "nicky" );
+                params.put( Domain.Person.LAST_NAME, "toothill" );
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.JUNE, 8 );
+                long creationDate = c.getTimeInMillis();
+                params.put( Domain.Person.CREATION_DATE, creationDate );
+                c.set( 1982, Calendar.AUGUST, 11 );
+                long birthday = c.getTimeInMillis();
+                params.put( Domain.Person.BIRTHDAY, birthday );
+                params.put( Domain.Person.BROWSER_USED, "safari" );
+                params.put( Domain.Person.EMAIL_ADDRESSES, new String[] { "nicky@provider.com" } );
+                params.put( Domain.Person.GENDER, "female" );
+                params.put( Domain.Person.LANGUAGES, new String[] { "english", "spanish" } );
+                params.put( Domain.Person.LOCATION_IP, "12.171.48.1" );
+                return params;
+            }
+
         }
 
         protected static class Posts
         {
-            protected static Map<String, Object> jakePost1()
+            protected static Map<String, Object> jake1()
             {
                 Calendar c = Calendar.getInstance();
                 c.set( 2013, Calendar.SEPTEMBER, 5 );
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<String, Object>();
-                params.put( Domain.Post.CONTENT, "hello" );
+                params.put( Domain.Post.CONTENT, "[jake1] hello" );
                 params.put( Domain.Post.LANGUAGE, new String[] { "english" } );
                 params.put( Domain.Post.IMAGE_FILE, "some image file" );
                 params.put( Domain.Post.CREATION_DATE, creationDate );
@@ -500,14 +1072,14 @@ public class TestGraph
                 return params;
             }
 
-            protected static Map<String, Object> jakePost2()
+            protected static Map<String, Object> jake2()
             {
                 Calendar c = Calendar.getInstance();
                 c.set( 2013, Calendar.SEPTEMBER, 5 );
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<String, Object>();
-                params.put( Domain.Post.CONTENT, "hej" );
+                params.put( Domain.Post.CONTENT, "[jake2] hej" );
                 params.put( Domain.Post.LANGUAGE, new String[] { "swedish" } );
                 params.put( Domain.Post.IMAGE_FILE, "some image file" );
                 params.put( Domain.Post.CREATION_DATE, creationDate );
@@ -516,14 +1088,14 @@ public class TestGraph
                 return params;
             }
 
-            protected static Map<String, Object> jakePost3()
+            protected static Map<String, Object> jake3()
             {
                 Calendar c = Calendar.getInstance();
                 c.set( 2013, Calendar.SEPTEMBER, 7 );
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<String, Object>();
-                params.put( Domain.Post.CONTENT, "tjena" );
+                params.put( Domain.Post.CONTENT, "[jake3] tjena" );
                 params.put( Domain.Post.LANGUAGE, new String[] { "swedish" } );
                 params.put( Domain.Post.IMAGE_FILE, "some image file" );
                 params.put( Domain.Post.CREATION_DATE, creationDate );
@@ -532,14 +1104,14 @@ public class TestGraph
                 return params;
             }
 
-            protected static Map<String, Object> peterPost1()
+            protected static Map<String, Object> peter1()
             {
                 Calendar c = Calendar.getInstance();
                 c.set( 2013, Calendar.SEPTEMBER, 7 );
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<String, Object>();
-                params.put( Domain.Post.CONTENT, "hallo" );
+                params.put( Domain.Post.CONTENT, "[peter1] hallo" );
                 params.put( Domain.Post.LANGUAGE, new String[] { "german" } );
                 params.put( Domain.Post.IMAGE_FILE, "some image file" );
                 params.put( Domain.Post.CREATION_DATE, creationDate );
@@ -548,14 +1120,14 @@ public class TestGraph
                 return params;
             }
 
-            protected static Map<String, Object> aiyaPost1()
+            protected static Map<String, Object> aiya1()
             {
                 Calendar c = Calendar.getInstance();
                 c.set( 2013, Calendar.SEPTEMBER, 6 );
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<String, Object>();
-                params.put( Domain.Post.CONTENT, "kia ora" );
+                params.put( Domain.Post.CONTENT, "[aiya1] kia ora" );
                 params.put( Domain.Post.LANGUAGE, new String[] { "english" } );
                 params.put( Domain.Post.IMAGE_FILE, "some image file" );
                 params.put( Domain.Post.CREATION_DATE, creationDate );
@@ -564,14 +1136,14 @@ public class TestGraph
                 return params;
             }
 
-            protected static Map<String, Object> aiyaPost2()
+            protected static Map<String, Object> aiya2()
             {
                 Calendar c = Calendar.getInstance();
                 c.set( 2013, Calendar.SEPTEMBER, 9 );
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<String, Object>();
-                params.put( Domain.Post.CONTENT, "bro" );
+                params.put( Domain.Post.CONTENT, "[aiya2] bro" );
                 params.put( Domain.Post.LANGUAGE, new String[] { "english" } );
                 params.put( Domain.Post.IMAGE_FILE, "some image file" );
                 params.put( Domain.Post.CREATION_DATE, creationDate );
@@ -580,14 +1152,14 @@ public class TestGraph
                 return params;
             }
 
-            protected static Map<String, Object> aiyaPost3()
+            protected static Map<String, Object> aiya3()
             {
                 Calendar c = Calendar.getInstance();
                 c.set( 2013, Calendar.SEPTEMBER, 5 );
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<String, Object>();
-                params.put( Domain.Post.CONTENT, "chur" );
+                params.put( Domain.Post.CONTENT, "[aiya3] chur" );
                 params.put( Domain.Post.LANGUAGE, new String[] { "english" } );
                 params.put( Domain.Post.IMAGE_FILE, "some image file" );
                 params.put( Domain.Post.CREATION_DATE, creationDate );
@@ -596,14 +1168,14 @@ public class TestGraph
                 return params;
             }
 
-            protected static Map<String, Object> strangerPost1()
+            protected static Map<String, Object> stranger1()
             {
                 Calendar c = Calendar.getInstance();
                 c.set( 2013, Calendar.SEPTEMBER, 2 );
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<String, Object>();
-                params.put( Domain.Post.CONTENT, "gidday" );
+                params.put( Domain.Post.CONTENT, "[stranger1] gidday" );
                 params.put( Domain.Post.LANGUAGE, new String[] { "english" } );
                 params.put( Domain.Post.IMAGE_FILE, "some image file" );
                 params.put( Domain.Post.CREATION_DATE, creationDate );
@@ -612,14 +1184,14 @@ public class TestGraph
                 return params;
             }
 
-            protected static Map<String, Object> strangerPost2()
+            protected static Map<String, Object> stranger2()
             {
                 Calendar c = Calendar.getInstance();
                 c.set( 2013, Calendar.SEPTEMBER, 5 );
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<String, Object>();
-                params.put( Domain.Post.CONTENT, "i heart sheep" );
+                params.put( Domain.Post.CONTENT, "[stranger2] i heart sheep" );
                 params.put( Domain.Post.LANGUAGE, new String[] { "english" } );
                 params.put( Domain.Post.IMAGE_FILE, "some image file" );
                 params.put( Domain.Post.CREATION_DATE, creationDate );
@@ -627,7 +1199,189 @@ public class TestGraph
                 params.put( Domain.Post.LOCATION_IP, "31.55.91.442" );
                 return params;
             }
+
+            protected static Map<String, Object> nicky1()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.SEPTEMBER, 5 );
+                long creationDate = c.getTimeInMillis();
+
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put( Domain.Post.CONTENT, "[nicky1] i live in england" );
+                params.put( Domain.Post.LANGUAGE, new String[] { "english" } );
+                params.put( Domain.Post.IMAGE_FILE, "some image file" );
+                params.put( Domain.Post.CREATION_DATE, creationDate );
+                params.put( Domain.Post.BROWSER_USED, "safari" );
+                params.put( Domain.Post.LOCATION_IP, "33.125.1.451" );
+                return params;
+            }
         }
 
+        protected static class Tags
+        {
+            protected static Map<String, Object> cake()
+            {
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put( Domain.Tag.NAME, "cake" );
+                params.put( Domain.Tag.URL, new String[] { "www.cake.good" } );
+                return params;
+            }
+
+            protected static Map<String, Object> pie()
+            {
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put( Domain.Tag.NAME, "pie" );
+                params.put( Domain.Tag.URL, new String[] { "www.is.better" } );
+                return params;
+            }
+
+            protected static Map<String, Object> lol()
+            {
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put( Domain.Tag.NAME, "lol" );
+                params.put( Domain.Tag.URL, new String[] { "www.lol.ol" } );
+                return params;
+            }
+
+            protected static Map<String, Object> yolo()
+            {
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put( Domain.Tag.NAME, "yolo" );
+                params.put( Domain.Tag.URL, new String[] { "www.yolo.nu" } );
+                return params;
+            }
+
+            protected static Map<String, Object> wtf()
+            {
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put( Domain.Tag.NAME, "wtf" );
+                params.put( Domain.Tag.URL, new String[] { "www.wtf.com" } );
+                return params;
+            }
+        }
+
+        protected static class Forums
+        {
+            protected static Map<String, Object> cakesAndPies()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.OCTOBER, 2 );
+                long creationDate = c.getTimeInMillis();
+
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put( Domain.Forum.TITLE, "everything cakes and pies" );
+                params.put( Domain.Forum.CREATION_DATE, creationDate );
+                return params;
+            }
+
+            protected static Map<String, Object> redditAddicts()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.OCTOBER, 22 );
+                long creationDate = c.getTimeInMillis();
+
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put( Domain.Forum.TITLE, "if it's not on reddit it's not on nothing" );
+                params.put( Domain.Forum.CREATION_DATE, creationDate );
+                return params;
+            }
+
+            protected static Map<String, Object> floatingBoats()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.NOVEMBER, 13 );
+                long creationDate = c.getTimeInMillis();
+
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put( Domain.Forum.TITLE, "boats are not submarines" );
+                params.put( Domain.Forum.CREATION_DATE, creationDate );
+                return params;
+            }
+
+            protected static Map<String, Object> kiwisSheepAndBungyJumping()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.NOVEMBER, 1 );
+                long creationDate = c.getTimeInMillis();
+
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put( Domain.Forum.TITLE, "kiwis sheep and bungy jumping" );
+                params.put( Domain.Forum.CREATION_DATE, creationDate );
+                return params;
+            }
+        }
+
+        protected static class Comments
+        {
+            protected static Map<String, Object> aiya1()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.SEPTEMBER, 6 );
+                long creationDate = c.getTimeInMillis();
+
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put( Domain.Post.CONTENT, "[aiya1] hi back" );
+                params.put( Domain.Post.CREATION_DATE, creationDate );
+                params.put( Domain.Post.BROWSER_USED, "safari" );
+                params.put( Domain.Post.LOCATION_IP, "3.15.76.11" );
+                return params;
+            }
+
+            protected static Map<String, Object> aiya2()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.SEPTEMBER, 6 );
+                long creationDate = c.getTimeInMillis();
+
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put( Domain.Post.CONTENT, "[aiya2] so?" );
+                params.put( Domain.Post.CREATION_DATE, creationDate );
+                params.put( Domain.Post.BROWSER_USED, "safari" );
+                params.put( Domain.Post.LOCATION_IP, "3.15.76.11" );
+                return params;
+            }
+
+            protected static Map<String, Object> stranger1()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.SEPTEMBER, 7 );
+                long creationDate = c.getTimeInMillis();
+
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put( Domain.Post.CONTENT, "[stranger1] i don't know you" );
+                params.put( Domain.Post.CREATION_DATE, creationDate );
+                params.put( Domain.Post.BROWSER_USED, "internet explorer" );
+                params.put( Domain.Post.LOCATION_IP, "31.41.93.5" );
+                return params;
+            }
+
+            protected static Map<String, Object> jake1()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.SEPTEMBER, 7 );
+                long creationDate = c.getTimeInMillis();
+
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put( Domain.Post.CONTENT, "[jake1] pity you couldn't come" );
+                params.put( Domain.Post.CREATION_DATE, creationDate );
+                params.put( Domain.Post.BROWSER_USED, "safari" );
+                params.put( Domain.Post.LOCATION_IP, "44.49.9.15" );
+                return params;
+            }
+
+            protected static Map<String, Object> alex1()
+            {
+                Calendar c = Calendar.getInstance();
+                c.set( 2013, Calendar.SEPTEMBER, 7 );
+                long creationDate = c.getTimeInMillis();
+
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put( Domain.Post.CONTENT, "[alex1] chur bro" );
+                params.put( Domain.Post.CREATION_DATE, creationDate );
+                params.put( Domain.Post.BROWSER_USED, "safari" );
+                params.put( Domain.Post.LOCATION_IP, "112.9.1.27" );
+                return params;
+            }
+        }
     }
 }

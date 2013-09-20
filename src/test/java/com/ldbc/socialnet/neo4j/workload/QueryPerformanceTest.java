@@ -2,6 +2,7 @@ package com.ldbc.socialnet.neo4j.workload;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.AfterClass;
@@ -22,7 +23,7 @@ import static org.hamcrest.CoreMatchers.*;
 @Ignore
 public class QueryPerformanceTest
 {
-    public static final boolean PRINT = false;
+    public static final boolean PRINT = true;
 
     public static GraphDatabaseService db = null;
     public static ExecutionEngine queryEngine = null;
@@ -30,7 +31,7 @@ public class QueryPerformanceTest
     @BeforeClass
     public static void openDb()
     {
-        db = new GraphDatabaseFactory().newEmbeddedDatabase( Config.DB_DIR );
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder( Config.DB_DIR ).setConfig( Config.NEO4J_RUN_CONFIG ).newGraphDatabase();
         queryEngine = new ExecutionEngine( db );
     }
 
@@ -43,8 +44,8 @@ public class QueryPerformanceTest
     @Test
     public void query1()
     {
-        Map<String, Object> queryParams = Queries.LdbcInteractive.Query1.buildParams( "Chen", 10 );
-        execute( "Query1", Queries.LdbcInteractive.Query1.QUERY_TEMPLATE, queryParams, 2, 5, false );
+        Map<String, Object> queryParams = Queries.Query1.buildParams( "Chen", 10 );
+        execute( "Query1", Queries.Query1.QUERY_TEMPLATE, queryParams, 5, 5, false );
     }
 
     @Test
@@ -59,26 +60,23 @@ public class QueryPerformanceTest
         String countryX = "United_States";
         String countryY = "Canada";
 
-        Map<String, Object> queryParams = Queries.LdbcInteractive.Query3.buildParams( personId, countryX, countryY,
-                startDate, durationDays );
-        execute( "Query3", Queries.LdbcInteractive.Query3.QUERY_TEMPLATE, queryParams, 2, 5, false );
+        Map<String, Object> queryParams = Queries.Query3.buildParams( personId, countryX, countryY, startDate,
+                durationDays );
+        execute( "Query3", Queries.Query3.QUERY_TEMPLATE, queryParams, 5, 5, false );
 
         // personId = 405;
         // countryX = "India";
         // countryY = "Pakistan";
         //
-        // queryParams = Queries.LdbcInteractive.Query3.buildParams( personId,
+        // queryParams = Queries.Query3.buildParams( personId,
         // countryX, countryY, startDate, durationDays );
-        // execute( Queries.LdbcInteractive.Query3.QUERY_TEMPLATE, queryParams,
+        // execute( Queries.Query3.QUERY_TEMPLATE, queryParams,
         // 2, 10, true, false );
     }
 
     @Test
     public void query4()
     {
-        // TODO QUERY_4 is still incorrect, the RETURN is incorrect, it needs to
-        // be fixed so tags are grouped by NAME first, and then counted
-
         Calendar calendar = Calendar.getInstance();
         calendar.set( 2011, Calendar.JANUARY, 1 );
 
@@ -86,11 +84,66 @@ public class QueryPerformanceTest
         Date startDate = calendar.getTime();
         int durationDays = 300;
 
-        Map<String, Object> queryParams = Queries.LdbcInteractive.Query4.buildParams( personId, startDate, durationDays );
-        execute( "Query4", Queries.LdbcInteractive.Query4.QUERY_TEMPLATE, queryParams, 2, 5, false );
-        // execute( "Query4",
-        // Queries.LdbcInteractive.Query4.QUERY_TEMPLATE_michael, queryParams,
-        // 2, 5, false );
+        Map<String, Object> queryParams = Queries.Query4.buildParams( personId, startDate, durationDays );
+        execute( "Query4", Queries.Query4.QUERY_TEMPLATE, queryParams, 5, 5, false );
+    }
+
+    @Test
+    public void query5()
+    {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set( 2011, Calendar.JANUARY, 1 );
+
+        long personId = 143;
+        Date joinDate = calendar.getTime();
+
+        Map<String, Object> queryParams = Queries.Query5.buildParams( personId, joinDate );
+        execute( "Query5 - posts", Queries.Query5.QUERY_TEMPLATE_posts, queryParams, 5, 5, false );
+        execute( "Query5 - comments", Queries.Query5.QUERY_TEMPLATE_comments, queryParams, 5, 5, false );
+    }
+
+    @Test
+    public void query6()
+    {
+        long personId = 143;
+
+        String tagName = "Charles_Dickens";
+
+        Map<String, Object> queryParams = Queries.Query6.buildParams( personId, tagName );
+
+        // queryParams = new HashMap<String, Object>();
+        //
+        // String prepQuery =
+        //
+        // "MATCH (person:PERSON)-[:KNOWS*1..2]-(:PERSON)<-[:HAS_CREATOR]-(:POST)-[:HAS_TAG]->(tag:TAG)\n"
+        //
+        // + "WHERE person.id=143\n"
+        //
+        // + "RETURN tag.name, count(tag) AS count\n"
+        //
+        // + "ORDER BY count DESC\n"
+        //
+        // + "LIMIT 10";
+
+        /*
+        +---------------------------------+
+        | tag.name                | count |
+        +---------------------------------+
+        | "Charles_Dickens"       | 8036  |
+        | "Heinrich_Himmler"      | 7524  |
+        | "Herman_Melville"       | 7092  |
+        | "Bottle_Pop"            | 6920  |
+        | "Johann_Sebastian_Bach" | 6392  |
+        | "Theodore_Roosevelt"    | 6140  |
+        | "David_Gilmour"         | 5744  |
+        | "Winston_Churchill"     | 5516  |
+        | "Martin_Van_Buren"      | 5380  |
+        | "Galileo_Galilei"       | 5368  |
+        +---------------------------------+
+         */
+
+        // execute( "Query6 - prep", prepQuery, queryParams, 0, 1, false );
+        execute( "Query6", Queries.Query6.QUERY_TEMPLATE, queryParams, 5, 5, false );
     }
 
     private void execute( String name, String queryString, Map<String, Object> queryParams, long warmup,

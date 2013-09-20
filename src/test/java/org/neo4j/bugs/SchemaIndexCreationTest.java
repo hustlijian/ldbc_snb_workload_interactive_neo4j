@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
@@ -24,6 +25,7 @@ import org.neo4j.unsafe.batchinsert.BatchInserters;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+@Ignore
 public class SchemaIndexCreationTest
 {
     public static final boolean PRINT = false;

@@ -18,9 +18,9 @@ public class EmbeddedNeo4jLdbcQuery3Handler extends OperationHandler<LdbcQuery3>
     @Override
     protected OperationResult executeOperation( LdbcQuery3 operation ) throws DbException
     {
-        String query = Queries.LdbcInteractive.Query3.QUERY_TEMPLATE;
-        Map<String, Object> params = Queries.LdbcInteractive.Query3.buildParams( operation.getPersonId(),
-                operation.getCountryX(), operation.getCountryY(), operation.getStartDate(), operation.getDurationDays() );
+        String query = Queries.Query3.QUERY_TEMPLATE;
+        Map<String, Object> params = Queries.Query3.buildParams( operation.getPersonId(), operation.getCountryX(),
+                operation.getCountryY(), operation.getStartDate(), operation.getDurationDays() );
 
         // TODO find way to do this
         int resultCode = 0;

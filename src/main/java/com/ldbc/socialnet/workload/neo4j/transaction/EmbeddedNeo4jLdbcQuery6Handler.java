@@ -7,21 +7,20 @@ import org.apache.log4j.Logger;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
-import com.ldbc.socialnet.workload.LdbcQuery1;
+import com.ldbc.socialnet.workload.LdbcQuery6;
 import com.ldbc.socialnet.workload.Queries;
 import com.ldbc.socialnet.workload.neo4j.Neo4jConnectionStateEmbedded;
 
-public class EmbeddedNeo4jLdbcQuery1Handler extends OperationHandler<LdbcQuery1>
+public class EmbeddedNeo4jLdbcQuery6Handler extends OperationHandler<LdbcQuery6>
 {
-    private final static Logger logger = Logger.getLogger( EmbeddedNeo4jLdbcQuery1Handler.class );
+    private final static Logger logger = Logger.getLogger( EmbeddedNeo4jLdbcQuery6Handler.class );
 
     @Override
-    protected OperationResult executeOperation( LdbcQuery1 operation ) throws DbException
+    protected OperationResult executeOperation( LdbcQuery6 operation ) throws DbException
     {
-        String query = Queries.Query1.QUERY_TEMPLATE;
-        // TODO make limit param later?
-        int limit = 10;
-        Map<String, Object> params = Queries.Query1.buildParams( operation.getFirstName(), limit );
+        String query = Queries.Query6.QUERY_TEMPLATE;
+        Map<String, Object> params = Queries.Query6.buildParams( operation.getPersonId(), operation.getTagName() );
+
         // TODO find way to do this
         int resultCode = 0;
         try

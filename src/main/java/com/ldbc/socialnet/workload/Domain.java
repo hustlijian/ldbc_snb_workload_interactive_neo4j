@@ -15,12 +15,13 @@ public class Domain
     public static Iterable<Pair<Label, String>> labelPropertyPairsToIndex()
     {
         List<Pair<Label, String>> labelPropertyPairsToIndex = new ArrayList<Pair<Label, String>>();
+        labelPropertyPairsToIndex.add( new Pair<Label, String>( Node.TAG, Tag.NAME ) );
         labelPropertyPairsToIndex.add( new Pair<Label, String>( Node.PERSON, Person.ID ) );
         labelPropertyPairsToIndex.add( new Pair<Label, String>( Node.PERSON, Person.FIRST_NAME ) );
         labelPropertyPairsToIndex.add( new Pair<Label, String>( Node.PERSON, Person.LAST_NAME ) );
-        labelPropertyPairsToIndex.add( new Pair<Label, String>( Domain.Node.PLACE, Domain.Place.NAME ) );
-        labelPropertyPairsToIndex.add( new Pair<Label, String>( Domain.Place.Type.CITY, Domain.Place.NAME ) );
-        labelPropertyPairsToIndex.add( new Pair<Label, String>( Domain.Place.Type.COUNTRY, Domain.Place.NAME ) );
+        labelPropertyPairsToIndex.add( new Pair<Label, String>( Node.PLACE, Place.NAME ) );
+        labelPropertyPairsToIndex.add( new Pair<Label, String>( Place.Type.CITY, Place.NAME ) );
+        labelPropertyPairsToIndex.add( new Pair<Label, String>( Place.Type.COUNTRY, Place.NAME ) );
         return labelPropertyPairsToIndex;
     }
 

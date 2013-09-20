@@ -72,6 +72,16 @@ public class LdbcInteractiveWorkload extends Workload
         operations.add( Pair.create( 1d, (Generator<Operation<?>>) new Query4Generator( personId, startDate,
                 durationDays ) ) );
 
+        calendar = Calendar.getInstance();
+        calendar.set( 2011, Calendar.JANUARY, 1 );
+        personId = 143;
+        Date joinDate = calendar.getTime();
+        operations.add( Pair.create( 1d, (Generator<Operation<?>>) new Query5Generator( personId, joinDate ) ) );
+
+        personId = 143;
+        String tagName = "Charles_Dickens";
+        operations.add( Pair.create( 1d, (Generator<Operation<?>>) new Query6Generator( personId, tagName ) ) );
+
         /*
          * Create Discrete Generator from 
          */
@@ -86,6 +96,8 @@ public class LdbcInteractiveWorkload extends Workload
         operationsToInclude.add( LdbcQuery1.class );
         // operationsToInclude.add( LdbcQuery3.class );
         operationsToInclude.add( LdbcQuery4.class );
+        // operationsToInclude.add( LdbcQuery5.class );
+        // operationsToInclude.add( LdbcQuery6.class );
         Predicate<Operation<?>> filter = new IncludeOnlyClassesPredicate<Operation<?>>( operationsToInclude );
 
         Generator<Operation<?>> filteredGenerator = new FilterGeneratorWrapper<Operation<?>>( operationGenerator,
@@ -158,6 +170,44 @@ public class LdbcInteractiveWorkload extends Workload
         protected Operation<?> doNext() throws GeneratorException
         {
             return new LdbcQuery4( personId, startDate, durationDays );
+        }
+    }
+
+    class Query5Generator extends Generator<Operation<?>>
+    {
+        private final long personId;
+        private final Date joinDate;
+
+        protected Query5Generator( final long personId, final Date joinDate )
+        {
+            super( null );
+            this.personId = personId;
+            this.joinDate = joinDate;
+        }
+
+        @Override
+        protected Operation<?> doNext() throws GeneratorException
+        {
+            return new LdbcQuery5( personId, joinDate );
+        }
+    }
+
+    class Query6Generator extends Generator<Operation<?>>
+    {
+        private final long personId;
+        private final String tagName;
+
+        protected Query6Generator( final long personId, final String tagName )
+        {
+            super( null );
+            this.personId = personId;
+            this.tagName = tagName;
+        }
+
+        @Override
+        protected Operation<?> doNext() throws GeneratorException
+        {
+            return new LdbcQuery6( personId, tagName );
         }
     }
 
