@@ -27,7 +27,7 @@ public class DoTransactionWorkload
         System.out.println( "Neo4j Configuration:" );
         System.out.println( MapUtils.prettyPrint( Config.NEO4J_RUN_CONFIG ) );
 
-        long operationCount = 50;
+        long operationCount = 10;
         long recordCount = -1;
         int threadCount = 1;
         boolean showStatus = true;
