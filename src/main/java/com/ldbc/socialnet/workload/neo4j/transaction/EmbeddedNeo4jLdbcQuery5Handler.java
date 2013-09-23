@@ -32,8 +32,7 @@ public class EmbeddedNeo4jLdbcQuery5Handler extends OperationHandler<LdbcQuery5>
         }
         catch ( Exception e )
         {
-            logger.error( String.format( "Error encountered executing %s\n%s", getClass().getSimpleName(),
-                    e.getMessage() ) );
+            logger.error( String.format( "Error executing query\n%s", e ) );
             resultCode = -1;
         }
 

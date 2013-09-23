@@ -136,6 +136,27 @@
 					<executable>maven</executable>
 				</configuration>
 			</plugin>
+			<!-- <plugin> -->
+			<!-- <groupId>org.codehaus.mojo</groupId> -->
+			<!-- <artifactId>exec-maven-plugin</artifactId> -->
+			<!-- <version>1.2.1</version> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <goals> -->
+			<!-- <goal>exec</goal> -->
+			<!-- </goals> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- <configuration> -->
+			<!-- <executable>java</executable> -->
+			<!-- <arguments> -->
+			<!-- <argument>-Xmx256M</argument> -->
+			<!-- <argument>-classpath</argument> -->
+			<!-- <classpath /> -->
+			<!-- <argument>com.ldbc.driver.Client</argument> -->
+			<!-- </arguments> -->
+			<!-- </configuration> -->
+			<!-- </plugin> -->
 		</plugins>
 	</build>
 
