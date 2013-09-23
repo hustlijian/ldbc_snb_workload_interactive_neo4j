@@ -23,7 +23,7 @@ Subsequent builds:
 
 	mvn exec:java -Dexec.mainClass=com.ldbc.socialnet.workload.neo4j.load.LdbcSocialNeworkNeo4jImporter
 
-**Run Workload [ldbc_driver](https://github.com/alexaverbuch/ldbc_driver)**
+**Run Workload using [ldbc_driver](https://github.com/alexaverbuch/ldbc_driver)**
 
 	usage: java -cp classesYouNeedOnTheClassPath.jar com.ldbc.driver.Client [-db <classname>] [-l | -t] [-oc <count>] [-P
 	       <file1:file2>] [-p <key=value>] [-rc <count>] [-s]  [-tc <count>] [-tu <unit>] [-w <classname>]
