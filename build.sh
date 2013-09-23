@@ -1,7 +1,7 @@
 #!/bin/bash
 LDBC_CORE="ldbc_driver"
-LDBC_CORE_JAR="ldbc_driver/core/target/core-0.1-SNAPSHOT.jar"
-LDBC_CORE_VER="0.1-SNAPSHOT"
+LDBC_CORE_VER="0.11-SNAPSHOT"
+LDBC_CORE_JAR="ldbc_driver/core/target/core-"${LDBC_CORE_VER}".jar"
 IN_PROJECT_MVN_REPO="lib"
 
 git submodule update --init
