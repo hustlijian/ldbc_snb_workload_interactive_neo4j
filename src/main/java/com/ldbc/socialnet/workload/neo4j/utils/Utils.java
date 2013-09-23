@@ -1,5 +1,8 @@
 package com.ldbc.socialnet.workload.neo4j.utils;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 public class Utils
 {
     public static String[] copyArrayAndAddElement( String[] oldArray, String newElement )
@@ -15,5 +18,13 @@ public class Utils
             newArray[newArray.length - 1] = newElement;
             return newArray;
         }
+    }
+
+    public static String stackTraceToString( Exception e )
+    {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter( sw );
+        e.printStackTrace( pw );
+        return sw.toString();
     }
 }

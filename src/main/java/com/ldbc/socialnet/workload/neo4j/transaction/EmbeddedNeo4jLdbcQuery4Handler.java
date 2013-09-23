@@ -10,6 +10,7 @@ import com.ldbc.driver.OperationResult;
 import com.ldbc.socialnet.workload.LdbcQuery4;
 import com.ldbc.socialnet.workload.Queries;
 import com.ldbc.socialnet.workload.neo4j.Neo4jConnectionStateEmbedded;
+import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 
 public class EmbeddedNeo4jLdbcQuery4Handler extends OperationHandler<LdbcQuery4>
 {
@@ -30,7 +31,7 @@ public class EmbeddedNeo4jLdbcQuery4Handler extends OperationHandler<LdbcQuery4>
         }
         catch ( Exception e )
         {
-            logger.error( String.format( "Error executing query\n%s", e ) );
+            logger.error( String.format( "Error executing query\n%s", Utils.stackTraceToString( e ) ) );
             resultCode = -1;
         }
 
