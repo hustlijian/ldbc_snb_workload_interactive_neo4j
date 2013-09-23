@@ -60,7 +60,7 @@ public class Queries
 
         public static final String QUERY_TEMPLATE = String.format(
 
-        "MATCH person:" + Domain.Node.PERSON + "\n"
+        "MATCH (person:" + Domain.Node.PERSON + ")\n"
 
         + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.FIRST_NAME + ")\n"
 
