@@ -22,6 +22,8 @@ Subsequent builds:
 **Import data into Neo4j**
 
 	mvn exec:java -Dexec.mainClass=com.ldbc.socialnet.workload.neo4j.load.LdbcSocialNeworkNeo4jImporter
+	
+The resulting Neo4j instance will have [this schema](https://github.com/ldbc/ldbc_socialnet_bm_neo4j/wiki/Schema)
 
 **Run Workload using [ldbc_driver](https://github.com/alexaverbuch/ldbc_driver)**
 
@@ -47,6 +49,8 @@ Subsequent builds:
 	mvn exec:java -Dexec.mainClass=com.ldbc.driver.Client 
 	-Dexec.arguments="-db,com.ldbc.socialnet.workload.neo4j.Neo4jDb,-w,com.ldbc.socialnet.workload.LdbcInteractiveWorkload,
 	-oc,10,-rc,-1,-tc,1,-s,-tu,MILLISECONDS,-p,neo4j.path=db/,-p,neo4j.dbtype=embedded"
+	
+The executed workload consists of [these queries](https://github.com/ldbc/ldbc_socialnet_bm_neo4j/wiki/Queries)
 
 **Configuration**
 
@@ -68,4 +72,3 @@ Using the LDBC Social Network data generator:
 
 * [Instructions on installing and running](https://github.com/ldbc/ldbc_socialnet_bm/blob/master/ldbc_socialnet_dbgen/README.md)
 * [Explanation of format, content, and distributions, and schema of generated data](todo) **TODO**
-* [Translating data generator schema into Neo4j graph schema](todo) **TODO**
