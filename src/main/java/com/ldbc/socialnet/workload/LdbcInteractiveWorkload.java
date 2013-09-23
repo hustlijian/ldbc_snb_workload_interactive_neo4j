@@ -20,6 +20,7 @@ import com.ldbc.driver.generator.wrapper.FilterGeneratorWrapper;
 import com.ldbc.driver.generator.wrapper.StartTimeOperationGeneratorWrapper;
 import com.ldbc.driver.util.GeneratorUtils;
 import com.ldbc.driver.util.Pair;
+import com.ldbc.driver.util.temporal.Duration;
 import com.ldbc.driver.util.temporal.Time;
 
 public class LdbcInteractiveWorkload extends Workload
@@ -103,8 +104,13 @@ public class LdbcInteractiveWorkload extends Workload
         Generator<Operation<?>> filteredGenerator = new FilterGeneratorWrapper<Operation<?>>( operationGenerator,
                 filter );
 
-        Generator<Time> startTimeGenerator = GeneratorUtils.randomTimeGeneratorFromNow( generatorBuilder, Time.now(),
-                Time.fromMilli( 100 ).asMilli(), Time.fromMilli( 1000 ).asMilli() );
+        // Generator<Time> startTimeGenerator =
+        // GeneratorUtils.randomTimeGeneratorFromNow( generatorBuilder,
+        // Time.now(),
+        // Time.fromMilli( 100 ).asMilli(), Time.fromMilli( 1000 ).asMilli() );
+
+        Generator<Time> startTimeGenerator = GeneratorUtils.constantTimeGeneratorFromNow( generatorBuilder, Time.now(),
+                Duration.fromMilli( 20 ) );
 
         return new StartTimeOperationGeneratorWrapper( startTimeGenerator, filteredGenerator );
     }
