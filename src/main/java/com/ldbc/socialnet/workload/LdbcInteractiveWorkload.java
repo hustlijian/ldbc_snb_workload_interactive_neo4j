@@ -110,7 +110,7 @@ public class LdbcInteractiveWorkload extends Workload
         // Time.fromMilli( 100 ).asMilli(), Time.fromMilli( 1000 ).asMilli() );
 
         Generator<Time> startTimeGenerator = GeneratorUtils.constantTimeGeneratorFromNow( generatorBuilder, Time.now(),
-                Duration.fromMilli( 20 ) );
+                Duration.fromMilli( 1 ) );
 
         return new StartTimeOperationGeneratorWrapper( startTimeGenerator, filteredGenerator );
     }
