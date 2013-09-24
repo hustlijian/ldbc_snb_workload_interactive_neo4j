@@ -53,7 +53,13 @@ public class LdbcInteractiveWorkload extends Workload
 
         Set<Pair<Double, Generator<Operation<?>>>> operations = new HashSet<Pair<Double, Generator<Operation<?>>>>();
 
-        operations.add( Pair.create( 1d, (Generator<Operation<?>>) new Query1Generator( "Chen" ) ) );
+        // Generator<String> firstNameSelectGenerator =
+        // generatorBuilder.discreteGenerator(
+        // Arrays.asList( Queries.Query1.FIRST_NAMES ) ).build();
+        Generator<String> firstNameSelectGenerator = generatorBuilder.discreteGenerator(
+                Arrays.asList( new String[] { "Chen" } ) ).build();
+
+        operations.add( Pair.create( 1d, (Generator<Operation<?>>) new Query1Generator( firstNameSelectGenerator ) ) );
 
         Calendar calendar = Calendar.getInstance();
         calendar.set( 2010, Calendar.JANUARY, 1 );
@@ -87,7 +93,7 @@ public class LdbcInteractiveWorkload extends Workload
          * Create Discrete Generator from 
          */
 
-        Generator<Operation<?>> operationGenerator = generatorBuilder.discreteValuedGenerator( operations ).build();
+        Generator<Operation<?>> operationGenerator = generatorBuilder.waitedDiscreteValuedGenerator( operations ).build();
 
         /*
          * Filter Interesting Operations
@@ -117,18 +123,18 @@ public class LdbcInteractiveWorkload extends Workload
 
     class Query1Generator extends Generator<Operation<?>>
     {
-        private final String firstName;
+        private final Generator<String> firstNames;
 
-        protected Query1Generator( final String firstName )
+        protected Query1Generator( final Generator<String> firstNames )
         {
             super( null );
-            this.firstName = firstName;
+            this.firstNames = firstNames;
         }
 
         @Override
         protected Operation<?> doNext() throws GeneratorException
         {
-            return new LdbcQuery1( firstName );
+            return new LdbcQuery1( firstNames.next() );
         }
     }
 
