@@ -53,11 +53,12 @@ public class LdbcInteractiveWorkload extends Workload
 
         Set<Pair<Double, Generator<Operation<?>>>> operations = new HashSet<Pair<Double, Generator<Operation<?>>>>();
 
+        Generator<String> firstNameSelectGenerator = generatorBuilder.discreteGenerator(
+                Arrays.asList( Queries.Query1.FIRST_NAMES ) ).build();
         // Generator<String> firstNameSelectGenerator =
         // generatorBuilder.discreteGenerator(
-        // Arrays.asList( Queries.Query1.FIRST_NAMES ) ).build();
-        Generator<String> firstNameSelectGenerator = generatorBuilder.discreteGenerator(
-                Arrays.asList( new String[] { "Chen" } ) ).build();
+        // Arrays.asList( new String[] { "Chen" } ) ).build();
+        System.out.println( Queries.Query1.FIRST_NAMES.length );
 
         operations.add( Pair.create( 1d, (Generator<Operation<?>>) new Query1Generator( firstNameSelectGenerator ) ) );
 

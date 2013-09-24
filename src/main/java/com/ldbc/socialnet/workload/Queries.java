@@ -58,6 +58,7 @@ public class Queries
         (Person-workAt->Company.name, Person-workAt->.workFrom, Person-workAt->Company-isLocatedIn->Country.name)
          */
 
+        // Length = 607
         public static final String[] FIRST_NAMES = new String[] { "Cyril", "Mizengo", "Jaime", "Gordon", "Fernando",
                 "Richard", "Ahsan", "Abdul Rahman", "Manisha", "Mehran", "Marko", "Rahul", "Li", "Baruch", "Alan",
                 "Adam", "K.", "Abdul-Malik", "Lei", "Alexey", "Ernest B", "Emperor of Brazil", "Ai", "Boran",
