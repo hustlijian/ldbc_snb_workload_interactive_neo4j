@@ -20,6 +20,7 @@ import com.ldbc.socialnet.workload.neo4j.utils.Config;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+@Ignore
 public class QueryPerformanceTest
 {
     public static final boolean PRINT = true;

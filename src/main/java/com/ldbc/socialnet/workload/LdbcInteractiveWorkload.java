@@ -14,8 +14,8 @@ import com.ldbc.driver.Operation;
 import com.ldbc.driver.Workload;
 import com.ldbc.driver.WorkloadException;
 import com.ldbc.driver.generator.Generator;
-import com.ldbc.driver.generator.GeneratorBuilder;
 import com.ldbc.driver.generator.GeneratorException;
+import com.ldbc.driver.generator.GeneratorFactory;
 import com.ldbc.driver.generator.wrapper.FilterGeneratorWrapper;
 import com.ldbc.driver.generator.wrapper.StartTimeOperationGeneratorWrapper;
 import com.ldbc.driver.util.GeneratorUtils;
@@ -37,14 +37,14 @@ public class LdbcInteractiveWorkload extends Workload
     }
 
     @Override
-    protected Generator<Operation<?>> createLoadOperations( GeneratorBuilder generatorBuilder )
+    protected Generator<Operation<?>> createLoadOperations( GeneratorFactory generatorBuilder )
             throws WorkloadException
     {
         throw new UnsupportedOperationException( "Load phase not implemented for LDBC workload" );
     }
 
     @Override
-    protected Generator<Operation<?>> createTransactionalOperations( GeneratorBuilder generatorBuilder )
+    protected Generator<Operation<?>> createTransactionalOperations( GeneratorFactory generators )
             throws WorkloadException
     {
         /*
@@ -53,8 +53,7 @@ public class LdbcInteractiveWorkload extends Workload
 
         Set<Pair<Double, Generator<Operation<?>>>> operations = new HashSet<Pair<Double, Generator<Operation<?>>>>();
 
-        Generator<String> firstNameSelectGenerator = generatorBuilder.discreteGenerator(
-                Arrays.asList( Queries.Query1.FIRST_NAMES ) ).build();
+        Generator<String> firstNameSelectGenerator = generators.discreteGenerator( Arrays.asList( Queries.Query1.FIRST_NAMES ) );
         // Generator<String> firstNameSelectGenerator =
         // generatorBuilder.discreteGenerator(
         // Arrays.asList( new String[] { "Chen" } ) ).build();
@@ -94,7 +93,7 @@ public class LdbcInteractiveWorkload extends Workload
          * Create Discrete Generator from 
          */
 
-        Generator<Operation<?>> operationGenerator = generatorBuilder.waitedDiscreteValuedGenerator( operations ).build();
+        Generator<Operation<?>> operationGenerator = generators.weightedDiscreteDereferencingGenerator( operations );
 
         /*
          * Filter Interesting Operations
@@ -144,7 +143,7 @@ public class LdbcInteractiveWorkload extends Workload
 
          */
 
-        Generator<Time> startTimeGenerator = GeneratorUtils.constantTimeGeneratorFromNow( generatorBuilder, Time.now(),
+        Generator<Time> startTimeGenerator = GeneratorUtils.constantTimeGeneratorFromNow( generators, Time.now(),
                 Duration.fromMilli( 100 ) );
 
         return new StartTimeOperationGeneratorWrapper( startTimeGenerator, filteredGenerator );
@@ -156,7 +155,6 @@ public class LdbcInteractiveWorkload extends Workload
 
         protected Query1Generator( final Generator<String> firstNames )
         {
-            super( null );
             this.firstNames = firstNames;
         }
 
@@ -178,7 +176,6 @@ public class LdbcInteractiveWorkload extends Workload
         protected Query3Generator( final long personId, final String countryX, final String countryY,
                 final Date startDate, final int durationDays )
         {
-            super( null );
             this.personId = personId;
             this.countryY = countryY;
             this.countryX = countryX;
@@ -201,7 +198,6 @@ public class LdbcInteractiveWorkload extends Workload
 
         protected Query4Generator( final long personId, final Date startDate, final int durationDays )
         {
-            super( null );
             this.personId = personId;
             this.startDate = startDate;
             this.durationDays = durationDays;
@@ -221,7 +217,6 @@ public class LdbcInteractiveWorkload extends Workload
 
         protected Query5Generator( final long personId, final Date joinDate )
         {
-            super( null );
             this.personId = personId;
             this.joinDate = joinDate;
         }
@@ -240,7 +235,6 @@ public class LdbcInteractiveWorkload extends Workload
 
         protected Query6Generator( final long personId, final String tagName )
         {
-            super( null );
             this.personId = personId;
             this.tagName = tagName;
         }
