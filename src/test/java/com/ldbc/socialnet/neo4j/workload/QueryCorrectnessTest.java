@@ -20,6 +20,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.helpers.collection.IteratorUtil;
+import org.neo4j.helpers.collection.MapUtil;
 import org.neo4j.kernel.impl.util.FileUtils;
 
 import com.ldbc.driver.util.MapUtils;
@@ -602,6 +603,32 @@ public class QueryCorrectnessTest
         assertThat( resultCount( TestQueries.PlaceTestQuery.COUNTRY_NAME_QUERY_TEMPLATE, queryParams, "place" ), is( 1 ) );
         queryParams = TestQueries.PlaceTestQuery.buildParams( "auckland", "new zealand" );
         assertThat( resultCount( TestQueries.PlaceTestQuery.COUNTRY_NAME_QUERY_TEMPLATE, queryParams, "place" ), is( 1 ) );
+    }
+
+    @Test
+    public void x()
+    {
+        String query = "MATCH path = (alex:PERSON)-[:KNOWS*]-(other:PERSON)\n"
+
+        + "WHERE alex.firstName='alex'\n"
+
+        + "WITH other, filter(rel IN relationships(path) WHERE true=true) AS rels\n"
+
+        + "WHERE length(rels)=2\n"
+
+        + "RETURN other.firstName"
+
+        ;
+        System.out.println( query );
+        try (Transaction tx = db.beginTx())
+        {
+            ExecutionResult result = queryEngine.execute( query, MapUtil.map() );
+            System.out.println( result.dumpToString() );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
     }
 
     public int resultCount( String queryString, Map<String, Object> queryParams, String resultName )

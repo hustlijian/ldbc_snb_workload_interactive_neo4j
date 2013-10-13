@@ -116,6 +116,34 @@ public class LdbcInteractiveWorkload extends Workload
         // Time.now(),
         // Time.fromMilli( 100 ).asMilli(), Time.fromMilli( 1000 ).asMilli() );
 
+        /*
+        1 thread
+        com.ldbc.socialnet.workload.LdbcQuery1
+                Units:                  MILLISECONDS
+                Count:                  10
+                Min:                    57
+                Max:                    23006
+                Mean:                   6824.5
+                50th Percentile:        716
+                90th Percentile:        21459
+                95th Percentile:        23006
+                99th Percentile:        23006
+                99.9th Percentile:      23006
+
+        com.ldbc.socialnet.workload.LdbcQuery1
+                Units:                  MILLISECONDS
+                Count:                  100
+                Min:                    0
+                Max:                    34463
+                Mean:                   2955.3
+                50th Percentile:        484
+                90th Percentile:        11987
+                95th Percentile:        15303
+                99th Percentile:        28620
+                99.9th Percentile:      34463
+
+         */
+
         Generator<Time> startTimeGenerator = GeneratorUtils.constantTimeGeneratorFromNow( generatorBuilder, Time.now(),
                 Duration.fromMilli( 100 ) );
 
