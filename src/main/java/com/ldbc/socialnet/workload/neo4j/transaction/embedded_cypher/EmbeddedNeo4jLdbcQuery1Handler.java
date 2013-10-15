@@ -1,17 +1,18 @@
-package com.ldbc.socialnet.workload.neo4j.transaction;
+package com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Map;
+import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.neo4j.cypher.javacompat.ExecutionEngine;
+import org.neo4j.graphdb.GraphDatabaseService;
 
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
 import com.ldbc.socialnet.workload.LdbcQuery1;
-import com.ldbc.socialnet.workload.Queries;
+import com.ldbc.socialnet.workload.LdbcQuery1Result;
 import com.ldbc.socialnet.workload.neo4j.Neo4jConnectionStateEmbedded;
+import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery1;
 import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 
 public class EmbeddedNeo4jLdbcQuery1Handler extends OperationHandler<LdbcQuery1>
@@ -21,15 +22,15 @@ public class EmbeddedNeo4jLdbcQuery1Handler extends OperationHandler<LdbcQuery1>
     @Override
     protected OperationResult executeOperation( LdbcQuery1 operation ) throws DbException
     {
-        String query = Queries.Query1.QUERY_TEMPLATE;
-        // TODO make limit param later?
-        int limit = 10;
-        Map<String, Object> params = Queries.Query1.buildParams( operation.getFirstName(), limit );
+        ExecutionEngine engine = ( (Neo4jConnectionStateEmbedded) dbConnectionState() ).executionEngine();
+        GraphDatabaseService db = ( (Neo4jConnectionStateEmbedded) dbConnectionState() ).db();
+        Neo4jQuery1 query1 = new Neo4jQuery1EmbeddedCypher();
+        List<LdbcQuery1Result> result = null;
         // TODO find way to do this
         int resultCode = 0;
         try
         {
-            ( (Neo4jConnectionStateEmbedded) getDbConnectionState() ).getExecutionEngine().execute( query, params );
+            result = Utils.iteratorToList( query1.execute( db, engine, operation ) );
         }
         catch ( Exception e )
         {
@@ -37,8 +38,6 @@ public class EmbeddedNeo4jLdbcQuery1Handler extends OperationHandler<LdbcQuery1>
             resultCode = -1;
         }
 
-        // TODO return what query actually returns
-        int result = 0;
         return operation.buildResult( resultCode, result );
     }
 }

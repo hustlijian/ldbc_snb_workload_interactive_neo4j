@@ -17,12 +17,12 @@ public class Neo4jConnectionStateEmbedded extends DbConnectionState
         this.executionEngine = executionEngine;
     }
 
-    public GraphDatabaseService getDb()
+    public GraphDatabaseService db()
     {
         return db;
     }
 
-    public ExecutionEngine getExecutionEngine()
+    public ExecutionEngine executionEngine()
     {
         return executionEngine;
     }

@@ -22,6 +22,7 @@ import com.ldbc.driver.util.GeneratorUtils;
 import com.ldbc.driver.util.Pair;
 import com.ldbc.driver.util.temporal.Duration;
 import com.ldbc.driver.util.temporal.Time;
+import com.ldbc.socialnet.workload.neo4j.transaction.ParameterSubstitution;
 
 public class LdbcInteractiveWorkload extends Workload
 {
@@ -53,13 +54,14 @@ public class LdbcInteractiveWorkload extends Workload
 
         Set<Pair<Double, Generator<Operation<?>>>> operations = new HashSet<Pair<Double, Generator<Operation<?>>>>();
 
-        Generator<String> firstNameSelectGenerator = generators.discreteGenerator( Arrays.asList( Queries.Query1.FIRST_NAMES ) );
+        Generator<String> firstNameSelectGenerator = generators.discreteGenerator( Arrays.asList( ParameterSubstitution.FIRST_NAMES ) );
         // Generator<String> firstNameSelectGenerator =
         // generatorBuilder.discreteGenerator(
         // Arrays.asList( new String[] { "Chen" } ) ).build();
-        System.out.println( Queries.Query1.FIRST_NAMES.length );
 
-        operations.add( Pair.create( 1d, (Generator<Operation<?>>) new Query1Generator( firstNameSelectGenerator ) ) );
+        int limit = 10;
+        operations.add( Pair.create( 1d,
+                (Generator<Operation<?>>) new Query1Generator( firstNameSelectGenerator, limit ) ) );
 
         Calendar calendar = Calendar.getInstance();
         calendar.set( 2010, Calendar.JANUARY, 1 );
@@ -115,36 +117,8 @@ public class LdbcInteractiveWorkload extends Workload
         // Time.now(),
         // Time.fromMilli( 100 ).asMilli(), Time.fromMilli( 1000 ).asMilli() );
 
-        /*
-        1 thread
-        com.ldbc.socialnet.workload.LdbcQuery1
-                Units:                  MILLISECONDS
-                Count:                  10
-                Min:                    57
-                Max:                    23006
-                Mean:                   6824.5
-                50th Percentile:        716
-                90th Percentile:        21459
-                95th Percentile:        23006
-                99th Percentile:        23006
-                99.9th Percentile:      23006
-
-        com.ldbc.socialnet.workload.LdbcQuery1
-                Units:                  MILLISECONDS
-                Count:                  100
-                Min:                    0
-                Max:                    34463
-                Mean:                   2955.3
-                50th Percentile:        484
-                90th Percentile:        11987
-                95th Percentile:        15303
-                99th Percentile:        28620
-                99.9th Percentile:      34463
-
-         */
-
         Generator<Time> startTimeGenerator = GeneratorUtils.constantTimeGeneratorFromNow( generators, Time.now(),
-                Duration.fromMilli( 100 ) );
+                Duration.fromMilli( 10 ) );
 
         return new StartTimeOperationGeneratorWrapper( startTimeGenerator, filteredGenerator );
     }
@@ -152,16 +126,18 @@ public class LdbcInteractiveWorkload extends Workload
     class Query1Generator extends Generator<Operation<?>>
     {
         private final Generator<String> firstNames;
+        private final int limit;
 
-        protected Query1Generator( final Generator<String> firstNames )
+        protected Query1Generator( final Generator<String> firstNames, final int limit )
         {
             this.firstNames = firstNames;
+            this.limit = limit;
         }
 
         @Override
         protected Operation<?> doNext() throws GeneratorException
         {
-            return new LdbcQuery1( firstNames.next() );
+            return new LdbcQuery1( firstNames.next(), limit );
         }
     }
 

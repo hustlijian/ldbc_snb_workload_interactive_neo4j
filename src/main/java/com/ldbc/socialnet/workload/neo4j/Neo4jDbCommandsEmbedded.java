@@ -10,9 +10,9 @@ import com.ldbc.driver.DbException;
 import com.ldbc.socialnet.workload.LdbcQuery1;
 import com.ldbc.socialnet.workload.LdbcQuery3;
 import com.ldbc.socialnet.workload.LdbcQuery4;
-import com.ldbc.socialnet.workload.neo4j.transaction.EmbeddedNeo4jLdbcQuery1Handler;
-import com.ldbc.socialnet.workload.neo4j.transaction.EmbeddedNeo4jLdbcQuery3Handler;
-import com.ldbc.socialnet.workload.neo4j.transaction.EmbeddedNeo4jLdbcQuery4Handler;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.EmbeddedNeo4jLdbcQuery1Handler;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.EmbeddedNeo4jLdbcQuery3Handler;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.EmbeddedNeo4jLdbcQuery4Handler;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
 
 public class Neo4jDbCommandsEmbedded extends Neo4jDbCommands

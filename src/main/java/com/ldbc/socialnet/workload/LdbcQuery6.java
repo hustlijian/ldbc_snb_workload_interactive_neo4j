@@ -1,9 +1,10 @@
 package com.ldbc.socialnet.workload;
 
+import java.util.List;
+
 import com.ldbc.driver.Operation;
 
-// TODO proper result type
-public class LdbcQuery6 extends Operation<Object>
+public class LdbcQuery6 extends Operation<List<LdbcQuery6Result>>
 {
     private final long personId;
     private final String tagName;
@@ -15,12 +16,12 @@ public class LdbcQuery6 extends Operation<Object>
         this.tagName = tagName;
     }
 
-    public long getPersonId()
+    public long personId()
     {
         return personId;
     }
 
-    public String getTagName()
+    public String tagName()
     {
         return tagName;
     }

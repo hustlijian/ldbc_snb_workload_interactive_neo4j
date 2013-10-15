@@ -1,11 +1,11 @@
 package com.ldbc.socialnet.workload;
 
 import java.util.Date;
+import java.util.List;
 
 import com.ldbc.driver.Operation;
 
-// TODO proper result type
-public class LdbcQuery5 extends Operation<Object>
+public class LdbcQuery5 extends Operation<List<LdbcQuery5Result>>
 {
     private final long personId;
     private final Date joinDate;
@@ -17,12 +17,12 @@ public class LdbcQuery5 extends Operation<Object>
         this.joinDate = joinDate;
     }
 
-    public long getPersonId()
+    public long personId()
     {
         return personId;
     }
 
-    public Date getJoinDate()
+    public Date joinDate()
     {
         return joinDate;
     }

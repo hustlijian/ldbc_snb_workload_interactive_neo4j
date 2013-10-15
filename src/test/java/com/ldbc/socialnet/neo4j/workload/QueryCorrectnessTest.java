@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,11 +20,31 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.helpers.collection.IteratorUtil;
-import org.neo4j.helpers.collection.MapUtil;
 import org.neo4j.kernel.impl.util.FileUtils;
 
 import com.ldbc.driver.util.MapUtils;
-import com.ldbc.socialnet.workload.Queries;
+import com.ldbc.socialnet.workload.LdbcQuery1;
+import com.ldbc.socialnet.workload.LdbcQuery1Result;
+import com.ldbc.socialnet.workload.LdbcQuery3;
+import com.ldbc.socialnet.workload.LdbcQuery3Result;
+import com.ldbc.socialnet.workload.LdbcQuery4;
+import com.ldbc.socialnet.workload.LdbcQuery4Result;
+import com.ldbc.socialnet.workload.LdbcQuery5;
+import com.ldbc.socialnet.workload.LdbcQuery5Result;
+import com.ldbc.socialnet.workload.LdbcQuery6;
+import com.ldbc.socialnet.workload.LdbcQuery6Result;
+import com.ldbc.socialnet.workload.LdbcQuery7;
+import com.ldbc.socialnet.workload.LdbcQuery7Result;
+import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery1;
+import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery5;
+import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery6;
+import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery7;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery1EmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery3EmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery4EmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery5EmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery6EmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery7EmbeddedCypher;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
 
 import static org.junit.Assert.*;
@@ -34,51 +54,24 @@ public class QueryCorrectnessTest
 {
     public static String dbDir = "tempDb";
     public static GraphDatabaseService db = null;
-    public static ExecutionEngine queryEngine = null;
-
-    /*
-
-    I asked this yesterday but noone was online at that stage, so I'll try again...
-    What's the recommended method for starting a Neo4j Server from within Java?
-    I used to do:
-    WrappingNeoServerBootstrapper server = new WrappingNeoServerBootstrapper( (GraphDatabaseAPI) embeddedDb );
-    server.start()
-    But it's now deprecated.
-    IR suggested:
-    CommunityNeoServer server = ServerBuilder.server()
-                .withThirdPartyJaxRsPackage(
-                        "org.neo4j.good_practices", "/colleagues" )
-                .build();
-    server.start();
-    But then it turned out ServerBuilder is no longer in 2.0-SNAPSHOT
-    Then I tried:
-    GraphDatabaseService db = new GraphDatabaseFactory().
-                                newEmbeddedDatabaseBuilder( path ).
-                                setConfig( config ).
-                                newGraphDatabase();
-        Configurator configurator = new ServerConfigurator( (GraphDatabaseAPI) db );
-        NeoServer server = new CommunityNeoServer( configurator );
-    But I got a bunch of exceptions about "Unable to upgrade database".
-
-    Any and all suggestions greatly appreciated!
-     */
+    public static ExecutionEngine engine = null;
 
     @BeforeClass
     public static void openDb() throws IOException
     {
         FileUtils.deleteRecursively( new File( dbDir ) );
         db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder( dbDir ).setConfig( Config.NEO4J_RUN_CONFIG ).newGraphDatabase();
-        queryEngine = new ExecutionEngine( db );
+        engine = new ExecutionEngine( db );
 
         // TODO uncomment to print CREATE
         System.out.println();
         System.out.println( MapUtils.prettyPrint( TestGraph.Creator.createGraphQueryParams() ) );
         System.out.println( TestGraph.Creator.createGraphQuery() );
 
-        buildGraph( queryEngine );
+        buildGraph( engine );
         db.shutdown();
         db = new GraphDatabaseFactory().newEmbeddedDatabase( dbDir );
-        queryEngine = new ExecutionEngine( db );
+        engine = new ExecutionEngine( db );
     }
 
     @AfterClass
@@ -117,37 +110,34 @@ public class QueryCorrectnessTest
     @Test
     public void query1ShouldReturnExpectedResult()
     {
+        LdbcQuery1 operation1 = new LdbcQuery1( "alex", 10 );
+        Neo4jQuery1 query1 = new Neo4jQuery1EmbeddedCypher();
+
+        // TODO uncomment to print query
+        System.out.println( "\n" + query1.description() + "\n\n" );
+
         boolean exceptionThrown = false;
         try (Transaction tx = db.beginTx())
         {
-            Map<String, Object> queryParams = Queries.Query1.buildParams( "alex", 10 );
-            String queryString = Queries.Query1.QUERY_TEMPLATE;
-
-            // TODO uncomment to print query
-            // System.out.println( "\n" + queryParams + "\n\n" + queryString );
-
-            ExecutionResult result = queryEngine.execute( queryString, queryParams );
-
-            // TODO uncomment to print result
-            // System.out.println( result.dumpToString() );
+            Iterator<LdbcQuery1Result> result = query1.execute( db, engine, operation1 );
 
             // Has 1 result
-            assertThat( result.iterator().hasNext(), is( true ) );
+            assertThat( result.hasNext(), is( true ) );
 
-            Map<String, Object> firstRow = result.iterator().next();
+            LdbcQuery1Result firstRow = result.next();
 
             // Has only 1 result
-            assertThat( result.iterator().hasNext(), is( false ) );
+            assertThat( result.hasNext(), is( false ) );
 
-            assertThat( (String) firstRow.get( "firstName" ), is( "alex" ) );
-            assertThat( (String) firstRow.get( "personCity" ), is( "stockholm" ) );
+            assertThat( firstRow.firstName(), is( "alex" ) );
+            assertThat( firstRow.personCity(), is( "stockholm" ) );
 
-            Set<String> resultCompanies = new HashSet<String>( (Collection<String>) firstRow.get( "companies" ) );
+            Set<String> resultCompanies = new HashSet<String>( firstRow.companies() );
             Set<String> expectedCompanies = new HashSet<String>( Arrays.asList( new String[] {
                     "swedish institute of computer science, sweden(2010)", "neo technology, sweden(2012)" } ) );
             assertThat( resultCompanies, equalTo( expectedCompanies ) );
 
-            Set<String> resultUnis = new HashSet<String>( (Collection<String>) firstRow.get( "unis" ) );
+            Set<String> resultUnis = new HashSet<String>( firstRow.unis() );
             Set<String> expectedUnis = new HashSet<String>( Arrays.asList( new String[] {
                     "royal institute of technology, stockholm(2008)",
                     "auckland university of technology, auckland(2006)" } ) );
@@ -174,43 +164,39 @@ public class QueryCorrectnessTest
         Date endDate = c.getTime();
         int durationDays = 4;
 
-        Map<String, Object> queryParams = Queries.Query3.buildParams( personId, countryX, countryY, endDate,
-                durationDays );
-        String queryString = Queries.Query3.QUERY_TEMPLATE;
+        LdbcQuery3 operation3 = new LdbcQuery3( personId, countryX, countryY, endDate, durationDays );
+        Neo4jQuery3EmbeddedCypher query3 = new Neo4jQuery3EmbeddedCypher();
+
+        // TODO uncomment to print query
+        System.out.println( "\n" + query3.description() + "\n\n" );
 
         boolean exceptionThrown = false;
         try (Transaction tx = db.beginTx())
         {
-            // TODO uncomment to print query
-            // System.out.println( "\n" + queryParams + "\n\n" + queryString );
-
-            ExecutionResult result = queryEngine.execute( queryString, queryParams );
-
-            // TODO uncomment to print result
-            // System.out.println( result.dumpToString() );
+            Iterator<LdbcQuery3Result> result = query3.execute( db, engine, operation3 );
 
             // Has at least 1 result
-            assertThat( result.iterator().hasNext(), is( true ) );
+            assertThat( result.hasNext(), is( true ) );
 
-            Map<String, Object> firstRow = result.iterator().next();
+            LdbcQuery3Result firstRow = result.next();
 
-            assertThat( (String) firstRow.get( "friendName" ), is( "jacob hansson" ) );
-            assertThat( (long) firstRow.get( "xCount" ), is( 1L ) );
-            assertThat( (long) firstRow.get( "yCount" ), is( 2L ) );
-            assertThat( (long) firstRow.get( "xyCount" ), is( 3L ) );
+            assertThat( firstRow.friendName(), is( "jacob hansson" ) );
+            assertThat( firstRow.xCount(), is( 1L ) );
+            assertThat( firstRow.yCount(), is( 2L ) );
+            assertThat( firstRow.xyCount(), is( 3L ) );
 
             // Has at least 2 results
-            assertThat( result.iterator().hasNext(), is( true ) );
+            assertThat( result.hasNext(), is( true ) );
 
-            Map<String, Object> secondRow = result.iterator().next();
+            LdbcQuery3Result secondRow = result.next();
 
-            assertThat( (String) secondRow.get( "friendName" ), is( "aiya thorpe" ) );
-            assertThat( (long) secondRow.get( "xCount" ), is( 1L ) );
-            assertThat( (long) secondRow.get( "yCount" ), is( 1L ) );
-            assertThat( (long) secondRow.get( "xyCount" ), is( 2L ) );
+            assertThat( secondRow.friendName(), is( "aiya thorpe" ) );
+            assertThat( secondRow.xCount(), is( 1L ) );
+            assertThat( secondRow.yCount(), is( 1L ) );
+            assertThat( secondRow.xyCount(), is( 2L ) );
 
             // Has exactly 2 results, no more
-            assertThat( result.iterator().hasNext(), is( false ) );
+            assertThat( result.hasNext(), is( false ) );
             tx.success();
         }
         catch ( Exception e )
@@ -230,19 +216,16 @@ public class QueryCorrectnessTest
         Date endDate = c.getTime();
         int durationDays = 3;
 
-        Map<String, Object> queryParams = Queries.Query4.buildParams( personId, endDate, durationDays );
-        String queryString = Queries.Query4.QUERY_TEMPLATE;
+        LdbcQuery4 operation4 = new LdbcQuery4( personId, endDate, durationDays );
+        Neo4jQuery4EmbeddedCypher query4 = new Neo4jQuery4EmbeddedCypher();
+
+        // TODO uncomment to print query
+        System.out.println( "\n" + query4.description() + "\n\n" );
 
         boolean exceptionThrown = false;
         try (Transaction tx = db.beginTx())
         {
-            // TODO uncomment to print query
-            // System.out.println( "\n" + queryParams + "\n\n" + queryString );
-
-            ExecutionResult result = queryEngine.execute( queryString, queryParams );
-
-            // TODO uncomment to print result
-            // System.out.println( result.dumpToString() );
+            Iterator<LdbcQuery4Result> result = query4.execute( db, engine, operation4 );
 
             int expectedRowCount = 5;
             int actualRowCount = 0;
@@ -254,12 +237,12 @@ public class QueryCorrectnessTest
             validTags.put( "yolo", 1 );
             validTags.put( "wtf", 1 );
 
-            while ( result.iterator().hasNext() )
+            while ( result.hasNext() )
             {
-                Map<String, Object> row = result.iterator().next();
-                String tagName = (String) row.get( "tagName" );
+                LdbcQuery4Result row = result.next();
+                String tagName = row.tagName();
                 assertThat( validTags.containsKey( tagName ), is( true ) );
-                int tagCount = (int) row.get( "tagCount" );
+                int tagCount = row.tagCount();
                 assertThat( validTags.get( tagName ), equalTo( tagCount ) );
                 validTags.remove( tagName );
                 actualRowCount++;
@@ -352,75 +335,29 @@ public class QueryCorrectnessTest
         long personId = 1;
         Calendar c = Calendar.getInstance();
         c.set( 2013, Calendar.JANUARY, 8 );
-        Date date = c.getTime();
+        Date joinDate = c.getTime();
 
-        Map<String, Object> queryParams = Queries.Query5.buildParams( personId, date );
-        String queryStringPosts = Queries.Query5.QUERY_TEMPLATE_posts;
-        String queryStringComments = Queries.Query5.QUERY_TEMPLATE_comments;
+        LdbcQuery5 operation5 = new LdbcQuery5( personId, joinDate );
+        Neo4jQuery5 query5 = new Neo4jQuery5EmbeddedCypher();
+
+        // TODO uncomment to print query
+        System.out.println( "\n" + query5.description() + "\n\n" );
 
         boolean exceptionThrown = false;
         try (Transaction tx = db.beginTx())
         {
-            // TODO uncomment to print query
-            // System.out.println( "\n" + queryParams + "\n\n" +
-            // queryStringPosts );
+            Iterator<LdbcQuery5Result> result = query5.execute( db, engine, operation5 );
 
-            ExecutionResult resultPosts = queryEngine.execute( queryStringPosts, queryParams );
-
-            // TODO uncomment to print result
-            // System.out.println( resultPosts.dumpToString() );
-
-            int expectedRowCount = 3;
-            int actualRowCount = 0;
-
-            Map<String, Long> validForumCounts = new HashMap<String, Long>();
-            validForumCounts.put( "everything cakes and pies", 5L );
-            validForumCounts.put( "boats are not submarines", 2L );
-            validForumCounts.put( "kiwis sheep and bungy jumping", 1L );
-
-            while ( resultPosts.iterator().hasNext() )
-            {
-                Map<String, Object> row = resultPosts.iterator().next();
-                String tagName = (String) row.get( "forum" );
-                assertThat( validForumCounts.containsKey( tagName ), is( true ) );
-                long tagCount = (long) row.get( "posts" );
-                assertThat( validForumCounts.get( tagName ), equalTo( tagCount ) );
-                validForumCounts.remove( tagName );
-                actualRowCount++;
-            }
-            assertThat( expectedRowCount, equalTo( actualRowCount ) );
-
-            /*
-             * 
-             */
-
-            // TODO uncomment to print query
-            // System.out.println( "\n" + queryParams + "\n\n" +
-            // queryStringComments );
-
-            ExecutionResult resultComments = queryEngine.execute( queryStringComments, queryParams );
-
-            // TODO uncomment to print result
-            // System.out.println( resultComments.dumpToString() );
-
-            expectedRowCount = 2;
-            actualRowCount = 0;
-
-            validForumCounts = new HashMap<String, Long>();
-            validForumCounts.put( "everything cakes and pies", 2L );
-            validForumCounts.put( "boats are not submarines", 1L );
-
-            while ( resultComments.iterator().hasNext() )
-            {
-                Map<String, Object> row = resultComments.iterator().next();
-                String forum = (String) row.get( "forum" );
-                assertThat( validForumCounts.containsKey( forum ), is( true ) );
-                long tagCount = (long) row.get( "comments" );
-                assertThat( validForumCounts.get( forum ), equalTo( tagCount ) );
-                validForumCounts.remove( forum );
-                actualRowCount++;
-            }
-            assertThat( expectedRowCount, equalTo( actualRowCount ) );
+            assertThat( result.hasNext(), is( true ) );
+            assertThat( resultsEqual( result.next(), new LdbcQuery5Result( "everything cakes and pies", 5, 2 ) ),
+                    is( true ) );
+            assertThat( result.hasNext(), is( true ) );
+            assertThat( resultsEqual( result.next(), new LdbcQuery5Result( "boats are not submarines", 2, 1 ) ),
+                    is( true ) );
+            assertThat( result.hasNext(), is( true ) );
+            assertThat( resultsEqual( result.next(), new LdbcQuery5Result( "kiwis sheep and bungy jumping", 1, 0 ) ),
+                    is( true ) );
+            assertThat( result.hasNext(), is( false ) );
 
             tx.success();
         }
@@ -453,19 +390,16 @@ public class QueryCorrectnessTest
         long personId = 1;
         String tagName = "lol";
 
-        Map<String, Object> queryParams = Queries.Query6.buildParams( personId, tagName );
-        String queryString = Queries.Query6.QUERY_TEMPLATE;
+        LdbcQuery6 operation6 = new LdbcQuery6( personId, tagName );
+        Neo4jQuery6 query6 = new Neo4jQuery6EmbeddedCypher();
+
+        // TODO uncomment to print query
+        System.out.println( "\n" + query6.description() + "\n\n" );
 
         boolean exceptionThrown = false;
         try (Transaction tx = db.beginTx())
         {
-            // TODO uncomment to print query
-            // System.out.println( "\n" + queryParams + "\n\n" + queryString );
-
-            ExecutionResult result = queryEngine.execute( queryString, queryParams );
-
-            // TODO uncomment to print result
-            // System.out.println( result.dumpToString() );
+            Iterator<LdbcQuery6Result> result = query6.execute( db, engine, operation6 );
 
             int expectedRowCount = 3;
             int actualRowCount = 0;
@@ -475,12 +409,12 @@ public class QueryCorrectnessTest
             validTagCounts.put( "pie", 2L );
             validTagCounts.put( "cake", 1L );
 
-            while ( result.iterator().hasNext() )
+            while ( result.hasNext() )
             {
-                Map<String, Object> row = result.iterator().next();
-                String tag = (String) row.get( "tag" );
+                LdbcQuery6Result row = result.next();
+                String tag = row.tagName();
                 assertThat( validTagCounts.containsKey( tag ), is( true ) );
-                long tagCount = (long) row.get( "count" );
+                long tagCount = row.tagCount();
                 assertThat( validTagCounts.get( tag ), equalTo( tagCount ) );
                 validTagCounts.remove( tagName );
                 actualRowCount++;
@@ -507,19 +441,16 @@ public class QueryCorrectnessTest
         Date endDate = c.getTime();
         int durationHours = 48;
 
-        Map<String, Object> queryParams = Queries.Query7.buildParams( personId, endDate, durationHours );
-        String queryString = Queries.Query7.QUERY_TEMPLATE;
+        LdbcQuery7 operation7 = new LdbcQuery7( personId, endDate, durationHours );
+        Neo4jQuery7 query7 = new Neo4jQuery7EmbeddedCypher();
+
+        // TODO uncomment to print query
+        System.out.println( "\n" + query7.description() + "\n\n" );
 
         boolean exceptionThrown = false;
         try (Transaction tx = db.beginTx())
         {
-            // TODO uncomment to print query
-            // System.out.println( "\n" + queryParams + "\n\n" + queryString );
-
-            ExecutionResult result = queryEngine.execute( queryString, queryParams );
-
-            // TODO uncomment to print result
-            // System.out.println( result.dumpToString() );
+            Iterator<LdbcQuery7Result> result = query7.execute( db, engine, operation7 );
 
             tx.success();
         }
@@ -605,37 +536,20 @@ public class QueryCorrectnessTest
         assertThat( resultCount( TestQueries.PlaceTestQuery.COUNTRY_NAME_QUERY_TEMPLATE, queryParams, "place" ), is( 1 ) );
     }
 
-    @Test
-    public void x()
+    boolean resultsEqual( LdbcQuery5Result result1, LdbcQuery5Result result2 )
     {
-        String query = "MATCH path = (alex:PERSON)-[:KNOWS*]-(other:PERSON)\n"
-
-        + "WHERE alex.firstName='alex'\n"
-
-        + "WITH other, filter(rel IN relationships(path) WHERE true=true) AS rels\n"
-
-        + "WHERE length(rels)=2\n"
-
-        + "RETURN other.firstName"
-
-        ;
-        System.out.println( query );
-        try (Transaction tx = db.beginTx())
-        {
-            ExecutionResult result = queryEngine.execute( query, MapUtil.map() );
-            System.out.println( result.dumpToString() );
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace();
-        }
+        if ( false == result1.forum().equals( result2.forum() ) ) return false;
+        if ( result1.postCount() != result2.postCount() ) return false;
+        if ( result1.commentCount() != result2.commentCount() ) return false;
+        if ( result1.count() != result2.count() ) return false;
+        return true;
     }
 
-    public int resultCount( String queryString, Map<String, Object> queryParams, String resultName )
+    int resultCount( String queryString, Map<String, Object> queryParams, String resultName )
     {
         try (Transaction tx = db.beginTx())
         {
-            ExecutionResult resultWithIndex = queryEngine.execute( queryString, queryParams );
+            ExecutionResult resultWithIndex = engine.execute( queryString, queryParams );
             return IteratorUtil.count( resultWithIndex.columnAs( resultName ) );
         }
         catch ( Exception e )

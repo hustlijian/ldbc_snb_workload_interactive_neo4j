@@ -1,49 +1,49 @@
 package com.ldbc.socialnet.workload;
 
 import java.util.Date;
+import java.util.List;
 
 import com.ldbc.driver.Operation;
 
-// TODO proper result type
-public class LdbcQuery3 extends Operation<Object>
+public class LdbcQuery3 extends Operation<List<LdbcQuery3Result>>
 {
     private final long personId;
     private final String countryX;
     private final String countryY;
-    private final Date startDate;
+    private final Date endDate;
     private final int durationDays;
 
-    public LdbcQuery3( long personId, String countryX, String countryY, Date startDate, int durationDays )
+    public LdbcQuery3( long personId, String countryX, String countryY, Date endDate, int durationDays )
     {
         super();
         this.personId = personId;
         this.countryX = countryX;
         this.countryY = countryY;
-        this.startDate = startDate;
+        this.endDate = endDate;
         this.durationDays = durationDays;
     }
 
-    public long getPersonId()
+    public long personId()
     {
         return personId;
     }
 
-    public String getCountryX()
+    public String countryX()
     {
         return countryX;
     }
 
-    public String getCountryY()
+    public String countryY()
     {
         return countryY;
     }
 
-    public Date getStartDate()
+    public Date endDate()
     {
-        return startDate;
+        return endDate;
     }
 
-    public int getDurationDays()
+    public int durationDays()
     {
         return durationDays;
     }

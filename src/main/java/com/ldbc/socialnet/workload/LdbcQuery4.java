@@ -1,35 +1,35 @@
 package com.ldbc.socialnet.workload;
 
 import java.util.Date;
+import java.util.List;
 
 import com.ldbc.driver.Operation;
 
-// TODO proper result type
-public class LdbcQuery4 extends Operation<Object>
+public class LdbcQuery4 extends Operation<List<LdbcQuery4Result>>
 {
     private final long personId;
-    private final Date startDate;
+    private final Date endDate;
     private final int durationDays;
 
-    public LdbcQuery4( long personId, Date startDate, int durationDays )
+    public LdbcQuery4( long personId, Date endDate, int durationDays )
     {
         super();
         this.personId = personId;
-        this.startDate = startDate;
+        this.endDate = endDate;
         this.durationDays = durationDays;
     }
 
-    public long getPersonId()
+    public long personId()
     {
         return personId;
     }
 
-    public Date getStartDate()
+    public Date endDate()
     {
-        return startDate;
+        return endDate;
     }
 
-    public int getDurationDays()
+    public int durationDays()
     {
         return durationDays;
     }

@@ -1,15 +1,18 @@
-package com.ldbc.socialnet.workload.neo4j.transaction;
+package com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher;
 
-import java.util.Map;
+import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.neo4j.cypher.javacompat.ExecutionEngine;
+import org.neo4j.graphdb.GraphDatabaseService;
 
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
 import com.ldbc.socialnet.workload.LdbcQuery5;
-import com.ldbc.socialnet.workload.Queries;
+import com.ldbc.socialnet.workload.LdbcQuery5Result;
 import com.ldbc.socialnet.workload.neo4j.Neo4jConnectionStateEmbedded;
+import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery5;
 import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 
 public class EmbeddedNeo4jLdbcQuery5Handler extends OperationHandler<LdbcQuery5>
@@ -19,17 +22,16 @@ public class EmbeddedNeo4jLdbcQuery5Handler extends OperationHandler<LdbcQuery5>
     @Override
     protected OperationResult executeOperation( LdbcQuery5 operation ) throws DbException
     {
-        Map<String, Object> params = Queries.Query5.buildParams( operation.getPersonId(), operation.getJoinDate() );
-        String postsQuery = Queries.Query5.QUERY_TEMPLATE_posts;
-        String commentsQuery = Queries.Query5.QUERY_TEMPLATE_comments;
+        ExecutionEngine engine = ( (Neo4jConnectionStateEmbedded) dbConnectionState() ).executionEngine();
+        GraphDatabaseService db = ( (Neo4jConnectionStateEmbedded) dbConnectionState() ).db();
+        Neo4jQuery5 query5 = new Neo4jQuery5EmbeddedCypher();
+        List<LdbcQuery5Result> result = null;
 
         // TODO find way to do this
         int resultCode = 0;
         try
         {
-            ( (Neo4jConnectionStateEmbedded) getDbConnectionState() ).getExecutionEngine().execute( postsQuery, params );
-            ( (Neo4jConnectionStateEmbedded) getDbConnectionState() ).getExecutionEngine().execute( commentsQuery,
-                    params );
+            result = Utils.iteratorToList( query5.execute( db, engine, operation ) );
         }
         catch ( Exception e )
         {
@@ -37,8 +39,6 @@ public class EmbeddedNeo4jLdbcQuery5Handler extends OperationHandler<LdbcQuery5>
             resultCode = -1;
         }
 
-        // TODO return what query actually returns
-        int result = 0;
         return operation.buildResult( resultCode, result );
     }
 }
