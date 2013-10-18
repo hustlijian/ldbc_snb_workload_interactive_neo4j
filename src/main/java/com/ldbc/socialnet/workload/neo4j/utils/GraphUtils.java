@@ -15,16 +15,16 @@ import org.neo4j.graphdb.schema.Schema.IndexState;
 import org.neo4j.tooling.GlobalGraphOperations;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 
-import com.ldbc.driver.util.Pair;
+import com.ldbc.driver.util.Tuple.Tuple2;
 
 public class GraphUtils
 {
     private final static Logger logger = Logger.getLogger( GraphUtils.class );
 
     public static void createDeferredSchemaIndexesUsingBatchInserter( final BatchInserter inserter,
-            Iterable<Pair<Label, String>> labelPropertyPairsToIndex )
+            Iterable<Tuple2<Label, String>> labelPropertyPairsToIndex )
     {
-        for ( Pair<Label, String> schemaIndex : labelPropertyPairsToIndex )
+        for ( Tuple2<Label, String> schemaIndex : labelPropertyPairsToIndex )
         {
             Label label = schemaIndex._1();
             String property = schemaIndex._2();
@@ -34,14 +34,14 @@ public class GraphUtils
     }
 
     public static void createSchemaIndexesUsingCypher( GraphDatabaseService db, ExecutionEngine queryEngine,
-            Iterable<Pair<Label, String>> labelPropertyPairsToIndex, long msTimeout, boolean dropFirst )
+            Iterable<Tuple2<Label, String>> labelPropertyPairsToIndex, long msTimeout, boolean dropFirst )
     {
         Transaction tx = db.beginTx();
         try
         {
             if ( dropFirst )
             {
-                for ( Pair<Label, String> labelPropertyPair : labelPropertyPairsToIndex )
+                for ( Tuple2<Label, String> labelPropertyPair : labelPropertyPairsToIndex )
                 {
                     Label label = labelPropertyPair._1();
                     String property = labelPropertyPair._2();
@@ -58,7 +58,7 @@ public class GraphUtils
                 }
             }
 
-            for ( Pair<Label, String> labelPropertyPair : labelPropertyPairsToIndex )
+            for ( Tuple2<Label, String> labelPropertyPair : labelPropertyPairsToIndex )
             {
                 Label label = labelPropertyPair._1();
                 String property = labelPropertyPair._2();

@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import com.ldbc.driver.Operation;
@@ -20,6 +21,10 @@ import com.ldbc.socialnet.workload.LdbcQuery4;
 import com.ldbc.socialnet.workload.LdbcQuery5;
 import com.ldbc.socialnet.workload.LdbcQuery6;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery;
+import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery3;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api.Neo4jQuery1EmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api.Neo4jQuery3EmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api.Neo4jQuery4EmbeddedApi;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery1EmbeddedCypher;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery3EmbeddedCypher;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery4EmbeddedCypher;
@@ -30,7 +35,6 @@ import com.ldbc.socialnet.workload.neo4j.utils.Config;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
-@Ignore
 public class QueryPerformanceTest
 {
     public static final boolean PRINT = true;
@@ -66,74 +70,232 @@ public class QueryPerformanceTest
     }
 
     @Test
-    public void query1()
+    public void query1cypher()
     {
-        Operation operation = new LdbcQuery1( "Joan", 10 );
-        Neo4jQuery query = new Neo4jQuery1EmbeddedCypher();
-        execute( "Query1", query, operation, 5, 5, false );
+        try (Transaction tx = db.beginTx())
+        {
+            Operation operation = new LdbcQuery1( "Joan", 10 );
+            Neo4jQuery query = new Neo4jQuery1EmbeddedCypher();
+            execute( "Query1", query, operation, 2, 5, false );
+            tx.success();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void query3()
+    public void query1api()
     {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set( 2011, Calendar.JANUARY, 1 );
-        Date endDate = calendar.getTime();
-        int durationDays = 365 * 1;
+        try (Transaction tx = db.beginTx())
+        {
+            Operation operation = new LdbcQuery1( "Joan", 10 );
+            Neo4jQuery query = new Neo4jQuery1EmbeddedApi();
+            execute( "Query1", query, operation, 2, 5, false );
+            tx.success();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+    }
 
-        long personId = 143;
-        String countryX = "United_States";
-        String countryY = "Canada";
+    @Ignore
+    @Test
+    public void fofs()
+    {
+        String query =
 
-        // personId = 405;
-        // countryX = "India";
-        // countryY = "Pakistan";
+        "MATCH (person:PERSON)-[:KNOWS*1..2]-(f:PERSON)\n"
 
-        Operation operation = new LdbcQuery3( personId, countryX, countryY, endDate, durationDays );
-        Neo4jQuery query = new Neo4jQuery3EmbeddedCypher();
-        execute( "Query3", query, operation, 5, 5, false );
+        + "USING INDEX person:PERSON(id)\n"
+
+        + "WHERE person.id=2 AND not(f=person)\n"
+
+        + "RETURN DISTINCT id(f), f.firstName + ' ' + f.lastName AS friend\n";
+
+        ExecutionResult result = engine.execute( query );
+        System.out.println( result.dumpToString() );
+    }
+
+    @Ignore
+    @Test
+    public void fofscountryxposts()
+    {
+        String query =
+
+        "MATCH (person:PERSON)-[:KNOWS*1..2]-(f:PERSON)\n"
+
+                + "USING INDEX person:PERSON(id)\n"
+
+                + "WHERE person.id=2 AND not(f=person)\n"
+
+                + "WITH DISTINCT f AS friend\n"
+
+                + "MATCH (friend)<-[:HAS_CREATOR]-(postX:POST)-[:IS_LOCATED_IN]->(countryX:COUNTRY)\n"
+
+                + "USING INDEX countryX:COUNTRY(name)\n"
+
+                + "WHERE countryX.name='United_States' AND postX.creationDate>=1262360339371 AND postX.creationDate<=1293896339371\n"
+
+                + "RETURN id(friend), friend.firstName + ' ' + friend.lastName AS friend, count(DISTINCT postX) AS xCount\n"
+
+                + "ORDER BY xCount DESC";
+
+        ExecutionResult result = engine.execute( query );
+        System.out.println( result.dumpToString() );
     }
 
     @Test
-    public void query4()
+    public void query3cypher()
     {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set( 2011, Calendar.JANUARY, 1 );
+        try (Transaction tx = db.beginTx())
+        {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set( 2011, Calendar.JANUARY, 1 );
+            Date endDate = calendar.getTime();
+            int durationDays = 365 * 1;
 
-        long personId = 143;
-        Date endDate = calendar.getTime();
-        int durationDays = 300;
+            long personId = 2;
+            String countryX = "United_States";
+            String countryY = "Canada";
 
-        Operation operation = new LdbcQuery4( personId, endDate, durationDays );
-        Neo4jQuery query = new Neo4jQuery4EmbeddedCypher();
-        execute( "Query4", query, operation, 5, 5, false );
+            // personId = 405;
+            // countryX = "India";
+            // countryY = "Pakistan";
+
+            LdbcQuery3 operation = new LdbcQuery3( personId, countryX, countryY, endDate, durationDays );
+            Neo4jQuery3 query = new Neo4jQuery3EmbeddedCypher();
+            execute( "Query3", query, operation, 2, 5, false );
+            tx.success();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
     }
 
+    @Test
+    public void query3api()
+    {
+        try (Transaction tx = db.beginTx())
+        {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set( 2011, Calendar.JANUARY, 1 );
+            Date endDate = calendar.getTime();
+            int durationDays = 365 * 1;
+
+            long personId = 2;
+            String countryX = "United_States";
+            String countryY = "Canada";
+
+            // personId = 405;
+            // countryX = "India";
+            // countryY = "Pakistan";
+
+            Operation operation = new LdbcQuery3( personId, countryX, countryY, endDate, durationDays );
+            Neo4jQuery query = new Neo4jQuery3EmbeddedApi();
+            execute( "Query3", query, operation, 2, 5, false );
+            tx.success();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void query4cypher()
+    {
+        try (Transaction tx = db.beginTx())
+        {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set( 2011, Calendar.JANUARY, 1 );
+
+            long personId = 143;
+            Date endDate = calendar.getTime();
+            int durationDays = 300;
+
+            Operation operation = new LdbcQuery4( personId, endDate, durationDays );
+            Neo4jQuery query = new Neo4jQuery4EmbeddedCypher();
+            execute( "Query4", query, operation, 2, 5, false );
+            tx.success();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void query4api()
+    {
+        try (Transaction tx = db.beginTx())
+        {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set( 2011, Calendar.JANUARY, 1 );
+
+            long personId = 143;
+            Date endDate = calendar.getTime();
+            int durationDays = 300;
+
+            Operation operation = new LdbcQuery4( personId, endDate, durationDays );
+            Neo4jQuery query = new Neo4jQuery4EmbeddedApi();
+            execute( "Query4", query, operation, 2, 5, false );
+            tx.success();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Ignore
     @Test
     public void query5()
     {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set( 2011, Calendar.JANUARY, 1 );
+        try (Transaction tx = db.beginTx())
+        {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set( 2011, Calendar.JANUARY, 1 );
 
-        long personId = 143;
-        Date joinDate = calendar.getTime();
+            long personId = 143;
+            Date joinDate = calendar.getTime();
 
-        Operation operation = new LdbcQuery5( personId, joinDate );
-        Neo4jQuery query = new Neo4jQuery5EmbeddedCypher();
-        execute( "Query5", query, operation, 5, 5, false );
+            Operation operation = new LdbcQuery5( personId, joinDate );
+            Neo4jQuery query = new Neo4jQuery5EmbeddedCypher();
+            execute( "Query5", query, operation, 2, 5, false );
+            tx.success();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
     }
 
+    @Ignore
     @Test
     public void query6()
     {
-        long personId = 143;
+        try (Transaction tx = db.beginTx())
+        {
+            long personId = 143;
 
-        String tagName = "Charles_Dickens";
+            String tagName = "Charles_Dickens";
 
-        Operation operation = new LdbcQuery6( personId, tagName );
-        Neo4jQuery query = new Neo4jQuery6EmbeddedCypher();
-        execute( "Query6", query, operation, 5, 5, false );
+            Operation operation = new LdbcQuery6( personId, tagName );
+            Neo4jQuery query = new Neo4jQuery6EmbeddedCypher();
+            execute( "Query6", query, operation, 5, 5, false );
+            tx.success();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
     }
+
+    // TODO query7
 
     private void execute( String name, Neo4jQuery query, Operation operation, long warmup, long iterations,
             boolean profile )
@@ -157,10 +319,16 @@ public class QueryPerformanceTest
         long runtimeMin = Long.MAX_VALUE;
         long runtimeMax = Long.MIN_VALUE;
 
+        Iterator<?> result = null;
+
         for ( int i = 0; i < iterations; i++ )
         {
             long start = System.currentTimeMillis();
-            query.execute( db, engine, operation );
+            result = query.execute( db, engine, operation );
+            while ( ( i < iterations - 1 ) && result.hasNext() )
+            {
+                result.next();
+            }
             long runtime = System.currentTimeMillis() - start;
             runtimeTotal += runtime;
             runtimeRuns++;
@@ -176,11 +344,14 @@ public class QueryPerformanceTest
             System.out.println( "\truntimeMin=" + runtimeMin );
             System.out.println( "\truntimeMax=" + runtimeMax );
             System.out.println( "\truntimeMean=" + runtimeTotal / runtimeRuns );
+            while ( result.hasNext() )
+            {
+                System.out.println( result.next().toString() );
+            }
         }
         else
         {
             System.out.println( String.format( "%s: runtime mean=%s(ms)", name, runtimeTotal / runtimeRuns ) );
         }
     }
-
 }

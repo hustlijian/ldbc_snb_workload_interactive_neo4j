@@ -7,6 +7,8 @@ import java.util.Map;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterators;
 import com.ldbc.socialnet.workload.Domain;
 import com.ldbc.socialnet.workload.LdbcQuery6;
 import com.ldbc.socialnet.workload.LdbcQuery6Result;
@@ -21,17 +23,24 @@ public class Neo4jQuery6EmbeddedCypher implements Neo4jQuery6
     }
 
     @Override
-    public Iterator<LdbcQuery6Result> execute( GraphDatabaseService db, ExecutionEngine engine, LdbcQuery6 params )
+    public Iterator<LdbcQuery6Result> execute( GraphDatabaseService db, ExecutionEngine engine, LdbcQuery6 operation )
     {
-        return new ResultIterator(
-                engine.execute( query(), buildParams( params.personId(), params.tagName() ) ).iterator() );
+        return Iterators.transform( engine.execute( query(), buildParams( operation ) ).iterator(),
+                new Function<Map<String, Object>, LdbcQuery6Result>()
+                {
+                    @Override
+                    public LdbcQuery6Result apply( Map<String, Object> next )
+                    {
+                        return new LdbcQuery6Result( (String) next.get( "tagName" ), (long) next.get( "tagCount" ) );
+                    }
+                } );
     }
 
-    private Map<String, Object> buildParams( long personId, String tagName )
+    private Map<String, Object> buildParams( LdbcQuery6 operation )
     {
         Map<String, Object> queryParams = new HashMap<String, Object>();
-        queryParams.put( "person_id", personId );
-        queryParams.put( "tag_name", tagName );
+        queryParams.put( "person_id", operation.personId() );
+        queryParams.put( "tag_name", operation.tagName() );
         return queryParams;
     }
 
@@ -58,35 +67,5 @@ public class Neo4jQuery6EmbeddedCypher implements Neo4jQuery6
                + "ORDER BY tagCount DESC\n"
 
                + "LIMIT 10";
-    }
-
-    public static class ResultIterator implements Iterator<LdbcQuery6Result>
-    {
-        private final Iterator<Map<String, Object>> inner;
-
-        public ResultIterator( Iterator<Map<String, Object>> inner )
-        {
-            this.inner = inner;
-        }
-
-        @Override
-        public boolean hasNext()
-        {
-            return inner.hasNext();
-        }
-
-        @Override
-        public LdbcQuery6Result next()
-        {
-            Map<String, Object> next = inner.next();
-            return new LdbcQuery6Result( (String) next.get( "tagName" ), (long) next.get( "tagCount" ) );
-        }
-
-        @Override
-        public void remove()
-        {
-            throw new UnsupportedOperationException();
-        }
-
     }
 }

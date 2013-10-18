@@ -4,9 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.neo4j.unsafe.batchinsert.BatchInserter;
-import org.neo4j.unsafe.batchinsert.BatchInserters;
-
 import com.ldbc.driver.BenchmarkPhase;
 import com.ldbc.driver.Client;
 import com.ldbc.driver.ClientException;
@@ -29,9 +26,9 @@ public class DoTransactionWorkload
         System.out.println( "Neo4j Configuration:" );
         System.out.println( MapUtils.prettyPrint( Config.NEO4J_RUN_CONFIG ) );
 
-        long operationCount = 10;
+        long operationCount = 300;
         long recordCount = -1;
-        int threadCount = 1;
+        int threadCount = 2;
         boolean showStatus = true;
         TimeUnit timeUnit = TimeUnit.MILLISECONDS;
         Map<String, String> userParams = new HashMap<String, String>();

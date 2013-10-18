@@ -8,9 +8,12 @@ import java.util.Map;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterators;
 import com.ldbc.socialnet.workload.Domain;
 import com.ldbc.socialnet.workload.LdbcQuery1;
 import com.ldbc.socialnet.workload.LdbcQuery1Result;
+import com.ldbc.socialnet.workload.LdbcQuery4Result;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery1;
 
 public class Neo4jQuery1EmbeddedCypher implements Neo4jQuery1
@@ -22,17 +25,30 @@ public class Neo4jQuery1EmbeddedCypher implements Neo4jQuery1
     }
 
     @Override
-    public Iterator<LdbcQuery1Result> execute( GraphDatabaseService db, ExecutionEngine engine, LdbcQuery1 params )
+    public Iterator<LdbcQuery1Result> execute( GraphDatabaseService db, ExecutionEngine engine, LdbcQuery1 operation )
     {
-        return new ResultIterator(
-                engine.execute( query(), buildParams( params.firstName(), params.limit() ) ).iterator() );
+        return Iterators.transform( engine.execute( query(), buildParams( operation ) ).iterator(),
+                new Function<Map<String, Object>, LdbcQuery1Result>()
+                {
+                    @Override
+                    public LdbcQuery1Result apply( Map<String, Object> input )
+                    {
+                        return new LdbcQuery1Result( (String) input.get( "firstName" ),
+                                (String) input.get( "lastName" ), (long) input.get( "birthday" ),
+                                (long) input.get( "creation" ), (String) input.get( "gender" ),
+                                (String[]) input.get( "languages" ), (String) input.get( "browser" ),
+                                (String) input.get( "ip" ), (String[]) input.get( "emails" ),
+                                (String) input.get( "personCity" ), (Collection<String>) input.get( "unis" ),
+                                (Collection<String>) input.get( "companies" ) );
+                    }
+                } );
     }
 
-    private Map<String, Object> buildParams( String firstName, int limit )
+    private Map<String, Object> buildParams( LdbcQuery1 operation )
     {
         Map<String, Object> queryParams = new HashMap<String, Object>();
-        queryParams.put( "person_first_name", firstName );
-        queryParams.put( "limit", limit );
+        queryParams.put( "person_first_name", operation.firstName() );
+        queryParams.put( "limit", operation.limit() );
         return queryParams;
     }
 
@@ -85,39 +101,5 @@ public class Neo4jQuery1EmbeddedCypher implements Neo4jQuery1
         Domain.Person.FIRST_NAME, Domain.Person.LAST_NAME, Domain.Person.BIRTHDAY, Domain.Person.CREATION_DATE,
                 Domain.Person.GENDER, Domain.Person.LANGUAGES, Domain.Person.BROWSER_USED, Domain.Person.LOCATION_IP,
                 Domain.Person.EMAIL_ADDRESSES, Domain.Place.NAME );
-    }
-
-    public static class ResultIterator implements Iterator<LdbcQuery1Result>
-    {
-        private final Iterator<Map<String, Object>> inner;
-
-        public ResultIterator( Iterator<Map<String, Object>> inner )
-        {
-            this.inner = inner;
-        }
-
-        @Override
-        public boolean hasNext()
-        {
-            return inner.hasNext();
-        }
-
-        @Override
-        public LdbcQuery1Result next()
-        {
-            Map<String, Object> next = inner.next();
-            return new LdbcQuery1Result( (String) next.get( "firstName" ), (String) next.get( "lastName" ),
-                    (long) next.get( "birthday" ), (long) next.get( "creation" ), (String) next.get( "gender" ),
-                    (String[]) next.get( "languages" ), (String) next.get( "browser" ), (String) next.get( "ip" ),
-                    (String[]) next.get( "emails" ), (String) next.get( "personCity" ),
-                    (Collection<String>) next.get( "unis" ), (Collection<String>) next.get( "companies" ) );
-        }
-
-        @Override
-        public void remove()
-        {
-            throw new UnsupportedOperationException();
-        }
-
     }
 }

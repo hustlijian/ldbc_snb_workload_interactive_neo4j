@@ -1,7 +1,5 @@
 package com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -9,6 +7,8 @@ import java.util.Map;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterators;
 import com.ldbc.socialnet.workload.Domain;
 import com.ldbc.socialnet.workload.LdbcQuery7;
 import com.ldbc.socialnet.workload.LdbcQuery7Result;
@@ -23,24 +23,25 @@ public class Neo4jQuery7EmbeddedCypher implements Neo4jQuery7
     }
 
     @Override
-    public Iterator<LdbcQuery7Result> execute( GraphDatabaseService db, ExecutionEngine engine, LdbcQuery7 params )
+    public Iterator<LdbcQuery7Result> execute( GraphDatabaseService db, ExecutionEngine engine, LdbcQuery7 operation )
     {
-        return new ResultIterator( engine.execute( query(),
-                buildParams( params.personId(), params.endDateTime(), params.durationHours() ) ).iterator() );
+        return Iterators.transform( engine.execute( query(), buildParams( operation ) ).iterator(),
+                new Function<Map<String, Object>, LdbcQuery7Result>()
+                {
+                    @Override
+                    public LdbcQuery7Result apply( Map<String, Object> next )
+                    {
+                        return new LdbcQuery7Result( (String) next.get( "tagName" ), (long) next.get( "tagCount" ) );
+                    }
+                } );
     }
 
-    private Map<String, Object> buildParams( long personId, Date endDateTime, int durationHours )
+    private Map<String, Object> buildParams( LdbcQuery7 operation )
     {
-        long maxDateInMilli = endDateTime.getTime();
-        Calendar c = Calendar.getInstance();
-        c.setTime( endDateTime );
-        c.add( Calendar.HOUR, -durationHours );
-        long minDateInMilli = c.getTimeInMillis();
-
         Map<String, Object> queryParams = new HashMap<String, Object>();
-        queryParams.put( "person_id", personId );
-        queryParams.put( "min_date", minDateInMilli );
-        queryParams.put( "max_date", maxDateInMilli );
+        queryParams.put( "person_id", operation.personId() );
+        queryParams.put( "min_date", operation.startDateTimeAsMilli() );
+        queryParams.put( "max_date", operation.endDateTimeAsMilli() );
         return queryParams;
     }
 
@@ -79,33 +80,4 @@ public class Neo4jQuery7EmbeddedCypher implements Neo4jQuery7
 
     }
 
-    public static class ResultIterator implements Iterator<LdbcQuery7Result>
-    {
-        private final Iterator<Map<String, Object>> inner;
-
-        public ResultIterator( Iterator<Map<String, Object>> inner )
-        {
-            this.inner = inner;
-        }
-
-        @Override
-        public boolean hasNext()
-        {
-            return inner.hasNext();
-        }
-
-        @Override
-        public LdbcQuery7Result next()
-        {
-            Map<String, Object> next = inner.next();
-            return new LdbcQuery7Result( (String) next.get( "tagName" ), (long) next.get( "tagCount" ) );
-        }
-
-        @Override
-        public void remove()
-        {
-            throw new UnsupportedOperationException();
-        }
-
-    }
 }

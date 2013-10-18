@@ -10,19 +10,23 @@ import com.ldbc.driver.DbException;
 import com.ldbc.socialnet.workload.LdbcQuery1;
 import com.ldbc.socialnet.workload.LdbcQuery3;
 import com.ldbc.socialnet.workload.LdbcQuery4;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.EmbeddedNeo4jLdbcQuery1Handler;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.EmbeddedNeo4jLdbcQuery3Handler;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.EmbeddedNeo4jLdbcQuery4Handler;
+import com.ldbc.socialnet.workload.LdbcQuery5;
+import com.ldbc.socialnet.workload.LdbcQuery6;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.LdbcQuery1HandlerEmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.LdbcQuery3HandlerEmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.LdbcQuery4HandlerEmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.LdbcQuery5HandlerEmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.LdbcQuery6HandlerEmbeddedCypher;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
 
-public class Neo4jDbCommandsEmbedded extends Neo4jDbCommands
+public class Neo4jDbCommandsEmbeddedCypher extends Neo4jDbCommands
 {
     final private String path;
     private ExecutionEngine queryEngine;
     private GraphDatabaseService db;
     private DbConnectionState dbConnectionState;
 
-    public Neo4jDbCommandsEmbedded( String path )
+    public Neo4jDbCommandsEmbeddedCypher( String path )
     {
         this.path = path;
     }
@@ -51,9 +55,11 @@ public class Neo4jDbCommandsEmbedded extends Neo4jDbCommands
     @Override
     public void registerHandlersWithDb( Db db ) throws DbException
     {
-        db.registerOperationHandler( LdbcQuery1.class, EmbeddedNeo4jLdbcQuery1Handler.class );
-        db.registerOperationHandler( LdbcQuery3.class, EmbeddedNeo4jLdbcQuery3Handler.class );
-        db.registerOperationHandler( LdbcQuery4.class, EmbeddedNeo4jLdbcQuery4Handler.class );
+        db.registerOperationHandler( LdbcQuery1.class, LdbcQuery1HandlerEmbeddedCypher.class );
+        db.registerOperationHandler( LdbcQuery3.class, LdbcQuery3HandlerEmbeddedCypher.class );
+        db.registerOperationHandler( LdbcQuery4.class, LdbcQuery4HandlerEmbeddedCypher.class );
+        db.registerOperationHandler( LdbcQuery5.class, LdbcQuery5HandlerEmbeddedCypher.class );
+        db.registerOperationHandler( LdbcQuery6.class, LdbcQuery6HandlerEmbeddedCypher.class );
     }
 
     private static void registerShutdownHook( final GraphDatabaseService graphDb )

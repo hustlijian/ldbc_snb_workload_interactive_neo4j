@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.base.Predicate;
 import com.ldbc.driver.Operation;
 import com.ldbc.driver.Workload;
 import com.ldbc.driver.WorkloadException;
@@ -18,8 +17,10 @@ import com.ldbc.driver.generator.GeneratorException;
 import com.ldbc.driver.generator.GeneratorFactory;
 import com.ldbc.driver.generator.wrapper.FilterGeneratorWrapper;
 import com.ldbc.driver.generator.wrapper.StartTimeOperationGeneratorWrapper;
+import com.ldbc.driver.util.Function1;
 import com.ldbc.driver.util.GeneratorUtils;
-import com.ldbc.driver.util.Pair;
+import com.ldbc.driver.util.Tuple;
+import com.ldbc.driver.util.Tuple.Tuple2;
 import com.ldbc.driver.util.temporal.Duration;
 import com.ldbc.driver.util.temporal.Time;
 import com.ldbc.socialnet.workload.neo4j.transaction.ParameterSubstitution;
@@ -52,7 +53,7 @@ public class LdbcInteractiveWorkload extends Workload
          * Create Generators for desired Operations
          */
 
-        Set<Pair<Double, Generator<Operation<?>>>> operations = new HashSet<Pair<Double, Generator<Operation<?>>>>();
+        Set<Tuple2<Double, Generator<Operation<?>>>> operations = new HashSet<Tuple2<Double, Generator<Operation<?>>>>();
 
         Generator<String> firstNameSelectGenerator = generators.discreteGenerator( Arrays.asList( ParameterSubstitution.FIRST_NAMES ) );
         // Generator<String> firstNameSelectGenerator =
@@ -60,8 +61,8 @@ public class LdbcInteractiveWorkload extends Workload
         // Arrays.asList( new String[] { "Chen" } ) ).build();
 
         int limit = 10;
-        operations.add( Pair.create( 1d,
-                (Generator<Operation<?>>) new Query1Generator( firstNameSelectGenerator, limit ) ) );
+        operations.add( Tuple.tuple2( 1d, (Generator<Operation<?>>) new Query1Generator( firstNameSelectGenerator,
+                limit ) ) );
 
         Calendar calendar = Calendar.getInstance();
         calendar.set( 2010, Calendar.JANUARY, 1 );
@@ -70,7 +71,7 @@ public class LdbcInteractiveWorkload extends Workload
         String countryY = "Canada";
         Date startDate = calendar.getTime();
         int durationDays = 365 * 2;
-        operations.add( Pair.create( 1d, (Generator<Operation<?>>) new Query3Generator( personId, countryX, countryY,
+        operations.add( Tuple.tuple2( 1d, (Generator<Operation<?>>) new Query3Generator( personId, countryX, countryY,
                 startDate, durationDays ) ) );
 
         calendar = Calendar.getInstance();
@@ -78,18 +79,18 @@ public class LdbcInteractiveWorkload extends Workload
         personId = 143;
         startDate = calendar.getTime();
         durationDays = 300;
-        operations.add( Pair.create( 1d, (Generator<Operation<?>>) new Query4Generator( personId, startDate,
+        operations.add( Tuple.tuple2( 1d, (Generator<Operation<?>>) new Query4Generator( personId, startDate,
                 durationDays ) ) );
 
         calendar = Calendar.getInstance();
         calendar.set( 2011, Calendar.JANUARY, 1 );
         personId = 143;
         Date joinDate = calendar.getTime();
-        operations.add( Pair.create( 1d, (Generator<Operation<?>>) new Query5Generator( personId, joinDate ) ) );
+        operations.add( Tuple.tuple2( 1d, (Generator<Operation<?>>) new Query5Generator( personId, joinDate ) ) );
 
         personId = 143;
         String tagName = "Charles_Dickens";
-        operations.add( Pair.create( 1d, (Generator<Operation<?>>) new Query6Generator( personId, tagName ) ) );
+        operations.add( Tuple.tuple2( 1d, (Generator<Operation<?>>) new Query6Generator( personId, tagName ) ) );
 
         /*
          * Create Discrete Generator from 
@@ -107,7 +108,7 @@ public class LdbcInteractiveWorkload extends Workload
         // operationsToInclude.add( LdbcQuery4.class );
         // operationsToInclude.add( LdbcQuery5.class );
         // operationsToInclude.add( LdbcQuery6.class );
-        Predicate<Operation<?>> filter = new IncludeOnlyClassesPredicate<Operation<?>>( operationsToInclude );
+        Function1<Operation<?>, Boolean> filter = new IncludeOnlyClassesPredicate<Operation<?>>( operationsToInclude );
 
         Generator<Operation<?>> filteredGenerator = new FilterGeneratorWrapper<Operation<?>>( operationGenerator,
                 filter );
@@ -118,7 +119,7 @@ public class LdbcInteractiveWorkload extends Workload
         // Time.fromMilli( 100 ).asMilli(), Time.fromMilli( 1000 ).asMilli() );
 
         Generator<Time> startTimeGenerator = GeneratorUtils.constantTimeGeneratorFromNow( generators, Time.now(),
-                Duration.fromMilli( 10 ) );
+                Duration.fromMilli( 100 ) );
 
         return new StartTimeOperationGeneratorWrapper( startTimeGenerator, filteredGenerator );
     }
@@ -222,7 +223,7 @@ public class LdbcInteractiveWorkload extends Workload
         }
     }
 
-    class IncludeOnlyClassesPredicate<T> implements Predicate<T>
+    class IncludeOnlyClassesPredicate<T> implements Function1<T, Boolean>
     {
         private final Set<Class<? extends Operation<?>>> includedItems;
 
@@ -237,7 +238,7 @@ public class LdbcInteractiveWorkload extends Workload
         }
 
         @Override
-        public boolean apply( T input )
+        public Boolean apply( T input )
         {
             return true == includedItems.contains( input.getClass() );
         }

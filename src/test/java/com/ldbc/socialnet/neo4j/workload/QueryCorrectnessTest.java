@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,21 +35,17 @@ import com.ldbc.socialnet.workload.LdbcQuery6Result;
 import com.ldbc.socialnet.workload.LdbcQuery7;
 import com.ldbc.socialnet.workload.LdbcQuery7Result;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery1;
+import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery3;
+import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery4;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery5;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery6;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery7;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery1EmbeddedCypher;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery3EmbeddedCypher;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery4EmbeddedCypher;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery5EmbeddedCypher;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery6EmbeddedCypher;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery7EmbeddedCypher;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
-public class QueryCorrectnessTest
+public abstract class QueryCorrectnessTest
 {
     public static String dbDir = "tempDb";
     public static GraphDatabaseService db = null;
@@ -68,9 +63,9 @@ public class QueryCorrectnessTest
         System.out.println( MapUtils.prettyPrint( TestGraph.Creator.createGraphQueryParams() ) );
         System.out.println( TestGraph.Creator.createGraphQuery() );
 
-        buildGraph( engine );
+        buildGraph( engine, db );
         db.shutdown();
-        db = new GraphDatabaseFactory().newEmbeddedDatabase( dbDir );
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder( dbDir ).setConfig( Config.NEO4J_RUN_CONFIG ).newGraphDatabase();
         engine = new ExecutionEngine( db );
     }
 
@@ -80,7 +75,7 @@ public class QueryCorrectnessTest
         db.shutdown();
     }
 
-    private static void buildGraph( ExecutionEngine engine )
+    public static void buildGraph( ExecutionEngine engine, GraphDatabaseService db )
     {
         try (Transaction tx = db.beginTx())
         {
@@ -107,14 +102,26 @@ public class QueryCorrectnessTest
         }
     }
 
+    public abstract Neo4jQuery1 neo4jQuery1Impl();
+
+    public abstract Neo4jQuery3 neo4jQuery3Impl();
+
+    public abstract Neo4jQuery4 neo4jQuery4Impl();
+
+    public abstract Neo4jQuery5 neo4jQuery5Impl();
+
+    public abstract Neo4jQuery6 neo4jQuery6Impl();
+
+    public abstract Neo4jQuery7 neo4jQuery7Impl();
+
     @Test
     public void query1ShouldReturnExpectedResult()
     {
         LdbcQuery1 operation1 = new LdbcQuery1( "alex", 10 );
-        Neo4jQuery1 query1 = new Neo4jQuery1EmbeddedCypher();
+        Neo4jQuery1 query1 = neo4jQuery1Impl();
 
         // TODO uncomment to print query
-        System.out.println( "\n" + query1.description() + "\n\n" );
+        System.out.println( "\n" + operation1.toString() + "\n" + query1.description() + "\n\n" );
 
         boolean exceptionThrown = false;
         try (Transaction tx = db.beginTx())
@@ -165,10 +172,10 @@ public class QueryCorrectnessTest
         int durationDays = 4;
 
         LdbcQuery3 operation3 = new LdbcQuery3( personId, countryX, countryY, endDate, durationDays );
-        Neo4jQuery3EmbeddedCypher query3 = new Neo4jQuery3EmbeddedCypher();
+        Neo4jQuery3 query3 = neo4jQuery3Impl();
 
         // TODO uncomment to print query
-        System.out.println( "\n" + query3.description() + "\n\n" );
+        System.out.println( "\n" + operation3.toString() + "\n" + query3.description() + "\n\n" );
 
         boolean exceptionThrown = false;
         try (Transaction tx = db.beginTx())
@@ -217,7 +224,7 @@ public class QueryCorrectnessTest
         int durationDays = 3;
 
         LdbcQuery4 operation4 = new LdbcQuery4( personId, endDate, durationDays );
-        Neo4jQuery4EmbeddedCypher query4 = new Neo4jQuery4EmbeddedCypher();
+        Neo4jQuery4 query4 = neo4jQuery4Impl();
 
         // TODO uncomment to print query
         System.out.println( "\n" + query4.description() + "\n\n" );
@@ -230,9 +237,11 @@ public class QueryCorrectnessTest
             int expectedRowCount = 5;
             int actualRowCount = 0;
 
+            assertThat( result.next(), equalTo( new LdbcQuery4Result( "pie", 3 ) ) );
+            assertThat( result.next(), equalTo( new LdbcQuery4Result( "lol", 2 ) ) );
+            actualRowCount = 2;
+
             Map<String, Integer> validTags = new HashMap<String, Integer>();
-            validTags.put( "pie", 3 );
-            validTags.put( "lol", 2 );
             validTags.put( "cake", 1 );
             validTags.put( "yolo", 1 );
             validTags.put( "wtf", 1 );
@@ -240,14 +249,10 @@ public class QueryCorrectnessTest
             while ( result.hasNext() )
             {
                 LdbcQuery4Result row = result.next();
-                String tagName = row.tagName();
-                assertThat( validTags.containsKey( tagName ), is( true ) );
-                int tagCount = row.tagCount();
-                assertThat( validTags.get( tagName ), equalTo( tagCount ) );
-                validTags.remove( tagName );
+                assertThat( row.tagCount(), is( validTags.get( row.tagName() ) ) );
                 actualRowCount++;
             }
-            assertThat( expectedRowCount, equalTo( actualRowCount ) );
+            assertThat( actualRowCount, is( expectedRowCount ) );
 
             tx.success();
         }
@@ -338,7 +343,7 @@ public class QueryCorrectnessTest
         Date joinDate = c.getTime();
 
         LdbcQuery5 operation5 = new LdbcQuery5( personId, joinDate );
-        Neo4jQuery5 query5 = new Neo4jQuery5EmbeddedCypher();
+        Neo4jQuery5 query5 = neo4jQuery5Impl();
 
         // TODO uncomment to print query
         System.out.println( "\n" + query5.description() + "\n\n" );
@@ -391,7 +396,7 @@ public class QueryCorrectnessTest
         String tagName = "lol";
 
         LdbcQuery6 operation6 = new LdbcQuery6( personId, tagName );
-        Neo4jQuery6 query6 = new Neo4jQuery6EmbeddedCypher();
+        Neo4jQuery6 query6 = neo4jQuery6Impl();
 
         // TODO uncomment to print query
         System.out.println( "\n" + query6.description() + "\n\n" );
@@ -442,7 +447,7 @@ public class QueryCorrectnessTest
         int durationHours = 48;
 
         LdbcQuery7 operation7 = new LdbcQuery7( personId, endDate, durationHours );
-        Neo4jQuery7 query7 = new Neo4jQuery7EmbeddedCypher();
+        Neo4jQuery7 query7 = neo4jQuery7Impl();
 
         // TODO uncomment to print query
         System.out.println( "\n" + query7.description() + "\n\n" );
@@ -559,4 +564,13 @@ public class QueryCorrectnessTest
         }
     }
 
+    String resultToString( Iterator<?> result )
+    {
+        StringBuilder sb = new StringBuilder();
+        while ( result.hasNext() )
+        {
+            sb.append( result.next().toString() ).append( "\n" );
+        }
+        return sb.toString();
+    }
 }

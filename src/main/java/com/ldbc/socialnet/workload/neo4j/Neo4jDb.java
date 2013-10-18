@@ -51,10 +51,15 @@ public class Neo4jDb extends Db
             // TODO implement
             throw new DbException( "server commands not implemented yet" );
         }
-        else if ( dbType.equals( "embedded" ) )
+        else if ( dbType.equals( "embedded-cypher" ) )
         {
             logger.info( "Connecting to database: " + path );
-            commands = new Neo4jDbCommandsEmbedded( path );
+            commands = new Neo4jDbCommandsEmbeddedCypher( path );
+        }
+        else if ( dbType.equals( "embedded-api" ) )
+        {
+            logger.info( "Connecting to database: " + path );
+            commands = new Neo4jDbCommandsEmbeddedApi( path );
         }
         else
         {

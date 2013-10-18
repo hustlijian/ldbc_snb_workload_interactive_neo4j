@@ -1,7 +1,5 @@
 package com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -9,6 +7,8 @@ import java.util.Map;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterators;
 import com.ldbc.socialnet.workload.Domain;
 import com.ldbc.socialnet.workload.LdbcQuery3;
 import com.ldbc.socialnet.workload.LdbcQuery3Result;
@@ -23,12 +23,18 @@ public class Neo4jQuery3EmbeddedCypher implements Neo4jQuery3
     }
 
     @Override
-    public Iterator<LdbcQuery3Result> execute( GraphDatabaseService db, ExecutionEngine engine, LdbcQuery3 params )
+    public Iterator<LdbcQuery3Result> execute( GraphDatabaseService db, ExecutionEngine engine, LdbcQuery3 operation )
     {
-        return new ResultIterator( engine.execute(
-                query(),
-                buildParams( params.personId(), params.countryX(), params.countryY(), params.endDate(),
-                        params.durationDays() ) ).iterator() );
+        return Iterators.transform( engine.execute( query(), buildParams( operation ) ).iterator(),
+                new Function<Map<String, Object>, LdbcQuery3Result>()
+                {
+                    @Override
+                    public LdbcQuery3Result apply( Map<String, Object> input )
+                    {
+                        return new LdbcQuery3Result( (String) input.get( "friendName" ), (long) input.get( "xCount" ),
+                                (long) input.get( "yCount" ) );
+                    }
+                } );
     }
 
     private String query()
@@ -69,51 +75,14 @@ public class Neo4jQuery3EmbeddedCypher implements Neo4jQuery3
                 + "ORDER BY xyCount DESC" );
     }
 
-    private Map<String, Object> buildParams( long personId, String countryX, String countryY, Date endDate,
-            int durationDays )
+    private Map<String, Object> buildParams( LdbcQuery3 operation )
     {
-        long maxDateInMilli = endDate.getTime();
-        Calendar c = Calendar.getInstance();
-        c.setTime( endDate );
-        c.add( Calendar.DATE, -durationDays );
-        long minDateInMilli = c.getTimeInMillis();
         Map<String, Object> queryParams = new HashMap<String, Object>();
-        queryParams.put( "person_id", personId );
-        queryParams.put( "country_x", countryX );
-        queryParams.put( "country_y", countryY );
-        queryParams.put( "min_date", minDateInMilli );
-        queryParams.put( "max_date", maxDateInMilli );
+        queryParams.put( "person_id", operation.personId() );
+        queryParams.put( "country_x", operation.countryX() );
+        queryParams.put( "country_y", operation.countryY() );
+        queryParams.put( "min_date", operation.startDateAsMilli() );
+        queryParams.put( "max_date", operation.endDateAsMilli() );
         return queryParams;
-    }
-
-    public static class ResultIterator implements Iterator<LdbcQuery3Result>
-    {
-        private final Iterator<Map<String, Object>> inner;
-
-        public ResultIterator( Iterator<Map<String, Object>> inner )
-        {
-            this.inner = inner;
-        }
-
-        @Override
-        public boolean hasNext()
-        {
-            return inner.hasNext();
-        }
-
-        @Override
-        public LdbcQuery3Result next()
-        {
-            Map<String, Object> next = inner.next();
-            return new LdbcQuery3Result( (String) next.get( "friendName" ), (long) next.get( "xCount" ),
-                    (long) next.get( "yCount" ), (long) next.get( "xyCount" ) );
-        }
-
-        @Override
-        public void remove()
-        {
-            throw new UnsupportedOperationException();
-        }
-
     }
 }

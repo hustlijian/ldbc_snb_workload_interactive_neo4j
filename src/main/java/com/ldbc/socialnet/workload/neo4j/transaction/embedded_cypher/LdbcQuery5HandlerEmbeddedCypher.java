@@ -15,9 +15,9 @@ import com.ldbc.socialnet.workload.neo4j.Neo4jConnectionStateEmbedded;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery5;
 import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 
-public class EmbeddedNeo4jLdbcQuery5Handler extends OperationHandler<LdbcQuery5>
+public class LdbcQuery5HandlerEmbeddedCypher extends OperationHandler<LdbcQuery5>
 {
-    private final static Logger logger = Logger.getLogger( EmbeddedNeo4jLdbcQuery5Handler.class );
+    private final static Logger logger = Logger.getLogger( LdbcQuery5HandlerEmbeddedCypher.class );
 
     @Override
     protected OperationResult executeOperation( LdbcQuery5 operation ) throws DbException

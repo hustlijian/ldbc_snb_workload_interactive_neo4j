@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher;
+package com.ldbc.socialnet.workload.neo4j.transaction.embedded_api;
 
 import java.util.List;
 
@@ -9,29 +9,29 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
-import com.ldbc.socialnet.workload.LdbcQuery3;
-import com.ldbc.socialnet.workload.LdbcQuery3Result;
+import com.ldbc.socialnet.workload.LdbcQuery4;
+import com.ldbc.socialnet.workload.LdbcQuery4Result;
 import com.ldbc.socialnet.workload.neo4j.Neo4jConnectionStateEmbedded;
-import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery3;
+import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery4;
 import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 
-public class EmbeddedNeo4jLdbcQuery3Handler extends OperationHandler<LdbcQuery3>
+public class LdbcQuery4HandlerEmbeddedApi extends OperationHandler<LdbcQuery4>
 {
-    private final static Logger logger = Logger.getLogger( EmbeddedNeo4jLdbcQuery3Handler.class );
+    private final static Logger logger = Logger.getLogger( LdbcQuery4HandlerEmbeddedApi.class );
 
     @Override
-    protected OperationResult executeOperation( LdbcQuery3 operation ) throws DbException
+    protected OperationResult executeOperation( LdbcQuery4 operation ) throws DbException
     {
         ExecutionEngine engine = ( (Neo4jConnectionStateEmbedded) dbConnectionState() ).executionEngine();
         GraphDatabaseService db = ( (Neo4jConnectionStateEmbedded) dbConnectionState() ).db();
-        Neo4jQuery3 query3 = new Neo4jQuery3EmbeddedCypher();
-        List<LdbcQuery3Result> result = null;
+        Neo4jQuery4 query4 = new Neo4jQuery4EmbeddedApi();
+        List<LdbcQuery4Result> result = null;
 
         // TODO find way to do this
         int resultCode = 0;
         try
         {
-            result = Utils.iteratorToList( query3.execute( db, engine, operation ) );
+            result = Utils.iteratorToList( query4.execute( db, engine, operation ) );
         }
         catch ( Exception e )
         {

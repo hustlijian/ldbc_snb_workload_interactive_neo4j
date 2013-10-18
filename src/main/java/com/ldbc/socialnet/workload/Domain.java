@@ -8,27 +8,27 @@ import java.util.Set;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.RelationshipType;
 
-import com.ldbc.driver.util.Pair;
+import com.ldbc.driver.util.Tuple.Tuple2;
 
 public class Domain
 {
-    public static Iterable<Pair<Label, String>> labelPropertyPairsToIndex()
+    public static Iterable<Tuple2<Label, String>> labelPropertyPairsToIndex()
     {
-        List<Pair<Label, String>> labelPropertyPairsToIndex = new ArrayList<Pair<Label, String>>();
-        labelPropertyPairsToIndex.add( new Pair<Label, String>( Node.TAG, Tag.NAME ) );
-        labelPropertyPairsToIndex.add( new Pair<Label, String>( Node.PERSON, Person.ID ) );
-        labelPropertyPairsToIndex.add( new Pair<Label, String>( Node.PERSON, Person.FIRST_NAME ) );
-        labelPropertyPairsToIndex.add( new Pair<Label, String>( Node.PERSON, Person.LAST_NAME ) );
-        labelPropertyPairsToIndex.add( new Pair<Label, String>( Node.PLACE, Place.NAME ) );
-        labelPropertyPairsToIndex.add( new Pair<Label, String>( Place.Type.CITY, Place.NAME ) );
-        labelPropertyPairsToIndex.add( new Pair<Label, String>( Place.Type.COUNTRY, Place.NAME ) );
+        List<Tuple2<Label, String>> labelPropertyPairsToIndex = new ArrayList<Tuple2<Label, String>>();
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.TAG, Tag.NAME ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.PERSON, Person.ID ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.PERSON, Person.FIRST_NAME ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.PERSON, Person.LAST_NAME ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.PLACE, Place.NAME ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Place.Type.CITY, Place.NAME ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Place.Type.COUNTRY, Place.NAME ) );
         return labelPropertyPairsToIndex;
     }
 
     public static Set<Label> labelsToIndex()
     {
         Set<Label> labelsToIndex = new HashSet<Label>();
-        for ( Pair<Label, String> labelPropertyPair : labelPropertyPairsToIndex() )
+        for ( Tuple2<Label, String> labelPropertyPair : labelPropertyPairsToIndex() )
         {
             labelsToIndex.add( labelPropertyPair._1() );
         }

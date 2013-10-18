@@ -9,7 +9,7 @@ import java.util.Map;
 import org.neo4j.graphdb.Label;
 import org.neo4j.helpers.collection.MapUtil;
 
-import com.ldbc.driver.util.Pair;
+import com.ldbc.driver.util.Tuple.Tuple2;
 import com.ldbc.socialnet.neo4j.workload.TestGraph.Nodes.Cities;
 import com.ldbc.socialnet.neo4j.workload.TestGraph.Nodes.Comments;
 import com.ldbc.socialnet.neo4j.workload.TestGraph.Nodes.Companies;
@@ -689,7 +689,7 @@ public class TestGraph
         public static Iterable<String> createIndexQueries()
         {
             List<String> createIndexQueries = new ArrayList<String>();
-            for ( Pair<Label, String> labelAndProperty : Domain.labelPropertyPairsToIndex() )
+            for ( Tuple2<Label, String> labelAndProperty : Domain.labelPropertyPairsToIndex() )
             {
                 createIndexQueries.add( "CREATE INDEX ON :" + labelAndProperty._1() + "(" + labelAndProperty._2() + ")" );
             }
