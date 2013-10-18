@@ -319,6 +319,10 @@ public class QueryPerformanceTest
         long runtimeMin = Long.MAX_VALUE;
         long runtimeMax = Long.MIN_VALUE;
 
+        /*
+        MAVEN_OPTS="-server -XX:+UseConcMarkSweepGC -Xmx512m" mvn exec:java -Dexec.mainClass=com.ldbc.driver.Client -Dexec.arguments="-db,com.ldbc.socialnet.workload.neo4j.Neo4jDb,-w,com.ldbc.socialnet.workload.LdbcInteractiveWorkload,-oc,10,-rc,-1,-tc,1,-s,-tu,MILLISECONDS,-p,neo4j.path=db/,-p,neo4j.dbtype=embedded"
+         */
+
         Iterator<?> result = null;
 
         for ( int i = 0; i < iterations; i++ )
