@@ -2,10 +2,10 @@ package com.ldbc.socialnet.workload.neo4j.traversal;
 
 import java.util.ArrayList;
 
-import org.neo4j.cypher.internal.symbols.RelationshipType;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.PathExpander;
 import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.traversal.BranchState;
 
 import com.ldbc.driver.util.Function1;
