@@ -37,14 +37,14 @@ public class LdbcTraversers_OLD
             public Iterable<Relationship> apply( Path from )
             {
                 Node endNode = from.endNode();
-                if ( false == endNode.hasLabel( Domain.Organisation.Type.UNIVERSITY ) ) return Collections.emptyList();
+                if ( false == endNode.hasLabel( Domain.Organisation.Type.University ) ) return Collections.emptyList();
                 return Iterables.filter( endNode.getRelationships( Domain.Rel.IS_LOCATED_IN, Direction.OUTGOING ),
                         new Predicate<Relationship>()
                         {
                             @Override
                             public boolean apply( Relationship input )
                             {
-                                return input.getEndNode().hasLabel( Domain.Place.Type.CITY );
+                                return input.getEndNode().hasLabel( Domain.Place.Type.City );
                             }
                         } );
             }
@@ -71,14 +71,14 @@ public class LdbcTraversers_OLD
             public Iterable<Relationship> apply( Path from )
             {
                 Node endNode = from.endNode();
-                if ( false == endNode.hasLabel( Domain.Organisation.Type.COMPANY ) ) return Collections.emptyList();
+                if ( false == endNode.hasLabel( Domain.Organisation.Type.Company ) ) return Collections.emptyList();
                 return Iterables.filter( endNode.getRelationships( Domain.Rel.IS_LOCATED_IN, Direction.OUTGOING ),
                         new Predicate<Relationship>()
                         {
                             @Override
                             public boolean apply( Relationship input )
                             {
-                                return input.getEndNode().hasLabel( Domain.Place.Type.COUNTRY );
+                                return input.getEndNode().hasLabel( Domain.Place.Type.Country );
                             }
                         } );
             }
@@ -109,7 +109,7 @@ public class LdbcTraversers_OLD
             public Iterable<Relationship> apply( Path from )
             {
                 Node endNode = from.endNode();
-                if ( false == endNode.hasLabel( Domain.Node.PERSON ) ) return Collections.emptyList();
+                if ( false == endNode.hasLabel( Domain.Node.Person ) ) return Collections.emptyList();
                 return endNode.getRelationships( Domain.Rel.HAS_CREATOR, Direction.INCOMING );
             }
         };
@@ -119,7 +119,7 @@ public class LdbcTraversers_OLD
             public Iterable<Relationship> apply( Path from )
             {
                 Node endNode = from.endNode();
-                if ( false == endNode.hasLabel( Domain.Node.POST ) ) return Collections.emptyList();
+                if ( false == endNode.hasLabel( Domain.Node.Post ) ) return Collections.emptyList();
                 long creationDate = (long) endNode.getProperty( Domain.Post.CREATION_DATE );
                 if ( creationDate < minDate || maxDate < creationDate ) return Collections.emptyList();
                 return Iterables.filter( endNode.getRelationships( Domain.Rel.HAS_TAG, Direction.OUTGOING ),
@@ -128,7 +128,7 @@ public class LdbcTraversers_OLD
                             @Override
                             public boolean apply( Relationship input )
                             {
-                                return input.getEndNode().hasLabel( Domain.Node.TAG );
+                                return input.getEndNode().hasLabel( Domain.Node.Tag );
                             }
                         } );
             }
@@ -175,7 +175,7 @@ public class LdbcTraversers_OLD
             public Iterable<Relationship> apply( Path from )
             {
                 Node endNode = from.endNode();
-                if ( false == endNode.hasLabel( Domain.Node.POST ) ) return Collections.emptyList();
+                if ( false == endNode.hasLabel( Domain.Node.Post ) ) return Collections.emptyList();
                 long creationDate = (long) endNode.getProperty( Domain.Post.CREATION_DATE );
                 if ( creationDate < minDate || maxDate < creationDate ) return Collections.emptyList();
                 return Iterables.filter( endNode.getRelationships( Domain.Rel.IS_LOCATED_IN, Direction.OUTGOING ),
@@ -185,7 +185,7 @@ public class LdbcTraversers_OLD
                             public boolean apply( Relationship input )
                             {
                                 Node endNode = input.getEndNode();
-                                if ( false == endNode.hasLabel( Domain.Place.Type.COUNTRY ) ) return false;
+                                if ( false == endNode.hasLabel( Domain.Place.Type.Country ) ) return false;
                                 String countryName = (String) endNode.getProperty( Domain.Place.NAME );
                                 return countryName.equals( countryX );
                             }

@@ -199,9 +199,12 @@ public class LdbcSocialNeworkNeo4jImporter
                 TimeUnit.MILLISECONDS.toSeconds( runtime )
                         - TimeUnit.MINUTES.toSeconds( TimeUnit.MILLISECONDS.toMinutes( runtime ) ) ) );
 
-        logger.info( "Graph Metrics:" );
-        logger.info( "\tNode count = " + GraphUtils.nodeCount( db, 10000000 ) );
-        logger.info( "\tRelationship count = " + GraphUtils.relationshipCount( db, 10000000 ) );
+        // TODO move elsewhere?
+        // logger.info( "Graph Metrics:" );
+        // logger.info( "\tNode count = " + GraphUtils.nodeCount( db, 10000000 )
+        // );
+        // logger.info( "\tRelationship count = " +
+        // GraphUtils.relationshipCount( db, 10000000 ) );
 
         db.shutdown();
     }

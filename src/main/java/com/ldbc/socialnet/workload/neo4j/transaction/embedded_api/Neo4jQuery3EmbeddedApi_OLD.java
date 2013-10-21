@@ -50,7 +50,7 @@ public class Neo4jQuery3EmbeddedApi_OLD implements Neo4jQuery3
         RETURN friendName, xCount, yCount, xCount + yCount AS xyCount
         ORDER BY xyCount DESC
          */
-        Iterator<Node> personIterator = db.findNodesByLabelAndProperty( Domain.Node.PERSON, Domain.Person.ID,
+        Iterator<Node> personIterator = db.findNodesByLabelAndProperty( Domain.Node.Person, Domain.Person.ID,
                 operation.personId() ).iterator();
         if ( false == personIterator.hasNext() ) return Iterators.emptyIterator();
         final Node person = personIterator.next();

@@ -48,22 +48,22 @@ public class Neo4jQuery7EmbeddedCypher implements Neo4jQuery7
     // TODO complete implementation
     private String query()
     {
-        return "MATCH (person:" + Domain.Node.PERSON + ")-[:" + Domain.Rel.IS_LOCATED_IN + "]->(:"
-               + Domain.Place.Type.CITY + ")-[:" + Domain.Rel.IS_LOCATED_IN + "]->(country:"
-               + Domain.Place.Type.COUNTRY + ")\n"
+        return "MATCH (person:" + Domain.Node.Person + ")-[:" + Domain.Rel.IS_LOCATED_IN + "]->(:"
+               + Domain.Place.Type.City + ")-[:" + Domain.Rel.IS_LOCATED_IN + "]->(country:"
+               + Domain.Place.Type.Country + ")\n"
 
-               + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.ID + ")\n"
+               + "USING INDEX person:" + Domain.Node.Person + "(" + Domain.Person.ID + ")\n"
 
                + "WHERE person." + Domain.Person.ID + "={person_id}\n"
 
                + "WITH person, country\n"
 
-               + "MATCH (person)-[:" + Domain.Rel.KNOWS + "]->(friend:" + Domain.Node.PERSON + ")\n"
+               + "MATCH (person)-[:" + Domain.Rel.KNOWS + "]->(friend:" + Domain.Node.Person + ")\n"
 
                + "WITH friend, country\n"
 
-               + "MATCH (country)<-[:" + Domain.Rel.IS_LOCATED_IN + "]-(post:" + Domain.Node.POST + ")-[:"
-               + Domain.Rel.HAS_TAG + "]->(tag:" + Domain.Node.TAG + ")\n"
+               + "MATCH (country)<-[:" + Domain.Rel.IS_LOCATED_IN + "]-(post:" + Domain.Node.Post + ")-[:"
+               + Domain.Rel.HAS_TAG + "]->(tag:" + Domain.Node.Tag + ")\n"
 
                // + "WHERE NOT((tag)<-[:" + Domain.Rel.HAS_TAG + "]-(:" +
                // Domain.Node.POST + ")-[:"

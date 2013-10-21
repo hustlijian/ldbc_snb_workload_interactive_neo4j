@@ -24,9 +24,9 @@ public class LdbcTraversers
         Step step1 = new Step( Filters.node(), Filters.relationship().hasType( Domain.Rel.STUDY_AT ).hasDirection(
                 Direction.OUTGOING ), Filters.node() );
 
-        Step step2 = new Step( Filters.node().hasLabel( Domain.Organisation.Type.UNIVERSITY ),
+        Step step2 = new Step( Filters.node().hasLabel( Domain.Organisation.Type.University ),
                 Filters.relationship().hasType( Domain.Rel.IS_LOCATED_IN ).hasDirection( Direction.OUTGOING ),
-                Filters.node().hasLabel( Domain.Place.Type.CITY ) );
+                Filters.node().hasLabel( Domain.Place.Type.City ) );
 
         return Traversal.description().uniqueness( Uniqueness.NONE ).breadthFirst().evaluator( Evaluators.atDepth( 2 ) ).expand(
                 new StepsExpander( step1, step2 ) );
@@ -39,9 +39,9 @@ public class LdbcTraversers
         Step step1 = new Step( Filters.node(), Filters.relationship().hasType( Domain.Rel.WORKS_AT ).hasDirection(
                 Direction.OUTGOING ), Filters.node() );
 
-        Step step2 = new Step( Filters.node().hasLabel( Domain.Organisation.Type.COMPANY ),
+        Step step2 = new Step( Filters.node().hasLabel( Domain.Organisation.Type.Company ),
                 Filters.relationship().hasType( Domain.Rel.IS_LOCATED_IN ).hasDirection( Direction.OUTGOING ),
-                Filters.node().hasLabel( Domain.Place.Type.COUNTRY ) );
+                Filters.node().hasLabel( Domain.Place.Type.Country ) );
 
         return Traversal.description().uniqueness( Uniqueness.NONE ).breadthFirst().evaluator( Evaluators.atDepth( 2 ) ).expand(
                 new StepsExpander( step1, step2 ) );
@@ -57,7 +57,7 @@ public class LdbcTraversers
     {
         Step step1 = new Step( Filters.node(), Filters.relationship().hasType( Domain.Rel.KNOWS ), Filters.node() );
 
-        Step step2 = new Step( Filters.node().hasLabel( Domain.Node.PERSON ), Filters.relationship().hasType(
+        Step step2 = new Step( Filters.node().hasLabel( Domain.Node.Person ), Filters.relationship().hasType(
                 Domain.Rel.HAS_CREATOR ).hasDirection( Direction.INCOMING ), Filters.node() );
 
         // TODO number range
@@ -70,9 +70,9 @@ public class LdbcTraversers
                 return ( creationDate >= minDate && maxDate >= creationDate );
             }
         };
-        Step step3 = new Step( Filters.node().hasLabel( Domain.Node.POST ).conformsTo( creationDateCheck ),
+        Step step3 = new Step( Filters.node().hasLabel( Domain.Node.Post ).conformsTo( creationDateCheck ),
                 Filters.relationship().hasType( Domain.Rel.HAS_TAG ).hasDirection( Direction.OUTGOING ),
-                Filters.node().hasLabel( Domain.Node.TAG ) );
+                Filters.node().hasLabel( Domain.Node.Tag ) );
 
         return Traversal.description().uniqueness( Uniqueness.NONE ).breadthFirst().evaluator( Evaluators.atDepth( 3 ) ).expand(
                 new StepsExpander( step1, step2, step3 ) );
@@ -109,9 +109,9 @@ public class LdbcTraversers
                 return ( creationDate >= minDate && maxDate >= creationDate );
             }
         };
-        Step step2 = new Step( Filters.node().hasLabel( Domain.Node.POST ).conformsTo( creationDateCheck ),
+        Step step2 = new Step( Filters.node().hasLabel( Domain.Node.Post ).conformsTo( creationDateCheck ),
                 Filters.relationship().hasType( Domain.Rel.IS_LOCATED_IN ).hasDirection( Direction.OUTGOING ),
-                Filters.node().hasLabel( Domain.Place.Type.COUNTRY ).propertyEquals( Domain.Place.NAME, countryX ) );
+                Filters.node().hasLabel( Domain.Place.Type.Country ).propertyEquals( Domain.Place.NAME, countryX ) );
 
         return Traversal.description().uniqueness( Uniqueness.NONE ).breadthFirst().evaluator( Evaluators.atDepth( 2 ) ).expand(
                 new StepsExpander( step1, step2 ) );

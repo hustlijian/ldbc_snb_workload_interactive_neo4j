@@ -38,7 +38,7 @@ public class Neo4jQuery1EmbeddedApi_OLD implements Neo4jQuery1
         Persons are returned (e.g. as for a search page with top 10 shown), 
         and the information is complemented with summaries of the persons' workplaces, places of study, etc.
          */
-        List<Node> firstNamePersons = Utils.iteratorToList( db.findNodesByLabelAndProperty( Domain.Node.PERSON,
+        List<Node> firstNamePersons = Utils.iteratorToList( db.findNodesByLabelAndProperty( Domain.Node.Person,
                 Domain.Person.FIRST_NAME, params.firstName() ).iterator() );
         Collections.sort( firstNamePersons, new LastNameComparator() );
         return new ResultIterator( firstNamePersons.iterator() );

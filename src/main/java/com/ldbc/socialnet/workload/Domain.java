@@ -15,13 +15,13 @@ public class Domain
     public static Iterable<Tuple2<Label, String>> labelPropertyPairsToIndex()
     {
         List<Tuple2<Label, String>> labelPropertyPairsToIndex = new ArrayList<Tuple2<Label, String>>();
-        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.TAG, Tag.NAME ) );
-        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.PERSON, Person.ID ) );
-        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.PERSON, Person.FIRST_NAME ) );
-        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.PERSON, Person.LAST_NAME ) );
-        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.PLACE, Place.NAME ) );
-        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Place.Type.CITY, Place.NAME ) );
-        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Place.Type.COUNTRY, Place.NAME ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.Tag, Tag.NAME ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.Person, Person.ID ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.Person, Person.FIRST_NAME ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.Person, Person.LAST_NAME ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.Place, Place.NAME ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Place.Type.City, Place.NAME ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Place.Type.Country, Place.NAME ) );
         return labelPropertyPairsToIndex;
     }
 
@@ -58,16 +58,15 @@ public class Domain
 
     public enum Node implements Label
     {
-        COMMENT,
-        POST,
-        PERSON,
-        FORUM,
-        TAG,
-        TAG_CLASS,
-        ORGANISATION,
-        LANGUAGE,
-        PLACE,
-        EMAIL_ADDRESS
+        Comment,
+        Post,
+        Person,
+        Forum,
+        Tag,
+        TagClass,
+        Organisation,
+        Place,
+        EmailAddress
     }
 
     /*
@@ -102,7 +101,7 @@ public class Domain
         public static final String CREATION_DATE = "creationDate";
         public static final String LOCATION_IP = "locationIP";
         public static final String BROWSER_USED = "browserUsed";
-        public static final String LANGUAGES = "language";
+        public static final String LANGUAGES = "languages";
         public static final String EMAIL_ADDRESSES = "email";
     }
 
@@ -128,8 +127,8 @@ public class Domain
     {
         public enum Type implements Label
         {
-            UNIVERSITY,
-            COMPANY
+            University,
+            Company
         }
 
         public static final String NAME = "name";
@@ -139,9 +138,9 @@ public class Domain
     {
         public enum Type implements Label
         {
-            COUNTRY,
-            CITY,
-            CONTINENT
+            Country,
+            City,
+            Continent
         }
 
         public static final String NAME = "name";

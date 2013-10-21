@@ -26,14 +26,14 @@ public class DoTransactionWorkload
         System.out.println( "Neo4j Configuration:" );
         System.out.println( MapUtils.prettyPrint( Config.NEO4J_RUN_CONFIG ) );
 
-        long operationCount = 300;
+        long operationCount = 10;
         long recordCount = -1;
         int threadCount = 2;
         boolean showStatus = true;
         TimeUnit timeUnit = TimeUnit.MILLISECONDS;
         Map<String, String> userParams = new HashMap<String, String>();
         userParams.put( "neo4j.path", Config.DB_DIR );
-        userParams.put( "neo4j.dbtype", "embedded" );
+        userParams.put( "neo4j.dbtype", "embedded-api" );
         WorkloadParams params = new WorkloadParams( userParams, Neo4jDb.class.getName(),
                 LdbcInteractiveWorkload.class.getName(), operationCount, recordCount, BenchmarkPhase.TRANSACTION_PHASE,
                 threadCount, showStatus, timeUnit );

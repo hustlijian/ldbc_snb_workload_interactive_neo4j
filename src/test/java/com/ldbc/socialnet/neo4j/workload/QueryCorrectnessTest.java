@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
@@ -266,6 +267,7 @@ public abstract class QueryCorrectnessTest
         assertThat( exceptionThrown, is( false ) );
     }
 
+    @Ignore
     @Test
     public void query5ShouldReturnExpectedResult()
     {
@@ -376,6 +378,7 @@ public abstract class QueryCorrectnessTest
         assertThat( exceptionThrown, is( false ) );
     }
 
+    @Ignore
     @Test
     public void query6ShouldReturnExpectedResult()
     {
@@ -438,6 +441,7 @@ public abstract class QueryCorrectnessTest
         assertThat( exceptionThrown, is( false ) );
     }
 
+    @Ignore
     @Test
     public void query7ShouldReturnExpectedResult()
     {

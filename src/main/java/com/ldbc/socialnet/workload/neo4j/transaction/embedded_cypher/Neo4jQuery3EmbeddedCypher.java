@@ -41,28 +41,28 @@ public class Neo4jQuery3EmbeddedCypher implements Neo4jQuery3
     {
         return String.format(
 
-        "MATCH (person:" + Domain.Node.PERSON + ")-[:" + Domain.Rel.KNOWS + "*1..2]-(f:" + Domain.Node.PERSON + ")\n"
+        "MATCH (person:" + Domain.Node.Person + ")-[:" + Domain.Rel.KNOWS + "*1..2]-(f:" + Domain.Node.Person + ")\n"
 
-        + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.ID + ")\n"
+        + "USING INDEX person:" + Domain.Node.Person + "(" + Domain.Person.ID + ")\n"
 
         + "WHERE person." + Domain.Person.ID + "={person_id}\n"
 
         + "WITH DISTINCT f AS friend\n"
 
-        + "MATCH (friend)<-[:" + Domain.Rel.HAS_CREATOR + "]-(postX:" + Domain.Node.POST + ")-[:"
-                + Domain.Rel.IS_LOCATED_IN + "]->(countryX:" + Domain.Place.Type.COUNTRY + ")\n"
+        + "MATCH (friend)<-[:" + Domain.Rel.HAS_CREATOR + "]-(postX:" + Domain.Node.Post + ")-[:"
+                + Domain.Rel.IS_LOCATED_IN + "]->(countryX:" + Domain.Place.Type.Country + ")\n"
 
-                + "USING INDEX countryX:" + Domain.Place.Type.COUNTRY + "(" + Domain.Place.NAME + ")\n"
+                + "USING INDEX countryX:" + Domain.Place.Type.Country + "(" + Domain.Place.NAME + ")\n"
 
                 + "WHERE countryX." + Domain.Place.NAME + "={country_x} AND postX." + Domain.Post.CREATION_DATE
                 + ">={min_date} AND postX." + Domain.Post.CREATION_DATE + "<={max_date}\n"
 
                 + "WITH friend, count(DISTINCT postX) AS xCount\n"
 
-                + "MATCH (friend)<-[:" + Domain.Rel.HAS_CREATOR + "]-(postY:" + Domain.Node.POST + ")-[:"
-                + Domain.Rel.IS_LOCATED_IN + "]->(countryY:" + Domain.Place.Type.COUNTRY + ")\n"
+                + "MATCH (friend)<-[:" + Domain.Rel.HAS_CREATOR + "]-(postY:" + Domain.Node.Post + ")-[:"
+                + Domain.Rel.IS_LOCATED_IN + "]->(countryY:" + Domain.Place.Type.Country + ")\n"
 
-                + "USING INDEX countryY:" + Domain.Place.Type.COUNTRY + "(" + Domain.Place.NAME + ")\n"
+                + "USING INDEX countryY:" + Domain.Place.Type.Country + "(" + Domain.Place.NAME + ")\n"
 
                 + "WHERE countryY." + Domain.Place.NAME + "={country_y} AND postY." + Domain.Post.CREATION_DATE
                 + ">={min_date} AND postY." + Domain.Post.CREATION_DATE + "<={max_date}\n"

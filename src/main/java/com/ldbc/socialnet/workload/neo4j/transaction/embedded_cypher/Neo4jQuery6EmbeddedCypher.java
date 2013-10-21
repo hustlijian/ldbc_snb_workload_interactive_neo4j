@@ -46,19 +46,19 @@ public class Neo4jQuery6EmbeddedCypher implements Neo4jQuery6
 
     private String query()
     {
-        return "MATCH (person:" + Domain.Node.PERSON + ")-[:" + Domain.Rel.KNOWS + "*1..2]-(:" + Domain.Node.PERSON
-               + ")<-[:" + Domain.Rel.HAS_CREATOR + "]-(post:" + Domain.Node.POST + ")-[:" + Domain.Rel.HAS_TAG
-               + "]->(tag:" + Domain.Node.TAG + ")\n"
+        return "MATCH (person:" + Domain.Node.Person + ")-[:" + Domain.Rel.KNOWS + "*1..2]-(:" + Domain.Node.Person
+               + ")<-[:" + Domain.Rel.HAS_CREATOR + "]-(post:" + Domain.Node.Post + ")-[:" + Domain.Rel.HAS_TAG
+               + "]->(tag:" + Domain.Node.Tag + ")\n"
 
-               + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.ID + ")\n"
+               + "USING INDEX person:" + Domain.Node.Person + "(" + Domain.Person.ID + ")\n"
 
-               + "USING INDEX tag:" + Domain.Node.TAG + "(" + Domain.Tag.NAME + ")\n"
+               + "USING INDEX tag:" + Domain.Node.Tag + "(" + Domain.Tag.NAME + ")\n"
 
                + "WHERE person." + Domain.Person.ID + "={person_id} AND tag." + Domain.Tag.NAME + "={tag_name}\n"
 
                + "WITH DISTINCT post\n"
 
-               + "MATCH (post)-[:" + Domain.Rel.HAS_TAG + "]->(tag:" + Domain.Node.TAG + ")\n"
+               + "MATCH (post)-[:" + Domain.Rel.HAS_TAG + "]->(tag:" + Domain.Node.Tag + ")\n"
 
                + "WHERE NOT(tag." + Domain.Tag.NAME + "={tag_name})\n"
 

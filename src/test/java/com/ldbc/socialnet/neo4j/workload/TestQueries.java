@@ -11,9 +11,9 @@ public class TestQueries
     {
         public static final String ID_QUERY_TEMPLATE =
 
-        "MATCH (person:" + Domain.Node.PERSON + ")\n"
+        "MATCH (person:" + Domain.Node.Person + ")\n"
 
-        + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.ID + ")\n"
+        + "USING INDEX person:" + Domain.Node.Person + "(" + Domain.Person.ID + ")\n"
 
         + "WHERE person." + Domain.Person.ID + "={id}\n"
 
@@ -21,9 +21,9 @@ public class TestQueries
 
         public static final String FIRST_NAME_QUERY_TEMPLATE =
 
-        "MATCH (person:" + Domain.Node.PERSON + ")\n"
+        "MATCH (person:" + Domain.Node.Person + ")\n"
 
-        + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.FIRST_NAME + ")\n"
+        + "USING INDEX person:" + Domain.Node.Person + "(" + Domain.Person.FIRST_NAME + ")\n"
 
         + "WHERE person." + Domain.Person.FIRST_NAME + "={first_name} AND person." + Domain.Person.LAST_NAME
                 + "={last_name}\n"
@@ -32,9 +32,9 @@ public class TestQueries
 
         public static final String LAST_NAME_QUERY_TEMPLATE =
 
-        "MATCH (person:" + Domain.Node.PERSON + ")\n"
+        "MATCH (person:" + Domain.Node.Person + ")\n"
 
-        + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.LAST_NAME + ")\n"
+        + "USING INDEX person:" + Domain.Node.Person + "(" + Domain.Person.LAST_NAME + ")\n"
 
         + "WHERE person." + Domain.Person.FIRST_NAME + "={first_name} AND person." + Domain.Person.LAST_NAME
                 + "={last_name}\n"
@@ -55,9 +55,9 @@ public class TestQueries
     {
         public static final String CITY_PLACE_NAME_QUERY_TEMPLATE =
 
-        "MATCH (place:" + Domain.Node.PLACE + ")\n"
+        "MATCH (place:" + Domain.Node.Place + ")\n"
 
-        + "USING INDEX place:" + Domain.Node.PLACE + "(" + Domain.Place.NAME + ")\n"
+        + "USING INDEX place:" + Domain.Node.Place + "(" + Domain.Place.NAME + ")\n"
 
         + "WHERE place." + Domain.Place.NAME + "={city_name}\n"
 
@@ -65,9 +65,9 @@ public class TestQueries
 
         public static final String COUNTRY_PLACE_NAME_QUERY_TEMPLATE =
 
-        "MATCH (place:" + Domain.Node.PLACE + ")\n"
+        "MATCH (place:" + Domain.Node.Place + ")\n"
 
-        + "USING INDEX place:" + Domain.Node.PLACE + "(" + Domain.Place.NAME + ")\n"
+        + "USING INDEX place:" + Domain.Node.Place + "(" + Domain.Place.NAME + ")\n"
 
         + "WHERE place." + Domain.Place.NAME + "={country_name}\n"
 
@@ -75,9 +75,9 @@ public class TestQueries
 
         public static final String CITY_NAME_QUERY_TEMPLATE =
 
-        "MATCH (place:" + Domain.Place.Type.CITY + ")\n"
+        "MATCH (place:" + Domain.Place.Type.City + ")\n"
 
-        + "USING INDEX place:" + Domain.Place.Type.CITY + "(" + Domain.Place.NAME + ")\n"
+        + "USING INDEX place:" + Domain.Place.Type.City + "(" + Domain.Place.NAME + ")\n"
 
         + "WHERE place." + Domain.Place.NAME + "={city_name}\n"
 
@@ -85,9 +85,9 @@ public class TestQueries
 
         public static final String COUNTRY_NAME_QUERY_TEMPLATE =
 
-        "MATCH (place:" + Domain.Place.Type.COUNTRY + ")\n"
+        "MATCH (place:" + Domain.Place.Type.Country + ")\n"
 
-        + "USING INDEX place:" + Domain.Place.Type.COUNTRY + "(" + Domain.Place.NAME + ")\n"
+        + "USING INDEX place:" + Domain.Place.Type.Country + "(" + Domain.Place.NAME + ")\n"
 
         + "WHERE place." + Domain.Place.NAME + "={country_name}\n"
 

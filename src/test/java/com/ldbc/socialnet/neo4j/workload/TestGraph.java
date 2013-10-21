@@ -109,19 +109,19 @@ public class TestGraph
              */
 
             + " (cakesAndPiesForum:"
-                   + Domain.Node.FORUM
+                   + Domain.Node.Forum
                    + " {cakesAndPiesForum}),"
 
                    + " (redditAddictsForum:"
-                   + Domain.Node.FORUM
+                   + Domain.Node.Forum
                    + " {redditAddictsForum}),\n"
 
                    + " (floatingBoatsForum:"
-                   + Domain.Node.FORUM
+                   + Domain.Node.Forum
                    + " {floatingBoatsForum}),"
 
                    + " (kiwisSheepAndBungyJumpingForum:"
-                   + Domain.Node.FORUM
+                   + Domain.Node.Forum
                    + " {kiwisSheepAndBungyJumpingForum}),\n"
 
                    /*
@@ -129,19 +129,19 @@ public class TestGraph
                     */
 
                    + " (cake:"
-                   + Domain.Node.TAG
+                   + Domain.Node.Tag
                    + " {cake}), (pie:"
-                   + Domain.Node.TAG
+                   + Domain.Node.Tag
                    + " {pie}),\n"
 
                    + " (lol:"
-                   + Domain.Node.TAG
+                   + Domain.Node.Tag
                    + " {lol}), (yolo:"
-                   + Domain.Node.TAG
+                   + Domain.Node.Tag
                    + " {yolo}),\n"
 
                    + " (wtf:"
-                   + Domain.Node.TAG
+                   + Domain.Node.Tag
                    + " {wtf}),\n"
 
                    /*
@@ -149,21 +149,21 @@ public class TestGraph
                     */
 
                    + " (alex:"
-                   + Domain.Node.PERSON
+                   + Domain.Node.Person
                    + " {alex}), (aiya:"
-                   + Domain.Node.PERSON
+                   + Domain.Node.Person
                    + " {aiya}),\n"
 
                    + " (jake:"
-                   + Domain.Node.PERSON
+                   + Domain.Node.Person
                    + " {jake}), (peter:"
-                   + Domain.Node.PERSON
+                   + Domain.Node.Person
                    + " {peter}),\n"
 
                    + " (stranger:"
-                   + Domain.Node.PERSON
+                   + Domain.Node.Person
                    + " {stranger}), (nicky:"
-                   + Domain.Node.PERSON
+                   + Domain.Node.Person
                    + " {nicky}),\n"
 
                    /*
@@ -171,27 +171,27 @@ public class TestGraph
                    */
 
                    + " (auckland:"
-                   + Domain.Node.PLACE
+                   + Domain.Node.Place
                    + ":"
-                   + Domain.Place.Type.CITY
+                   + Domain.Place.Type.City
                    + " {auckland}),"
 
                    + " (stockholm:"
-                   + Domain.Node.PLACE
+                   + Domain.Node.Place
                    + ":"
-                   + Domain.Place.Type.CITY
+                   + Domain.Place.Type.City
                    + " {stockholm}),\n"
 
                    + " (munich:"
-                   + Domain.Node.PLACE
+                   + Domain.Node.Place
                    + ":"
-                   + Domain.Place.Type.CITY
+                   + Domain.Place.Type.City
                    + " {munich}),"
 
                    + " (melbourne:"
-                   + Domain.Node.PLACE
+                   + Domain.Node.Place
                    + ":"
-                   + Domain.Place.Type.CITY
+                   + Domain.Place.Type.City
                    + " {melbourne}),\n"
 
                    /*
@@ -199,33 +199,33 @@ public class TestGraph
                    */
 
                    + " (se:"
-                   + Domain.Node.PLACE
+                   + Domain.Node.Place
                    + ":"
-                   + Domain.Place.Type.COUNTRY
+                   + Domain.Place.Type.Country
                    + " {sweden}),"
 
                    + " (nz:"
-                   + Domain.Node.PLACE
+                   + Domain.Node.Place
                    + ":"
-                   + Domain.Place.Type.COUNTRY
+                   + Domain.Place.Type.Country
                    + " {new_zealand}),\n"
 
                    + " (de:"
-                   + Domain.Node.PLACE
+                   + Domain.Node.Place
                    + ":"
-                   + Domain.Place.Type.COUNTRY
+                   + Domain.Place.Type.Country
                    + " {germany}),"
 
                    + " (au:"
-                   + Domain.Node.PLACE
+                   + Domain.Node.Place
                    + ":"
-                   + Domain.Place.Type.COUNTRY
+                   + Domain.Place.Type.Country
                    + " {australia}),\n"
 
                    + " (uk:"
-                   + Domain.Node.PLACE
+                   + Domain.Node.Place
                    + ":"
-                   + Domain.Place.Type.COUNTRY
+                   + Domain.Place.Type.Country
                    + " {england}),\n"
 
                    /*
@@ -233,15 +233,15 @@ public class TestGraph
                    */
 
                    + " (aut:"
-                   + Domain.Node.ORGANISATION
+                   + Domain.Node.Organisation
                    + ":"
-                   + Domain.Organisation.Type.UNIVERSITY
+                   + Domain.Organisation.Type.University
                    + " {aut}),"
 
                    + " (kth:"
-                   + Domain.Node.ORGANISATION
+                   + Domain.Node.Organisation
                    + ":"
-                   + Domain.Organisation.Type.UNIVERSITY
+                   + Domain.Organisation.Type.University
                    + " {kth}),\n"
 
                    /*
@@ -249,21 +249,21 @@ public class TestGraph
                    */
 
                    + " (sics:"
-                   + Domain.Node.ORGANISATION
+                   + Domain.Node.Organisation
                    + ":"
-                   + Domain.Organisation.Type.COMPANY
+                   + Domain.Organisation.Type.Company
                    + " {sics}),"
 
                    + " (neo:"
-                   + Domain.Node.ORGANISATION
+                   + Domain.Node.Organisation
                    + ":"
-                   + Domain.Organisation.Type.COMPANY
+                   + Domain.Organisation.Type.Company
                    + " {neo}),"
 
                    + " (hot:"
-                   + Domain.Node.ORGANISATION
+                   + Domain.Node.Organisation
                    + ":"
-                   + Domain.Organisation.Type.COMPANY
+                   + Domain.Organisation.Type.Company
                    + " {hot}),\n"
 
                    /*
@@ -271,60 +271,60 @@ public class TestGraph
                    */
 
                    + " (jakePost1:"
-                   + Domain.Node.POST
+                   + Domain.Node.Post
                    + " {jakePost1}), (jakePost2:"
-                   + Domain.Node.POST
+                   + Domain.Node.Post
                    + " {jakePost2}),"
 
                    + " (jakePost3:"
-                   + Domain.Node.POST
+                   + Domain.Node.Post
                    + " {jakePost3}),\n"
 
                    + " (peterPost1:"
-                   + Domain.Node.POST
+                   + Domain.Node.Post
                    + " {peterPost1}), (aiyaPost1:"
-                   + Domain.Node.POST
+                   + Domain.Node.Post
                    + " {aiyaPost1}),"
 
                    + " (aiyaPost2:"
-                   + Domain.Node.POST
+                   + Domain.Node.Post
                    + " {aiyaPost2}), (aiyaPost3:"
-                   + Domain.Node.POST
+                   + Domain.Node.Post
                    + " {aiyaPost3}),\n"
 
                    + " (strangerPost1:"
-                   + Domain.Node.POST
+                   + Domain.Node.Post
                    + " {strangerPost1}),"
 
                    + " (strangerPost2:"
-                   + Domain.Node.POST
+                   + Domain.Node.Post
                    + " {strangerPost2}),\n"
 
                    + " (nickyPost1:"
-                   + Domain.Node.POST
+                   + Domain.Node.Post
                    + " {nickyPost1}),\n"
 
                    /*
                    * Comments
                    */
                    + " (aiyaComment1:"
-                   + Domain.Node.COMMENT
+                   + Domain.Node.Comment
                    + " {aiyaComment1}),"
 
                    + " (aiyaComment2:"
-                   + Domain.Node.COMMENT
+                   + Domain.Node.Comment
                    + " {aiyaComment2}),\n"
 
                    + " (strangerComment1:"
-                   + Domain.Node.COMMENT
+                   + Domain.Node.Comment
                    + " {strangerComment1}),"
 
                    + " (jakeComment1:"
-                   + Domain.Node.COMMENT
+                   + Domain.Node.Comment
                    + " {jakeComment1}),"
 
                    + " (alexComment1:"
-                   + Domain.Node.COMMENT
+                   + Domain.Node.Comment
                    + " {alexComment1}),\n"
 
                    + "\n// --- RELATIONSHIPS ---\n\n"

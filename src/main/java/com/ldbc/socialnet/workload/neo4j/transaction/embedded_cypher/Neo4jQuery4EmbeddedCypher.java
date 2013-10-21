@@ -49,22 +49,22 @@ public class Neo4jQuery4EmbeddedCypher implements Neo4jQuery4
     {
         return String.format(
 
-        "MATCH (person:" + Domain.Node.PERSON + ")-[:" + Domain.Rel.KNOWS + "]-(friend:" + Domain.Node.PERSON + ")\n"
+        "MATCH (person:" + Domain.Node.Person + ")-[:" + Domain.Rel.KNOWS + "]-(friend:" + Domain.Node.Person + ")\n"
 
-        + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.ID + ")\n"
+        + "USING INDEX person:" + Domain.Node.Person + "(" + Domain.Person.ID + ")\n"
 
         + "WHERE person." + Domain.Person.ID + "={person_id}\n"
 
         + "WITH friend\n"
 
-        + "MATCH (friend)<-[:" + Domain.Rel.HAS_CREATOR + "]-(post:" + Domain.Node.POST + ")\n"
+        + "MATCH (friend)<-[:" + Domain.Rel.HAS_CREATOR + "]-(post:" + Domain.Node.Post + ")\n"
 
         + "WHERE post." + Domain.Post.CREATION_DATE + ">={min_date} AND post." + Domain.Post.CREATION_DATE
                 + "<={max_date}\n"
 
                 + "WITH post\n"
 
-                + "MATCH (post)-[" + Domain.Rel.HAS_TAG + "]->(tag:" + Domain.Node.TAG + ")\n"
+                + "MATCH (post)-[" + Domain.Rel.HAS_TAG + "]->(tag:" + Domain.Node.Tag + ")\n"
 
                 + "WITH DISTINCT tag, collect(tag) AS tags\n"
 

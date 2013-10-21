@@ -56,9 +56,9 @@ public class Neo4jQuery1EmbeddedCypher implements Neo4jQuery1
     {
         return String.format(
 
-        "MATCH (person:" + Domain.Node.PERSON + ")\n"
+        "MATCH (person:" + Domain.Node.Person + ")\n"
 
-        + "USING INDEX person:" + Domain.Node.PERSON + "(" + Domain.Person.FIRST_NAME + ")\n"
+        + "USING INDEX person:" + Domain.Node.Person + "(" + Domain.Person.FIRST_NAME + ")\n"
 
         + "WHERE person." + Domain.Person.FIRST_NAME + "={ person_first_name }\n"
 
@@ -68,21 +68,21 @@ public class Neo4jQuery1EmbeddedCypher implements Neo4jQuery1
 
         + "LIMIT {limit}\n"
 
-        + "MATCH (person)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(personCity:" + Domain.Node.PLACE + ":"
-                + Domain.Place.Type.CITY + ")\n"
+        + "MATCH (person)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(personCity:" + Domain.Node.Place + ":"
+                + Domain.Place.Type.City + ")\n"
 
                 + "WITH person, personCity\n"
 
-                + "MATCH (uniCity:" + Domain.Place.Type.CITY + ")<-[:" + Domain.Rel.IS_LOCATED_IN + "]-(uni:"
-                + Domain.Organisation.Type.UNIVERSITY + ")<-[studyAt:" + Domain.Rel.STUDY_AT + "]-(person)\n"
+                + "MATCH (uniCity:" + Domain.Place.Type.City + ")<-[:" + Domain.Rel.IS_LOCATED_IN + "]-(uni:"
+                + Domain.Organisation.Type.University + ")<-[studyAt:" + Domain.Rel.STUDY_AT + "]-(person)\n"
 
                 + "WITH collect(DISTINCT (uni." + Domain.Organisation.NAME + " + ', ' + uniCity." + Domain.Place.NAME
                 + "+ '(' + studyAt." + Domain.StudiesAt.CLASS_YEAR + " + ')')) AS unis,\n"
 
                 + "  person, personCity\n"
 
-                + "MATCH (companyCountry:" + Domain.Node.PLACE + ":" + Domain.Place.Type.COUNTRY + ")<-[:"
-                + Domain.Rel.IS_LOCATED_IN + "]-(company:" + Domain.Organisation.Type.COMPANY + ")<-[worksAt:"
+                + "MATCH (companyCountry:" + Domain.Node.Place + ":" + Domain.Place.Type.Country + ")<-[:"
+                + Domain.Rel.IS_LOCATED_IN + "]-(company:" + Domain.Organisation.Type.Company + ")<-[worksAt:"
                 + Domain.Rel.WORKS_AT + "]-(person)\n"
 
                 + "WITH collect(DISTINCT (company." + Domain.Organisation.NAME + " + ', ' + companyCountry."

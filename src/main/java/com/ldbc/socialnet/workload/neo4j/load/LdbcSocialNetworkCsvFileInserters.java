@@ -362,7 +362,7 @@ public class LdbcSocialNetworkCsvFileInserters
                 properties.put( Domain.Comment.LOCATION_IP, columnValues[2] );
                 properties.put( Domain.Comment.BROWSER_USED, columnValues[3] );
                 properties.put( Domain.Comment.CONTENT, columnValues[4] );
-                long commentNodeId = batchInserter.createNode( properties, Domain.Node.COMMENT );
+                long commentNodeId = batchInserter.createNode( properties, Domain.Node.Comment );
                 commentsIndex.put( id, commentNodeId );
             }
         } );
@@ -403,7 +403,7 @@ public class LdbcSocialNetworkCsvFileInserters
                 properties.put( Domain.Post.BROWSER_USED, columnValues[4] );
                 properties.put( Domain.Post.LANGUAGE, columnValues[5] );
                 properties.put( Domain.Post.CONTENT, columnValues[6] );
-                long postNodeId = batchInserter.createNode( properties, Domain.Node.POST );
+                long postNodeId = batchInserter.createNode( properties, Domain.Node.Post );
                 postsIndex.put( id, postNodeId );
             }
         } );
@@ -456,7 +456,9 @@ public class LdbcSocialNetworkCsvFileInserters
                 }
                 properties.put( Domain.Person.LOCATION_IP, columnValues[6] );
                 properties.put( Domain.Person.BROWSER_USED, columnValues[7] );
-                long personNodeId = batchInserter.createNode( properties, Domain.Node.PERSON );
+                properties.put( Domain.Person.EMAIL_ADDRESSES, new String[0] );
+                properties.put( Domain.Person.LANGUAGES, new String[0] );
+                long personNodeId = batchInserter.createNode( properties, Domain.Node.Person );
                 personsIndex.put( id, personNodeId );
             }
         } );
@@ -492,7 +494,7 @@ public class LdbcSocialNetworkCsvFileInserters
                     logger.error( String.format( "Invalid DateTime string: %s\nSet creationDate to now instead\n%s",
                             creationDateString, e ) );
                 }
-                long forumNodeId = batchInserter.createNode( properties, Domain.Node.FORUM );
+                long forumNodeId = batchInserter.createNode( properties, Domain.Node.Forum );
                 forumIndex.put( id, forumNodeId );
             }
         } );
@@ -516,7 +518,7 @@ public class LdbcSocialNetworkCsvFileInserters
                 // properties.put( "id", id );
                 properties.put( Domain.Tag.NAME, columnValues[1] );
                 properties.put( Domain.Tag.URL, columnValues[2] );
-                long tagNodeId = batchInserter.createNode( properties, Domain.Node.TAG );
+                long tagNodeId = batchInserter.createNode( properties, Domain.Node.Tag );
                 tagIndex.put( id, tagNodeId );
             }
         } );
@@ -540,7 +542,7 @@ public class LdbcSocialNetworkCsvFileInserters
                 // properties.put( "id", id );
                 properties.put( Domain.TagClass.NAME, columnValues[1] );
                 properties.put( Domain.TagClass.URL, columnValues[2] );
-                long tagClassNodeId = batchInserter.createNode( properties, Domain.Node.TAG_CLASS );
+                long tagClassNodeId = batchInserter.createNode( properties, Domain.Node.TagClass );
                 tagClassesIndex.put( id, tagClassNodeId );
             }
         } );
@@ -565,10 +567,20 @@ public class LdbcSocialNetworkCsvFileInserters
                 properties.put( Domain.Organisation.NAME, columnValues[2] );
                 // TODO only necessary if connecting to dbpedia
                 // properties.put( "url", columnValues[3] );
-                long organisationNodeId = batchInserter.createNode( properties, Domain.Node.ORGANISATION,
-                        Domain.Organisation.Type.valueOf( ( (String) columnValues[1] ).toUpperCase() ) );
+                long organisationNodeId = batchInserter.createNode( properties, Domain.Node.Organisation,
+                        stringToOrganisationType( (String) columnValues[1] ) );
                 organisationsIndex.put( id, organisationNodeId );
             }
+
+            Domain.Organisation.Type stringToOrganisationType( String organisationTypeString )
+            {
+                if ( organisationTypeString.toLowerCase().equals( "university" ) )
+                    return Domain.Organisation.Type.University;
+                if ( organisationTypeString.toLowerCase().equals( "company" ) )
+                    return Domain.Organisation.Type.Company;
+                throw new RuntimeException( "Unknown organisation type: " + organisationTypeString );
+            }
+
         } );
     }
 
@@ -590,9 +602,17 @@ public class LdbcSocialNetworkCsvFileInserters
                 // properties.put( "id", id );
                 properties.put( Domain.Place.NAME, columnValues[1] );
                 properties.put( Domain.Place.URL, columnValues[2] );
-                Domain.Place.Type placeType = Domain.Place.Type.valueOf( ( (String) columnValues[3] ).toUpperCase() );
-                long placeNodeId = batchInserter.createNode( properties, Domain.Node.PLACE, placeType );
+                Domain.Place.Type placeType = stringToPlaceType( (String) columnValues[3] );
+                long placeNodeId = batchInserter.createNode( properties, Domain.Node.Place, placeType );
                 placeIndex.put( id, placeNodeId );
+            }
+
+            Domain.Place.Type stringToPlaceType( String placeTypeString )
+            {
+                if ( placeTypeString.toLowerCase().equals( "city" ) ) return Domain.Place.Type.City;
+                if ( placeTypeString.toLowerCase().equals( "country" ) ) return Domain.Place.Type.Country;
+                if ( placeTypeString.toLowerCase().equals( "continent" ) ) return Domain.Place.Type.Continent;
+                throw new RuntimeException( "Unknown place type: " + placeTypeString );
             }
         } );
     }

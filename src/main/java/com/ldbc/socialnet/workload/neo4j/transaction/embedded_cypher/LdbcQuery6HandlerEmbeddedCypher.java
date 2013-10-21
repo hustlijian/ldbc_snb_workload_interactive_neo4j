@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Transaction;
 
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.OperationHandler;
@@ -29,9 +30,10 @@ public class LdbcQuery6HandlerEmbeddedCypher extends OperationHandler<LdbcQuery6
 
         // TODO find way to do this
         int resultCode = 0;
-        try
+        try (Transaction tx = db.beginTx())
         {
             result = Utils.iteratorToList( query6.execute( db, engine, operation ) );
+            tx.success();
         }
         catch ( Exception e )
         {
