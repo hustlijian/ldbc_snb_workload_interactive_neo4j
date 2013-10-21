@@ -19,7 +19,7 @@ import com.ldbc.socialnet.workload.LdbcQuery3Result;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery3;
 import com.ldbc.socialnet.workload.neo4j.traversal.TraversalUtils;
 
-public class Neo4jQuery3EmbeddedApi implements Neo4jQuery3
+public class Neo4jQuery3EmbeddedApi_OLD implements Neo4jQuery3
 {
     @Override
     public String description()
@@ -55,7 +55,7 @@ public class Neo4jQuery3EmbeddedApi implements Neo4jQuery3
         if ( false == personIterator.hasNext() ) return Iterators.emptyIterator();
         final Node person = personIterator.next();
 
-        Iterator<Node> friendsWithPerson = TraversalUtils.distinct( LdbcTraversers.friendsAndFriendsOfFriends().traverse(
+        Iterator<Node> friendsWithPerson = TraversalUtils.distinct( LdbcTraversers_OLD.friendsAndFriendsOfFriends().traverse(
                 person ).nodes().iterator() );
         Iterator<Node> friends = Iterators.filter( TraversalUtils.distinct( friendsWithPerson ), new Predicate<Node>()
         {
@@ -72,9 +72,9 @@ public class Neo4jQuery3EmbeddedApi implements Neo4jQuery3
                     @Override
                     public LdbcQuery3Result apply( Node friend )
                     {
-                        int countryXPostCount = Iterators.size( LdbcTraversers.postsInCountry( operation.countryX(),
+                        int countryXPostCount = Iterators.size( LdbcTraversers_OLD.postsInCountry( operation.countryX(),
                                 operation.startDateAsMilli(), operation.endDateAsMilli() ).traverse( friend ).iterator() );
-                        int countryYPostCount = Iterators.size( LdbcTraversers.postsInCountry( operation.countryY(),
+                        int countryYPostCount = Iterators.size( LdbcTraversers_OLD.postsInCountry( operation.countryY(),
                                 operation.startDateAsMilli(), operation.endDateAsMilli() ).traverse( friend ).iterator() );
                         String friendName = friend.getProperty( Domain.Person.FIRST_NAME ) + " "
                                             + friend.getProperty( Domain.Person.LAST_NAME );

@@ -21,6 +21,7 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.helpers.collection.IteratorUtil;
 import org.neo4j.kernel.impl.util.FileUtils;
 
+import com.google.common.collect.Lists;
 import com.ldbc.driver.util.MapUtils;
 import com.ldbc.socialnet.workload.LdbcQuery1;
 import com.ldbc.socialnet.workload.LdbcQuery1Result;
@@ -59,9 +60,10 @@ public abstract class QueryCorrectnessTest
         engine = new ExecutionEngine( db );
 
         // TODO uncomment to print CREATE
-        System.out.println();
-        System.out.println( MapUtils.prettyPrint( TestGraph.Creator.createGraphQueryParams() ) );
-        System.out.println( TestGraph.Creator.createGraphQuery() );
+        // System.out.println();
+        // System.out.println( MapUtils.prettyPrint(
+        // TestGraph.Creator.createGraphQueryParams() ) );
+        // System.out.println( TestGraph.Creator.createGraphQuery() );
 
         buildGraph( engine, db );
         db.shutdown();
@@ -121,7 +123,7 @@ public abstract class QueryCorrectnessTest
         Neo4jQuery1 query1 = neo4jQuery1Impl();
 
         // TODO uncomment to print query
-        System.out.println( "\n" + operation1.toString() + "\n" + query1.description() + "\n\n" );
+        System.out.println( operation1.toString() + "\n" + query1.description() + "\n" );
 
         boolean exceptionThrown = false;
         try (Transaction tx = db.beginTx())
@@ -175,7 +177,7 @@ public abstract class QueryCorrectnessTest
         Neo4jQuery3 query3 = neo4jQuery3Impl();
 
         // TODO uncomment to print query
-        System.out.println( "\n" + operation3.toString() + "\n" + query3.description() + "\n\n" );
+        System.out.println( operation3.toString() + "\n" + query3.description() + "\n" );
 
         boolean exceptionThrown = false;
         try (Transaction tx = db.beginTx())
@@ -227,7 +229,7 @@ public abstract class QueryCorrectnessTest
         Neo4jQuery4 query4 = neo4jQuery4Impl();
 
         // TODO uncomment to print query
-        System.out.println( "\n" + query4.description() + "\n\n" );
+        System.out.println( operation4.toString() + "\n" + query4.description() + "\n" );
 
         boolean exceptionThrown = false;
         try (Transaction tx = db.beginTx())
@@ -346,7 +348,7 @@ public abstract class QueryCorrectnessTest
         Neo4jQuery5 query5 = neo4jQuery5Impl();
 
         // TODO uncomment to print query
-        System.out.println( "\n" + query5.description() + "\n\n" );
+        System.out.println( operation5.toString() + "\n" + query5.description() + "\n" );
 
         boolean exceptionThrown = false;
         try (Transaction tx = db.beginTx())
@@ -399,7 +401,7 @@ public abstract class QueryCorrectnessTest
         Neo4jQuery6 query6 = neo4jQuery6Impl();
 
         // TODO uncomment to print query
-        System.out.println( "\n" + query6.description() + "\n\n" );
+        System.out.println( operation6.toString() + "\n" + query6.description() + "\n" );
 
         boolean exceptionThrown = false;
         try (Transaction tx = db.beginTx())
@@ -450,7 +452,7 @@ public abstract class QueryCorrectnessTest
         Neo4jQuery7 query7 = neo4jQuery7Impl();
 
         // TODO uncomment to print query
-        System.out.println( "\n" + query7.description() + "\n\n" );
+        System.out.println( operation7.toString() + "\n" + query7.description() + "\n" );
 
         boolean exceptionThrown = false;
         try (Transaction tx = db.beginTx())

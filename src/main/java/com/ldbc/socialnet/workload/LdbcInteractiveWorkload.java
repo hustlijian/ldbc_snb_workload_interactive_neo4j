@@ -104,8 +104,8 @@ public class LdbcInteractiveWorkload extends Workload
 
         List<Class<? extends Operation<?>>> operationsToInclude = new ArrayList<Class<? extends Operation<?>>>();
         operationsToInclude.add( LdbcQuery1.class );
-        // operationsToInclude.add( LdbcQuery3.class );
-        // operationsToInclude.add( LdbcQuery4.class );
+        operationsToInclude.add( LdbcQuery3.class );
+        operationsToInclude.add( LdbcQuery4.class );
         // operationsToInclude.add( LdbcQuery5.class );
         // operationsToInclude.add( LdbcQuery6.class );
         Function1<Operation<?>, Boolean> filter = new IncludeOnlyClassesPredicate<Operation<?>>( operationsToInclude );

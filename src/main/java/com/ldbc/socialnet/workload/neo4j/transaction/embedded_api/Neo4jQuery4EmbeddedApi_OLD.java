@@ -21,7 +21,7 @@ import com.ldbc.socialnet.workload.LdbcQuery4Result;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery4;
 import com.ldbc.socialnet.workload.neo4j.traversal.TraversalUtils;
 
-public class Neo4jQuery4EmbeddedApi implements Neo4jQuery4
+public class Neo4jQuery4EmbeddedApi_OLD implements Neo4jQuery4
 {
     @Override
     public String description()
@@ -54,7 +54,7 @@ public class Neo4jQuery4EmbeddedApi implements Neo4jQuery4
         if ( false == personIterator.hasNext() ) return Iterators.emptyIterator();
         Node person = personIterator.next();
         Iterator<String> tagNames = Iterators.transform(
-                LdbcTraversers.friendPostTags( params.startDateAsMilli(), params.endDateAsMilli() ).traverse( person ).nodes().iterator(),
+                LdbcTraversers_OLD.friendPostTags( params.startDateAsMilli(), params.endDateAsMilli() ).traverse( person ).nodes().iterator(),
                 new Function<Node, String>()
                 {
                     @Override

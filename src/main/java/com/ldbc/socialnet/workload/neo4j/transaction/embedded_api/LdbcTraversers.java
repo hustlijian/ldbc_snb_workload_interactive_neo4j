@@ -1,20 +1,19 @@
 package com.ldbc.socialnet.workload.neo4j.transaction.embedded_api;
 
-import java.util.Collections;
-
 import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Path;
-import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.graphdb.traversal.Evaluators;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.kernel.Traversal;
 import org.neo4j.kernel.Uniqueness;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.ldbc.driver.util.Function1;
 import com.ldbc.socialnet.workload.Domain;
+import com.ldbc.socialnet.workload.neo4j.traversal.Filters;
+import com.ldbc.socialnet.workload.neo4j.traversal.PropertyContainerFilterDescriptor.PropertyContainerPredicate;
+import com.ldbc.socialnet.workload.neo4j.traversal.Step;
+import com.ldbc.socialnet.workload.neo4j.traversal.StepsExpander;
 
 public class LdbcTraversers
 {
@@ -22,32 +21,13 @@ public class LdbcTraversers
     // uni.name, uniCity.name(studyAt.classYear)
     public static TraversalDescription personUniversities()
     {
-        Function1<Path, Iterable<Relationship>> step1 = new Function1<Path, Iterable<Relationship>>()
-        {
-            @Override
-            public Iterable<Relationship> apply( Path from )
-            {
-                return from.endNode().getRelationships( Domain.Rel.STUDY_AT, Direction.OUTGOING );
-            }
-        };
-        Function1<Path, Iterable<Relationship>> step2 = new Function1<Path, Iterable<Relationship>>()
-        {
-            @Override
-            public Iterable<Relationship> apply( Path from )
-            {
-                Node endNode = from.endNode();
-                if ( false == endNode.hasLabel( Domain.Organisation.Type.UNIVERSITY ) ) return Collections.emptyList();
-                return Iterables.filter( endNode.getRelationships( Domain.Rel.IS_LOCATED_IN, Direction.OUTGOING ),
-                        new Predicate<Relationship>()
-                        {
-                            @Override
-                            public boolean apply( Relationship input )
-                            {
-                                return input.getEndNode().hasLabel( Domain.Place.Type.CITY );
-                            }
-                        } );
-            }
-        };
+        Step step1 = new Step( Filters.node(), Filters.relationship().hasType( Domain.Rel.STUDY_AT ).hasDirection(
+                Direction.OUTGOING ), Filters.node() );
+
+        Step step2 = new Step( Filters.node().hasLabel( Domain.Organisation.Type.UNIVERSITY ),
+                Filters.relationship().hasType( Domain.Rel.IS_LOCATED_IN ).hasDirection( Direction.OUTGOING ),
+                Filters.node().hasLabel( Domain.Place.Type.CITY ) );
+
         return Traversal.description().uniqueness( Uniqueness.NONE ).breadthFirst().evaluator( Evaluators.atDepth( 2 ) ).expand(
                 new StepsExpander( step1, step2 ) );
     }
@@ -56,32 +36,13 @@ public class LdbcTraversers
     // company.name, companyCountry.name(worksAt.workFrom)
     public static TraversalDescription personCompanies()
     {
-        Function1<Path, Iterable<Relationship>> step1 = new Function1<Path, Iterable<Relationship>>()
-        {
-            @Override
-            public Iterable<Relationship> apply( Path from )
-            {
-                return from.endNode().getRelationships( Domain.Rel.WORKS_AT, Direction.OUTGOING );
-            }
-        };
-        Function1<Path, Iterable<Relationship>> step2 = new Function1<Path, Iterable<Relationship>>()
-        {
-            @Override
-            public Iterable<Relationship> apply( Path from )
-            {
-                Node endNode = from.endNode();
-                if ( false == endNode.hasLabel( Domain.Organisation.Type.COMPANY ) ) return Collections.emptyList();
-                return Iterables.filter( endNode.getRelationships( Domain.Rel.IS_LOCATED_IN, Direction.OUTGOING ),
-                        new Predicate<Relationship>()
-                        {
-                            @Override
-                            public boolean apply( Relationship input )
-                            {
-                                return input.getEndNode().hasLabel( Domain.Place.Type.COUNTRY );
-                            }
-                        } );
-            }
-        };
+        Step step1 = new Step( Filters.node(), Filters.relationship().hasType( Domain.Rel.WORKS_AT ).hasDirection(
+                Direction.OUTGOING ), Filters.node() );
+
+        Step step2 = new Step( Filters.node().hasLabel( Domain.Organisation.Type.COMPANY ),
+                Filters.relationship().hasType( Domain.Rel.IS_LOCATED_IN ).hasDirection( Direction.OUTGOING ),
+                Filters.node().hasLabel( Domain.Place.Type.COUNTRY ) );
+
         return Traversal.description().uniqueness( Uniqueness.NONE ).breadthFirst().evaluator( Evaluators.atDepth( 2 ) ).expand(
                 new StepsExpander( step1, step2 ) );
     }
@@ -94,44 +55,25 @@ public class LdbcTraversers
      */
     public static TraversalDescription friendPostTags( final long minDate, final long maxDate )
     {
-        Function1<Path, Iterable<Relationship>> step1 = new Function1<Path, Iterable<Relationship>>()
+        Step step1 = new Step( Filters.node(), Filters.relationship().hasType( Domain.Rel.KNOWS ), Filters.node() );
+
+        Step step2 = new Step( Filters.node().hasLabel( Domain.Node.PERSON ), Filters.relationship().hasType(
+                Domain.Rel.HAS_CREATOR ).hasDirection( Direction.INCOMING ), Filters.node() );
+
+        // TODO number range
+        PropertyContainerPredicate creationDateCheck = new PropertyContainerPredicate()
         {
             @Override
-            public Iterable<Relationship> apply( Path from )
+            public boolean apply( PropertyContainer container )
             {
-                return from.endNode().getRelationships( Domain.Rel.KNOWS, Direction.BOTH );
+                long creationDate = (long) ( (Node) container ).getProperty( Domain.Post.CREATION_DATE );
+                return ( creationDate >= minDate && maxDate >= creationDate );
             }
         };
-        Function1<Path, Iterable<Relationship>> step2 = new Function1<Path, Iterable<Relationship>>()
-        {
-            @Override
-            public Iterable<Relationship> apply( Path from )
-            {
-                Node endNode = from.endNode();
-                if ( false == endNode.hasLabel( Domain.Node.PERSON ) ) return Collections.emptyList();
-                return endNode.getRelationships( Domain.Rel.HAS_CREATOR, Direction.INCOMING );
-            }
-        };
-        Function1<Path, Iterable<Relationship>> step3 = new Function1<Path, Iterable<Relationship>>()
-        {
-            @Override
-            public Iterable<Relationship> apply( Path from )
-            {
-                Node endNode = from.endNode();
-                if ( false == endNode.hasLabel( Domain.Node.POST ) ) return Collections.emptyList();
-                long creationDate = (long) endNode.getProperty( Domain.Post.CREATION_DATE );
-                if ( creationDate < minDate || maxDate < creationDate ) return Collections.emptyList();
-                return Iterables.filter( endNode.getRelationships( Domain.Rel.HAS_TAG, Direction.OUTGOING ),
-                        new Predicate<Relationship>()
-                        {
-                            @Override
-                            public boolean apply( Relationship input )
-                            {
-                                return input.getEndNode().hasLabel( Domain.Node.TAG );
-                            }
-                        } );
-            }
-        };
+        Step step3 = new Step( Filters.node().hasLabel( Domain.Node.POST ).conformsTo( creationDateCheck ),
+                Filters.relationship().hasType( Domain.Rel.HAS_TAG ).hasDirection( Direction.OUTGOING ),
+                Filters.node().hasLabel( Domain.Node.TAG ) );
+
         return Traversal.description().uniqueness( Uniqueness.NONE ).breadthFirst().evaluator( Evaluators.atDepth( 3 ) ).expand(
                 new StepsExpander( step1, step2, step3 ) );
     }
@@ -141,14 +83,8 @@ public class LdbcTraversers
      */
     public static TraversalDescription friendsAndFriendsOfFriends()
     {
-        Function1<Path, Iterable<Relationship>> step1 = new Function1<Path, Iterable<Relationship>>()
-        {
-            @Override
-            public Iterable<Relationship> apply( Path from )
-            {
-                return from.endNode().getRelationships( Domain.Rel.KNOWS, Direction.BOTH );
-            }
-        };
+        Step step1 = new Step( Filters.node(), Filters.relationship().hasType( Domain.Rel.KNOWS ), Filters.node() );
+
         // Note, returns duplicate Nodes
         return Traversal.description().uniqueness( Uniqueness.NONE ).breadthFirst().evaluator(
                 Evaluators.includingDepths( 1, 2 ) ).expand( new StepsExpander( step1, step1 ) );
@@ -160,37 +96,23 @@ public class LdbcTraversers
      */
     public static TraversalDescription postsInCountry( final String countryX, final long minDate, final long maxDate )
     {
-        Function1<Path, Iterable<Relationship>> step1 = new Function1<Path, Iterable<Relationship>>()
+        Step step1 = new Step( Filters.node(), Filters.relationship().hasType( Domain.Rel.HAS_CREATOR ).hasDirection(
+                Direction.INCOMING ), Filters.node() );
+
+        // TODO number range
+        PropertyContainerPredicate creationDateCheck = new PropertyContainerPredicate()
         {
             @Override
-            public Iterable<Relationship> apply( Path from )
+            public boolean apply( PropertyContainer container )
             {
-                return from.endNode().getRelationships( Domain.Rel.HAS_CREATOR, Direction.INCOMING );
+                long creationDate = (long) ( (Node) container ).getProperty( Domain.Post.CREATION_DATE );
+                return ( creationDate >= minDate && maxDate >= creationDate );
             }
         };
-        Function1<Path, Iterable<Relationship>> step2 = new Function1<Path, Iterable<Relationship>>()
-        {
-            @Override
-            public Iterable<Relationship> apply( Path from )
-            {
-                Node endNode = from.endNode();
-                if ( false == endNode.hasLabel( Domain.Node.POST ) ) return Collections.emptyList();
-                long creationDate = (long) endNode.getProperty( Domain.Post.CREATION_DATE );
-                if ( creationDate < minDate || maxDate < creationDate ) return Collections.emptyList();
-                return Iterables.filter( endNode.getRelationships( Domain.Rel.IS_LOCATED_IN, Direction.OUTGOING ),
-                        new Predicate<Relationship>()
-                        {
-                            @Override
-                            public boolean apply( Relationship input )
-                            {
-                                Node endNode = input.getEndNode();
-                                if ( false == endNode.hasLabel( Domain.Place.Type.COUNTRY ) ) return false;
-                                String countryName = (String) endNode.getProperty( Domain.Place.NAME );
-                                return countryName.equals( countryX );
-                            }
-                        } );
-            }
-        };
+        Step step2 = new Step( Filters.node().hasLabel( Domain.Node.POST ).conformsTo( creationDateCheck ),
+                Filters.relationship().hasType( Domain.Rel.IS_LOCATED_IN ).hasDirection( Direction.OUTGOING ),
+                Filters.node().hasLabel( Domain.Place.Type.COUNTRY ).propertyEquals( Domain.Place.NAME, countryX ) );
+
         return Traversal.description().uniqueness( Uniqueness.NONE ).breadthFirst().evaluator( Evaluators.atDepth( 2 ) ).expand(
                 new StepsExpander( step1, step2 ) );
     }

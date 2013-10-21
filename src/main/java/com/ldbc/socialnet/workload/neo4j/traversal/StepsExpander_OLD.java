@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.workload.neo4j.transaction.embedded_api;
+package com.ldbc.socialnet.workload.neo4j.traversal;
 
 import java.util.ArrayList;
 
@@ -10,12 +10,12 @@ import org.neo4j.graphdb.traversal.BranchState;
 
 import com.ldbc.driver.util.Function1;
 
-public class StepsExpander implements PathExpander<RelationshipType>
+public class StepsExpander_OLD implements PathExpander<RelationshipType>
 {
     private static final Iterable<Relationship> EMPTY_ITERABLE = new ArrayList<Relationship>();
     private final Function1<Path, Iterable<Relationship>>[] steps;
 
-    public StepsExpander( Function1<Path, Iterable<Relationship>>... steps )
+    public StepsExpander_OLD( Function1<Path, Iterable<Relationship>>... steps )
     {
         this.steps = steps;
     }
@@ -30,7 +30,7 @@ public class StepsExpander implements PathExpander<RelationshipType>
     @Override
     public PathExpander<RelationshipType> reverse()
     {
-        return null;
+        throw new UnsupportedOperationException( "reverse not implemented by " + getClass().getSimpleName() );
     }
 
 }

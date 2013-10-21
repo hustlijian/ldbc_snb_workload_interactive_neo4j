@@ -23,8 +23,11 @@ import com.ldbc.socialnet.workload.LdbcQuery6;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery3;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api.Neo4jQuery1EmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api.Neo4jQuery1EmbeddedApi_OLD;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api.Neo4jQuery3EmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api.Neo4jQuery3EmbeddedApi_OLD;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api.Neo4jQuery4EmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api.Neo4jQuery4EmbeddedApi_OLD;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery1EmbeddedCypher;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery3EmbeddedCypher;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery4EmbeddedCypher;
@@ -76,7 +79,23 @@ public class QueryPerformanceTest
         {
             Operation operation = new LdbcQuery1( "Joan", 10 );
             Neo4jQuery query = new Neo4jQuery1EmbeddedCypher();
-            execute( "Query1", query, operation, 2, 5, false );
+            execute( "Query1-cypher", query, operation, 2, 5, false );
+            tx.success();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void query1api_OLD()
+    {
+        try (Transaction tx = db.beginTx())
+        {
+            Operation operation = new LdbcQuery1( "Joan", 10 );
+            Neo4jQuery query = new Neo4jQuery1EmbeddedApi_OLD();
+            execute( "Query1-embedded old", query, operation, 2, 5, false );
             tx.success();
         }
         catch ( Exception e )
@@ -92,7 +111,7 @@ public class QueryPerformanceTest
         {
             Operation operation = new LdbcQuery1( "Joan", 10 );
             Neo4jQuery query = new Neo4jQuery1EmbeddedApi();
-            execute( "Query1", query, operation, 2, 5, false );
+            execute( "Query1-embedded", query, operation, 2, 5, false );
             tx.success();
         }
         catch ( Exception e )
@@ -167,7 +186,36 @@ public class QueryPerformanceTest
 
             LdbcQuery3 operation = new LdbcQuery3( personId, countryX, countryY, endDate, durationDays );
             Neo4jQuery3 query = new Neo4jQuery3EmbeddedCypher();
-            execute( "Query3", query, operation, 2, 5, false );
+            execute( "Query3-cypher", query, operation, 2, 5, false );
+            tx.success();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void query3api_OLD()
+    {
+        try (Transaction tx = db.beginTx())
+        {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set( 2011, Calendar.JANUARY, 1 );
+            Date endDate = calendar.getTime();
+            int durationDays = 365 * 1;
+
+            long personId = 2;
+            String countryX = "United_States";
+            String countryY = "Canada";
+
+            // personId = 405;
+            // countryX = "India";
+            // countryY = "Pakistan";
+
+            Operation operation = new LdbcQuery3( personId, countryX, countryY, endDate, durationDays );
+            Neo4jQuery query = new Neo4jQuery3EmbeddedApi_OLD();
+            execute( "Query3-embedded old", query, operation, 2, 5, false );
             tx.success();
         }
         catch ( Exception e )
@@ -196,7 +244,7 @@ public class QueryPerformanceTest
 
             Operation operation = new LdbcQuery3( personId, countryX, countryY, endDate, durationDays );
             Neo4jQuery query = new Neo4jQuery3EmbeddedApi();
-            execute( "Query3", query, operation, 2, 5, false );
+            execute( "Query3-embedded", query, operation, 2, 5, false );
             tx.success();
         }
         catch ( Exception e )
@@ -219,7 +267,30 @@ public class QueryPerformanceTest
 
             Operation operation = new LdbcQuery4( personId, endDate, durationDays );
             Neo4jQuery query = new Neo4jQuery4EmbeddedCypher();
-            execute( "Query4", query, operation, 2, 5, false );
+            execute( "Query4-cypher", query, operation, 2, 5, false );
+            tx.success();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void query4api_OLD()
+    {
+        try (Transaction tx = db.beginTx())
+        {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set( 2011, Calendar.JANUARY, 1 );
+
+            long personId = 143;
+            Date endDate = calendar.getTime();
+            int durationDays = 300;
+
+            Operation operation = new LdbcQuery4( personId, endDate, durationDays );
+            Neo4jQuery query = new Neo4jQuery4EmbeddedApi_OLD();
+            execute( "Query4-embedded old", query, operation, 2, 5, false );
             tx.success();
         }
         catch ( Exception e )
@@ -242,7 +313,7 @@ public class QueryPerformanceTest
 
             Operation operation = new LdbcQuery4( personId, endDate, durationDays );
             Neo4jQuery query = new Neo4jQuery4EmbeddedApi();
-            execute( "Query4", query, operation, 2, 5, false );
+            execute( "Query4-embedded", query, operation, 2, 5, false );
             tx.success();
         }
         catch ( Exception e )
@@ -318,10 +389,6 @@ public class QueryPerformanceTest
         long runtimeRuns = 0;
         long runtimeMin = Long.MAX_VALUE;
         long runtimeMax = Long.MIN_VALUE;
-
-        /*
-        MAVEN_OPTS="-server -XX:+UseConcMarkSweepGC -Xmx512m" mvn exec:java -Dexec.mainClass=com.ldbc.driver.Client -Dexec.arguments="-db,com.ldbc.socialnet.workload.neo4j.Neo4jDb,-w,com.ldbc.socialnet.workload.LdbcInteractiveWorkload,-oc,10,-rc,-1,-tc,1,-s,-tu,MILLISECONDS,-p,neo4j.path=db/,-p,neo4j.dbtype=embedded"
-         */
 
         Iterator<?> result = null;
 

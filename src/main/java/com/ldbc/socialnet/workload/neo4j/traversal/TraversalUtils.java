@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.workload.neo4j.transaction.embedded_api;
+package com.ldbc.socialnet.workload.neo4j.traversal;
 
 import java.util.HashMap;
 import java.util.HashSet;
