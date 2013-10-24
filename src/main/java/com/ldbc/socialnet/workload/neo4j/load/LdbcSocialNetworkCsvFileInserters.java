@@ -637,7 +637,7 @@ public class LdbcSocialNetworkCsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1], Domain.Rel.REPLY_OF,
+                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1], Domain.Rel.REPLY_OF,
                         EMPTY_MAP );
             }
         } );
@@ -663,7 +663,7 @@ public class LdbcSocialNetworkCsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1], Domain.Rel.REPLY_OF,
+                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1], Domain.Rel.REPLY_OF,
                         EMPTY_MAP );
             }
         } );
@@ -689,7 +689,7 @@ public class LdbcSocialNetworkCsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
+                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
                         Domain.Rel.IS_LOCATED_IN, EMPTY_MAP );
             }
         } );
@@ -715,7 +715,7 @@ public class LdbcSocialNetworkCsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
+                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
                         Domain.Rel.IS_PART_OF, EMPTY_MAP );
             }
         } );
@@ -741,8 +741,13 @@ public class LdbcSocialNetworkCsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1], Domain.Rel.KNOWS,
-                        EMPTY_MAP );
+                long fromPerson = (long) columnValues[0];
+                long toPerson = (long) columnValues[1];
+                // CSV contains bidirectional KNOWS rels but only 1 necessary
+                if ( fromPerson < toPerson )
+                {
+                    batchInserter.createRelationship( fromPerson, toPerson, Domain.Rel.KNOWS, EMPTY_MAP );
+                }
             }
         } );
     }
@@ -772,7 +777,7 @@ public class LdbcSocialNetworkCsvFileInserters
                     {
                         Map<String, Object> properties = new HashMap<String, Object>();
                         properties.put( Domain.StudiesAt.CLASS_YEAR, columnValues[2] );
-                        batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
+                        batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
                                 Domain.Rel.STUDY_AT, properties );
                     }
                 } );
@@ -797,8 +802,8 @@ public class LdbcSocialNetworkCsvFileInserters
                 long personNodeId = personsIndex.get( Long.parseLong( (String) columnValues[0] ) );
                 Map<String, Object> personNodeProperties = batchInserter.getNodeProperties( personNodeId );
                 String[] languages = (String[]) personNodeProperties.get( Domain.Person.LANGUAGES );
-                String newLanguages = (String) columnValues[1];
-                String[] langaugesPlusNewLanguage = Utils.copyArrayAndAddElement( languages, newLanguages );
+                String newLanguage = (String) columnValues[1];
+                String[] langaugesPlusNewLanguage = Utils.copyArrayAndAddElement( languages, newLanguage );
                 batchInserter.setNodeProperty( personNodeId, Domain.Person.LANGUAGES, langaugesPlusNewLanguage );
             }
         } );
@@ -824,7 +829,7 @@ public class LdbcSocialNetworkCsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
+                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
                         Domain.Rel.HAS_CREATOR, EMPTY_MAP );
             }
         } );
@@ -850,7 +855,7 @@ public class LdbcSocialNetworkCsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
+                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
                         Domain.Rel.HAS_CREATOR, EMPTY_MAP );
             }
         } );
@@ -876,7 +881,7 @@ public class LdbcSocialNetworkCsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
+                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
                         Domain.Rel.HAS_MODERATOR, EMPTY_MAP );
             }
         } );
@@ -902,7 +907,7 @@ public class LdbcSocialNetworkCsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
+                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
                         Domain.Rel.IS_LOCATED_IN, EMPTY_MAP );
             }
         } );
@@ -933,7 +938,7 @@ public class LdbcSocialNetworkCsvFileInserters
                     {
                         Map<String, Object> properties = new HashMap<String, Object>();
                         properties.put( Domain.WorksAt.WORK_FROM, columnValues[2] );
-                        batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
+                        batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
                                 Domain.Rel.WORKS_AT, properties );
                     }
                 } );
@@ -959,7 +964,7 @@ public class LdbcSocialNetworkCsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
+                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
                         Domain.Rel.HAS_INTEREST, EMPTY_MAP );
             }
         } );
@@ -1011,7 +1016,7 @@ public class LdbcSocialNetworkCsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1], Domain.Rel.HAS_TAG,
+                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1], Domain.Rel.HAS_TAG,
                         EMPTY_MAP );
             }
         } );
@@ -1052,7 +1057,7 @@ public class LdbcSocialNetworkCsvFileInserters
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( Domain.Likes.CREATION_DATE, columnValues[2] );
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1], Domain.Rel.LIKES,
+                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1], Domain.Rel.LIKES,
                         properties );
             }
         } );
@@ -1078,7 +1083,7 @@ public class LdbcSocialNetworkCsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
+                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
                         Domain.Rel.IS_LOCATED_IN, EMPTY_MAP );
             }
         } );
@@ -1119,7 +1124,7 @@ public class LdbcSocialNetworkCsvFileInserters
             {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put( Domain.HasMember.JOIN_DATE, columnValues[2] );
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
+                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
                         Domain.Rel.HAS_MEMBER, properties );
             }
         } );
@@ -1145,7 +1150,7 @@ public class LdbcSocialNetworkCsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
+                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
                         Domain.Rel.CONTAINER_OF, EMPTY_MAP );
             }
         } );
@@ -1171,7 +1176,7 @@ public class LdbcSocialNetworkCsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1], Domain.Rel.HAS_TAG,
+                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1], Domain.Rel.HAS_TAG,
                         EMPTY_MAP );
             }
         } );
@@ -1197,7 +1202,7 @@ public class LdbcSocialNetworkCsvFileInserters
             @Override
             public void insert( Object[] columnValues )
             {
-                batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1], Domain.Rel.HAS_TYPE,
+                batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1], Domain.Rel.HAS_TYPE,
                         EMPTY_MAP );
             }
         } );
@@ -1224,7 +1229,7 @@ public class LdbcSocialNetworkCsvFileInserters
                     @Override
                     public void insert( Object[] columnValues )
                     {
-                        batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
+                        batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
                                 Domain.Rel.IS_SUBCLASS_OF, EMPTY_MAP );
                     }
                 } );
@@ -1252,7 +1257,7 @@ public class LdbcSocialNetworkCsvFileInserters
                     @Override
                     public void insert( Object[] columnValues )
                     {
-                        batchInserter.createRelationship( (Long) columnValues[0], (Long) columnValues[1],
+                        batchInserter.createRelationship( (long) columnValues[0], (long) columnValues[1],
                                 Domain.Rel.IS_LOCATED_IN, EMPTY_MAP );
                     }
                 } );
@@ -1263,9 +1268,11 @@ public class LdbcSocialNetworkCsvFileInserters
         @Override
         public int compare( Object[] o1, Object[] o2 )
         {
-            Long minRelOfO1 = Math.min( (long) o1[0], (long) o1[1] );
-            Long minRelOfO2 = Math.min( (long) o2[0], (long) o2[1] );
-            return minRelOfO1.compareTo( minRelOfO2 );
+            long minRelOfo1 = Math.min( (long) o1[0], (long) o1[1] );
+            long minRelOfo2 = Math.min( (long) o2[0], (long) o2[1] );
+            if ( minRelOfo1 < minRelOfo2 ) return -1;
+            if ( minRelOfo1 > minRelOfo2 ) return 1;
+            return 0;
         }
     }
 }

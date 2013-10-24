@@ -101,6 +101,7 @@ public class Domain
         public static final String CREATION_DATE = "creationDate";
         public static final String LOCATION_IP = "locationIP";
         public static final String BROWSER_USED = "browserUsed";
+        // TODO when "language" causes Neo4j bug
         public static final String LANGUAGES = "languages";
         public static final String EMAIL_ADDRESSES = "email";
     }

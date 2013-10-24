@@ -60,6 +60,22 @@ public class QueryPerformanceTest
 
     @Ignore
     @Test
+    public void countries()
+    {
+        String query =
+
+        "MATCH (post:Post)-[:IS_LOCATED_IN]->(country:Country)\n"
+
+        + "RETURN country.name AS name, count(post) AS count\n"
+
+        + "ORDER BY count DESC";
+
+        ExecutionResult result = engine.execute( query );
+        System.out.println( result.dumpToString() );
+    }
+
+    @Ignore
+    @Test
     public void names()
     {
         String query =
@@ -322,9 +338,8 @@ public class QueryPerformanceTest
         }
     }
 
-    @Ignore
     @Test
-    public void query5()
+    public void query5cypher()
     {
         try (Transaction tx = db.beginTx())
         {
