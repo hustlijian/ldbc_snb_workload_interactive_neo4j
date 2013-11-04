@@ -14,9 +14,12 @@ git submodule update --init
 rm -rf $IN_PROJECT_MVN_REPO
 cd $LDBC_CORE
 ./build.sh
+cd $STEPS
+mvn clean compile -Dmaven.compiler.source=1.7 -Dmaven.compiler.target=1.7
 cd ..
 
 mvn install:install-file -DlocalRepositoryPath=$IN_PROJECT_MVN_REPO -DcreateChecksum=true -Dpackaging=jar -Dfile=$LDBC_CORE_JAR -DgroupId=com.ldbc.driver -DartifactId=core -Dversion=$LDBC_CORE_VER
 mvn install:install-file -DlocalRepositoryPath=$IN_PROJECT_MVN_REPO -DcreateChecksum=true -Dpackaging=jar -Dfile=$STEPS_JAR -DgroupId=com.neo4j.traversal -DartifactId=steps -Dversion=$STEPS_VER
+
 
 mvn clean compile -Dmaven.compiler.source=1.7 -Dmaven.compiler.target=1.7
