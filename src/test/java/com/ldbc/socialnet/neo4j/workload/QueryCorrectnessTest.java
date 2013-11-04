@@ -22,8 +22,6 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.helpers.collection.IteratorUtil;
 import org.neo4j.kernel.impl.util.FileUtils;
 
-import com.google.common.collect.Lists;
-import com.ldbc.driver.util.MapUtils;
 import com.ldbc.socialnet.workload.LdbcQuery1;
 import com.ldbc.socialnet.workload.LdbcQuery1Result;
 import com.ldbc.socialnet.workload.LdbcQuery3;
@@ -107,6 +105,9 @@ public abstract class QueryCorrectnessTest
 
     public abstract Neo4jQuery1 neo4jQuery1Impl();
 
+    // TODO return Neo4jQueryX
+    public abstract Object neo4jQuery2Impl();
+
     public abstract Neo4jQuery3 neo4jQuery3Impl();
 
     public abstract Neo4jQuery4 neo4jQuery4Impl();
@@ -116,6 +117,21 @@ public abstract class QueryCorrectnessTest
     public abstract Neo4jQuery6 neo4jQuery6Impl();
 
     public abstract Neo4jQuery7 neo4jQuery7Impl();
+
+    // TODO return Neo4jQueryX
+    public abstract Object neo4jQuery8Impl();
+
+    // TODO return Neo4jQueryX
+    public abstract Object neo4jQuery9Impl();
+
+    // TODO return Neo4jQueryX
+    public abstract Object neo4jQuery10Impl();
+
+    // TODO return Neo4jQueryX
+    public abstract Object neo4jQuery11Impl();
+
+    // TODO return Neo4jQueryX
+    public abstract Object neo4jQuery12Impl();
 
     @Test
     public void query1ShouldReturnExpectedResult()
@@ -161,6 +177,13 @@ public abstract class QueryCorrectnessTest
             exceptionThrown = true;
         }
         assertThat( exceptionThrown, is( false ) );
+    }
+
+    @Ignore
+    @Test
+    public void query2ShouldReturnExpectedResult()
+    {
+        assertThat( true, is( false ) );
     }
 
     @Test
@@ -267,7 +290,6 @@ public abstract class QueryCorrectnessTest
         assertThat( exceptionThrown, is( false ) );
     }
 
-    @Ignore
     @Test
     public void query5ShouldReturnExpectedResult()
     {
@@ -325,6 +347,7 @@ public abstract class QueryCorrectnessTest
                                                     aiyaComment2
                                     aiyaPost1
                                     aiyaPost2
+                                    nicky1
                                     strangerPost1(*)
                                     strangerPost2(*)
         floatingBoats
@@ -335,7 +358,7 @@ public abstract class QueryCorrectnessTest
         redditAddicts
         
         FORUM                       POSTS   COMMENTS
-        cakesAndPies                4       2
+        cakesAndPies                5       2
         floatingBoats               2       1
         kiwisSheepAndBungyJumping   1       0
         redditAddicts               0       0
@@ -431,6 +454,9 @@ public abstract class QueryCorrectnessTest
             }
             assertThat( expectedRowCount, equalTo( actualRowCount ) );
 
+            // TODO check that query 6 test is actually fully implemented
+            assertThat( true, is( false ) );
+
             tx.success();
         }
         catch ( Exception e )
@@ -463,6 +489,9 @@ public abstract class QueryCorrectnessTest
         {
             Iterator<LdbcQuery7Result> result = query7.execute( db, engine, operation7 );
 
+            // TODO check that query 7 test is fully implemented
+            assertThat( true, is( false ) );
+
             tx.success();
         }
         catch ( Exception e )
@@ -473,83 +502,47 @@ public abstract class QueryCorrectnessTest
         assertThat( exceptionThrown, is( false ) );
     }
 
+    @Ignore
     @Test
-    public void personIdTest()
+    public void query8ShouldReturnExpectedResult()
     {
-        Map<String, Object> queryParams;
-        queryParams = TestQueries.PersonTestQuery.buildParams( 1, "alex", "averbuch" );
-        assertThat( resultCount( TestQueries.PersonTestQuery.ID_QUERY_TEMPLATE, queryParams, "person" ), is( 1 ) );
-        queryParams = TestQueries.PersonTestQuery.buildParams( 2, "aiya", "thorpe" );
-        assertThat( resultCount( TestQueries.PersonTestQuery.ID_QUERY_TEMPLATE, queryParams, "person" ), is( 1 ) );
+        assertThat( true, is( false ) );
     }
 
+    @Ignore
     @Test
-    public void personFirstNameTest()
+    public void query9ShouldReturnExpectedResult()
     {
-        Map<String, Object> queryParams;
-        queryParams = TestQueries.PersonTestQuery.buildParams( 1, "alex", "averbuch" );
-        assertThat( resultCount( TestQueries.PersonTestQuery.FIRST_NAME_QUERY_TEMPLATE, queryParams, "person" ), is( 1 ) );
-        queryParams = TestQueries.PersonTestQuery.buildParams( 2, "aiya", "thorpe" );
-        assertThat( resultCount( TestQueries.PersonTestQuery.FIRST_NAME_QUERY_TEMPLATE, queryParams, "person" ), is( 1 ) );
+        assertThat( true, is( false ) );
     }
 
+    @Ignore
     @Test
-    public void personLastNameTest()
+    public void query10ShouldReturnExpectedResult()
     {
-        Map<String, Object> queryParams;
-        queryParams = TestQueries.PersonTestQuery.buildParams( 1, "alex", "averbuch" );
-        assertThat( resultCount( TestQueries.PersonTestQuery.LAST_NAME_QUERY_TEMPLATE, queryParams, "person" ), is( 1 ) );
-        queryParams = TestQueries.PersonTestQuery.buildParams( 2, "aiya", "thorpe" );
-        assertThat( resultCount( TestQueries.PersonTestQuery.LAST_NAME_QUERY_TEMPLATE, queryParams, "person" ), is( 1 ) );
+        assertThat( true, is( false ) );
     }
 
+    @Ignore
     @Test
-    public void cityPlaceNameTest()
+    public void query11ShouldReturnExpectedResult()
     {
-        Map<String, Object> queryParams;
-        queryParams = TestQueries.PlaceTestQuery.buildParams( "stockholm", "sweden" );
-        assertThat( resultCount( TestQueries.PlaceTestQuery.CITY_PLACE_NAME_QUERY_TEMPLATE, queryParams, "place" ),
-                is( 1 ) );
-        queryParams = TestQueries.PlaceTestQuery.buildParams( "auckland", "new zealand" );
-        assertThat( resultCount( TestQueries.PlaceTestQuery.CITY_PLACE_NAME_QUERY_TEMPLATE, queryParams, "place" ),
-                is( 1 ) );
+        assertThat( true, is( false ) );
     }
 
+    @Ignore
     @Test
-    public void countryPlaceNameTest()
+    public void query12ShouldReturnExpectedResult()
     {
-        Map<String, Object> queryParams;
-        queryParams = TestQueries.PlaceTestQuery.buildParams( "stockholm", "sweden" );
-        assertThat( resultCount( TestQueries.PlaceTestQuery.COUNTRY_PLACE_NAME_QUERY_TEMPLATE, queryParams, "place" ),
-                is( 1 ) );
-        queryParams = TestQueries.PlaceTestQuery.buildParams( "auckland", "new zealand" );
-        assertThat( resultCount( TestQueries.PlaceTestQuery.COUNTRY_PLACE_NAME_QUERY_TEMPLATE, queryParams, "place" ),
-                is( 1 ) );
-    }
-
-    @Test
-    public void cityNameTest()
-    {
-        Map<String, Object> queryParams;
-        queryParams = TestQueries.PlaceTestQuery.buildParams( "stockholm", "sweden" );
-        assertThat( resultCount( TestQueries.PlaceTestQuery.CITY_NAME_QUERY_TEMPLATE, queryParams, "place" ), is( 1 ) );
-        queryParams = TestQueries.PlaceTestQuery.buildParams( "auckland", "new zealand" );
-        assertThat( resultCount( TestQueries.PlaceTestQuery.CITY_NAME_QUERY_TEMPLATE, queryParams, "place" ), is( 1 ) );
-    }
-
-    @Test
-    public void countryNameTest()
-    {
-        Map<String, Object> queryParams;
-        queryParams = TestQueries.PlaceTestQuery.buildParams( "stockholm", "sweden" );
-        assertThat( resultCount( TestQueries.PlaceTestQuery.COUNTRY_NAME_QUERY_TEMPLATE, queryParams, "place" ), is( 1 ) );
-        queryParams = TestQueries.PlaceTestQuery.buildParams( "auckland", "new zealand" );
-        assertThat( resultCount( TestQueries.PlaceTestQuery.COUNTRY_NAME_QUERY_TEMPLATE, queryParams, "place" ), is( 1 ) );
+        assertThat( true, is( false ) );
     }
 
     boolean resultsEqual( LdbcQuery5Result result1, LdbcQuery5Result result2 )
     {
-        if ( false == result1.forum().equals( result2.forum() ) ) return false;
+        // TODO remove
+        System.out.println( result1 + ":" + result2 );
+
+        if ( false == result1.forumTitle().equals( result2.forumTitle() ) ) return false;
         if ( result1.postCount() != result2.postCount() ) return false;
         if ( result1.commentCount() != result2.commentCount() ) return false;
         if ( result1.count() != result2.count() ) return false;

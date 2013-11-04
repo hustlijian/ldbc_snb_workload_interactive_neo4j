@@ -28,9 +28,9 @@ public class Neo4jQuery5EmbeddedCypher implements Neo4jQuery5
     }
 
     @Override
-    public Iterator<LdbcQuery5Result> execute( GraphDatabaseService db, ExecutionEngine engine, LdbcQuery5 params )
+    public Iterator<LdbcQuery5Result> execute( GraphDatabaseService db, ExecutionEngine engine, LdbcQuery5 operation )
     {
-        Map<String, Object> cypherParams = buildParams( params.personId(), params.joinDate() );
+        Map<String, Object> cypherParams = buildParams( operation.personId(), operation.joinDate() );
         Map<String, LdbcQuery5Result> postsMap = buildPostsMap( engine.execute( queryPosts(), cypherParams ).iterator() );
         Map<String, LdbcQuery5Result> commentsMap = buildCommentsMap( engine.execute( queryComments(), cypherParams ).iterator() );
 
@@ -39,7 +39,7 @@ public class Neo4jQuery5EmbeddedCypher implements Neo4jQuery5
             @Override
             public LdbcQuery5Result apply( LdbcQuery5Result from1, LdbcQuery5Result from2 )
             {
-                return new LdbcQuery5Result( from1.forum(), from1.postCount() + from2.postCount(),
+                return new LdbcQuery5Result( from1.forumTitle(), from1.postCount() + from2.postCount(),
                         from1.commentCount() + from2.commentCount() );
             }
         };
@@ -121,6 +121,7 @@ public class Neo4jQuery5EmbeddedCypher implements Neo4jQuery5
                + "RETURN forum.title AS forum, count(post) AS postCount\n"
 
                + "ORDER BY postCount DESC";
+
     }
 
     private Map<String, LdbcQuery5Result> buildPostsMap( Iterator<Map<String, Object>> queryPostsResult )
@@ -131,6 +132,7 @@ public class Neo4jQuery5EmbeddedCypher implements Neo4jQuery5
             Map<String, Object> row = queryPostsResult.next();
             String forum = (String) row.get( "forum" );
             postsMap.put( forum, new LdbcQuery5Result( forum, (long) row.get( "postCount" ), 0 ) );
+
         }
         return postsMap;
     }

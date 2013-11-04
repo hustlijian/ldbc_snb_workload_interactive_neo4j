@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.workload.neo4j.transaction.embedded_api;
+package com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,19 +8,29 @@ import java.util.List;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.traversal.TraversalDescription;
+import org.neo4j.traversal.steps.execution.StepsUtils;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.ldbc.socialnet.workload.Domain;
 import com.ldbc.socialnet.workload.LdbcQuery3;
 import com.ldbc.socialnet.workload.LdbcQuery3Result;
+import com.ldbc.socialnet.workload.neo4j.transaction.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery3;
-import com.ldbc.socialnet.workload.neo4j.traversal.TraversalUtils;
 
-public class Neo4jQuery3EmbeddedApi_OLD implements Neo4jQuery3
+public class Neo4jQuery3EmbeddedApi implements Neo4jQuery3
 {
+    private final LdbcTraversers traversers;
+
+    public Neo4jQuery3EmbeddedApi( LdbcTraversers traversers )
+    {
+        this.traversers = traversers;
+    }
+
     @Override
     public String description()
     {
@@ -28,7 +38,7 @@ public class Neo4jQuery3EmbeddedApi_OLD implements Neo4jQuery3
     }
 
     @Override
-    public Iterator<LdbcQuery3Result> execute( GraphDatabaseService db, ExecutionEngine engine,
+    public Iterator<LdbcQuery3Result> execute( final GraphDatabaseService db, ExecutionEngine engine,
             final LdbcQuery3 operation )
     {
         /*
@@ -55,9 +65,9 @@ public class Neo4jQuery3EmbeddedApi_OLD implements Neo4jQuery3
         if ( false == personIterator.hasNext() ) return Iterators.emptyIterator();
         final Node person = personIterator.next();
 
-        Iterator<Node> friendsWithPerson = TraversalUtils.distinct( LdbcTraversers_OLD.friendsAndFriendsOfFriends().traverse(
+        Iterator<Node> friendsWithPerson = StepsUtils.distinct( traversers.friendsAndFriendsOfFriends().traverse(
                 person ).nodes().iterator() );
-        Iterator<Node> friends = Iterators.filter( TraversalUtils.distinct( friendsWithPerson ), new Predicate<Node>()
+        Iterator<Node> friends = Iterators.filter( StepsUtils.distinct( friendsWithPerson ), new Predicate<Node>()
         {
             @Override
             public boolean apply( Node input )
@@ -66,21 +76,14 @@ public class Neo4jQuery3EmbeddedApi_OLD implements Neo4jQuery3
             }
         } );
 
-        Iterator<LdbcQuery3Result> resultWithZeroCounts = Iterators.transform( friends,
-                new Function<Node, LdbcQuery3Result>()
-                {
-                    @Override
-                    public LdbcQuery3Result apply( Node friend )
-                    {
-                        int countryXPostCount = Iterators.size( LdbcTraversers_OLD.postsInCountry( operation.countryX(),
-                                operation.startDateAsMilli(), operation.endDateAsMilli() ).traverse( friend ).iterator() );
-                        int countryYPostCount = Iterators.size( LdbcTraversers_OLD.postsInCountry( operation.countryY(),
-                                operation.startDateAsMilli(), operation.endDateAsMilli() ).traverse( friend ).iterator() );
-                        String friendName = friend.getProperty( Domain.Person.FIRST_NAME ) + " "
-                                            + friend.getProperty( Domain.Person.LAST_NAME );
-                        return new LdbcQuery3Result( friendName, countryXPostCount, countryYPostCount );
-                    }
-                } );
+        TraversalDescription postsInCountryX = traversers.postsInCountry( operation.countryX(),
+                operation.startDateAsMilli(), operation.endDateAsMilli() );
+        TraversalDescription postsInCountryY = traversers.postsInCountry( operation.countryY(),
+                operation.startDateAsMilli(), operation.endDateAsMilli() );
+        Function<Node, LdbcQuery3Result> nodeToLdbcQuery3ResultFun = new NodeToLdbcQuery3ResultFun( postsInCountryX,
+                postsInCountryY );
+        Iterator<LdbcQuery3Result> resultWithZeroCounts = Iterators.transform( friends, nodeToLdbcQuery3ResultFun );
+
         List<LdbcQuery3Result> result = Lists.newArrayList( Iterators.filter( resultWithZeroCounts,
                 new Predicate<LdbcQuery3Result>()
                 {
@@ -90,11 +93,34 @@ public class Neo4jQuery3EmbeddedApi_OLD implements Neo4jQuery3
                         return input.xCount() > 0 && input.yCount() > 0;
                     }
                 } ) );
+
         Collections.sort( result, new CountComparator() );
         return result.iterator();
     }
 
-    public static class CountComparator implements Comparator<LdbcQuery3Result>
+    class NodeToLdbcQuery3ResultFun implements Function<Node, LdbcQuery3Result>
+    {
+        private final TraversalDescription postsInCountryX;
+        private final TraversalDescription postsInCountryY;
+
+        public NodeToLdbcQuery3ResultFun( TraversalDescription postsInCountryX, TraversalDescription postsInCountryY )
+        {
+            this.postsInCountryX = postsInCountryX;
+            this.postsInCountryY = postsInCountryY;
+        }
+
+        @Override
+        public LdbcQuery3Result apply( Node friend )
+        {
+            int countryXPostCount = Iterables.size( postsInCountryX.traverse( friend ) );
+            int countryYPostCount = Iterables.size( postsInCountryY.traverse( friend ) );
+            String friendName = friend.getProperty( Domain.Person.FIRST_NAME ) + " "
+                                + friend.getProperty( Domain.Person.LAST_NAME );
+            return new LdbcQuery3Result( friendName, countryXPostCount, countryYPostCount );
+        }
+    }
+
+    class CountComparator implements Comparator<LdbcQuery3Result>
     {
         @Override
         public int compare( LdbcQuery3Result result1, LdbcQuery3Result result2 )

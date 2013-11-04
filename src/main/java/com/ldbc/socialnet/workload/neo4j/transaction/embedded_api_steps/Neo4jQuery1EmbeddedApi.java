@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.workload.neo4j.transaction.embedded_api;
+package com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -15,15 +15,24 @@ import org.neo4j.graphdb.Relationship;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.ldbc.socialnet.workload.Domain;
 import com.ldbc.socialnet.workload.LdbcQuery1;
 import com.ldbc.socialnet.workload.LdbcQuery1Result;
+import com.ldbc.socialnet.workload.neo4j.transaction.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery1;
 import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 
-public class Neo4jQuery1EmbeddedApi_OLD implements Neo4jQuery1
+public class Neo4jQuery1EmbeddedApi implements Neo4jQuery1
 {
+    private final LdbcTraversers traversers;
+
+    public Neo4jQuery1EmbeddedApi( LdbcTraversers traversers )
+    {
+        this.traversers = traversers;
+    }
+
     @Override
     public String description()
     {
@@ -41,7 +50,7 @@ public class Neo4jQuery1EmbeddedApi_OLD implements Neo4jQuery1
         List<Node> firstNamePersons = Utils.iteratorToList( db.findNodesByLabelAndProperty( Domain.Node.Person,
                 Domain.Person.FIRST_NAME, params.firstName() ).iterator() );
         Collections.sort( firstNamePersons, new LastNameComparator() );
-        return new ResultIterator( firstNamePersons.iterator() );
+        return Iterators.transform( firstNamePersons.iterator(), new Query1ResultProjectionFunction() );
     }
 
     public static class LastNameComparator implements Comparator<Node>
@@ -55,25 +64,11 @@ public class Neo4jQuery1EmbeddedApi_OLD implements Neo4jQuery1
         }
     }
 
-    public static class ResultIterator implements Iterator<LdbcQuery1Result>
+    private class Query1ResultProjectionFunction implements Function<Node, LdbcQuery1Result>
     {
-        private final Iterator<Node> personNodes;
-
-        public ResultIterator( Iterator<Node> personNodes )
-        {
-            this.personNodes = personNodes;
-        }
-
         @Override
-        public boolean hasNext()
+        public LdbcQuery1Result apply( Node person )
         {
-            return personNodes.hasNext();
-        }
-
-        @Override
-        public LdbcQuery1Result next()
-        {
-            Node person = personNodes.next();
             String firstName = (String) person.getProperty( Domain.Person.FIRST_NAME );
             String lastName = (String) person.getProperty( Domain.Person.LAST_NAME );
             long birthday = (long) person.getProperty( Domain.Person.BIRTHDAY );
@@ -87,53 +82,35 @@ public class Neo4jQuery1EmbeddedApi_OLD implements Neo4jQuery1
                     Domain.Place.NAME );
             // (uniCity:CITY)<-[:IS_LOCATED_IN]-(uni:UNIVERSITY)<-[studyAt:STUDY_AT]-(person)
             Collection<String> unis = Lists.newArrayList( Iterables.transform(
-                    LdbcTraversers_OLD.personUniversities().traverse( person ), new Function<Path, String>()
+                    traversers.personUniversities().traverse( person ), new Function<Path, String>()
                     {
                         @Override
                         public String apply( Path input )
                         {
-                            Iterator<Node> nodes = input.nodes().iterator();
-                            // skip person
-                            nodes.next();
-                            Node uni = nodes.next();
-                            Node uniCity = nodes.next();
-                            Relationship studiedAt = input.relationships().iterator().next();
-                            // uni.name, uniCity.name(studyAt.classYear)
-                            return String.format( "%s, %s(%s)", uni.getProperty( Domain.Organisation.NAME ),
-                                    uniCity.getProperty( Domain.Place.NAME ),
-                                    studiedAt.getProperty( Domain.StudiesAt.CLASS_YEAR ) );
+                            List<Node> nodes = Lists.newArrayList( input.nodes() );
+                            List<Relationship> relationships = Lists.newArrayList( input.relationships() );
+                            return String.format( "%s, %s(%s)", nodes.get( 1 ).getProperty( Domain.Organisation.NAME ),
+                                    nodes.get( 2 ).getProperty( Domain.Place.NAME ),
+                                    relationships.get( 0 ).getProperty( Domain.StudiesAt.CLASS_YEAR ) );
                         }
                     } ) );
 
             // (companyCountry:PLACE:COUNTRY)<-[:IS_LOCATED_IN]-(company:COMPANY)<-[worksAt:WORKS_AT]-(person)
             Collection<String> companies = Lists.newArrayList( Iterables.transform(
-                    LdbcTraversers_OLD.personCompanies().traverse( person ), new Function<Path, String>()
+                    traversers.personCompanies().traverse( person ), new Function<Path, String>()
                     {
                         @Override
                         public String apply( Path input )
                         {
-                            Iterator<Node> nodes = input.nodes().iterator();
-                            // skip person
-                            nodes.next();
-                            Node company = nodes.next();
-                            Node companyCountry = nodes.next();
-                            Relationship workedAt = input.relationships().iterator().next();
-                            // company.name,
-                            // companyCountry.name(worksAt.workFrom)
-                            return String.format( "%s, %s(%s)", company.getProperty( Domain.Organisation.NAME ),
-                                    companyCountry.getProperty( Domain.Place.NAME ),
-                                    workedAt.getProperty( Domain.WorksAt.WORK_FROM ) );
+                            List<Node> nodes = Lists.newArrayList( input.nodes() );
+                            List<Relationship> relationships = Lists.newArrayList( input.relationships() );
+                            return String.format( "%s, %s(%s)", nodes.get( 1 ).getProperty( Domain.Organisation.NAME ),
+                                    nodes.get( 2 ).getProperty( Domain.Place.NAME ),
+                                    relationships.get( 0 ).getProperty( Domain.WorksAt.WORK_FROM ) );
                         }
                     } ) );
             return new LdbcQuery1Result( firstName, lastName, birthday, creationDate, gender, languages, browser, ip,
                     emails, personCity, unis, companies );
         }
-
-        @Override
-        public void remove()
-        {
-            throw new UnsupportedOperationException();
-        }
-
     }
 }

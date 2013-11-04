@@ -23,7 +23,6 @@ import com.ldbc.driver.util.Tuple;
 import com.ldbc.driver.util.Tuple.Tuple2;
 import com.ldbc.driver.util.temporal.Duration;
 import com.ldbc.driver.util.temporal.Time;
-import com.ldbc.socialnet.workload.neo4j.transaction.ParameterSubstitution;
 
 public class LdbcInteractiveWorkload extends Workload
 {
@@ -55,7 +54,7 @@ public class LdbcInteractiveWorkload extends Workload
 
         Set<Tuple2<Double, Generator<Operation<?>>>> operations = new HashSet<Tuple2<Double, Generator<Operation<?>>>>();
 
-        Generator<String> firstNameSelectGenerator = generators.discreteGenerator( Arrays.asList( ParameterSubstitution.FIRST_NAMES ) );
+        Generator<String> firstNameSelectGenerator = generators.discreteGenerator( Arrays.asList( SubstitutionParameters.FIRST_NAMES ) );
         // Generator<String> firstNameSelectGenerator =
         // generatorBuilder.discreteGenerator(
         // Arrays.asList( new String[] { "Chen" } ) ).build();

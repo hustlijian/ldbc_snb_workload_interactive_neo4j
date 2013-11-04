@@ -1,6 +1,6 @@
-package com.ldbc.socialnet.workload.neo4j.transaction;
+package com.ldbc.socialnet.workload;
 
-public class ParameterSubstitution
+public class SubstitutionParameters
 {
     // Length = 607
     public static final String[] FIRST_NAMES = new String[] { "Cyril", "Mizengo", "Jaime", "Gordon", "Fernando",

@@ -9,6 +9,7 @@ import com.ldbc.driver.Db;
 import com.ldbc.driver.DbConnectionState;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.util.MapUtils;
+import com.ldbc.socialnet.workload.neo4j.Neo4jDbCommandsEmbeddedApi.LdbcTraversersType;
 
 /**
  * Neo4j client for LDBC DShini workload
@@ -49,17 +50,25 @@ public class Neo4jDb extends Db
         {
             logger.info( "Connecting to database: " + url );
             // TODO implement
-            throw new DbException( "server commands not implemented yet" );
+            throw new DbException( "Server commands not implemented yet" );
         }
         else if ( dbType.equals( "embedded-cypher" ) )
         {
             logger.info( "Connecting to database: " + path );
+            logger.info( "API type: Cypher" );
             commands = new Neo4jDbCommandsEmbeddedCypher( path );
         }
-        else if ( dbType.equals( "embedded-api" ) )
+        else if ( dbType.equals( "embedded-api-steps" ) )
         {
             logger.info( "Connecting to database: " + path );
-            commands = new Neo4jDbCommandsEmbeddedApi( path );
+            logger.info( "API type: Traversal Framework - " + LdbcTraversersType.STEPS.name() );
+            commands = new Neo4jDbCommandsEmbeddedApi( path, LdbcTraversersType.STEPS );
+        }
+        else if ( dbType.equals( "embedded-api-raw" ) )
+        {
+            logger.info( "Connecting to database: " + path );
+            logger.info( "API type: Traversal Framework - " + LdbcTraversersType.RAW.name() );
+            commands = new Neo4jDbCommandsEmbeddedApi( path, LdbcTraversersType.RAW );
         }
         else
         {

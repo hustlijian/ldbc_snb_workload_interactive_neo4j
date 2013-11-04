@@ -6,20 +6,19 @@ import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery4;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery5;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery6;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery7;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery1EmbeddedCypher;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery3EmbeddedCypher;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery4EmbeddedCypher;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery5EmbeddedCypher;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery6EmbeddedCypher;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery7EmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcTraversersSteps;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.Neo4jQuery1EmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.Neo4jQuery3EmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.Neo4jQuery4EmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.Neo4jQuery5EmbeddedApi;
 
-public class QueryCorrectnessEmbeddedCypherTest extends QueryCorrectnessTest
+public class QueryCorrectnessEmbeddedApiStepsTest extends QueryCorrectnessTest
 {
 
     @Override
     public Neo4jQuery1 neo4jQuery1Impl()
     {
-        return new Neo4jQuery1EmbeddedCypher();
+        return new Neo4jQuery1EmbeddedApi( new LdbcTraversersSteps( db ) );
     }
 
     @Override
@@ -32,31 +31,31 @@ public class QueryCorrectnessEmbeddedCypherTest extends QueryCorrectnessTest
     @Override
     public Neo4jQuery3 neo4jQuery3Impl()
     {
-        return new Neo4jQuery3EmbeddedCypher();
+        return new Neo4jQuery3EmbeddedApi( new LdbcTraversersSteps( db ) );
     }
 
     @Override
     public Neo4jQuery4 neo4jQuery4Impl()
     {
-        return new Neo4jQuery4EmbeddedCypher();
+        return new Neo4jQuery4EmbeddedApi( new LdbcTraversersSteps( db ) );
     }
 
     @Override
     public Neo4jQuery5 neo4jQuery5Impl()
     {
-        return new Neo4jQuery5EmbeddedCypher();
+        return new Neo4jQuery5EmbeddedApi( new LdbcTraversersSteps( db ) );
     }
 
     @Override
     public Neo4jQuery6 neo4jQuery6Impl()
     {
-        return new Neo4jQuery6EmbeddedCypher();
+        return null;
     }
 
     @Override
     public Neo4jQuery7 neo4jQuery7Impl()
     {
-        return new Neo4jQuery7EmbeddedCypher();
+        return null;
     }
 
     @Override

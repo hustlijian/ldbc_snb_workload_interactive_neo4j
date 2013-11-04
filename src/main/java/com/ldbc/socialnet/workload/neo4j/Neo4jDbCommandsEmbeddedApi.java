@@ -10,21 +10,33 @@ import com.ldbc.driver.DbException;
 import com.ldbc.socialnet.workload.LdbcQuery1;
 import com.ldbc.socialnet.workload.LdbcQuery3;
 import com.ldbc.socialnet.workload.LdbcQuery4;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api.LdbcQuery1HandlerEmbeddedApi;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api.LdbcQuery3HandlerEmbeddedApi;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api.LdbcQuery4HandlerEmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.LdbcTraversers;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery1HandlerEmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery3HandlerEmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery4HandlerEmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcTraversersRaw;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcTraversersSteps;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
 
 public class Neo4jDbCommandsEmbeddedApi extends Neo4jDbCommands
 {
-    final private String path;
+    private final String path;
+    private final LdbcTraversersType traversersType;
     private ExecutionEngine queryEngine;
     private GraphDatabaseService db;
     private DbConnectionState dbConnectionState;
+    private LdbcTraversers traversers;
 
-    public Neo4jDbCommandsEmbeddedApi( String path )
+    public enum LdbcTraversersType
+    {
+        RAW,
+        STEPS
+    }
+
+    public Neo4jDbCommandsEmbeddedApi( String path, LdbcTraversersType traversersType )
     {
         this.path = path;
+        this.traversersType = traversersType;
     }
 
     @Override
@@ -32,7 +44,18 @@ public class Neo4jDbCommandsEmbeddedApi extends Neo4jDbCommands
     {
         db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder( path ).setConfig( Config.NEO4J_RUN_CONFIG ).newGraphDatabase();
         queryEngine = new ExecutionEngine( db );
-        dbConnectionState = new Neo4jConnectionStateEmbedded( db, queryEngine );
+        switch ( traversersType )
+        {
+        case RAW:
+            traversers = new LdbcTraversersRaw( db );
+            break;
+        case STEPS:
+            traversers = new LdbcTraversersSteps( db );
+            break;
+        default:
+            throw new RuntimeException( "Unrecognized LdbcTraversersType: " + traversersType.name() );
+        }
+        dbConnectionState = new Neo4jConnectionStateEmbedded( db, null, traversers );
         registerShutdownHook( db );
     }
 

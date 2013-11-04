@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.workload.neo4j.transaction.embedded_api;
+package com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps;
 
 import java.util.List;
 
@@ -13,6 +13,7 @@ import com.ldbc.driver.OperationResult;
 import com.ldbc.socialnet.workload.LdbcQuery3;
 import com.ldbc.socialnet.workload.LdbcQuery3Result;
 import com.ldbc.socialnet.workload.neo4j.Neo4jConnectionStateEmbedded;
+import com.ldbc.socialnet.workload.neo4j.transaction.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery3;
 import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 
@@ -25,7 +26,8 @@ public class LdbcQuery3HandlerEmbeddedApi extends OperationHandler<LdbcQuery3>
     {
         ExecutionEngine engine = ( (Neo4jConnectionStateEmbedded) dbConnectionState() ).executionEngine();
         GraphDatabaseService db = ( (Neo4jConnectionStateEmbedded) dbConnectionState() ).db();
-        Neo4jQuery3 query3 = new Neo4jQuery3EmbeddedApi();
+        LdbcTraversers traversers = ( (Neo4jConnectionStateEmbedded) dbConnectionState() ).traversers();
+        Neo4jQuery3 query3 = new Neo4jQuery3EmbeddedApi( traversers );
         List<LdbcQuery3Result> result = null;
 
         // TODO find way to do this

@@ -2,21 +2,21 @@ package com.ldbc.socialnet.workload;
 
 public class LdbcQuery5Result
 {
-    private final String forum;
+    private final String forumTitle;
     private final long postCount;
     private final long commentCount;
 
-    public LdbcQuery5Result( String forum, long postCount, long commentCount )
+    public LdbcQuery5Result( String forumTitle, long postCount, long commentCount )
     {
         super();
-        this.forum = forum;
+        this.forumTitle = forumTitle;
         this.postCount = postCount;
         this.commentCount = commentCount;
     }
 
-    public String forum()
+    public String forumTitle()
     {
-        return forum;
+        return forumTitle;
     }
 
     public long postCount()
@@ -40,7 +40,7 @@ public class LdbcQuery5Result
         final int prime = 31;
         int result = 1;
         result = prime * result + (int) ( commentCount ^ ( commentCount >>> 32 ) );
-        result = prime * result + ( ( forum == null ) ? 0 : forum.hashCode() );
+        result = prime * result + ( ( forumTitle == null ) ? 0 : forumTitle.hashCode() );
         result = prime * result + (int) ( postCount ^ ( postCount >>> 32 ) );
         return result;
     }
@@ -53,11 +53,11 @@ public class LdbcQuery5Result
         if ( getClass() != obj.getClass() ) return false;
         LdbcQuery5Result other = (LdbcQuery5Result) obj;
         if ( commentCount != other.commentCount ) return false;
-        if ( forum == null )
+        if ( forumTitle == null )
         {
-            if ( other.forum != null ) return false;
+            if ( other.forumTitle != null ) return false;
         }
-        else if ( !forum.equals( other.forum ) ) return false;
+        else if ( !forumTitle.equals( other.forumTitle ) ) return false;
         if ( postCount != other.postCount ) return false;
         return true;
     }
@@ -65,6 +65,7 @@ public class LdbcQuery5Result
     @Override
     public String toString()
     {
-        return "LdbcQuery5Result [forum=" + forum + ", postCount=" + postCount + ", commentCount=" + commentCount + "]";
+        return "LdbcQuery5Result [forumTitle=" + forumTitle + ", postCount=" + postCount + ", commentCount="
+               + commentCount + ", count=" + count() + "]";
     }
 }
