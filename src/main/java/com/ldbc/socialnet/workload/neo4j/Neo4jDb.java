@@ -46,11 +46,11 @@ public class Neo4jDb extends Db
         logger.info( "path = " + new File( path ).getAbsolutePath() );
         logger.info( "************************" );
 
-        if ( dbType.equals( "server" ) )
+        if ( dbType.equals( "remote-cypher" ) )
         {
-            logger.info( "Connecting to database: " + url );
+            // logger.info( "Connecting to database: " + url );
             // TODO implement
-            throw new DbException( "Server commands not implemented yet" );
+            throw new DbException( "Remote Cypher commands not implemented yet" );
         }
         else if ( dbType.equals( "embedded-cypher" ) )
         {
@@ -66,9 +66,13 @@ public class Neo4jDb extends Db
         }
         else if ( dbType.equals( "embedded-api-raw" ) )
         {
-            logger.info( "Connecting to database: " + path );
-            logger.info( "API type: Traversal Framework - " + LdbcTraversersType.RAW.name() );
-            commands = new Neo4jDbCommandsEmbeddedApi( path, LdbcTraversersType.RAW );
+            // logger.info( "Connecting to database: " + path );
+            // logger.info( "API type: Traversal Framework - " +
+            // LdbcTraversersType.RAW.name() );
+            // commands = new Neo4jDbCommandsEmbeddedApi( path,
+            // LdbcTraversersType.RAW );
+            // TODO implement
+            throw new DbException( "Raw API commands not implemented yet" );
         }
         else
         {
