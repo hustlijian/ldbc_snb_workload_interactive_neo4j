@@ -28,7 +28,6 @@ import com.ldbc.socialnet.workload.neo4j.load.LdbcSocialNeworkNeo4jImporter;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
-@Ignore
 public class IntegrationTest
 {
     public static String dbDir = "tempDb";
@@ -90,7 +89,7 @@ public class IntegrationTest
             TimeUnit timeUnit = TimeUnit.MILLISECONDS;
             Map<String, String> userParams = new HashMap<String, String>();
             userParams.put( "neo4j.path", dbDir );
-            userParams.put( "neo4j.dbtype", "embedded" );
+            userParams.put( "neo4j.dbtype", "embedded-api-steps" );
             WorkloadParams params = new WorkloadParams( userParams, Neo4jDb.class.getName(),
                     LdbcInteractiveWorkload.class.getName(), operationCount, recordCount,
                     BenchmarkPhase.TRANSACTION_PHASE, threadCount, showStatus, timeUnit );
@@ -107,7 +106,7 @@ public class IntegrationTest
     }
 
     @Ignore
-    // TODO should not depend on existance of a directory not created by test
+    // TODO should not depend on existence of a directory not created by test
     @Test
     public void shouldRunLoadWorkloadWithoutThrowingException() throws ClientException
     {
