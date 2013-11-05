@@ -15,11 +15,10 @@ rm -rf $IN_PROJECT_MVN_REPO
 
 cd $LDBC_CORE
 ./build.sh
+cd ..
 
 cd $STEPS
 mvn clean package -Dmaven.compiler.source=1.7 -Dmaven.compiler.target=1.7
-#cp steps/target/classes/org/ ../lib/
-
 cd ..
 
 mvn install:install-file -DlocalRepositoryPath=$IN_PROJECT_MVN_REPO -DcreateChecksum=true -Dpackaging=jar -Dfile=$LDBC_CORE_JAR -DgroupId=com.ldbc.driver -DartifactId=core -Dversion=$LDBC_CORE_VER
