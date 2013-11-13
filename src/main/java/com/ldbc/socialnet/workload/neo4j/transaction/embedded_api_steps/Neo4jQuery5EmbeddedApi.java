@@ -78,23 +78,15 @@ public class Neo4jQuery5EmbeddedApi implements Neo4jQuery5
         MATCH (person:Person)-[:KNOWS*1..2]-(friend:Person)
         WHERE person.id={person_id}
          */
-        Iterator<Node> personIterator = db.findNodesByLabelAndProperty( Domain.Node.Person, Domain.Person.ID,
+        Iterator<Node> personIterator = db.findNodesByLabelAndProperty( Domain.Nodes.Person, Domain.Person.ID,
                 operation.personId() ).iterator();
         if ( false == personIterator.hasNext() ) return Iterators.emptyIterator();
         final Node person = personIterator.next();
 
-        Iterator<Node> distinctFriendsWithStartPerson = StepsUtils.distinct( traversers.friendsAndFriendsOfFriends().traverse(
-                person ).nodes().iterator() );
-        Iterator<Node> distinctFriends = Iterators.filter( distinctFriendsWithStartPerson, new Predicate<Node>()
-        {
-            @Override
-            public boolean apply( Node input )
-            {
-                return !input.equals( person );
-            }
-        } );
-        Set<Node> friends = ImmutableSet.copyOf( distinctFriends );
-        Node[] friendsArray = friends.toArray( new Node[friends.size()] );
+        Iterator<Node> friendsIterator = StepsUtils.excluding(
+                StepsUtils.distinct( traversers.friendsAndFriendsOfFriends().traverse( person ).nodes() ), person );
+        Set<Node> friendsSet = ImmutableSet.copyOf( friendsIterator );
+        Node[] friendsArray = friendsSet.toArray( new Node[friendsSet.size()] );
 
         /*
         MATCH (friend)<-[membership:HAS_MEMBER]-(forum:Forum)
@@ -123,7 +115,7 @@ public class Neo4jQuery5EmbeddedApi implements Neo4jQuery5
         /*
         MATCH (friend)<-[:HAS_CREATOR]-(post:Post)<-[:CONTAINER_OF]-(forum)
          */
-        TraversalDescription postsInForumByFriendsTraverser = traversers.postsInForumByFriends( friends );
+        TraversalDescription postsInForumByFriendsTraverser = traversers.postsInForumByFriends( friendsSet );
         Map<Node, LdbcQuery5Result> forumPostsMap = new HashMap<Node, LdbcQuery5Result>();
         for ( final Node forum : forums )
         {

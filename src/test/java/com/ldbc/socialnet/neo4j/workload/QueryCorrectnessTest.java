@@ -22,8 +22,11 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.helpers.collection.IteratorUtil;
 import org.neo4j.kernel.impl.util.FileUtils;
 
+import com.ldbc.driver.util.MapUtils;
 import com.ldbc.socialnet.workload.LdbcQuery1;
 import com.ldbc.socialnet.workload.LdbcQuery1Result;
+import com.ldbc.socialnet.workload.LdbcQuery2;
+import com.ldbc.socialnet.workload.LdbcQuery2Result;
 import com.ldbc.socialnet.workload.LdbcQuery3;
 import com.ldbc.socialnet.workload.LdbcQuery3Result;
 import com.ldbc.socialnet.workload.LdbcQuery4;
@@ -35,6 +38,7 @@ import com.ldbc.socialnet.workload.LdbcQuery6Result;
 import com.ldbc.socialnet.workload.LdbcQuery7;
 import com.ldbc.socialnet.workload.LdbcQuery7Result;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery1;
+import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery2;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery3;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery4;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery5;
@@ -59,10 +63,9 @@ public abstract class QueryCorrectnessTest
         engine = new ExecutionEngine( db );
 
         // TODO uncomment to print CREATE
-        // System.out.println();
-        // System.out.println( MapUtils.prettyPrint(
-        // TestGraph.Creator.createGraphQueryParams() ) );
-        // System.out.println( TestGraph.Creator.createGraphQuery() );
+        System.out.println();
+        System.out.println( MapUtils.prettyPrint( TestGraph.Creator.createGraphQueryParams() ) );
+        System.out.println( TestGraph.Creator.createGraphQuery() );
 
         buildGraph( engine, db );
         db.shutdown();
@@ -105,8 +108,7 @@ public abstract class QueryCorrectnessTest
 
     public abstract Neo4jQuery1 neo4jQuery1Impl();
 
-    // TODO return Neo4jQueryX
-    public abstract Object neo4jQuery2Impl();
+    public abstract Neo4jQuery2 neo4jQuery2Impl();
 
     public abstract Neo4jQuery3 neo4jQuery3Impl();
 
@@ -179,11 +181,86 @@ public abstract class QueryCorrectnessTest
         assertThat( exceptionThrown, is( false ) );
     }
 
-    @Ignore
     @Test
     public void query2ShouldReturnExpectedResult()
     {
-        assertThat( true, is( false ) );
+        long personId = 1;
+        Calendar c = Calendar.getInstance();
+        c.clear();
+        c.set( 2013, Calendar.SEPTEMBER, 7, 0, 0, 0 );
+        Date maxDate = c.getTime();
+        int limit = 4;
+
+        LdbcQuery2 operation = new LdbcQuery2( personId, maxDate, limit );
+        Neo4jQuery2 query = neo4jQuery2Impl();
+
+        // TODO uncomment to print query
+        System.out.println( operation.toString() + "\n" + query.description() + "\n" );
+
+        boolean exceptionThrown = false;
+        try (Transaction tx = db.beginTx())
+        {
+            Iterator<LdbcQuery2Result> result = query.execute( db, engine, operation );
+
+            LdbcQuery2Result row = null;
+
+            /*
+            3   jacob   hansson 3   [jake3] tjena   1378504800000
+            2   aiya    thorpe  5   [aiya1] kia ora 1378418400000
+            3   jacob   hansson 2   [jake2] hej 1378335600000
+            3   jacob   hansson 1   [jake1] hello   1378332060000
+            */
+
+            // TODO * add post.id to nodes when bulk loading
+
+            // TODO * add calendar.clear() everywhere it is used
+
+            // 3 jacob hansson 3 [jake3] tjena 1378504800000
+            row = result.next();
+            assertThat( row.personId(), is( 3L ) );
+            assertThat( row.personFirstName(), is( "jacob" ) );
+            assertThat( row.personLastName(), is( "hansson" ) );
+            assertThat( row.postId(), is( 3L ) );
+            assertThat( row.postContent(), is( "[jake3] tjena" ) );
+            assertThat( row.postDate(), is( 1378504800000L ) );
+
+            // 2 aiya thorpe 5 [aiya1] kia ora 1378418400000
+            row = result.next();
+            assertThat( row.personId(), is( 2L ) );
+            assertThat( row.personFirstName(), is( "aiya" ) );
+            assertThat( row.personLastName(), is( "thorpe" ) );
+            assertThat( row.postId(), is( 5L ) );
+            assertThat( row.postContent(), is( "[aiya1] kia ora" ) );
+            assertThat( row.postDate(), is( 1378418400000L ) );
+
+            // 3 jacob hansson 2 [jake2] hej 1378335600000
+            row = result.next();
+            assertThat( row.personId(), is( 3L ) );
+            assertThat( row.personFirstName(), is( "jacob" ) );
+            assertThat( row.personLastName(), is( "hansson" ) );
+            assertThat( row.postId(), is( 2L ) );
+            assertThat( row.postContent(), is( "[jake2] hej" ) );
+            assertThat( row.postDate(), is( 1378335600000L ) );
+
+            // 3 jacob hansson 1 [jake1] hello 1378332060000
+            row = result.next();
+            assertThat( row.personId(), is( 3L ) );
+            assertThat( row.personFirstName(), is( "jacob" ) );
+            assertThat( row.personLastName(), is( "hansson" ) );
+            assertThat( row.postId(), is( 1L ) );
+            assertThat( row.postContent(), is( "[jake1] hello" ) );
+            assertThat( row.postDate(), is( 1378332060000L ) );
+
+            assertThat( result.hasNext(), is( false ) );
+
+            tx.success();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+            exceptionThrown = true;
+        }
+        assertThat( exceptionThrown, is( false ) );
     }
 
     @Test
@@ -193,6 +270,7 @@ public abstract class QueryCorrectnessTest
         String countryX = "new zealand";
         String countryY = "sweden";
         Calendar c = Calendar.getInstance();
+        c.clear();
         c.set( 2013, Calendar.SEPTEMBER, 8 );
         Date endDate = c.getTime();
         int durationDays = 4;
@@ -245,9 +323,10 @@ public abstract class QueryCorrectnessTest
     {
         long personId = 1;
         Calendar c = Calendar.getInstance();
-        c.set( 2013, Calendar.SEPTEMBER, 8 );
+        c.clear();
+        c.set( 2013, Calendar.SEPTEMBER, 7, 23, 59, 0 );
         Date endDate = c.getTime();
-        int durationDays = 3;
+        int durationDays = 2;
 
         LdbcQuery4 operation4 = new LdbcQuery4( personId, endDate, durationDays );
         Neo4jQuery4 query4 = neo4jQuery4Impl();
@@ -293,79 +372,9 @@ public abstract class QueryCorrectnessTest
     @Test
     public void query5ShouldReturnExpectedResult()
     {
-        /*
-        Friend
-            Jake       Sweden
-                5 September, New Zealand,  hello            [cake,yolo]     jakePost1           cakesAndPies                
-                5 September, Sweden,       hej              [yolo]          jakePost2           cakesAndPies
-                
-                    Aiya        6 September     aiyaComment1        hi back
-                    Stranger    7 September     strangerComment1    i don't know you
-                        Aiya    7 September     aiyaComment2        so?
-                    
-                7 September, Sweden,       tjena            [wtf,lol,pie]   jakePost3       4   floatingBoats
-            Peter      Germany
-                7 September, Germany,      hallo            [pie,lol]       peterPost1      4   floatingBoats
-                
-                    Jake        7 September     jakeComment1        pity you couldn't come
-                    
-            Aiya       New Zealand
-                6 September, Sweden,       kia ora          [pie,cake,yolo] aiyaPost1       4   cakesAndPies
-                9 September, New Zealand,  bro              [lol]           aiyaPost2           cakesAndPies
-                5 September, New Zealand,  chur             [cake, pie]     aiyaPost3           kiwisSheepAndBungyJumping
-                
-                    Alex        6 September     alexComment1        chur bro
-        
-        Not Friend             
-            Stranger   Sweden
-                2 September, Australia,    gidday           [pie, cake]     strangerPost1       cakesAndPies
-                5 September, Australia,    I heart sheep    [lol]           strangerPost2       cakesAndPies
-
-        JOINED
-            cakesAndPies - 2013, Calendar.OCTOBER, 2
-                Alex - 2013, Calendar.OCTOBER, 2 
-                Aiya - 2013, Calendar.OCTOBER, 3
-                Stranger - 2013, Calendar.OCTOBER, 4
-                Jake - 2013, Calendar.OCTOBER, 8 
-
-            redditAddicts - 2013, Calendar.OCTOBER, 22
-                Jake - 2013, Calendar.OCTOBER, 22
-
-            floatingBoats - 2013, Calendar.NOVEMBER, 13
-                Jake - 2013, Calendar.NOVEMBER, 13 
-                Alex - 2013, Calendar.NOVEMBER, 14
-                Peter -  2013, Calendar.NOVEMBER, 16 
-
-            kiwisSheepAndBungyJumping - 2013, Calendar.NOVEMBER, 1
-                Aiya - 2013, Calendar.NOVEMBER, 1
-                Alex - 2013, Calendar.NOVEMBER, 4
-
-        FORUM                       POSTS           COMMENTS
-        cakesAndPies                
-                                    jakePost1       aiyaComment1
-                                    jakePost2       strangerComment1(* not friend)
-                                                    aiyaComment2
-                                    aiyaPost1
-                                    aiyaPost2
-                                    nicky1
-                                    strangerPost1(*)
-                                    strangerPost2(*)
-        floatingBoats
-                                    jakePost3       jakeComment1
-                                    peterPost1
-        kiwisSheepAndBungyJumping
-                                    aiyaPost3       alexComment1(* me, not friend)
-        redditAddicts
-        
-        FORUM                       POSTS   COMMENTS
-        cakesAndPies                5       2
-        floatingBoats               2       1
-        kiwisSheepAndBungyJumping   1       0
-        redditAddicts               0       0
-
-         */
         long personId = 1;
         Calendar c = Calendar.getInstance();
+        c.clear();
         c.set( 2013, Calendar.JANUARY, 8 );
         Date joinDate = c.getTime();
 
@@ -401,29 +410,14 @@ public abstract class QueryCorrectnessTest
         assertThat( exceptionThrown, is( false ) );
     }
 
-    @Ignore
     @Test
     public void query6ShouldReturnExpectedResult()
     {
-        /*
-        wtf 2
-        pie 2
-        cake 1
-
-        Friend
-            Jake       Sweden
-                7 September, Sweden,       tjena            [wtf,lol,pie]   jakePost3       4   floatingBoats
-            Peter      Germany
-                7 September, Germany,      hallo            [pie,lol]       peterPost1      4   floatingBoats
-            Aiya       New Zealand
-                9 September, New Zealand,  bro              [lol]           aiyaPost2           cakesAndPies
-            Nicky England
-                5 September, England,    I live in england    [lol,cake,wtf]           nickyPost1       cakesAndPies
-         */
         long personId = 1;
         String tagName = "lol";
+        int limit = 10;
 
-        LdbcQuery6 operation6 = new LdbcQuery6( personId, tagName );
+        LdbcQuery6 operation6 = new LdbcQuery6( personId, tagName, limit );
         Neo4jQuery6 query6 = neo4jQuery6Impl();
 
         // TODO uncomment to print query
@@ -449,13 +443,9 @@ public abstract class QueryCorrectnessTest
                 assertThat( validTagCounts.containsKey( tag ), is( true ) );
                 long tagCount = row.tagCount();
                 assertThat( validTagCounts.get( tag ), equalTo( tagCount ) );
-                validTagCounts.remove( tagName );
                 actualRowCount++;
             }
             assertThat( expectedRowCount, equalTo( actualRowCount ) );
-
-            // TODO check that query 6 test is actually fully implemented
-            assertThat( true, is( false ) );
 
             tx.success();
         }
@@ -467,18 +457,19 @@ public abstract class QueryCorrectnessTest
         assertThat( exceptionThrown, is( false ) );
     }
 
-    @Ignore
     @Test
     public void query7ShouldReturnExpectedResult()
     {
         long personId = 1;
 
         Calendar c = Calendar.getInstance();
-        c.set( 2013, Calendar.SEPTEMBER, 10 );
+        c.clear();
+        c.set( 2013, Calendar.SEPTEMBER, 6, 20, 0, 0 );
         Date endDate = c.getTime();
-        int durationHours = 48;
+        int durationHours = 24;
+        int limit = 10;
 
-        LdbcQuery7 operation7 = new LdbcQuery7( personId, endDate, durationHours );
+        LdbcQuery7 operation7 = new LdbcQuery7( personId, endDate, durationHours, limit );
         Neo4jQuery7 query7 = neo4jQuery7Impl();
 
         // TODO uncomment to print query
@@ -489,8 +480,21 @@ public abstract class QueryCorrectnessTest
         {
             Iterator<LdbcQuery7Result> result = query7.execute( db, engine, operation7 );
 
-            // TODO check that query 7 test is fully implemented
-            assertThat( true, is( false ) );
+            LdbcQuery7Result row = null;
+
+            row = result.next();
+            assertThat( row.tagName(), is( "lol" ) );
+            assertThat( row.tagCount(), is( 3L ) );
+
+            row = result.next();
+            assertThat( row.tagName(), is( "wtf" ) );
+            assertThat( row.tagCount(), is( 2L ) );
+
+            row = result.next();
+            assertThat( row.tagName(), is( "cake" ) );
+            assertThat( row.tagCount(), is( 1L ) );
+
+            assertThat( result.hasNext(), is( false ) );
 
             tx.success();
         }

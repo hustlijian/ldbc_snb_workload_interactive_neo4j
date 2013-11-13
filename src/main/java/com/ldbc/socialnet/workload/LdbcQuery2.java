@@ -1,23 +1,22 @@
 package com.ldbc.socialnet.workload;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import com.ldbc.driver.Operation;
 
-public class LdbcQuery4 extends Operation<List<LdbcQuery4Result>>
+public class LdbcQuery2 extends Operation<List<LdbcQuery2Result>>
 {
     private final long personId;
     private final Date maxDate;
-    private final int durationDays;
+    private final int limit;
 
-    public LdbcQuery4( long personId, Date maxDate, int durationDays )
+    public LdbcQuery2( long personId, Date maxDate, int limit )
     {
         super();
         this.personId = personId;
         this.maxDate = maxDate;
-        this.durationDays = durationDays;
+        this.limit = limit;
     }
 
     public long personId()
@@ -25,33 +24,19 @@ public class LdbcQuery4 extends Operation<List<LdbcQuery4Result>>
         return personId;
     }
 
-    public Date minDate()
-    {
-        Calendar c = Calendar.getInstance();
-        c.clear();
-        c.setTime( maxDate );
-        c.add( Calendar.DATE, -durationDays );
-        return c.getTime();
-    }
-
     public Date maxDate()
     {
         return maxDate;
     }
 
-    public int durationDays()
-    {
-        return durationDays;
-    }
-
-    public long minDateAsMilli()
-    {
-        return minDate().getTime();
-    }
-
     public long maxDateAsMilli()
     {
-        return maxDate().getTime();
+        return maxDate.getTime();
+    }
+
+    public int limit()
+    {
+        return limit;
     }
 
     @Override
@@ -59,7 +44,7 @@ public class LdbcQuery4 extends Operation<List<LdbcQuery4Result>>
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + durationDays;
+        result = prime * result + limit;
         result = prime * result + ( ( maxDate == null ) ? 0 : maxDate.hashCode() );
         result = prime * result + (int) ( personId ^ ( personId >>> 32 ) );
         return result;
@@ -71,8 +56,8 @@ public class LdbcQuery4 extends Operation<List<LdbcQuery4Result>>
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        LdbcQuery4 other = (LdbcQuery4) obj;
-        if ( durationDays != other.durationDays ) return false;
+        LdbcQuery2 other = (LdbcQuery2) obj;
+        if ( limit != other.limit ) return false;
         if ( maxDate == null )
         {
             if ( other.maxDate != null ) return false;
@@ -85,9 +70,8 @@ public class LdbcQuery4 extends Operation<List<LdbcQuery4Result>>
     @Override
     public String toString()
     {
-        return "LdbcQuery4 [personId=" + personId + ", minDate=" + minDate() + ", maxDate=" + maxDate()
-               + ", minDateAsMilli=" + minDateAsMilli() + ", maxDateAsMilli=" + maxDateAsMilli() + ", durationDays="
-               + durationDays + "]";
+        return "LdbcQuery2 [personId=" + personId + ", maxDate=" + maxDate + ", maxDateAsMilli=" + maxDateAsMilli()
+               + ", limit=" + limit + "]";
     }
 
 }

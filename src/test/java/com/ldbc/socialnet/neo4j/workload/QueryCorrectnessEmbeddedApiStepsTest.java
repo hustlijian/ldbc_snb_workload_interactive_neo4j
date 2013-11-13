@@ -1,6 +1,7 @@
 package com.ldbc.socialnet.neo4j.workload;
 
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery1;
+import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery2;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery3;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery4;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery5;
@@ -8,9 +9,12 @@ import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery6;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery7;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcTraversersSteps;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.Neo4jQuery1EmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.Neo4jQuery2EmbeddedApi;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.Neo4jQuery3EmbeddedApi;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.Neo4jQuery4EmbeddedApi;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.Neo4jQuery5EmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.Neo4jQuery6EmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.Neo4jQuery7EmbeddedApi;
 
 public class QueryCorrectnessEmbeddedApiStepsTest extends QueryCorrectnessTest
 {
@@ -22,10 +26,9 @@ public class QueryCorrectnessEmbeddedApiStepsTest extends QueryCorrectnessTest
     }
 
     @Override
-    public Object neo4jQuery2Impl()
+    public Neo4jQuery2 neo4jQuery2Impl()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new Neo4jQuery2EmbeddedApi( new LdbcTraversersSteps( db ) );
     }
 
     @Override
@@ -49,13 +52,13 @@ public class QueryCorrectnessEmbeddedApiStepsTest extends QueryCorrectnessTest
     @Override
     public Neo4jQuery6 neo4jQuery6Impl()
     {
-        return null;
+        return new Neo4jQuery6EmbeddedApi( new LdbcTraversersSteps( db ) );
     }
 
     @Override
     public Neo4jQuery7 neo4jQuery7Impl()
     {
-        return null;
+        return new Neo4jQuery7EmbeddedApi( new LdbcTraversersSteps( db ) );
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.ldbc.socialnet.workload.neo4j;
 
-import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
@@ -10,10 +9,12 @@ import com.ldbc.driver.DbException;
 import com.ldbc.socialnet.workload.LdbcQuery1;
 import com.ldbc.socialnet.workload.LdbcQuery3;
 import com.ldbc.socialnet.workload.LdbcQuery4;
+import com.ldbc.socialnet.workload.LdbcQuery5;
 import com.ldbc.socialnet.workload.neo4j.transaction.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery1HandlerEmbeddedApi;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery3HandlerEmbeddedApi;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery4HandlerEmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery5HandlerEmbeddedApi;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcTraversersRaw;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcTraversersSteps;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
@@ -22,7 +23,6 @@ public class Neo4jDbCommandsEmbeddedApi extends Neo4jDbCommands
 {
     private final String path;
     private final LdbcTraversersType traversersType;
-    private ExecutionEngine queryEngine;
     private GraphDatabaseService db;
     private DbConnectionState dbConnectionState;
     private LdbcTraversers traversers;
@@ -43,7 +43,6 @@ public class Neo4jDbCommandsEmbeddedApi extends Neo4jDbCommands
     public void init()
     {
         db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder( path ).setConfig( Config.NEO4J_RUN_CONFIG ).newGraphDatabase();
-        queryEngine = new ExecutionEngine( db );
         switch ( traversersType )
         {
         case RAW:
@@ -77,6 +76,7 @@ public class Neo4jDbCommandsEmbeddedApi extends Neo4jDbCommands
         db.registerOperationHandler( LdbcQuery1.class, LdbcQuery1HandlerEmbeddedApi.class );
         db.registerOperationHandler( LdbcQuery3.class, LdbcQuery3HandlerEmbeddedApi.class );
         db.registerOperationHandler( LdbcQuery4.class, LdbcQuery4HandlerEmbeddedApi.class );
+        db.registerOperationHandler( LdbcQuery5.class, LdbcQuery5HandlerEmbeddedApi.class );
     }
 
     private static void registerShutdownHook( final GraphDatabaseService graphDb )

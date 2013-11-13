@@ -11,13 +11,15 @@ public class LdbcQuery7 extends Operation<List<LdbcQuery7Result>>
     private final long personId;
     private final Date endDateTime;
     private final int durationHours;
+    private final int limit;
 
-    public LdbcQuery7( long personId, Date endDateTime, int durationHours )
+    public LdbcQuery7( long personId, Date endDateTime, int durationHours, int limit )
     {
         super();
         this.personId = personId;
         this.endDateTime = endDateTime;
         this.durationHours = durationHours;
+        this.limit = limit;
     }
 
     public long personId()
@@ -38,6 +40,7 @@ public class LdbcQuery7 extends Operation<List<LdbcQuery7Result>>
     public long startDateTimeAsMilli()
     {
         Calendar c = Calendar.getInstance();
+        c.clear();
         c.setTime( endDateTime );
         c.add( Calendar.HOUR, -durationHours );
         return c.getTimeInMillis();
@@ -48,6 +51,11 @@ public class LdbcQuery7 extends Operation<List<LdbcQuery7Result>>
         return endDateTime.getTime();
     }
 
+    public int limit()
+    {
+        return limit;
+    }
+
     @Override
     public int hashCode()
     {
@@ -55,6 +63,7 @@ public class LdbcQuery7 extends Operation<List<LdbcQuery7Result>>
         int result = 1;
         result = prime * result + durationHours;
         result = prime * result + ( ( endDateTime == null ) ? 0 : endDateTime.hashCode() );
+        result = prime * result + limit;
         result = prime * result + (int) ( personId ^ ( personId >>> 32 ) );
         return result;
     }
@@ -72,6 +81,7 @@ public class LdbcQuery7 extends Operation<List<LdbcQuery7Result>>
             if ( other.endDateTime != null ) return false;
         }
         else if ( !endDateTime.equals( other.endDateTime ) ) return false;
+        if ( limit != other.limit ) return false;
         if ( personId != other.personId ) return false;
         return true;
     }
@@ -80,6 +90,7 @@ public class LdbcQuery7 extends Operation<List<LdbcQuery7Result>>
     public String toString()
     {
         return "LdbcQuery7 [personId=" + personId + ", endDateTime=" + endDateTime + ", durationHours=" + durationHours
-               + "]";
+               + ", startDateTimeAsMilli=" + startDateTimeAsMilli() + ", endDateTimeAsMilli=" + endDateTimeAsMilli()
+               + ", limit=" + limit + "]";
     }
 }

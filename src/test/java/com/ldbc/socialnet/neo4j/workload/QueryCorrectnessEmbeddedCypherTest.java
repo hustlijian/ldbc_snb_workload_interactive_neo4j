@@ -1,12 +1,14 @@
 package com.ldbc.socialnet.neo4j.workload;
 
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery1;
+import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery2;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery3;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery4;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery5;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery6;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery7;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery1EmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery2EmbeddedCypher;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery3EmbeddedCypher;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery4EmbeddedCypher;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.Neo4jQuery5EmbeddedCypher;
@@ -23,10 +25,9 @@ public class QueryCorrectnessEmbeddedCypherTest extends QueryCorrectnessTest
     }
 
     @Override
-    public Object neo4jQuery2Impl()
+    public Neo4jQuery2 neo4jQuery2Impl()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new Neo4jQuery2EmbeddedCypher();
     }
 
     @Override

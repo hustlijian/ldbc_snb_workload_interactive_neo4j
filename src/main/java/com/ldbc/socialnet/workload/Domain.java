@@ -15,11 +15,11 @@ public class Domain
     public static Iterable<Tuple2<Label, String>> labelPropertyPairsToIndex()
     {
         List<Tuple2<Label, String>> labelPropertyPairsToIndex = new ArrayList<Tuple2<Label, String>>();
-        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.Tag, Tag.NAME ) );
-        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.Person, Person.ID ) );
-        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.Person, Person.FIRST_NAME ) );
-        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.Person, Person.LAST_NAME ) );
-        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Node.Place, Place.NAME ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Nodes.Tag, Tag.NAME ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Nodes.Person, Person.ID ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Nodes.Person, Person.FIRST_NAME ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Nodes.Person, Person.LAST_NAME ) );
+        labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Nodes.Place, Place.NAME ) );
         labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Place.Type.City, Place.NAME ) );
         labelPropertyPairsToIndex.add( new Tuple2<Label, String>( Place.Type.Country, Place.NAME ) );
         return labelPropertyPairsToIndex;
@@ -35,7 +35,7 @@ public class Domain
         return labelsToIndex;
     }
 
-    public enum Rel implements RelationshipType
+    public enum Rels implements RelationshipType
     {
         STUDY_AT,
         REPLY_OF,
@@ -56,7 +56,7 @@ public class Domain
         IS_SUBCLASS_OF
     }
 
-    public enum Node implements Label
+    public enum Nodes implements Label
     {
         Comment,
         Post,
@@ -83,6 +83,7 @@ public class Domain
 
     public static class Post
     {
+        public static final String ID = "id";
         public static final String IMAGE_FILE = "imageFile";
         public static final String CREATION_DATE = "creationDate";
         public static final String LOCATION_IP = "locationIP";

@@ -52,6 +52,7 @@ public class LdbcQuery3 extends Operation<List<LdbcQuery3Result>>
     public long startDateAsMilli()
     {
         Calendar c = Calendar.getInstance();
+        c.clear();
         c.setTime( endDate );
         c.add( Calendar.DATE, -durationDays );
         return c.getTimeInMillis();

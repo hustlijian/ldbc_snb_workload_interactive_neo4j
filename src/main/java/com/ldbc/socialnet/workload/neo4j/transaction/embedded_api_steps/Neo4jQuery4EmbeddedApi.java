@@ -57,12 +57,12 @@ public class Neo4jQuery4EmbeddedApi implements Neo4jQuery4
         ORDER BY tagCount DESC
         LIMIT 10         
         */
-        Iterator<Node> personIterator = db.findNodesByLabelAndProperty( Domain.Node.Person, Domain.Person.ID,
+        Iterator<Node> personIterator = db.findNodesByLabelAndProperty( Domain.Nodes.Person, Domain.Person.ID,
                 operation.personId() ).iterator();
         if ( false == personIterator.hasNext() ) return Iterators.emptyIterator();
         Node person = personIterator.next();
         Iterator<String> tagNames = Iterators.transform(
-                traversers.friendPostTags( operation.startDateAsMilli(), operation.endDateAsMilli() ).traverse( person ).nodes().iterator(),
+                traversers.friendPostTags( operation.minDateAsMilli(), operation.maxDateAsMilli() ).traverse( person ).nodes().iterator(),
                 new Function<Node, String>()
                 {
                     @Override

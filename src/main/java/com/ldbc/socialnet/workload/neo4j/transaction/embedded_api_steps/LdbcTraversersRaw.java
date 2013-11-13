@@ -82,4 +82,40 @@ public class LdbcTraversersRaw implements LdbcTraversers
     {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public TraversalDescription friendsPostsBeforeDate( long maxPostCreationDate )
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TraversalDescription tagsOnPosts( String tagName )
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TraversalDescription personsPostsWithGivenTag( String tagName )
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TraversalDescription postsInPersonsCountryInDateRangeNotCreatedByOtherPerson( long minDate, long maxDate,
+            Node otherPerson )
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TraversalDescription postsTags()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

@@ -24,6 +24,27 @@ import com.ldbc.driver.util.Tuple.Tuple2;
 import com.ldbc.driver.util.temporal.Duration;
 import com.ldbc.driver.util.temporal.Time;
 
+/*
+MAVEN_OPTS="-server -XX:+UseConcMarkSweepGC -Xmx512m" mvn exec:java -Dexec.mainClass=com.ldbc.driver.Client -Dexec.arguments="-db,com.ldbc.socialnet.workload.neo4j.Neo4jDb,-w,com.ldbc.socialnet.workload.LdbcInteractiveWorkload,-oc,10,-rc,-1,-tc,1,-s,-tu,MILLISECONDS,-p,neo4j.path=db/,-p,neo4j.dbtype=embedded-api-steps"
+
+    com.ldbc.socialnet.workload.LdbcQuery3
+        Count:          1
+        Min:            18019
+        Mean:           18019.0
+    com.ldbc.socialnet.workload.LdbcQuery4
+        Count:          2
+        Min:            353
+        Mean:           1077.0
+    com.ldbc.socialnet.workload.LdbcQuery5
+        Count:          5
+        Min:            46506
+        Mean:           51906.6
+    com.ldbc.socialnet.workload.LdbcQuery1
+        Count:          2
+        Min:            22
+        Mean:           310.5
+
+ */
 public class LdbcInteractiveWorkload extends Workload
 {
 
@@ -59,11 +80,18 @@ public class LdbcInteractiveWorkload extends Workload
         // generatorBuilder.discreteGenerator(
         // Arrays.asList( new String[] { "Chen" } ) ).build();
 
-        int limit = 10;
+        /*
+         * Query1
+         */
+        int query1Limit = 10;
         operations.add( Tuple.tuple2( 1d, (Generator<Operation<?>>) new Query1Generator( firstNameSelectGenerator,
-                limit ) ) );
+                query1Limit ) ) );
 
+        /*
+         * Query3
+         */
         Calendar calendar = Calendar.getInstance();
+        calendar.clear();
         calendar.set( 2010, Calendar.JANUARY, 1 );
         long personId = 143;
         String countryX = "United_States";
@@ -73,7 +101,11 @@ public class LdbcInteractiveWorkload extends Workload
         operations.add( Tuple.tuple2( 1d, (Generator<Operation<?>>) new Query3Generator( personId, countryX, countryY,
                 startDate, durationDays ) ) );
 
+        /*
+         * Query4
+         */
         calendar = Calendar.getInstance();
+        calendar.clear();
         calendar.set( 2011, Calendar.JANUARY, 1 );
         personId = 143;
         startDate = calendar.getTime();
@@ -81,15 +113,26 @@ public class LdbcInteractiveWorkload extends Workload
         operations.add( Tuple.tuple2( 1d, (Generator<Operation<?>>) new Query4Generator( personId, startDate,
                 durationDays ) ) );
 
+        /*
+         * Query5
+         */
         calendar = Calendar.getInstance();
+        calendar.clear();
         calendar.set( 2011, Calendar.JANUARY, 1 );
         personId = 143;
         Date joinDate = calendar.getTime();
         operations.add( Tuple.tuple2( 1d, (Generator<Operation<?>>) new Query5Generator( personId, joinDate ) ) );
 
+        /*
+         * Query6
+         */
         personId = 143;
         String tagName = "Charles_Dickens";
-        operations.add( Tuple.tuple2( 1d, (Generator<Operation<?>>) new Query6Generator( personId, tagName ) ) );
+        int query6Limit = 10;
+        operations.add( Tuple.tuple2( 1d,
+                (Generator<Operation<?>>) new Query6Generator( personId, tagName, query6Limit ) ) );
+
+        // TODO Query7
 
         /*
          * Create Discrete Generator from 
@@ -105,8 +148,8 @@ public class LdbcInteractiveWorkload extends Workload
         operationsToInclude.add( LdbcQuery1.class );
         operationsToInclude.add( LdbcQuery3.class );
         operationsToInclude.add( LdbcQuery4.class );
-        // operationsToInclude.add( LdbcQuery5.class );
-        // operationsToInclude.add( LdbcQuery6.class );
+        operationsToInclude.add( LdbcQuery5.class );
+        operationsToInclude.add( LdbcQuery6.class );
         Function1<Operation<?>, Boolean> filter = new IncludeOnlyClassesPredicate<Operation<?>>( operationsToInclude );
 
         Generator<Operation<?>> filteredGenerator = new FilterGeneratorWrapper<Operation<?>>( operationGenerator,
@@ -208,17 +251,19 @@ public class LdbcInteractiveWorkload extends Workload
     {
         private final long personId;
         private final String tagName;
+        private final int limit;
 
-        protected Query6Generator( final long personId, final String tagName )
+        protected Query6Generator( final long personId, final String tagName, int limit )
         {
             this.personId = personId;
             this.tagName = tagName;
+            this.limit = limit;
         }
 
         @Override
         protected Operation<?> doNext() throws GeneratorException
         {
-            return new LdbcQuery6( personId, tagName );
+            return new LdbcQuery6( personId, tagName, limit );
         }
     }
 

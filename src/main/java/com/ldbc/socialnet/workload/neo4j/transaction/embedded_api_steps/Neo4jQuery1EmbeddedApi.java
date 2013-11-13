@@ -47,7 +47,7 @@ public class Neo4jQuery1EmbeddedApi implements Neo4jQuery1
         Persons are returned (e.g. as for a search page with top 10 shown), 
         and the information is complemented with summaries of the persons' workplaces, places of study, etc.
          */
-        List<Node> firstNamePersons = Utils.iteratorToList( db.findNodesByLabelAndProperty( Domain.Node.Person,
+        List<Node> firstNamePersons = Utils.iteratorToList( db.findNodesByLabelAndProperty( Domain.Nodes.Person,
                 Domain.Person.FIRST_NAME, params.firstName() ).iterator() );
         Collections.sort( firstNamePersons, new LastNameComparator() );
         return Iterators.transform( firstNamePersons.iterator(), new Query1ResultProjectionFunction() );
@@ -78,7 +78,7 @@ public class Neo4jQuery1EmbeddedApi implements Neo4jQuery1
             String browser = (String) person.getProperty( Domain.Person.BROWSER_USED );
             String ip = (String) person.getProperty( Domain.Person.LOCATION_IP );
             String[] emails = (String[]) person.getProperty( Domain.Person.EMAIL_ADDRESSES );
-            String personCity = (String) person.getSingleRelationship( Domain.Rel.IS_LOCATED_IN, Direction.OUTGOING ).getEndNode().getProperty(
+            String personCity = (String) person.getSingleRelationship( Domain.Rels.IS_LOCATED_IN, Direction.OUTGOING ).getEndNode().getProperty(
                     Domain.Place.NAME );
             // (uniCity:CITY)<-[:IS_LOCATED_IN]-(uni:UNIVERSITY)<-[studyAt:STUDY_AT]-(person)
             Collection<String> unis = Lists.newArrayList( Iterables.transform(

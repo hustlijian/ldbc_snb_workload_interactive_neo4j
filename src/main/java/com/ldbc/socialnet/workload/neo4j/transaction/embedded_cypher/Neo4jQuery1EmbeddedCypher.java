@@ -10,11 +10,11 @@ import org.neo4j.graphdb.GraphDatabaseService;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
-import com.ldbc.socialnet.workload.Domain;
 import com.ldbc.socialnet.workload.LdbcQuery1;
 import com.ldbc.socialnet.workload.LdbcQuery1Result;
-import com.ldbc.socialnet.workload.LdbcQuery4Result;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery1;
+
+import static com.ldbc.socialnet.workload.Domain.*;
 
 public class Neo4jQuery1EmbeddedCypher implements Neo4jQuery1
 {
@@ -56,37 +56,29 @@ public class Neo4jQuery1EmbeddedCypher implements Neo4jQuery1
     {
         return String.format(
 
-        "MATCH (person:" + Domain.Node.Person + ")\n"
-
-        + "USING INDEX person:" + Domain.Node.Person + "(" + Domain.Person.FIRST_NAME + ")\n"
-
-        + "WHERE person." + Domain.Person.FIRST_NAME + "={ person_first_name }\n"
+        "MATCH (person:" + Nodes.Person + " {" + Person.FIRST_NAME + ":{person_first_name}})\n"
 
         + "WITH person\n"
 
-        + "ORDER BY person." + Domain.Person.LAST_NAME + "\n"
+        + "ORDER BY person." + Person.LAST_NAME + "\n"
 
         + "LIMIT {limit}\n"
 
-        + "MATCH (person)-[:" + Domain.Rel.IS_LOCATED_IN + "]->(personCity:" + Domain.Node.Place + ":"
-                + Domain.Place.Type.City + ")\n"
+        + "MATCH (person)-[:" + Rels.IS_LOCATED_IN + "]->(personCity:" + Nodes.Place + ":" + Place.Type.City + ")\n"
 
-                + "WITH person, personCity\n"
+        + "MATCH (uniCity:" + Place.Type.City + ")<-[:" + Rels.IS_LOCATED_IN + "]-(uni:" + Organisation.Type.University
+                + ")<-[studyAt:" + Rels.STUDY_AT + "]-(person)\n"
 
-                + "MATCH (uniCity:" + Domain.Place.Type.City + ")<-[:" + Domain.Rel.IS_LOCATED_IN + "]-(uni:"
-                + Domain.Organisation.Type.University + ")<-[studyAt:" + Domain.Rel.STUDY_AT + "]-(person)\n"
-
-                + "WITH collect(DISTINCT (uni." + Domain.Organisation.NAME + " + ', ' + uniCity." + Domain.Place.NAME
-                + "+ '(' + studyAt." + Domain.StudiesAt.CLASS_YEAR + " + ')')) AS unis,\n"
+                + "WITH collect(DISTINCT (uni." + Organisation.NAME + " + ', ' + uniCity." + Place.NAME
+                + "+ '(' + studyAt." + StudiesAt.CLASS_YEAR + " + ')')) AS unis,\n"
 
                 + "  person, personCity\n"
 
-                + "MATCH (companyCountry:" + Domain.Node.Place + ":" + Domain.Place.Type.Country + ")<-[:"
-                + Domain.Rel.IS_LOCATED_IN + "]-(company:" + Domain.Organisation.Type.Company + ")<-[worksAt:"
-                + Domain.Rel.WORKS_AT + "]-(person)\n"
+                + "MATCH (companyCountry:" + Nodes.Place + ":" + Place.Type.Country + ")<-[:" + Rels.IS_LOCATED_IN
+                + "]-(company:" + Organisation.Type.Company + ")<-[worksAt:" + Rels.WORKS_AT + "]-(person)\n"
 
-                + "WITH collect(DISTINCT (company." + Domain.Organisation.NAME + " + ', ' + companyCountry."
-                + Domain.Place.NAME + " + '('+ worksAt." + Domain.WorksAt.WORK_FROM + " + ')')) AS companies,\n"
+                + "WITH collect(DISTINCT (company." + Organisation.NAME + " + ', ' + companyCountry." + Place.NAME
+                + " + '('+ worksAt." + WorksAt.WORK_FROM + " + ')')) AS companies,\n"
 
                 + "  unis, person, personCity\n"
 
@@ -98,8 +90,7 @@ public class Neo4jQuery1EmbeddedCypher implements Neo4jQuery1
 
                 + "  personCity.%s AS personCity, unis, companies",
 
-        Domain.Person.FIRST_NAME, Domain.Person.LAST_NAME, Domain.Person.BIRTHDAY, Domain.Person.CREATION_DATE,
-                Domain.Person.GENDER, Domain.Person.LANGUAGES, Domain.Person.BROWSER_USED, Domain.Person.LOCATION_IP,
-                Domain.Person.EMAIL_ADDRESSES, Domain.Place.NAME );
+        Person.FIRST_NAME, Person.LAST_NAME, Person.BIRTHDAY, Person.CREATION_DATE, Person.GENDER, Person.LANGUAGES,
+                Person.BROWSER_USED, Person.LOCATION_IP, Person.EMAIL_ADDRESSES, Place.NAME );
     }
 }

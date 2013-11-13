@@ -8,12 +8,14 @@ public class LdbcQuery6 extends Operation<List<LdbcQuery6Result>>
 {
     private final long personId;
     private final String tagName;
+    private final int limit;
 
-    public LdbcQuery6( long personId, String tagName )
+    public LdbcQuery6( long personId, String tagName, int limit )
     {
         super();
         this.personId = personId;
         this.tagName = tagName;
+        this.limit = limit;
     }
 
     public long personId()
@@ -26,11 +28,17 @@ public class LdbcQuery6 extends Operation<List<LdbcQuery6Result>>
         return tagName;
     }
 
+    public int limit()
+    {
+        return limit;
+    }
+
     @Override
     public int hashCode()
     {
         final int prime = 31;
         int result = 1;
+        result = prime * result + limit;
         result = prime * result + (int) ( personId ^ ( personId >>> 32 ) );
         result = prime * result + ( ( tagName == null ) ? 0 : tagName.hashCode() );
         return result;
@@ -43,6 +51,7 @@ public class LdbcQuery6 extends Operation<List<LdbcQuery6Result>>
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
         LdbcQuery6 other = (LdbcQuery6) obj;
+        if ( limit != other.limit ) return false;
         if ( personId != other.personId ) return false;
         if ( tagName == null )
         {
@@ -55,6 +64,6 @@ public class LdbcQuery6 extends Operation<List<LdbcQuery6Result>>
     @Override
     public String toString()
     {
-        return "LdbcQuery6 [personId=" + personId + ", tagName=" + tagName + "]";
+        return "LdbcQuery6 [personId=" + personId + ", tagName=" + tagName + ", limit=" + limit + "]";
     }
 }

@@ -61,25 +61,19 @@ public class Neo4jQuery5EmbeddedCypher implements Neo4jQuery5
 
     private String queryComments()
     {
-        return "MATCH (person:" + Domain.Node.Person + ")-[:" + Domain.Rel.KNOWS + "*1..2]-(friend:"
-               + Domain.Node.Person + ")\n"
-
-               + "USING INDEX person:" + Domain.Node.Person + "(" + Domain.Person.ID + ")\n"
+        return "MATCH (person:" + Domain.Nodes.Person + ")-[:" + Domain.Rels.KNOWS + "*1..2]-(friend:"
+               + Domain.Nodes.Person + ")\n"
 
                + "WHERE person." + Domain.Person.ID + "={person_id}\n"
 
-               + "WITH friend\n"
-
-               + "MATCH (friend)<-[membership:" + Domain.Rel.HAS_MEMBER + "]-(forum:" + Domain.Node.Forum + ")\n"
+               + "MATCH (friend)<-[membership:" + Domain.Rels.HAS_MEMBER + "]-(forum:" + Domain.Nodes.Forum + ")\n"
 
                + "WHERE membership." + Domain.HasMember.JOIN_DATE + ">{join_date}\n"
 
-               + "WITH forum, friend\n"
+               + "MATCH (friend)<-[:" + Domain.Rels.HAS_CREATOR + "]-(comment:" + Domain.Nodes.Comment + ")\n"
 
-               + "MATCH (friend)<-[:" + Domain.Rel.HAS_CREATOR + "]-(comment:" + Domain.Node.Comment + ")\n"
-
-               + "WHERE (comment)-[:" + Domain.Rel.REPLY_OF + "*0..]->(:" + Domain.Node.Comment + ")-[:"
-               + Domain.Rel.REPLY_OF + "]->(:" + Domain.Node.Post + ")<-[:" + Domain.Rel.CONTAINER_OF + "]-(forum)\n"
+               + "WHERE (comment)-[:" + Domain.Rels.REPLY_OF + "*0..]->(:" + Domain.Nodes.Comment + ")-[:"
+               + Domain.Rels.REPLY_OF + "]->(:" + Domain.Nodes.Post + ")<-[:" + Domain.Rels.CONTAINER_OF + "]-(forum)\n"
 
                + "RETURN forum.title AS forum, count(comment) AS commentCount\n"
 
@@ -100,23 +94,17 @@ public class Neo4jQuery5EmbeddedCypher implements Neo4jQuery5
 
     private String queryPosts()
     {
-        return "MATCH (person:" + Domain.Node.Person + ")-[:" + Domain.Rel.KNOWS + "*1..2]-(friend:"
-               + Domain.Node.Person + ")\n"
-
-               + "USING INDEX person:" + Domain.Node.Person + "(" + Domain.Person.ID + ")\n"
+        return "MATCH (person:" + Domain.Nodes.Person + ")-[:" + Domain.Rels.KNOWS + "*1..2]-(friend:"
+               + Domain.Nodes.Person + ")\n"
 
                + "WHERE person." + Domain.Person.ID + "={person_id}\n"
 
-               + "WITH friend\n"
-
-               + "MATCH (friend)<-[membership:" + Domain.Rel.HAS_MEMBER + "]-(forum:" + Domain.Node.Forum + ")\n"
+               + "MATCH (friend)<-[membership:" + Domain.Rels.HAS_MEMBER + "]-(forum:" + Domain.Nodes.Forum + ")\n"
 
                + "WHERE membership." + Domain.HasMember.JOIN_DATE + ">{join_date}\n"
 
-               + "WITH forum, friend\n"
-
-               + "MATCH (friend)<-[:" + Domain.Rel.HAS_CREATOR + "]-(post:" + Domain.Node.Post + ")<-[:"
-               + Domain.Rel.CONTAINER_OF + "]-(forum)\n"
+               + "MATCH (friend)<-[:" + Domain.Rels.HAS_CREATOR + "]-(post:" + Domain.Nodes.Post + ")<-[:"
+               + Domain.Rels.CONTAINER_OF + "]-(forum)\n"
 
                + "RETURN forum.title AS forum, count(post) AS postCount\n"
 

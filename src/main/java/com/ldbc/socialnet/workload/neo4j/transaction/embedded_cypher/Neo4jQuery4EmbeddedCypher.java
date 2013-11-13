@@ -40,8 +40,8 @@ public class Neo4jQuery4EmbeddedCypher implements Neo4jQuery4
     {
         Map<String, Object> queryParams = new HashMap<String, Object>();
         queryParams.put( "person_id", params.personId() );
-        queryParams.put( "min_date", params.startDateAsMilli() );
-        queryParams.put( "max_date", params.endDateAsMilli() );
+        queryParams.put( "min_date", params.minDateAsMilli() );
+        queryParams.put( "max_date", params.maxDateAsMilli() );
         return queryParams;
     }
 
@@ -49,22 +49,16 @@ public class Neo4jQuery4EmbeddedCypher implements Neo4jQuery4
     {
         return String.format(
 
-        "MATCH (person:" + Domain.Node.Person + ")-[:" + Domain.Rel.KNOWS + "]-(friend:" + Domain.Node.Person + ")\n"
-
-        + "USING INDEX person:" + Domain.Node.Person + "(" + Domain.Person.ID + ")\n"
+        "MATCH (person:" + Domain.Nodes.Person + ")-[:" + Domain.Rels.KNOWS + "]-(friend:" + Domain.Nodes.Person + ")\n"
 
         + "WHERE person." + Domain.Person.ID + "={person_id}\n"
 
-        + "WITH friend\n"
-
-        + "MATCH (friend)<-[:" + Domain.Rel.HAS_CREATOR + "]-(post:" + Domain.Node.Post + ")\n"
+        + "MATCH (friend)<-[:" + Domain.Rels.HAS_CREATOR + "]-(post:" + Domain.Nodes.Post + ")\n"
 
         + "WHERE post." + Domain.Post.CREATION_DATE + ">={min_date} AND post." + Domain.Post.CREATION_DATE
                 + "<={max_date}\n"
 
-                + "WITH post\n"
-
-                + "MATCH (post)-[" + Domain.Rel.HAS_TAG + "]->(tag:" + Domain.Node.Tag + ")\n"
+                + "MATCH (post)-[" + Domain.Rels.HAS_TAG + "]->(tag:" + Domain.Nodes.Tag + ")\n"
 
                 + "WITH DISTINCT tag, collect(tag) AS tags\n"
 

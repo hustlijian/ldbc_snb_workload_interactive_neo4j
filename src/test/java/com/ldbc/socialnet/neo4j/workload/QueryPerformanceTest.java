@@ -36,6 +36,7 @@ import com.ldbc.socialnet.workload.neo4j.utils.Config;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+@Ignore
 public class QueryPerformanceTest
 {
     public static final boolean PRINT = true;
@@ -170,6 +171,7 @@ public class QueryPerformanceTest
         try (Transaction tx = db.beginTx())
         {
             Calendar calendar = Calendar.getInstance();
+            calendar.clear();
             calendar.set( 2011, Calendar.JANUARY, 1 );
             Date endDate = calendar.getTime();
             int durationDays = 365 * 1;
@@ -199,6 +201,7 @@ public class QueryPerformanceTest
         try (Transaction tx = db.beginTx())
         {
             Calendar calendar = Calendar.getInstance();
+            calendar.clear();
             calendar.set( 2011, Calendar.JANUARY, 1 );
             Date endDate = calendar.getTime();
             int durationDays = 365 * 1;
@@ -228,6 +231,7 @@ public class QueryPerformanceTest
         try (Transaction tx = db.beginTx())
         {
             Calendar calendar = Calendar.getInstance();
+            calendar.clear();
             calendar.set( 2011, Calendar.JANUARY, 1 );
 
             long personId = 143;
@@ -251,6 +255,7 @@ public class QueryPerformanceTest
         try (Transaction tx = db.beginTx())
         {
             Calendar calendar = Calendar.getInstance();
+            calendar.clear();
             calendar.set( 2011, Calendar.JANUARY, 1 );
 
             long personId = 143;
@@ -275,6 +280,7 @@ public class QueryPerformanceTest
         try (Transaction tx = db.beginTx())
         {
             Calendar calendar = Calendar.getInstance();
+            calendar.clear();
             calendar.set( 2011, Calendar.JANUARY, 1 );
 
             long personId = 143;
@@ -298,10 +304,10 @@ public class QueryPerformanceTest
         try (Transaction tx = db.beginTx())
         {
             long personId = 143;
-
             String tagName = "Charles_Dickens";
+            int limit = 10;
 
-            Operation operation = new LdbcQuery6( personId, tagName );
+            Operation operation = new LdbcQuery6( personId, tagName, limit );
             Neo4jQuery query = new Neo4jQuery6EmbeddedCypher();
             execute( "Query6", query, operation, 5, 5, false );
             tx.success();

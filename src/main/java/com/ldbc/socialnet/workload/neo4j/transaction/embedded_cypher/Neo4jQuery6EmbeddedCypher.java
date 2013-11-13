@@ -9,10 +9,11 @@ import org.neo4j.graphdb.GraphDatabaseService;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
-import com.ldbc.socialnet.workload.Domain;
 import com.ldbc.socialnet.workload.LdbcQuery6;
 import com.ldbc.socialnet.workload.LdbcQuery6Result;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery6;
+
+import static com.ldbc.socialnet.workload.Domain.*;
 
 public class Neo4jQuery6EmbeddedCypher implements Neo4jQuery6
 {
@@ -46,23 +47,18 @@ public class Neo4jQuery6EmbeddedCypher implements Neo4jQuery6
 
     private String query()
     {
-        return "MATCH (person:" + Domain.Node.Person + ")-[:" + Domain.Rel.KNOWS + "*1..2]-(:" + Domain.Node.Person
-               + ")<-[:" + Domain.Rel.HAS_CREATOR + "]-(post:" + Domain.Node.Post + ")-[:" + Domain.Rel.HAS_TAG
-               + "]->(tag:" + Domain.Node.Tag + ")\n"
+        return "MATCH (person:" + Nodes.Person + " {" + Person.ID + ":{person_id}})-[:" + Rels.KNOWS + "*1..2]-(:"
+               + Nodes.Person + ")<-[:" + Rels.HAS_CREATOR + "]-(post:" + Nodes.Post + "),\n"
 
-               + "USING INDEX person:" + Domain.Node.Person + "(" + Domain.Person.ID + ")\n"
-
-               + "USING INDEX tag:" + Domain.Node.Tag + "(" + Domain.Tag.NAME + ")\n"
-
-               + "WHERE person." + Domain.Person.ID + "={person_id} AND tag." + Domain.Tag.NAME + "={tag_name}\n"
+               + "  (post)-[:" + Rels.HAS_TAG + "]->(:" + Nodes.Tag + " {" + Tag.NAME + ":{tag_name}})\n"
 
                + "WITH DISTINCT post\n"
 
-               + "MATCH (post)-[:" + Domain.Rel.HAS_TAG + "]->(tag:" + Domain.Node.Tag + ")\n"
+               + "MATCH (post)-[:" + Rels.HAS_TAG + "]->(tag:" + Nodes.Tag + ")\n"
 
-               + "WHERE NOT(tag." + Domain.Tag.NAME + "={tag_name})\n"
+               + "WHERE NOT(tag." + Tag.NAME + "={tag_name})\n"
 
-               + "RETURN tag." + Domain.Tag.NAME + " AS tagName, count(tag) AS tagCount\n"
+               + "RETURN tag." + Tag.NAME + " AS tagName, count(tag) AS tagCount\n"
 
                + "ORDER BY tagCount DESC\n"
 
