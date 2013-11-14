@@ -116,13 +116,13 @@ public class Domain
     public static class Tag
     {
         public static final String NAME = "name";
-        public static final String URL = "url";
+        public static final String URI = "uri";
     }
 
     public static class TagClass
     {
         public static final String NAME = "name";
-        public static final String URL = "url";
+        public static final String URI = "uri";
     }
 
     public static class Organisation
@@ -146,7 +146,7 @@ public class Domain
         }
 
         public static final String NAME = "name";
-        public static final String URL = "url";
+        public static final String URI = "uri";
     }
 
     /*

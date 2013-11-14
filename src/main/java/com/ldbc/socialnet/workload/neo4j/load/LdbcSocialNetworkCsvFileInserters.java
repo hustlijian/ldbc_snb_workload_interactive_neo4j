@@ -517,7 +517,7 @@ public class LdbcSocialNetworkCsvFileInserters
                 // TODO remove?
                 // properties.put( "id", id );
                 properties.put( Domain.Tag.NAME, columnValues[1] );
-                properties.put( Domain.Tag.URL, columnValues[2] );
+                properties.put( Domain.Tag.URI, columnValues[2] );
                 long tagNodeId = batchInserter.createNode( properties, Domain.Nodes.Tag );
                 tagIndex.put( id, tagNodeId );
             }
@@ -541,7 +541,7 @@ public class LdbcSocialNetworkCsvFileInserters
                 // TODO remove?
                 // properties.put( "id", id );
                 properties.put( Domain.TagClass.NAME, columnValues[1] );
-                properties.put( Domain.TagClass.URL, columnValues[2] );
+                properties.put( Domain.TagClass.URI, columnValues[2] );
                 long tagClassNodeId = batchInserter.createNode( properties, Domain.Nodes.TagClass );
                 tagClassesIndex.put( id, tagClassNodeId );
             }
@@ -601,7 +601,7 @@ public class LdbcSocialNetworkCsvFileInserters
                 // TODO remove?
                 // properties.put( "id", id );
                 properties.put( Domain.Place.NAME, columnValues[1] );
-                properties.put( Domain.Place.URL, columnValues[2] );
+                properties.put( Domain.Place.URI, columnValues[2] );
                 Domain.Place.Type placeType = stringToPlaceType( (String) columnValues[3] );
                 long placeNodeId = batchInserter.createNode( properties, Domain.Nodes.Place, placeType );
                 placeIndex.put( id, placeNodeId );

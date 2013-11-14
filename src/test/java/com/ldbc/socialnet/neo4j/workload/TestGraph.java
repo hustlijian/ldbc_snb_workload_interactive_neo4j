@@ -1291,7 +1291,7 @@ public class TestGraph
             {
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put( Tag.NAME, "cake" );
-                params.put( Tag.URL, new String[] { "www.cake.good" } );
+                params.put( Tag.URI, new String[] { "www.cake.good" } );
                 return params;
             }
 
@@ -1299,7 +1299,7 @@ public class TestGraph
             {
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put( Tag.NAME, "pie" );
-                params.put( Tag.URL, new String[] { "www.is.better" } );
+                params.put( Tag.URI, new String[] { "www.is.better" } );
                 return params;
             }
 
@@ -1307,7 +1307,7 @@ public class TestGraph
             {
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put( Tag.NAME, "lol" );
-                params.put( Tag.URL, new String[] { "www.lol.ol" } );
+                params.put( Tag.URI, new String[] { "www.lol.ol" } );
                 return params;
             }
 
@@ -1315,7 +1315,7 @@ public class TestGraph
             {
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put( Tag.NAME, "yolo" );
-                params.put( Tag.URL, new String[] { "www.yolo.nu" } );
+                params.put( Tag.URI, new String[] { "www.yolo.nu" } );
                 return params;
             }
 
@@ -1323,7 +1323,7 @@ public class TestGraph
             {
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put( Tag.NAME, "wtf" );
-                params.put( Tag.URL, new String[] { "www.wtf.com" } );
+                params.put( Tag.URI, new String[] { "www.wtf.com" } );
                 return params;
             }
         }
