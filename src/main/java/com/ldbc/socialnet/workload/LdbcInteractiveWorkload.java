@@ -1,5 +1,6 @@
 package com.ldbc.socialnet.workload;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -47,10 +48,26 @@ MAVEN_OPTS="-server -XX:+UseConcMarkSweepGC -Xmx512m" mvn exec:java -Dexec.mainC
  */
 public class LdbcInteractiveWorkload extends Workload
 {
+    private SubstitutionParameters substitutionParameters = null;
 
     @Override
     public void onInit( Map<String, String> properties ) throws WorkloadException
     {
+        // TODO from config
+        String parametersFilename = "parameters.json";
+        if ( false == new File( parametersFilename ).exists() )
+        {
+            throw new WorkloadException( "Substitution parameters file does not exist: " + parametersFilename );
+        }
+        File parametersFile = new File( parametersFilename );
+        try
+        {
+            substitutionParameters = SubstitutionParameters.fromJson( parametersFile );
+        }
+        catch ( Exception e )
+        {
+            throw new WorkloadException( "Unable to load substitution parameters from " + parametersFile.getName() );
+        }
     }
 
     @Override
@@ -69,27 +86,48 @@ public class LdbcInteractiveWorkload extends Workload
     protected Generator<Operation<?>> createTransactionalOperations( GeneratorFactory generators )
             throws WorkloadException
     {
+
         /*
          * Create Generators for desired Operations
          */
 
         Set<Tuple2<Double, Generator<Operation<?>>>> operations = new HashSet<Tuple2<Double, Generator<Operation<?>>>>();
 
-        Generator<String> firstNameSelectGenerator = generators.discreteGenerator( Arrays.asList( SubstitutionParameters.FIRST_NAMES ) );
-        // Generator<String> firstNameSelectGenerator =
-        // generatorBuilder.discreteGenerator(
-        // Arrays.asList( new String[] { "Chen" } ) ).build();
+        Generator<String> firstNameGenerator = generators.discreteGenerator( substitutionParameters.firstNames );
+        Generator<Long> personIdGenerator = generators.discreteGenerator( substitutionParameters.personIds );
+        Generator<Long> postCreationDateGenerator00_66 = generators.uniformNumberGenerator(
+                substitutionParameters.postCreationDates.get( 0 ), substitutionParameters.postCreationDates.get( 66 ) );
+        Generator<Long> postCreationDateGenerator33_66 = generators.uniformNumberGenerator(
+                substitutionParameters.postCreationDates.get( 33 ), substitutionParameters.postCreationDates.get( 66 ) );
 
         /*
          * Query1
+         *  - Select uniformly randomly from person first names
          */
         int query1Limit = 10;
-        operations.add( Tuple.tuple2( 1d, (Generator<Operation<?>>) new Query1Generator( firstNameSelectGenerator,
+        operations.add( Tuple.tuple2( 1d, (Generator<Operation<?>>) new Query1Generator( firstNameGenerator,
                 query1Limit ) ) );
 
         /*
-         * Query3
+         * Query2
+         *  - Person ID - select uniformly randomly from person ids
+         *  - Post Creation Date - select uniformly randomly a post creation date from between 33perc-66perc of entire date range
          */
+        int query2Limit = 20;
+        operations.add( Tuple.tuple2( 1d, (Generator<Operation<?>>) new Query2Generator( personIdGenerator,
+                postCreationDateGenerator33_66, query2Limit ) ) );
+
+        /*
+         * Query3
+         *  - Person ID - select uniformly randomly from person ids
+         *  - Post Creation Date - select uniformly randomly a post creation date from between 0perc-66perc of entire date range
+         *  - Duration - a number of days (33% of the length of post creation date range)
+         *  - Country1 - the first of country pair (file: countryPairs.txt)
+         *  - Country2 - the second of country pair (file: countryPairs.txt)
+         */
+        Long totalDuration = substitutionParameters.postCreationDates.get( 100 )
+                             - substitutionParameters.postCreationDates.get( 0 );
+
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
         calendar.set( 2010, Calendar.JANUARY, 1 );
@@ -171,7 +209,7 @@ public class LdbcInteractiveWorkload extends Workload
         private final Generator<String> firstNames;
         private final int limit;
 
-        protected Query1Generator( final Generator<String> firstNames, final int limit )
+        protected Query1Generator( Generator<String> firstNames, int limit )
         {
             this.firstNames = firstNames;
             this.limit = limit;
@@ -181,6 +219,26 @@ public class LdbcInteractiveWorkload extends Workload
         protected Operation<?> doNext() throws GeneratorException
         {
             return new LdbcQuery1( firstNames.next(), limit );
+        }
+    }
+
+    class Query2Generator extends Generator<Operation<?>>
+    {
+        private final Generator<Long> personIds;
+        private final Generator<Long> postCreationDates;
+        private final int limit;
+
+        protected Query2Generator( Generator<Long> personIds, Generator<Long> postCreationDates, int limit )
+        {
+            this.personIds = personIds;
+            this.postCreationDates = postCreationDates;
+            this.limit = limit;
+        }
+
+        @Override
+        protected Operation<?> doNext() throws GeneratorException
+        {
+            return new LdbcQuery2( personIds.next(), new Date( postCreationDates.next() ), limit );
         }
     }
 
@@ -253,7 +311,7 @@ public class LdbcInteractiveWorkload extends Workload
         private final String tagName;
         private final int limit;
 
-        protected Query6Generator( final long personId, final String tagName, int limit )
+        protected Query6Generator( long personId, String tagName, int limit )
         {
             this.personId = personId;
             this.tagName = tagName;
