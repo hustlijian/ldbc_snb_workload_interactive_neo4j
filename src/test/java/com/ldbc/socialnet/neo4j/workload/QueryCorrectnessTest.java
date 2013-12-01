@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -274,8 +276,9 @@ public abstract class QueryCorrectnessTest
         c.set( 2013, Calendar.SEPTEMBER, 8 );
         Date endDate = c.getTime();
         int durationDays = 4;
+        long durationMillis = TimeUnit.MILLISECONDS.convert( durationDays, TimeUnit.DAYS );
 
-        LdbcQuery3 operation3 = new LdbcQuery3( personId, countryX, countryY, endDate, durationDays );
+        LdbcQuery3 operation3 = new LdbcQuery3( personId, countryX, countryY, endDate, durationMillis );
         Neo4jQuery3 query3 = neo4jQuery3Impl();
 
         // TODO uncomment to print query
@@ -326,9 +329,10 @@ public abstract class QueryCorrectnessTest
         c.clear();
         c.set( 2013, Calendar.SEPTEMBER, 7, 23, 59, 0 );
         Date endDate = c.getTime();
-        int durationDays = 2;
+        long durationDays = 2;
+        long durationMillis = TimeUnit.MILLISECONDS.convert( durationDays, TimeUnit.DAYS );
 
-        LdbcQuery4 operation4 = new LdbcQuery4( personId, endDate, durationDays );
+        LdbcQuery4 operation4 = new LdbcQuery4( personId, endDate, durationMillis );
         Neo4jQuery4 query4 = neo4jQuery4Impl();
 
         // TODO uncomment to print query
@@ -466,10 +470,11 @@ public abstract class QueryCorrectnessTest
         c.clear();
         c.set( 2013, Calendar.SEPTEMBER, 6, 20, 0, 0 );
         Date endDate = c.getTime();
-        int durationHours = 24;
+        long durationHours = 24;
+        long durationMillis = TimeUnit.MILLISECONDS.convert( durationHours, TimeUnit.HOURS );
         int limit = 10;
 
-        LdbcQuery7 operation7 = new LdbcQuery7( personId, endDate, durationHours, limit );
+        LdbcQuery7 operation7 = new LdbcQuery7( personId, endDate, durationMillis, limit );
         Neo4jQuery7 query7 = neo4jQuery7Impl();
 
         // TODO uncomment to print query

@@ -12,16 +12,16 @@ public class LdbcQuery3 extends Operation<List<LdbcQuery3Result>>
     private final String countryX;
     private final String countryY;
     private final Date endDate;
-    private final int durationDays;
+    private final long durationMillis;
 
-    public LdbcQuery3( long personId, String countryX, String countryY, Date endDate, int durationDays )
+    public LdbcQuery3( long personId, String countryX, String countryY, Date endDate, long durationMillis )
     {
         super();
         this.personId = personId;
         this.countryX = countryX;
         this.countryY = countryY;
         this.endDate = endDate;
-        this.durationDays = durationDays;
+        this.durationMillis = durationMillis;
     }
 
     public long personId()
@@ -44,9 +44,9 @@ public class LdbcQuery3 extends Operation<List<LdbcQuery3Result>>
         return endDate;
     }
 
-    public int durationDays()
+    public long durationMillis()
     {
-        return durationDays;
+        return durationMillis;
     }
 
     public long startDateAsMilli()
@@ -54,8 +54,7 @@ public class LdbcQuery3 extends Operation<List<LdbcQuery3Result>>
         Calendar c = Calendar.getInstance();
         c.clear();
         c.setTime( endDate );
-        c.add( Calendar.DATE, -durationDays );
-        return c.getTimeInMillis();
+        return c.getTimeInMillis() - durationMillis;
     }
 
     public long endDateAsMilli()
@@ -70,7 +69,7 @@ public class LdbcQuery3 extends Operation<List<LdbcQuery3Result>>
         int result = 1;
         result = prime * result + ( ( countryX == null ) ? 0 : countryX.hashCode() );
         result = prime * result + ( ( countryY == null ) ? 0 : countryY.hashCode() );
-        result = prime * result + durationDays;
+        result = prime * result + (int) ( durationMillis ^ ( durationMillis >>> 32 ) );
         result = prime * result + ( ( endDate == null ) ? 0 : endDate.hashCode() );
         result = prime * result + (int) ( personId ^ ( personId >>> 32 ) );
         return result;
@@ -93,7 +92,7 @@ public class LdbcQuery3 extends Operation<List<LdbcQuery3Result>>
             if ( other.countryY != null ) return false;
         }
         else if ( !countryY.equals( other.countryY ) ) return false;
-        if ( durationDays != other.durationDays ) return false;
+        if ( durationMillis != other.durationMillis ) return false;
         if ( endDate == null )
         {
             if ( other.endDate != null ) return false;
@@ -107,7 +106,7 @@ public class LdbcQuery3 extends Operation<List<LdbcQuery3Result>>
     public String toString()
     {
         return "LdbcQuery3 [personId=" + personId + ", countryX=" + countryX + ", countryY=" + countryY + ", endDate="
-               + endDate + ", durationDays=" + durationDays + "' startDateAsMilli=" + startDateAsMilli()
+               + endDate + ", durationMillis=" + durationMillis + "' startDateAsMilli=" + startDateAsMilli()
                + ", endDateAsMilli=" + endDateAsMilli() + "]";
     }
 }

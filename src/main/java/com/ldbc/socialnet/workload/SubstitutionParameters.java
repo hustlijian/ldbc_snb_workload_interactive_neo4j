@@ -1,10 +1,16 @@
 package com.ldbc.socialnet.workload;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.regex.Pattern;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -32,12 +38,13 @@ public class SubstitutionParameters
     {
         ObjectMapper mapper = new ObjectMapper();
         File parametersFile = new File( "parameters.json" );
+        File countryPairsFile = new File( "countryPairs.txt" );
         FileUtils.deleteRecursively( parametersFile );
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder( Config.DB_DIR ).setConfig(
                 Config.NEO4J_RUN_CONFIG ).newGraphDatabase();
         try
         {
-            SubstitutionParameters parametersWrite = SubstitutionParameters.populate( db );
+            SubstitutionParameters parametersWrite = SubstitutionParameters.populate( db, countryPairsFile );
             System.out.println( mapper.writeValueAsString( parametersWrite ) );
             mapper.writeValue( parametersFile, parametersWrite );
 
@@ -76,6 +83,8 @@ public class SubstitutionParameters
      - countryPairs.txt
      */
 
+    @JsonProperty( value = COUNTRY_PAIRS )
+    public List<String[]> countryPairs = null;
     @JsonProperty( value = FIRST_NAMES )
     public List<String> firstNames = null;
     @JsonProperty( value = POST_CREATION_DATES )
@@ -95,9 +104,9 @@ public class SubstitutionParameters
 
     private SubstitutionParameters()
     {
-
     }
 
+    private static final String COUNTRY_PAIRS = "countryPairs";
     private static final String FIRST_NAMES = "first_names";
     private static final String POST_CREATION_DATES = "post_creation_dates";
     private static final String PERSON_IDS = "person_ids";
@@ -107,10 +116,12 @@ public class SubstitutionParameters
     private static final String WORK_FROM_DATES = "work_from_dates";
     private static final String TAG_CLASS_URIS = "tag_class_uris";
 
-    public static SubstitutionParameters populate( GraphDatabaseService db )
+    public static SubstitutionParameters populate( GraphDatabaseService db, File countryPairsFile )
+            throws FileNotFoundException
     {
         SubstitutionParameters parameters = new SubstitutionParameters();
         ExecutionEngine engine = new ExecutionEngine( db );
+        parameters.countryPairs = countryPairs( countryPairsFile );
         parameters.firstNames = firstNames( engine );
         parameters.postCreationDates = postCreationDates( engine );
         parameters.personIds = personIds( engine );
@@ -126,6 +137,12 @@ public class SubstitutionParameters
             IOException
     {
         return new ObjectMapper().readValue( jsonFile, SubstitutionParameters.class );
+    }
+
+    private static List<String[]> countryPairs( File countryPairsFile ) throws FileNotFoundException
+    {
+        CountryPairsFileReader countryPairsReader = new CountryPairsFileReader( countryPairsFile );
+        return ImmutableList.copyOf( countryPairsReader );
     }
 
     private static List<String> firstNames( ExecutionEngine engine )
@@ -237,7 +254,7 @@ public class SubstitutionParameters
 
     private static List<Integer> workFromDates( ExecutionEngine engine )
     {
-        String query = "MATCH ()-[workFrom:" + Rels.WORKS_AT + "]->()\n"
+        String query = "MATCH (:" + Nodes.Person + ")-[workFrom:" + Rels.WORKS_AT + "]->()\n"
 
         + "RETURN workFrom." + WorksAt.WORK_FROM + " AS workFrom";
 
@@ -267,5 +284,89 @@ public class SubstitutionParameters
                         return (String) result.get( "uri" );
                     }
                 } ) ) );
+    }
+
+    static class CountryPairsFileReader implements Iterator<String[]>
+    {
+        private final Pattern columnSeparatorPattern = Pattern.compile( "\\ " );
+
+        private final BufferedReader bufferedReader;
+
+        private String[] next = null;
+        private boolean closed = false;
+
+        public CountryPairsFileReader( File countryPairsFile ) throws FileNotFoundException
+        {
+            this.bufferedReader = new BufferedReader( new FileReader( countryPairsFile ) );
+        }
+
+        @Override
+        public boolean hasNext()
+        {
+            if ( true == closed ) return false;
+            next = ( next == null ) ? nextCountryPair() : next;
+            if ( null == next ) closed = closeReader();
+            return ( null != next );
+        }
+
+        @Override
+        public String[] next()
+        {
+            next = ( null == next ) ? nextCountryPair() : next;
+            if ( null == next ) throw new NoSuchElementException( "No more lines to read" );
+            String[] tempNext = next;
+            next = null;
+            return tempNext;
+        }
+
+        @Override
+        public void remove()
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        private String[] nextCountryPair()
+        {
+            String line = null;
+            try
+            {
+                line = bufferedReader.readLine();
+                if ( null == line ) return null;
+                String[] separatedLine = columnSeparatorPattern.split( line, -1 );
+                if ( separatedLine.length == 2 )
+                    return separatedLine;
+                else
+                    throw new RuntimeException( "Unexpected line encountered: " + line );
+            }
+            catch ( IOException e )
+            {
+                String errMsg = String.format( "Error retrieving next csv entry from file [%s]", bufferedReader );
+                throw new RuntimeException( errMsg, e.getCause() );
+            }
+        }
+
+        private boolean closeReader()
+        {
+            if ( true == closed )
+            {
+                String errMsg = "Can not close file multiple times";
+                throw new RuntimeException( errMsg );
+            }
+            if ( null == bufferedReader )
+            {
+                String errMsg = "Can not close file - reader is null";
+                throw new RuntimeException( errMsg );
+            }
+            try
+            {
+                bufferedReader.close();
+            }
+            catch ( IOException e )
+            {
+                String errMsg = String.format( "Error closing file [%s]", bufferedReader );
+                throw new RuntimeException( errMsg, e.getCause() );
+            }
+            return true;
+        }
     }
 }

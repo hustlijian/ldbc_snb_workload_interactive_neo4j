@@ -40,8 +40,8 @@ public class Neo4jQuery7EmbeddedCypher implements Neo4jQuery7
     {
         Map<String, Object> queryParams = new HashMap<String, Object>();
         queryParams.put( "person_id", operation.personId() );
-        queryParams.put( "min_date", operation.startDateTimeAsMilli() );
-        queryParams.put( "max_date", operation.endDateTimeAsMilli() );
+        queryParams.put( "min_date", operation.minDateTimeAsMilli() );
+        queryParams.put( "max_date", operation.maxDateTimeAsMilli() );
         return queryParams;
     }
 

@@ -76,7 +76,6 @@ public class IntegrationTest
         }
     }
 
-    @Ignore
     @Test
     public void shouldRunTransactionalWorkloadWithoutThrowingException() throws ClientException
     {

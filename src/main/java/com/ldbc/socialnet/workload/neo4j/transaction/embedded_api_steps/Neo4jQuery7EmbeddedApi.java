@@ -95,7 +95,7 @@ public class Neo4jQuery7EmbeddedApi implements Neo4jQuery7
         List<Node> posts = ImmutableList.copyOf( StepsUtils.projectNodesFromPath(
                 Iterables.filter(
                         traversers.postsInPersonsCountryInDateRangeNotCreatedByOtherPerson(
-                                operation.startDateTimeAsMilli(), operation.endDateTimeAsMilli(), person ).traverse(
+                                operation.minDateTimeAsMilli(), operation.maxDateTimeAsMilli(), person ).traverse(
                                 person ), new Predicate<Path>()
                         {
                             @Override
