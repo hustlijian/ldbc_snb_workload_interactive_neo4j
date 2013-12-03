@@ -13,9 +13,9 @@ import org.neo4j.graphdb.GraphDatabaseService;
 
 import com.ldbc.driver.util.Function2;
 import com.ldbc.driver.util.MapUtils;
-import com.ldbc.socialnet.workload.Domain;
-import com.ldbc.socialnet.workload.LdbcQuery5;
-import com.ldbc.socialnet.workload.LdbcQuery5Result;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery5;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery5Result;
+import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery5;
 import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 

@@ -1,9 +1,10 @@
-package com.ldbc.socialnet.workload;
+package com.ldbc.socialnet.workload.neo4j;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,10 +13,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
@@ -28,15 +25,15 @@ import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Range;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.SubstitutionParameters;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
 
-import static com.ldbc.socialnet.workload.Domain.*;
+import static com.ldbc.socialnet.workload.neo4j.Domain.*;
 
-public class SubstitutionParameters
+public class SubstitutionParametersCreator
 {
     public static void main( String[] args ) throws IOException
     {
-        ObjectMapper mapper = new ObjectMapper();
         File parametersFile = new File( "parameters.json" );
         File countryPairsFile = new File( "countryPairs.txt" );
         FileUtils.deleteRecursively( parametersFile );
@@ -44,15 +41,17 @@ public class SubstitutionParameters
                 Config.NEO4J_RUN_CONFIG ).newGraphDatabase();
         try
         {
-            SubstitutionParameters parametersWrite = SubstitutionParameters.populate( db, countryPairsFile );
-            System.out.println( mapper.writeValueAsString( parametersWrite ) );
-            mapper.writeValue( parametersFile, parametersWrite );
+            SubstitutionParameters parametersWrite = SubstitutionParametersCreator.createParams( db, countryPairsFile );
+            System.out.println( parametersWrite.toString() );
+
+            FileWriter parametersFileWriter = new FileWriter( parametersFile );
+            parametersFileWriter.write( parametersWrite.toString() );
+            parametersFileWriter.close();
 
             SubstitutionParameters parametersRead = SubstitutionParameters.fromJson( parametersFile );
-            System.out.println( mapper.writeValueAsString( parametersRead ) );
+            System.out.println( parametersRead.toString() );
 
-            System.out.println( mapper.writeValueAsString( parametersRead ).equals(
-                    mapper.writeValueAsString( parametersWrite ) ) );
+            System.out.println( parametersRead.toString().equals( parametersWrite.toString() ) );
         }
         catch ( Exception e )
         {
@@ -83,40 +82,7 @@ public class SubstitutionParameters
      - countryPairs.txt
      */
 
-    @JsonProperty( value = COUNTRY_PAIRS )
-    public List<String[]> countryPairs = null;
-    @JsonProperty( value = FIRST_NAMES )
-    public List<String> firstNames = null;
-    @JsonProperty( value = POST_CREATION_DATES )
-    public Map<Integer, Long> postCreationDates = null;
-    @JsonProperty( value = PERSON_IDS )
-    public List<Long> personIds = null;
-    @JsonProperty( value = TAG_URIS )
-    public List<String> tagUris = null;
-    @JsonProperty( value = HOROSCOPE_SIGNS )
-    public List<Integer> horoscopeSigns = null;
-    @JsonProperty( value = COUNTRY_URIS )
-    public List<String> countryUris = null;
-    @JsonProperty( value = WORK_FROM_DATES )
-    public List<Integer> workFromDates = null;
-    @JsonProperty( value = TAG_CLASS_URIS )
-    public List<String> tagClassUris = null;
-
-    private SubstitutionParameters()
-    {
-    }
-
-    private static final String COUNTRY_PAIRS = "countryPairs";
-    private static final String FIRST_NAMES = "first_names";
-    private static final String POST_CREATION_DATES = "post_creation_dates";
-    private static final String PERSON_IDS = "person_ids";
-    private static final String TAG_URIS = "tag_uris";
-    private static final String HOROSCOPE_SIGNS = "horoscope_signs";
-    private static final String COUNTRY_URIS = "country_uris";
-    private static final String WORK_FROM_DATES = "work_from_dates";
-    private static final String TAG_CLASS_URIS = "tag_class_uris";
-
-    public static SubstitutionParameters populate( GraphDatabaseService db, File countryPairsFile )
+    public static SubstitutionParameters createParams( GraphDatabaseService db, File countryPairsFile )
             throws FileNotFoundException
     {
         SubstitutionParameters parameters = new SubstitutionParameters();
@@ -131,12 +97,6 @@ public class SubstitutionParameters
         parameters.workFromDates = workFromDates( engine );
         parameters.tagClassUris = tagClassUris( engine );
         return parameters;
-    }
-
-    public static SubstitutionParameters fromJson( File jsonFile ) throws JsonParseException, JsonMappingException,
-            IOException
-    {
-        return new ObjectMapper().readValue( jsonFile, SubstitutionParameters.class );
     }
 
     private static List<String[]> countryPairs( File countryPairsFile ) throws FileNotFoundException

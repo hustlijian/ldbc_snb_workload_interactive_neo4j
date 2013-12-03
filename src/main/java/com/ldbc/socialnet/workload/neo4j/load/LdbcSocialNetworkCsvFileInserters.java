@@ -12,7 +12,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 
-import com.ldbc.socialnet.workload.Domain;
+import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.load.tempindex.TempIndexFactory;
 import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 

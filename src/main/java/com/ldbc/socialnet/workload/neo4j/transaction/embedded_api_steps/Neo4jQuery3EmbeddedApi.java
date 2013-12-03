@@ -16,9 +16,9 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
-import com.ldbc.socialnet.workload.Domain;
-import com.ldbc.socialnet.workload.LdbcQuery3;
-import com.ldbc.socialnet.workload.LdbcQuery3Result;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery3;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery3Result;
+import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.transaction.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery3;
 

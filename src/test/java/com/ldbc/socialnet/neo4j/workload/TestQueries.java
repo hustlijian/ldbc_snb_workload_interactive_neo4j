@@ -3,7 +3,7 @@ package com.ldbc.socialnet.neo4j.workload;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ldbc.socialnet.workload.Domain;
+import com.ldbc.socialnet.workload.neo4j.Domain;
 
 public class TestQueries
 {

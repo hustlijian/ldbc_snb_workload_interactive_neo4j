@@ -9,7 +9,7 @@ import com.ldbc.driver.Client;
 import com.ldbc.driver.ClientException;
 import com.ldbc.driver.WorkloadParams;
 import com.ldbc.driver.util.MapUtils;
-import com.ldbc.socialnet.workload.LdbcInteractiveWorkload;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcInteractiveWorkload;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
 
 /* 

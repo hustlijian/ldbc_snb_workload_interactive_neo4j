@@ -9,9 +9,9 @@ import org.neo4j.graphdb.GraphDatabaseService;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
-import com.ldbc.socialnet.workload.Domain;
-import com.ldbc.socialnet.workload.LdbcQuery3;
-import com.ldbc.socialnet.workload.LdbcQuery3Result;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery3;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery3Result;
+import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery3;
 
 public class Neo4jQuery3EmbeddedCypher implements Neo4jQuery3

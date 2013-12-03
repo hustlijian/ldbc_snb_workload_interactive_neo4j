@@ -1,7 +1,7 @@
 package com.ldbc.socialnet.workload.neo4j.transaction;
 
-import com.ldbc.socialnet.workload.LdbcQuery6;
-import com.ldbc.socialnet.workload.LdbcQuery6Result;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery6;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery6Result;
 
 public interface Neo4jQuery6 extends Neo4jQuery<LdbcQuery6, LdbcQuery6Result>
 {

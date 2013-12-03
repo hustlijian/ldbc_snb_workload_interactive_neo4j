@@ -13,7 +13,7 @@ import org.neo4j.kernel.impl.util.FileUtils;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
-import com.ldbc.socialnet.workload.Domain;
+import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.load.tempindex.TempIndexFactory;
 import com.ldbc.socialnet.workload.neo4j.load.tempindex.TroveTempIndexFactory;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;

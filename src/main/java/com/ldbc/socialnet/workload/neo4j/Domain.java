@@ -1,4 +1,4 @@
-package com.ldbc.socialnet.workload;
+package com.ldbc.socialnet.workload.neo4j;
 
 import java.util.ArrayList;
 import java.util.HashSet;

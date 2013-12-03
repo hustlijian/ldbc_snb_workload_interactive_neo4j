@@ -21,12 +21,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
-import com.ldbc.socialnet.workload.LdbcQuery7;
-import com.ldbc.socialnet.workload.LdbcQuery7Result;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery7;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery7Result;
 import com.ldbc.socialnet.workload.neo4j.transaction.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery7;
 
-import static com.ldbc.socialnet.workload.Domain.*;
+import static com.ldbc.socialnet.workload.neo4j.Domain.*;
 
 public class Neo4jQuery7EmbeddedApi implements Neo4jQuery7
 {

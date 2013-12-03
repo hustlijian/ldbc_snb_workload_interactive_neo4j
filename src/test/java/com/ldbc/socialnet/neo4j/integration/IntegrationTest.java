@@ -20,8 +20,8 @@ import com.ldbc.driver.BenchmarkPhase;
 import com.ldbc.driver.Client;
 import com.ldbc.driver.ClientException;
 import com.ldbc.driver.WorkloadParams;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcInteractiveWorkload;
 import com.ldbc.socialnet.neo4j.workload.TestGraph;
-import com.ldbc.socialnet.workload.LdbcInteractiveWorkload;
 import com.ldbc.socialnet.workload.neo4j.Neo4jDb;
 import com.ldbc.socialnet.workload.neo4j.load.LdbcSocialNeworkNeo4jImporter;
 

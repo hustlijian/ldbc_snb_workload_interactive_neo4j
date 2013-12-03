@@ -16,7 +16,7 @@ import org.neo4j.traversal.steps.PropertyContainerFilterDescriptor.PropertyConta
 import com.google.common.collect.Sets;
 import com.ldbc.socialnet.workload.neo4j.transaction.LdbcTraversers;
 
-import static com.ldbc.socialnet.workload.Domain.*;
+import static com.ldbc.socialnet.workload.neo4j.Domain.*;
 import static org.neo4j.traversal.steps.Filters.*;
 
 public class LdbcTraversersSteps implements LdbcTraversers

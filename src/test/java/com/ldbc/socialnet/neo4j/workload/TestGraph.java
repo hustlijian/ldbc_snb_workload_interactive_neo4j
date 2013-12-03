@@ -22,9 +22,9 @@ import com.ldbc.socialnet.neo4j.workload.TestGraph.TestNodes.TestUniversities;
 import com.ldbc.socialnet.neo4j.workload.TestGraph.TestRels.TestHasMember;
 import com.ldbc.socialnet.neo4j.workload.TestGraph.TestRels.TestStudyAt;
 import com.ldbc.socialnet.neo4j.workload.TestGraph.TestRels.TestWorksAt;
-import com.ldbc.socialnet.workload.Domain;
+import com.ldbc.socialnet.workload.neo4j.Domain;
 
-import static com.ldbc.socialnet.workload.Domain.*;
+import static com.ldbc.socialnet.workload.neo4j.Domain.*;
 
 /*
     MATCH (person1:Person), (person2:Person), (person:Person{id:1})

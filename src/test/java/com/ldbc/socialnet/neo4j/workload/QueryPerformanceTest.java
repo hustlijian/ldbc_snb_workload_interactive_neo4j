@@ -15,11 +15,11 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import com.ldbc.driver.Operation;
-import com.ldbc.socialnet.workload.LdbcQuery1;
-import com.ldbc.socialnet.workload.LdbcQuery3;
-import com.ldbc.socialnet.workload.LdbcQuery4;
-import com.ldbc.socialnet.workload.LdbcQuery5;
-import com.ldbc.socialnet.workload.LdbcQuery6;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery1;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery3;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery4;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery5;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery6;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery3;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcTraversersSteps;

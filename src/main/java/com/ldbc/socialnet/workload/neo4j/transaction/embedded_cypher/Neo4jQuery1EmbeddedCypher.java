@@ -10,11 +10,11 @@ import org.neo4j.graphdb.GraphDatabaseService;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
-import com.ldbc.socialnet.workload.LdbcQuery1;
-import com.ldbc.socialnet.workload.LdbcQuery1Result;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery1;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery1Result;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery1;
 
-import static com.ldbc.socialnet.workload.Domain.*;
+import static com.ldbc.socialnet.workload.neo4j.Domain.*;
 
 public class Neo4jQuery1EmbeddedCypher implements Neo4jQuery1
 {
