@@ -1,8 +1,8 @@
 #!/bin/bash
 
 LDBC_CORE="ldbc_driver"
-LDBC_CORE_VER="0.11-SNAPSHOT"
-LDBC_CORE_JAR="ldbc_driver/core/target/core-"${LDBC_CORE_VER}".jar"
+LDBC_CORE_VER="0.2-SNAPSHOT"
+LDBC_CORE_JAR="ldbc_driver/target/core-"${LDBC_CORE_VER}".jar"
 
 STEPS="steps"
 STEPS_VER="0.1-SNAPSHOT"
