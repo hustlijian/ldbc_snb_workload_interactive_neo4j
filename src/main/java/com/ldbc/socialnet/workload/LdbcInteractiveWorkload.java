@@ -34,6 +34,7 @@ public class LdbcInteractiveWorkload extends Workload
     @Override
     public void onInit( Map<String, String> properties ) throws WorkloadException
     {
+        // TODO make PARAMETERS_FILENAME compulsory
         String parametersFilename = properties.get( PARAMETERS_FILENAME );
         if ( false == new File( parametersFilename ).exists() )
         {

@@ -77,19 +77,50 @@ public class IntegrationTest
     }
 
     @Test
-    public void shouldRunTransactionalWorkloadWithoutThrowingException() throws ClientException
+    public void shouldRunEmbeddedStepsTransactionalWorkloadWithoutThrowingException() throws ClientException
     {
         boolean exceptionThrown = false;
         try
         {
-            long operationCount = 1;
+            long operationCount = 100;
             long recordCount = -1;
             int threadCount = 1;
             boolean showStatus = true;
             TimeUnit timeUnit = TimeUnit.MILLISECONDS;
             Map<String, String> userParams = new HashMap<String, String>();
-            userParams.put( "neo4j.path", dbDir );
-            userParams.put( "neo4j.dbtype", "embedded-api-steps" );
+            userParams.put( LdbcInteractiveWorkload.PARAMETERS_FILENAME, "parameters.json" );
+            userParams.put( Neo4jDb.PATH_KEY, dbDir );
+            userParams.put( Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_STEPS );
+            WorkloadParams params = new WorkloadParams( userParams, Neo4jDb.class.getName(),
+                    LdbcInteractiveWorkload.class.getName(), operationCount, recordCount,
+                    BenchmarkPhase.TRANSACTION_PHASE, threadCount, showStatus, timeUnit );
+
+            Client client = new Client();
+            client.start( params );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+            exceptionThrown = true;
+        }
+        assertThat( exceptionThrown, is( false ) );
+    }
+
+    @Test
+    public void shouldRunEmbeddedCypherTransactionalWorkloadWithoutThrowingException() throws ClientException
+    {
+        boolean exceptionThrown = false;
+        try
+        {
+            long operationCount = 100;
+            long recordCount = -1;
+            int threadCount = 1;
+            boolean showStatus = true;
+            TimeUnit timeUnit = TimeUnit.MILLISECONDS;
+            Map<String, String> userParams = new HashMap<String, String>();
+            userParams.put( LdbcInteractiveWorkload.PARAMETERS_FILENAME, "parameters.json" );
+            userParams.put( Neo4jDb.PATH_KEY, dbDir );
+            userParams.put( Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_CYPHER );
             WorkloadParams params = new WorkloadParams( userParams, Neo4jDb.class.getName(),
                     LdbcInteractiveWorkload.class.getName(), operationCount, recordCount,
                     BenchmarkPhase.TRANSACTION_PHASE, threadCount, showStatus, timeUnit );

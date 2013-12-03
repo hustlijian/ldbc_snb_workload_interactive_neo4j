@@ -7,14 +7,20 @@ import com.ldbc.driver.Db;
 import com.ldbc.driver.DbConnectionState;
 import com.ldbc.driver.DbException;
 import com.ldbc.socialnet.workload.LdbcQuery1;
+import com.ldbc.socialnet.workload.LdbcQuery2;
 import com.ldbc.socialnet.workload.LdbcQuery3;
 import com.ldbc.socialnet.workload.LdbcQuery4;
 import com.ldbc.socialnet.workload.LdbcQuery5;
+import com.ldbc.socialnet.workload.LdbcQuery6;
+import com.ldbc.socialnet.workload.LdbcQuery7;
 import com.ldbc.socialnet.workload.neo4j.transaction.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery1HandlerEmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery2HandlerEmbeddedApi;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery3HandlerEmbeddedApi;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery4HandlerEmbeddedApi;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery5HandlerEmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery6HandlerEmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery7HandlerEmbeddedApi;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcTraversersRaw;
 import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcTraversersSteps;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
@@ -74,9 +80,12 @@ public class Neo4jDbCommandsEmbeddedApi extends Neo4jDbCommands
     public void registerHandlersWithDb( Db db ) throws DbException
     {
         db.registerOperationHandler( LdbcQuery1.class, LdbcQuery1HandlerEmbeddedApi.class );
+        db.registerOperationHandler( LdbcQuery2.class, LdbcQuery2HandlerEmbeddedApi.class );
         db.registerOperationHandler( LdbcQuery3.class, LdbcQuery3HandlerEmbeddedApi.class );
         db.registerOperationHandler( LdbcQuery4.class, LdbcQuery4HandlerEmbeddedApi.class );
         db.registerOperationHandler( LdbcQuery5.class, LdbcQuery5HandlerEmbeddedApi.class );
+        db.registerOperationHandler( LdbcQuery6.class, LdbcQuery6HandlerEmbeddedApi.class );
+        db.registerOperationHandler( LdbcQuery7.class, LdbcQuery7HandlerEmbeddedApi.class );
     }
 
     private static void registerShutdownHook( final GraphDatabaseService graphDb )
