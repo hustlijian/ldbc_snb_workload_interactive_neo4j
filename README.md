@@ -47,9 +47,12 @@ The resulting Neo4j instance will have [this schema](https://github.com/ldbc/ldb
 **Run Example Using Maven**
 
 	MAVEN_OPTS="-server -XX:+UseConcMarkSweepGC -Xmx512m" 
-	mvn exec:java -Dexec.mainClass=com.ldbc.driver.Client 
-	-Dexec.arguments="-db,com.ldbc.socialnet.workload.neo4j.Neo4jDb,-w,com.ldbc.socialnet.workload.LdbcInteractiveWorkload,
-	-oc,10,-rc,-1,-tc,1,-s,-tu,MILLISECONDS,-p,neo4j.path=db/,-p,neo4j.dbtype=embedded-api-steps,-p,parameters=parameters.json"
+	mvn exec:java -Dexec.mainClass=com.ldbc.driver.Client
+	-Dexec.arguments="-db,com.ldbc.socialnet.workload.neo4j.Neo4jDb,
+	  -w,com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcInteractiveWorkload,
+	  -oc,10,-rc,-1,-tc,1,-s,-tu,MILLISECONDS,
+	  -p,neo4j.path=db/,-p,neo4j.dbtype=embedded-api-steps,
+	  -p,parameters=ldbc_driver/workloads/ldbc/socnet/interactive/parameters.json"
 
 Valid values for `neo4j.dbtype`: `embedded-cypher`, `embedded-api-steps`, `embedded-api-raw` (not implemented), `remote-cypher` (not implemented)
 	
