@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.ldbc.driver.util.TestUtils;
+import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -14,7 +16,6 @@ import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.kernel.impl.util.FileUtils;
 
 import com.ldbc.driver.BenchmarkPhase;
 import com.ldbc.driver.Client;
@@ -35,7 +36,7 @@ public class IntegrationTest
     @BeforeClass
     public static void openDb() throws IOException
     {
-        FileUtils.deleteRecursively( new File( dbDir ) );
+        FileUtils.deleteDirectory(new File( dbDir ));
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase( dbDir );
         ExecutionEngine queryEngine = new ExecutionEngine( db );
 
@@ -46,7 +47,7 @@ public class IntegrationTest
     @AfterClass
     public static void closeDb() throws IOException
     {
-        FileUtils.deleteRecursively( new File( dbDir ) );
+        FileUtils.deleteDirectory( new File( dbDir ) );
     }
 
     private static void buildGraph( GraphDatabaseService db, ExecutionEngine engine )
@@ -88,7 +89,7 @@ public class IntegrationTest
             boolean showStatus = true;
             TimeUnit timeUnit = TimeUnit.MILLISECONDS;
             Map<String, String> userParams = new HashMap<String, String>();
-            userParams.put( LdbcInteractiveWorkload.PARAMETERS_FILENAME, "parameters.json" );
+            userParams.put( LdbcInteractiveWorkload.PARAMETERS_FILENAME,TestUtils.getResource("/parameters.json").getAbsolutePath() );
             userParams.put( Neo4jDb.PATH_KEY, dbDir );
             userParams.put( Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_STEPS );
             WorkloadParams params = new WorkloadParams( userParams, Neo4jDb.class.getName(),
@@ -118,7 +119,7 @@ public class IntegrationTest
             boolean showStatus = true;
             TimeUnit timeUnit = TimeUnit.MILLISECONDS;
             Map<String, String> userParams = new HashMap<String, String>();
-            userParams.put( LdbcInteractiveWorkload.PARAMETERS_FILENAME, "parameters.json" );
+            userParams.put( LdbcInteractiveWorkload.PARAMETERS_FILENAME, TestUtils.getResource("/parameters.json").getAbsolutePath() );
             userParams.put( Neo4jDb.PATH_KEY, dbDir );
             userParams.put( Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_CYPHER );
             WorkloadParams params = new WorkloadParams( userParams, Neo4jDb.class.getName(),

@@ -32,7 +32,7 @@ public class Neo4jQuery6EmbeddedApi implements Neo4jQuery6
     {
         this.traversers = traversers;
     }
-
+    
     @Override
     public String description()
     {
