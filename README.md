@@ -9,7 +9,7 @@ It contains code for the following:
 
 **Build**
 
-Initial build:
+Initial build (**NOTE: requires Java 7**):
 
 	https://github.com/ldbc/ldbc_socialnet_bm_neo4j.git
 	cd ldbc_socialnet_bm_neo4j
