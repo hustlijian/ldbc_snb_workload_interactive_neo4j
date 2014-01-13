@@ -1,12 +1,14 @@
 package com.ldbc.socialnet.neo4j.integration;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
+import com.ldbc.driver.BenchmarkPhase;
+import com.ldbc.driver.Client;
+import com.ldbc.driver.ClientException;
+import com.ldbc.driver.WorkloadParams;
 import com.ldbc.driver.util.TestUtils;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcInteractiveWorkload;
+import com.ldbc.socialnet.neo4j.workload.TestGraph;
+import com.ldbc.socialnet.workload.neo4j.Neo4jDb;
+import com.ldbc.socialnet.workload.neo4j.load.LdbcSocialNeworkNeo4jImporter;
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -17,141 +19,132 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
-import com.ldbc.driver.BenchmarkPhase;
-import com.ldbc.driver.Client;
-import com.ldbc.driver.ClientException;
-import com.ldbc.driver.WorkloadParams;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcInteractiveWorkload;
-import com.ldbc.socialnet.neo4j.workload.TestGraph;
-import com.ldbc.socialnet.workload.neo4j.Neo4jDb;
-import com.ldbc.socialnet.workload.neo4j.load.LdbcSocialNeworkNeo4jImporter;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
-public class IntegrationTest
-{
+public class IntegrationTest {
     public static String dbDir = "tempDb";
 
     @BeforeClass
-    public static void openDb() throws IOException
-    {
-        FileUtils.deleteDirectory(new File( dbDir ));
-        GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase( dbDir );
-        ExecutionEngine queryEngine = new ExecutionEngine( db );
+    public static void openDb() throws IOException {
+        FileUtils.deleteDirectory(new File(dbDir));
+        GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase(dbDir);
+        ExecutionEngine queryEngine = new ExecutionEngine(db);
 
-        buildGraph( db, queryEngine );
+        buildGraph(db, queryEngine);
         db.shutdown();
     }
 
     @AfterClass
-    public static void closeDb() throws IOException
-    {
-        FileUtils.deleteDirectory( new File( dbDir ) );
+    public static void closeDb() throws IOException {
+        FileUtils.deleteDirectory(new File(dbDir));
     }
 
-    private static void buildGraph( GraphDatabaseService db, ExecutionEngine engine )
-    {
-        try (Transaction tx = db.beginTx())
-        {
-            engine.execute( TestGraph.Creator.createGraphQuery(), TestGraph.Creator.createGraphQueryParams() );
+    private static void buildGraph(GraphDatabaseService db, ExecutionEngine engine) {
+        try (Transaction tx = db.beginTx()) {
+            engine.execute(TestGraph.Creator.createGraphQuery(), TestGraph.Creator.createGraphQueryParams());
             tx.success();
-        }
-        catch ( Exception e )
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
-        try (Transaction tx = db.beginTx())
-        {
-            for ( String createIndexQuery : TestGraph.Creator.createIndexQueries() )
-            {
-                engine.execute( createIndexQuery );
+        try (Transaction tx = db.beginTx()) {
+            for (String createIndexQuery : TestGraph.Creator.createIndexQueries()) {
+                engine.execute(createIndexQuery);
             }
             tx.success();
-        }
-        catch ( Exception e )
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
     }
 
     @Test
-    public void shouldRunEmbeddedStepsTransactionalWorkloadWithoutThrowingException() throws ClientException
-    {
+    public void shouldRunEmbeddedStepsTransactionalWorkloadWithoutThrowingException() throws ClientException {
         boolean exceptionThrown = false;
-        try
-        {
+        try {
             long operationCount = 100;
             long recordCount = -1;
             int threadCount = 1;
             boolean showStatus = true;
             TimeUnit timeUnit = TimeUnit.MILLISECONDS;
             Map<String, String> userParams = new HashMap<String, String>();
-            userParams.put( LdbcInteractiveWorkload.PARAMETERS_FILENAME,TestUtils.getResource("/parameters.json").getAbsolutePath() );
-            userParams.put( Neo4jDb.PATH_KEY, dbDir );
-            userParams.put( Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_STEPS );
-            WorkloadParams params = new WorkloadParams( userParams, Neo4jDb.class.getName(),
+            userParams.put(LdbcInteractiveWorkload.PARAMETERS_FILENAME, TestUtils.getResource("/parameters.json").getAbsolutePath());
+            userParams.put(Neo4jDb.PATH_KEY, dbDir);
+            userParams.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_STEPS);
+            WorkloadParams params = new WorkloadParams(userParams, Neo4jDb.class.getName(),
                     LdbcInteractiveWorkload.class.getName(), operationCount, recordCount,
-                    BenchmarkPhase.TRANSACTION_PHASE, threadCount, showStatus, timeUnit );
+                    BenchmarkPhase.TRANSACTION_PHASE, threadCount, showStatus, timeUnit);
 
             Client client = new Client();
-            client.start( params );
-        }
-        catch ( Exception e )
-        {
+            client.start(params);
+        } catch (Exception e) {
             e.printStackTrace();
             exceptionThrown = true;
         }
-        assertThat( exceptionThrown, is( false ) );
+        assertThat(exceptionThrown, is(false));
     }
 
     @Test
-    public void shouldRunEmbeddedCypherTransactionalWorkloadWithoutThrowingException() throws ClientException
-    {
+    public void shouldRunEmbeddedCypherTransactionalWorkloadWithoutThrowingException() throws ClientException {
         boolean exceptionThrown = false;
-        try
-        {
+        try {
             long operationCount = 100;
             long recordCount = -1;
             int threadCount = 1;
             boolean showStatus = true;
             TimeUnit timeUnit = TimeUnit.MILLISECONDS;
             Map<String, String> userParams = new HashMap<String, String>();
-            userParams.put( LdbcInteractiveWorkload.PARAMETERS_FILENAME, TestUtils.getResource("/parameters.json").getAbsolutePath() );
-            userParams.put( Neo4jDb.PATH_KEY, dbDir );
-            userParams.put( Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_CYPHER );
-            WorkloadParams params = new WorkloadParams( userParams, Neo4jDb.class.getName(),
+            userParams.put(LdbcInteractiveWorkload.PARAMETERS_FILENAME, TestUtils.getResource("/parameters.json").getAbsolutePath());
+            userParams.put(Neo4jDb.PATH_KEY, dbDir);
+            userParams.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_CYPHER);
+            WorkloadParams params = new WorkloadParams(userParams, Neo4jDb.class.getName(),
                     LdbcInteractiveWorkload.class.getName(), operationCount, recordCount,
-                    BenchmarkPhase.TRANSACTION_PHASE, threadCount, showStatus, timeUnit );
+                    BenchmarkPhase.TRANSACTION_PHASE, threadCount, showStatus, timeUnit);
 
             Client client = new Client();
-            client.start( params );
-        }
-        catch ( Exception e )
-        {
+            client.start(params);
+        } catch (Exception e) {
             e.printStackTrace();
             exceptionThrown = true;
         }
-        assertThat( exceptionThrown, is( false ) );
+        assertThat(exceptionThrown, is(false));
+    }
+
+    @Test
+    public void shouldLoadParametersFromFileInsteadOfCommandLine() throws ClientException {
+        boolean exceptionThrown = false;
+        try {
+            WorkloadParams params = WorkloadParams.fromArgs(new String[]{
+                    "-P", TestUtils.getResource("/ldbc_socnet_interactive.properties").getAbsolutePath(),
+                    "-p", "parameters", LdbcInteractiveWorkload.PARAMETERS_FILENAME, TestUtils.getResource("/parameters.json").getAbsolutePath()});
+
+            Client client = new Client();
+            client.start(params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            exceptionThrown = true;
+        }
+        assertThat(exceptionThrown, is(false));
     }
 
     @Ignore
     // TODO should not depend on existence of a directory not created by test
     @Test
-    public void shouldRunLoadWorkloadWithoutThrowingException() throws ClientException
-    {
+    public void shouldRunLoadWorkloadWithoutThrowingException() throws ClientException {
         boolean exceptionThrown = false;
-        try
-        {
-            LdbcSocialNeworkNeo4jImporter.main( new String[] {} );
-        }
-        catch ( Exception e )
-        {
+        try {
+            LdbcSocialNeworkNeo4jImporter.main(new String[]{});
+        } catch (Exception e) {
             e.printStackTrace();
             exceptionThrown = true;
         }
-        assertThat( exceptionThrown, is( false ) );
+        assertThat(exceptionThrown, is(false));
     }
 }

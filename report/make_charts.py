@@ -5,6 +5,7 @@ from matplotlib.font_manager import FontProperties
 import json
 
 # MAVEN_OPTS="-server -XX:+UseConcMarkSweepGC -Xmx512m" mvn exec:java -Dexec.mainClass=com.ldbc.driver.Client -Dexec.arguments="-db,com.ldbc.socialnet.workload.neo4j.Neo4jDb,-w,com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcInteractiveWorkload,-oc,10,-rc,-1,-tc,1,-s,-tu,MILLISECONDS,-p,neo4j.path=db/,-p,neo4j.dbtype=embedded-api-steps,-p,parameters=ldbc_driver/workloads/ldbc/socnet/interactive/parameters.json"
+# MAVEN_OPTS="-server -XX:+UseConcMarkSweepGC -Xmx512m" mvn exec:java -Dexec.mainClass=com.ldbc.driver.Client -Dexec.arguments="-P,ldbc_socnet_interactive.properties"
 
 json_data=open("result.json").read()
 query_data = json.loads(json_data)
