@@ -68,70 +68,81 @@ public class IntegrationTest {
     @Test
     public void shouldRunEmbeddedStepsTransactionalWorkloadWithoutThrowingException() throws ClientException {
         boolean exceptionThrown = false;
+        assertThat(new File("test_results.json").exists(), is(false));
         try {
             long operationCount = 100;
             long recordCount = -1;
             int threadCount = 1;
             boolean showStatus = true;
             TimeUnit timeUnit = TimeUnit.MILLISECONDS;
+            String resultFilePath = null;
             Map<String, String> userParams = new HashMap<String, String>();
             userParams.put(LdbcInteractiveWorkload.PARAMETERS_FILENAME, TestUtils.getResource("/parameters.json").getAbsolutePath());
             userParams.put(Neo4jDb.PATH_KEY, dbDir);
             userParams.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_STEPS);
             WorkloadParams params = new WorkloadParams(userParams, Neo4jDb.class.getName(),
                     LdbcInteractiveWorkload.class.getName(), operationCount, recordCount,
-                    BenchmarkPhase.TRANSACTION_PHASE, threadCount, showStatus, timeUnit);
+                    BenchmarkPhase.TRANSACTION_PHASE, threadCount, showStatus, timeUnit, resultFilePath);
 
-            Client client = new Client();
-            client.start(params);
+            Client client = new Client(params);
+            client.start();
         } catch (Exception e) {
             e.printStackTrace();
             exceptionThrown = true;
         }
         assertThat(exceptionThrown, is(false));
+        assertThat(new File("test_results.json").exists(), is(false));
     }
 
     @Test
     public void shouldRunEmbeddedCypherTransactionalWorkloadWithoutThrowingException() throws ClientException {
         boolean exceptionThrown = false;
+        assertThat(new File("test_results.json").exists(), is(false));
         try {
             long operationCount = 100;
             long recordCount = -1;
             int threadCount = 1;
             boolean showStatus = true;
             TimeUnit timeUnit = TimeUnit.MILLISECONDS;
+            String resultFilePath = "test_results.json";
             Map<String, String> userParams = new HashMap<String, String>();
             userParams.put(LdbcInteractiveWorkload.PARAMETERS_FILENAME, TestUtils.getResource("/parameters.json").getAbsolutePath());
             userParams.put(Neo4jDb.PATH_KEY, dbDir);
             userParams.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_CYPHER);
             WorkloadParams params = new WorkloadParams(userParams, Neo4jDb.class.getName(),
                     LdbcInteractiveWorkload.class.getName(), operationCount, recordCount,
-                    BenchmarkPhase.TRANSACTION_PHASE, threadCount, showStatus, timeUnit);
+                    BenchmarkPhase.TRANSACTION_PHASE, threadCount, showStatus, timeUnit, resultFilePath);
 
-            Client client = new Client();
-            client.start(params);
+            Client client = new Client(params);
+            client.start();
         } catch (Exception e) {
             e.printStackTrace();
             exceptionThrown = true;
         }
         assertThat(exceptionThrown, is(false));
+        assertThat(new File("test_results.json").exists(), is(true));
+        assertThat(new File("test_results.json").delete(), is(true));
+        assertThat(new File("test_results.json").exists(), is(false));
     }
 
     @Test
     public void shouldLoadParametersFromFileInsteadOfCommandLine() throws ClientException {
         boolean exceptionThrown = false;
+        assertThat(new File("test_results.json").exists(), is(false));
         try {
             WorkloadParams params = WorkloadParams.fromArgs(new String[]{
-                    "-P", TestUtils.getResource("/ldbc_socnet_interactive.properties").getAbsolutePath(),
-                    "-p", "parameters", LdbcInteractiveWorkload.PARAMETERS_FILENAME, TestUtils.getResource("/parameters.json").getAbsolutePath()});
+                    "-P", TestUtils.getResource("/ldbc_socnet_interactive_test.properties").getAbsolutePath()});
 
-            Client client = new Client();
-            client.start(params);
+            Client client = new Client(params);
+            client.start();
         } catch (Exception e) {
             e.printStackTrace();
             exceptionThrown = true;
         }
         assertThat(exceptionThrown, is(false));
+        assertThat(new File("test_results.json").exists(), is(true));
+        assertThat(new File("test_results.json").delete(), is(true));
+        assertThat(new File("test_results.json").exists(), is(false));
     }
 
     @Ignore
