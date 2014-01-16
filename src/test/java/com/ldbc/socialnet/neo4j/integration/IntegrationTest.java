@@ -1,9 +1,6 @@
 package com.ldbc.socialnet.neo4j.integration;
 
-import com.ldbc.driver.BenchmarkPhase;
-import com.ldbc.driver.Client;
-import com.ldbc.driver.ClientException;
-import com.ldbc.driver.WorkloadParams;
+import com.ldbc.driver.*;
 import com.ldbc.driver.util.TestUtils;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcInteractiveWorkload;
 import com.ldbc.socialnet.neo4j.workload.TestGraph;
@@ -126,7 +123,7 @@ public class IntegrationTest {
     }
 
     @Test
-    public void shouldLoadParametersFromFileInsteadOfCommandLine() throws ClientException {
+    public void shouldLoadParametersFromFileInsteadOfCommandLine() {
         boolean exceptionThrown = false;
         assertThat(new File("test_results.json").exists(), is(false));
         try {
@@ -144,6 +141,18 @@ public class IntegrationTest {
         assertThat(new File("test_results.json").exists(), is(true));
         assertThat(new File("test_results.json").delete(), is(true));
         assertThat(new File("test_results.json").exists(), is(false));
+    }
+
+    @Ignore
+    @Test
+    public void query2ShouldNotThrowExceptionsForMissingIdProperty() throws ParamsException, ClientException {
+        WorkloadParams params = WorkloadParams.fromArgs(new String[]{
+                "-P", TestUtils.getResource("/ldbc_socnet_interactive_test.properties").getAbsolutePath(),
+                "-p", "parameters", TestUtils.getResource("/parameters.json").getAbsolutePath(),
+                "-p", "neo4j.path", "/Users/alexaverbuch/IdeaProjects/ldbc_socialnet_bm_neo4j/db"});
+
+        Client client = new Client(params);
+        client.start();
     }
 
     @Ignore

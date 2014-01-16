@@ -200,7 +200,9 @@ public class LdbcSocialNeworkNeo4jImporter {
         // logger.info( "\tRelationship count = " +
         // GraphUtils.relationshipCount( db, 10000000 ) );
 
+        System.out.printf("Shutting down...");
         db.shutdown();
+        System.out.println("Done");
     }
 
     private void insertFile(CsvFileInserter fileInserter) throws FileNotFoundException {

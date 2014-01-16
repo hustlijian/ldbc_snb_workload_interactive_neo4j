@@ -19,3 +19,4 @@ tempDb/
 java.hprof.txt
 .idea
 *.iml
+report/*.json

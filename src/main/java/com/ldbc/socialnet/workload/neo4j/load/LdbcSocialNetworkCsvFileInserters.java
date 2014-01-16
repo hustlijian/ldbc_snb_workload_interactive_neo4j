@@ -328,8 +328,7 @@ public class LdbcSocialNetworkCsvFileInserters {
             public void insert(Object[] columnValues) {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 long id = Long.parseLong((String) columnValues[0]);
-                // TODO remove?
-                // properties.put( "id", id );
+                properties.put("id", id);
                 properties.put(Domain.Post.IMAGE_FILE, columnValues[1]);
                 String creationDateString = (String) columnValues[2];
                 try {
@@ -352,6 +351,11 @@ public class LdbcSocialNetworkCsvFileInserters {
         });
     }
 
+    private static Set<Long> allPersonIds = new HashSet<>();
+    private static Long allPersonIdsCount = 0L;
+    private static Long minPersonId = Long.MAX_VALUE;
+    private static Long maxPersonId = Long.MIN_VALUE;
+
     private static CsvFileInserter persons(final String csvDataDir, final BatchInserter batchInserter,
                                            final PersonsTempIndex personsIndex) throws FileNotFoundException {
         /*
@@ -363,7 +367,6 @@ public class LdbcSocialNetworkCsvFileInserters {
             public void insert(Object[] columnValues) {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 long id = Long.parseLong((String) columnValues[0]);
-                // TODO remove?
                 properties.put(Domain.Person.ID, id);
                 properties.put(Domain.Person.FIRST_NAME, columnValues[1]);
                 properties.put(Domain.Person.LAST_NAME, columnValues[2]);

@@ -39,7 +39,7 @@ public class LdbcQuery1HandlerEmbeddedApi extends OperationHandler<LdbcQuery1>
         }
         catch ( Exception e )
         {
-            logger.error( String.format( "Error executing query\n%s", Utils.stackTraceToString( e ) ) );
+            logger.error(String.format("Error executing query\n%s\n%s", operation.toString(), Utils.stackTraceToString(e)));
             resultCode = -1;
         }
 
