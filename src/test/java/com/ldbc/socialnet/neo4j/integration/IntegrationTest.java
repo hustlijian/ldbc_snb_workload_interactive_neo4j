@@ -131,7 +131,8 @@ public class IntegrationTest {
         assertThat(new File("test_results.json").exists(), is(false));
         try {
             WorkloadParams params = WorkloadParams.fromArgs(new String[]{
-                    "-P", TestUtils.getResource("/ldbc_socnet_interactive_test.properties").getAbsolutePath()});
+                    "-P", TestUtils.getResource("/ldbc_socnet_interactive_test.properties").getAbsolutePath(),
+                    "-p", "parameters", TestUtils.getResource("/parameters.json").getAbsolutePath()});
 
             Client client = new Client(params);
             client.start();
