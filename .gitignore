@@ -18,4 +18,4 @@ tempDb/
 .shell_history
 java.hprof.txt
 .idea
-neo4j.iml
+*.iml
