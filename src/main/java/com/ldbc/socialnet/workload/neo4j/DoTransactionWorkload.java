@@ -1,16 +1,14 @@
 package com.ldbc.socialnet.workload.neo4j;
 
-import com.ldbc.driver.BenchmarkPhase;
 import com.ldbc.driver.Client;
 import com.ldbc.driver.ClientException;
+import com.ldbc.driver.ParamsException;
 import com.ldbc.driver.WorkloadParams;
 import com.ldbc.driver.util.MapUtils;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcInteractiveWorkload;
+import com.ldbc.driver.util.TestUtils;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.io.File;
 
 /* 
 
@@ -20,24 +18,28 @@ sudo mvn -DjvmArgs="-server -XX:+UseConcMarkSweepGC -Xmx16G" exec:java -Dexec.ma
  */
 public class DoTransactionWorkload {
 
-    public static void main(String[] args) throws ClientException {
+    /*
+    "-P,ldbc_socnet_interactive.properties,-oc,10,-p,neo4j.dbtype,embedded-cypher,-rf,report/result-embedded-cypher.json,-tc,1,-tu,MILLISECONDS"
+    */
+    public static void main(String[] args) throws ClientException, ParamsException {
         System.out.println("Neo4j Configuration:");
         System.out.println(MapUtils.prettyPrint(Config.NEO4J_RUN_CONFIG));
 
-        long operationCount = 10;
-        long recordCount = -1;
-        int threadCount = 2;
-        boolean showStatus = true;
-        TimeUnit timeUnit = TimeUnit.MILLISECONDS;
-        String resultFilePath = "resultFilePath";
-        Map<String, String> userParams = new HashMap<String, String>();
-        userParams.put("neo4j.path", Config.DB_DIR);
-        userParams.put("neo4j.dbtype", "embedded-api");
-        WorkloadParams params = new WorkloadParams(userParams, Neo4jDb.class.getName(),
-                LdbcInteractiveWorkload.class.getName(), operationCount, recordCount, BenchmarkPhase.TRANSACTION_PHASE,
-                threadCount, showStatus, timeUnit, resultFilePath);
+        String paramsFilePath = TestUtils.getResource("/ldbc_socnet_interactive.properties").getAbsolutePath();
+        String resultFilePath = new File("report/temporary_result_file.json").getAbsolutePath();
+
+        WorkloadParams params = WorkloadParams.fromArgs(new String[]{
+                "-P", paramsFilePath,
+                "-p", Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_STEPS,
+                "-rf", resultFilePath,
+                "-tc", "1"});
 
         Client client = new Client(params);
         client.start();
+
+        // Clean up
+        if (new File(resultFilePath).exists()) {
+            new File(resultFilePath).delete();
+        }
     }
 }
