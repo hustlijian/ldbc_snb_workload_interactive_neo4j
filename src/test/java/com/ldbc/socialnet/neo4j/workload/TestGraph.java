@@ -523,9 +523,9 @@ public class TestGraph
                    + Rels.IS_LOCATED_IN
                    + "]->(au) )\n"
 
-                   + "FOREACH (n IN [] | CREATE (n)-[:"
-                   + Rels.IS_LOCATED_IN
-                   + "]->(uk) )\n"
+//                   + "FOREACH (n IN [] | CREATE (n)-[:"
+//                   + Rels.IS_LOCATED_IN
+//                   + "]->(uk) )\n"
 
                    /*
                    * Post-Person

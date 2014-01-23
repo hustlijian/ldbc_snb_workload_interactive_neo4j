@@ -17,6 +17,7 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -68,7 +69,7 @@ public class IntegrationTest {
         boolean exceptionThrown = false;
         assertThat(new File("test_results.json").exists(), is(false));
         try {
-            long operationCount = 100;
+            long operationCount = 10;
             long recordCount = -1;
             int threadCount = 1;
             boolean showStatus = true;
@@ -97,7 +98,7 @@ public class IntegrationTest {
         boolean exceptionThrown = false;
         assertThat(new File("test_results.json").exists(), is(false));
         try {
-            long operationCount = 100;
+            long operationCount = 10;
             long recordCount = -1;
             int threadCount = 1;
             boolean showStatus = true;
@@ -128,6 +129,9 @@ public class IntegrationTest {
         boolean exceptionThrown = false;
         assertThat(new File("test_results.json").exists(), is(false));
         try {
+            System.out.println(TestUtils.getResource("/ldbc_socnet_interactive_test.properties").getAbsolutePath());
+            System.out.println(new File(TestUtils.getResource("/ldbc_socnet_interactive_test.properties").getAbsolutePath()).exists());
+            System.out.println(FileUtils.readFileToString(new File(TestUtils.getResource("/ldbc_socnet_interactive_test.properties").getAbsolutePath())));
             WorkloadParams params = WorkloadParams.fromArgs(new String[]{
                     "-P", TestUtils.getResource("/ldbc_socnet_interactive_test.properties").getAbsolutePath(),
                     "-p", "parameters", TestUtils.getResource("/parameters.json").getAbsolutePath()});
@@ -142,18 +146,6 @@ public class IntegrationTest {
         assertThat(new File("test_results.json").exists(), is(true));
         assertThat(new File("test_results.json").delete(), is(true));
         assertThat(new File("test_results.json").exists(), is(false));
-    }
-
-    @Ignore
-    @Test
-    public void query2ShouldNotThrowExceptionsForMissingIdProperty() throws ParamsException, ClientException {
-        WorkloadParams params = WorkloadParams.fromArgs(new String[]{
-                "-P", TestUtils.getResource("/ldbc_socnet_interactive_test.properties").getAbsolutePath(),
-                "-p", "parameters", TestUtils.getResource("/parameters.json").getAbsolutePath(),
-                "-p", "neo4j.path", "/Users/alexaverbuch/IdeaProjects/ldbc_socialnet_bm_neo4j/db"});
-
-        Client client = new Client(params);
-        client.start();
     }
 
     @Ignore
