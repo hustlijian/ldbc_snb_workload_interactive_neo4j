@@ -21,6 +21,8 @@ query_data_steps = json.loads(json_data_steps)
 
 time_90_cypher = [query["run_time"]["90th_percentile"] for query in query_data_cypher]
 time_90_steps = [query["run_time"]["90th_percentile"] for query in query_data_steps]
+time_50_cypher = [query["run_time"]["50th_percentile"] for query in query_data_cypher]
+time_50_steps = [query["run_time"]["50th_percentile"] for query in query_data_steps]
 
 query_names = [query["name"].split(".")[-1] for query in query_data_cypher]
 
@@ -29,8 +31,10 @@ w = 0.34       # the width of the bars
 
 fig, ax = plt.subplots()
 
-rects_90_cypher = ax.bar(ind, time_90_cypher, width=w, color='b', align='center', log=True)
-rects_90_steps = ax.bar(ind+w, time_90_steps, width=w, color='r', align='center', log=True)
+rects_90_cypher = ax.bar(ind, time_90_cypher, width=w, color='green', align='center', log=True, hatch='/')
+rects_90_steps = ax.bar(ind+w, time_90_steps, width=w, color='yellow', align='center', log=True, hatch='/')
+rects_50_cypher = ax.bar(ind+w+w, time_50_cypher, width=w, color='green', align='center', log=True)
+rects_50_steps = ax.bar(ind+w+w+w, time_50_steps, width=w, color='yellow', align='center', log=True)
 
 # TODO extract time unit from JSON
 time_unit = query_data_cypher[0]["run_time"]["unit"]
@@ -47,7 +51,7 @@ fig.autofmt_xdate()
 
 fontP = FontProperties()
 fontP.set_size('small')
-ax.legend( (rects_90_cypher[0], rects_90_steps[0]), ('90th Cypher', '90th Steps'),
+ax.legend( (rects_90_cypher[0], rects_90_steps[0], rects_50_cypher[0], rects_50_steps[0],), ('90th Cypher', '90th Steps', '50th Cypher', '50th Steps'),
 	loc='upper left', fancybox=True, shadow=False, ncol=1, prop=fontP)#, bbox_to_anchor=(1.2, 1.0))
 
 # attach some text labels
