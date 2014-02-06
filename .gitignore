@@ -20,3 +20,4 @@ java.hprof.txt
 .idea
 *.iml
 report/*.json
+.DS_Store
