@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-@Ignore
 public class IntegrationTest {
     public static String dbDir = "tempDb";
 
