@@ -31,7 +31,7 @@ public class LdbcQuery5HandlerEmbeddedApi extends OperationHandler<LdbcQuery5> {
         // TODO find way to do this
         int resultCode = 0;
         try (Transaction tx = db.beginTx()) {
-            result = ImmutableList.copyOf((query5.execute(db, engine, operation));
+            result = ImmutableList.copyOf((query5.execute(db, engine, operation)));
             tx.success();
         } catch (Exception e) {
             logger.error(String.format("Error executing query\n%s\n%s", operation.toString(), ConcurrentErrorReporter.stackTraceToString(e)));

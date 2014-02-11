@@ -30,14 +30,11 @@ The resulting Neo4j instance will have [this schema](https://github.com/ldbc/ldb
 	usage: java -cp classesYouNeedOnTheClassPath.jar com.ldbc.driver.Client [-db <classname>] [-l | -t] [-oc <count>] [-P
 	       <file1:file2>] [-p <key=value>] [-rc <count>] [-s]  [-tc <count>] [-tu <unit>] [-w <classname>]
 	   -db,--database <classname>       classname of the DB to use (e.g. com.ldbc.driver.db.basic.BasicDb)
-	   -l,--load                        run the loading phase of the workload
 	   -oc,--operationcount <count>     number of operations to execute (default: 0)
 	   -P <file1:file2>                 load properties from file(s) - files will be loaded in the order provided
 	   -p <key=value>                   properties to be passed to DB and Workload - these will override
 		                            properties loaded from files
-	   -rc,--recordcount <count>        number of records to create during load phase (default: 0)
 	   -s,--status                      show status during run
-	   -t,--transaction                 run the transactions phase of the workload
 	   -tc,--threadcount <count>        number of worker threads to execute with (default: 2)
 	   -tu,--timeunit <unit>            time unit to use when gathering metrics. default:MILLISECONDS,
 		                            valid:[NANOSECONDS, MICROSECONDS, MILLISECONDS, SECONDS, MINUTES]
@@ -50,7 +47,7 @@ The resulting Neo4j instance will have [this schema](https://github.com/ldbc/ldb
 	mvn exec:java -Dexec.mainClass=com.ldbc.driver.Client
 	-Dexec.arguments="-db,com.ldbc.socialnet.workload.neo4j.Neo4jDb,
 	  -w,com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcInteractiveWorkload,
-	  -oc,10,-rc,-1,-tc,1,-s,-tu,MILLISECONDS,
+	  -oc,10,-tc,1,-s,-tu,MILLISECONDS,
 	  -p,neo4j.path=db/,-p,neo4j.dbtype=embedded-api-steps,
 	  -p,parameters=ldbc_driver/workloads/ldbc/socnet/interactive/parameters.json"
 

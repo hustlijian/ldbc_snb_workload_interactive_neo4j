@@ -1,136 +1,143 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.ldbc.socialnet</groupId>
-	<artifactId>neo4j</artifactId>
-	<version>0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
-	<name>Neo4j implementation of LDBC Social Network benchmark</name>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.ldbc.socialnet</groupId>
+    <artifactId>neo4j</artifactId>
+    <version>0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>Neo4j implementation of LDBC Social Network benchmark</name>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.assembly.version>2.2.1</maven.assembly.version>
-		<neo4j-version>2.0.1</neo4j-version>
-		<junit-version>4.10</junit-version>
-		<log4j-version>1.2.17</log4j-version>
-		<trove4j-version>3.0.3</trove4j-version>
-		<mapdb-version>0.9.3</mapdb-version>
-		<ldbc-driver-version>0.2-SNAPSHOT</ldbc-driver-version>
-		<steps-version>0.1-SNAPSHOT </steps-version>
-	</properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.assembly.version>2.2.1</maven.assembly.version>
+        <neo4j-version>2.0.1</neo4j-version>
+        <junit-version>4.10</junit-version>
+        <log4j-version>1.2.17</log4j-version>
+        <trove4j-version>3.0.3</trove4j-version>
+        <mapdb-version>0.9.3</mapdb-version>
+        <ldbc-driver-version>0.2-SNAPSHOT</ldbc-driver-version>
+        <steps-version>0.1-SNAPSHOT</steps-version>
+    </properties>
 
 
-	<dependencies>
-		<dependency>
-			<groupId>com.ldbc.driver</groupId>
-			<artifactId>core</artifactId>
-			<version>${ldbc-driver-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.neo4j.traversal</groupId>
-			<artifactId>steps</artifactId>
-			<version>${steps-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-enterprise</artifactId>
-			<version>${neo4j-version}</version>
-		</dependency>
-		<!-- CommunityServerBuilder & CommunityNeoServer -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.neo4j.app</groupId> -->
-		<!-- <artifactId>neo4j-server</artifactId> -->
-		<!-- <version>${neo4j-version}</version> -->
-		<!-- <type>test-jar</type> -->
-		<!-- </dependency> -->
-		<dependency>
-			<groupId>org.neo4j.app</groupId>
-			<artifactId>neo4j-server</artifactId>
-			<version>${neo4j-version}</version>
-			<classifier>tests</classifier>
-		</dependency>
-		<dependency>
-			<groupId>org.neo4j.app</groupId>
-			<artifactId>neo4j-server</artifactId>
-			<classifier>static-web</classifier>
-			<version>${neo4j-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.neo4j.app</groupId>
-			<artifactId>neo4j-server</artifactId>
-			<version>${neo4j-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-			<version>${junit-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>${log4j-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sf.trove4j</groupId>
-			<artifactId>trove4j</artifactId>
-			<version>${trove4j-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mapdb</groupId>
-			<artifactId>mapdb</artifactId>
-			<version>${mapdb-version}</version>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.ldbc.driver</groupId>
+            <artifactId>core</artifactId>
+            <version>${ldbc-driver-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j.traversal</groupId>
+            <artifactId>steps</artifactId>
+            <version>${steps-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-enterprise</artifactId>
+            <version>${neo4j-version}</version>
+        </dependency>
+        <!-- CommunityServerBuilder & CommunityNeoServer -->
+        <!-- <dependency> -->
+        <!-- <groupId>org.neo4j.app</groupId> -->
+        <!-- <artifactId>neo4j-server</artifactId> -->
+        <!-- <version>${neo4j-version}</version> -->
+        <!-- <type>test-jar</type> -->
+        <!-- </dependency> -->
+        <dependency>
+            <groupId>org.neo4j.app</groupId>
+            <artifactId>neo4j-server</artifactId>
+            <version>${neo4j-version}</version>
+            <classifier>tests</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j.app</groupId>
+            <artifactId>neo4j-server</artifactId>
+            <classifier>static-web</classifier>
+            <version>${neo4j-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j.app</groupId>
+            <artifactId>neo4j-server</artifactId>
+            <version>${neo4j-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+            <version>${junit-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.trove4j</groupId>
+            <artifactId>trove4j</artifactId>
+            <version>${trove4j-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapdb</groupId>
+            <artifactId>mapdb</artifactId>
+            <version>${mapdb-version}</version>
+        </dependency>
+    </dependencies>
 
-	<repositories>
-		<repository>
-			<id>neo4j-release-repository</id>
-			<name>Neo4j Maven 2 release repository</name>
-			<url>http://m2.neo4j.org/content/repositories/releases/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
+    <repositories>
+        <repository>
+            <id>neo4j-release-repository</id>
+            <name>Neo4j Maven 2 release repository</name>
+            <url>http://m2.neo4j.org/content/repositories/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
 
-		<!-- TO UPDATE IN-PROJECT REPOSITORY -->
-		<!-- mvn install:install-file -DlocalRepositoryPath=lib -DcreateChecksum=true 
-			-Dpackaging=jar -Dfile=/home/alex/workspace/java/ldbc_driver/core/target/core-0.1.jar 
-			-DgroupId=com.ldbc.driver -DartifactId=core -Dversion=0.1 -->
-		<!--http://blog.dub.podval.org/2010/01/maven-in-project-repository.html, 
-			http://stackoverflow.com/questions/364114/can-i-add-jars-to-maven-2-build-classpath-without-installing-them -->
-		<repository>
-			<id>in-project-repository</id>
-			<url>file://${project.basedir}/lib</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-		</repository>
-	</repositories>
+        <!-- TO UPDATE IN-PROJECT REPOSITORY -->
+        <!-- mvn install:install-file -DlocalRepositoryPath=lib -DcreateChecksum=true
+            -Dpackaging=jar -Dfile=/home/alex/workspace/java/ldbc_driver/core/target/core-0.1.jar
+            -DgroupId=com.ldbc.driver -DartifactId=core -Dversion=0.1 -->
+        <!--http://blog.dub.podval.org/2010/01/maven-in-project-repository.html,
+            http://stackoverflow.com/questions/364114/can-i-add-jars-to-maven-2-build-classpath-without-installing-them -->
+        <repository>
+            <id>in-project-repository</id>
+            <url>file://${project.basedir}/lib</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+        </repository>
+    </repositories>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.2.1</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<executable>maven</executable>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <!--<plugin>-->
+                <!--<artifactId>maven-compiler-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<source>1.7</source>-->
+                    <!--<target>1.7</target>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>maven</executable>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -1,6 +1,8 @@
 package com.ldbc.socialnet.neo4j.integration;
 
-import com.ldbc.driver.*;
+import com.ldbc.driver.Client;
+import com.ldbc.driver.ClientException;
+import com.ldbc.driver.WorkloadParams;
 import com.ldbc.driver.util.TestUtils;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcInteractiveWorkload;
 import com.ldbc.socialnet.neo4j.workload.TestGraph;
@@ -17,10 +19,8 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -70,7 +70,6 @@ public class IntegrationTest {
         assertThat(new File("test_results.json").exists(), is(false));
         try {
             long operationCount = 10;
-            long recordCount = -1;
             int threadCount = 1;
             boolean showStatus = true;
             TimeUnit timeUnit = TimeUnit.MILLISECONDS;
@@ -80,8 +79,8 @@ public class IntegrationTest {
             userParams.put(Neo4jDb.PATH_KEY, dbDir);
             userParams.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_STEPS);
             WorkloadParams params = new WorkloadParams(userParams, Neo4jDb.class.getName(),
-                    LdbcInteractiveWorkload.class.getName(), operationCount, recordCount,
-                    BenchmarkPhase.TRANSACTION_PHASE, threadCount, showStatus, timeUnit, resultFilePath);
+                    LdbcInteractiveWorkload.class.getName(), operationCount,
+                    threadCount, showStatus, timeUnit, resultFilePath);
 
             Client client = new Client(params);
             client.start();
@@ -99,7 +98,6 @@ public class IntegrationTest {
         assertThat(new File("test_results.json").exists(), is(false));
         try {
             long operationCount = 10;
-            long recordCount = -1;
             int threadCount = 1;
             boolean showStatus = true;
             TimeUnit timeUnit = TimeUnit.MILLISECONDS;
@@ -109,8 +107,8 @@ public class IntegrationTest {
             userParams.put(Neo4jDb.PATH_KEY, dbDir);
             userParams.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_CYPHER);
             WorkloadParams params = new WorkloadParams(userParams, Neo4jDb.class.getName(),
-                    LdbcInteractiveWorkload.class.getName(), operationCount, recordCount,
-                    BenchmarkPhase.TRANSACTION_PHASE, threadCount, showStatus, timeUnit, resultFilePath);
+                    LdbcInteractiveWorkload.class.getName(), operationCount,
+                    threadCount, showStatus, timeUnit, resultFilePath);
 
             Client client = new Client(params);
             client.start();
@@ -129,12 +127,21 @@ public class IntegrationTest {
         boolean exceptionThrown = false;
         assertThat(new File("test_results.json").exists(), is(false));
         try {
-            System.out.println(TestUtils.getResource("/ldbc_socnet_interactive_test.properties").getAbsolutePath());
-            System.out.println(new File(TestUtils.getResource("/ldbc_socnet_interactive_test.properties").getAbsolutePath()).exists());
-            System.out.println(FileUtils.readFileToString(new File(TestUtils.getResource("/ldbc_socnet_interactive_test.properties").getAbsolutePath())));
+            String neo4jLdbcSocnetInteractiveTestPropertiesPath =
+                    TestUtils.getResource("/neo4j_ldbc_socnet_interactive_test.properties").getAbsolutePath();
+            String ldbcSocnetInteractiveTestPropertiesPath =
+                    new File("ldbc_driver/workloads/ldbc/socnet/interactive/ldbc_socnet_interactive.properties").getAbsolutePath();
+            String ldbcDriverTestPropertiesPath =
+                    new File("ldbc_driver/src/main/resources/ldbc_driver_default.properties").getAbsolutePath();
+
+            assertThat(new File(neo4jLdbcSocnetInteractiveTestPropertiesPath).exists(), is(true));
+            assertThat(new File(ldbcSocnetInteractiveTestPropertiesPath).exists(), is(true));
+            assertThat(new File(ldbcDriverTestPropertiesPath).exists(), is(true));
+
             WorkloadParams params = WorkloadParams.fromArgs(new String[]{
-                    "-P", TestUtils.getResource("/ldbc_socnet_interactive_test.properties").getAbsolutePath(),
-                    "-p", "parameters", TestUtils.getResource("/parameters.json").getAbsolutePath()});
+                    "-P", neo4jLdbcSocnetInteractiveTestPropertiesPath,
+                    "-P", ldbcSocnetInteractiveTestPropertiesPath,
+                    "-P", ldbcDriverTestPropertiesPath});
 
             Client client = new Client(params);
             client.start();
