@@ -75,7 +75,7 @@ public class IntegrationTest {
             TimeUnit timeUnit = TimeUnit.MILLISECONDS;
             String resultFilePath = null;
             Map<String, String> userParams = new HashMap<String, String>();
-            userParams.put(LdbcInteractiveWorkload.PARAMETERS_FILENAME, TestUtils.getResource("/parameters.json").getAbsolutePath());
+            userParams.put(LdbcInteractiveWorkload.PARAMETERS_FILENAME_KEY, TestUtils.getResource("/parameters.json").getAbsolutePath());
             userParams.put(Neo4jDb.PATH_KEY, dbDir);
             userParams.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_STEPS);
             WorkloadParams params = new WorkloadParams(userParams, Neo4jDb.class.getName(),
@@ -103,7 +103,7 @@ public class IntegrationTest {
             TimeUnit timeUnit = TimeUnit.MILLISECONDS;
             String resultFilePath = "test_results.json";
             Map<String, String> userParams = new HashMap<String, String>();
-            userParams.put(LdbcInteractiveWorkload.PARAMETERS_FILENAME, TestUtils.getResource("/parameters.json").getAbsolutePath());
+            userParams.put(LdbcInteractiveWorkload.PARAMETERS_FILENAME_KEY, TestUtils.getResource("/parameters.json").getAbsolutePath());
             userParams.put(Neo4jDb.PATH_KEY, dbDir);
             userParams.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_CYPHER);
             WorkloadParams params = new WorkloadParams(userParams, Neo4jDb.class.getName(),
