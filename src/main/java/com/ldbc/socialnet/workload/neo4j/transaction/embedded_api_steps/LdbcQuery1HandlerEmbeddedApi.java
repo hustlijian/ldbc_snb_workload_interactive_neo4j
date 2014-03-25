@@ -10,7 +10,6 @@ import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery1Result;
 import com.ldbc.socialnet.workload.neo4j.Neo4jConnectionStateEmbedded;
 import com.ldbc.socialnet.workload.neo4j.transaction.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.transaction.Neo4jQuery1;
-import org.apache.log4j.Logger;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
@@ -18,8 +17,6 @@ import org.neo4j.graphdb.Transaction;
 import java.util.List;
 
 public class LdbcQuery1HandlerEmbeddedApi extends OperationHandler<LdbcQuery1> {
-    private final static Logger logger = Logger.getLogger(LdbcQuery1HandlerEmbeddedApi.class);
-
     @Override
     protected OperationResult executeOperation(LdbcQuery1 operation) throws DbException {
         ExecutionEngine engine = ((Neo4jConnectionStateEmbedded) dbConnectionState()).executionEngine();
@@ -34,8 +31,11 @@ public class LdbcQuery1HandlerEmbeddedApi extends OperationHandler<LdbcQuery1> {
             result = ImmutableList.copyOf(query1.execute(db, engine, operation));
             tx.success();
         } catch (Exception e) {
-            logger.error(String.format("Error executing query\n%s\n%s", operation.toString(), ConcurrentErrorReporter.stackTraceToString(e)));
-            resultCode = -1;
+            String errMsg = String.format(
+                    "Error executing query\n%s\n%s",
+                    operation.toString(),
+                    ConcurrentErrorReporter.stackTraceToString(e));
+            throw new DbException(errMsg, e.getCause());
         }
 
         return operation.buildResult(resultCode, result);

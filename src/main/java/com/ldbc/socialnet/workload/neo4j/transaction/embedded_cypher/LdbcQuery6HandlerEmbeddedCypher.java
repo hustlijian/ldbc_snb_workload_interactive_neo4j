@@ -17,8 +17,6 @@ import org.neo4j.graphdb.Transaction;
 import java.util.List;
 
 public class LdbcQuery6HandlerEmbeddedCypher extends OperationHandler<LdbcQuery6> {
-    private final static Logger logger = Logger.getLogger(LdbcQuery6HandlerEmbeddedCypher.class);
-
     @Override
     protected OperationResult executeOperation(LdbcQuery6 operation) throws DbException {
         ExecutionEngine engine = ((Neo4jConnectionStateEmbedded) dbConnectionState()).executionEngine();
@@ -32,8 +30,11 @@ public class LdbcQuery6HandlerEmbeddedCypher extends OperationHandler<LdbcQuery6
             result = ImmutableList.copyOf(query6.execute(db, engine, operation));
             tx.success();
         } catch (Exception e) {
-            logger.error(String.format("Error executing query\n%s", ConcurrentErrorReporter.stackTraceToString(e)));
-            resultCode = -1;
+            String errMsg = String.format(
+                    "Error executing query\n%s\n%s",
+                    operation.toString(),
+                    ConcurrentErrorReporter.stackTraceToString(e));
+            throw new DbException(errMsg, e.getCause());
         }
 
         return operation.buildResult(resultCode, result);

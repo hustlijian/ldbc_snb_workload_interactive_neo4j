@@ -3,6 +3,7 @@ package com.ldbc.socialnet.neo4j.integration;
 import com.ldbc.driver.Client;
 import com.ldbc.driver.ClientException;
 import com.ldbc.driver.WorkloadParams;
+import com.ldbc.driver.temporal.Duration;
 import com.ldbc.driver.util.TestUtils;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcInteractiveWorkload;
 import com.ldbc.socialnet.neo4j.workload.TestGraph;
@@ -78,9 +79,25 @@ public class IntegrationTest {
             userParams.put(LdbcInteractiveWorkload.PARAMETERS_FILENAME_KEY, TestUtils.getResource("/parameters.json").getAbsolutePath());
             userParams.put(Neo4jDb.PATH_KEY, dbDir);
             userParams.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_STEPS);
-            WorkloadParams params = new WorkloadParams(userParams, Neo4jDb.class.getName(),
-                    LdbcInteractiveWorkload.class.getName(), operationCount,
-                    threadCount, showStatus, timeUnit, resultFilePath);
+
+            userParams.put(LdbcInteractiveWorkload.INTERLEAVE_DURATION_KEY, Duration.fromMilli(10).asMilli().toString());
+            userParams.put(LdbcInteractiveWorkload.QUERY_1_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.QUERY_2_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.QUERY_3_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.QUERY_4_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.QUERY_5_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.QUERY_6_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.QUERY_7_KEY, "1");
+
+            WorkloadParams params = new WorkloadParams(
+                    userParams,
+                    Neo4jDb.class.getName(),
+                    LdbcInteractiveWorkload.class.getName(),
+                    operationCount,
+                    threadCount,
+                    showStatus,
+                    timeUnit,
+                    resultFilePath);
 
             Client client = new Client(params);
             client.start();
@@ -106,9 +123,25 @@ public class IntegrationTest {
             userParams.put(LdbcInteractiveWorkload.PARAMETERS_FILENAME_KEY, TestUtils.getResource("/parameters.json").getAbsolutePath());
             userParams.put(Neo4jDb.PATH_KEY, dbDir);
             userParams.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_CYPHER);
-            WorkloadParams params = new WorkloadParams(userParams, Neo4jDb.class.getName(),
-                    LdbcInteractiveWorkload.class.getName(), operationCount,
-                    threadCount, showStatus, timeUnit, resultFilePath);
+
+            userParams.put(LdbcInteractiveWorkload.INTERLEAVE_DURATION_KEY, Duration.fromMilli(10).asMilli().toString());
+            userParams.put(LdbcInteractiveWorkload.QUERY_1_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.QUERY_2_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.QUERY_3_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.QUERY_4_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.QUERY_5_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.QUERY_6_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.QUERY_7_KEY, "1");
+
+            WorkloadParams params = new WorkloadParams(
+                    userParams,
+                    Neo4jDb.class.getName(),
+                    LdbcInteractiveWorkload.class.getName(),
+                    operationCount,
+                    threadCount,
+                    showStatus,
+                    timeUnit,
+                    resultFilePath);
 
             Client client = new Client(params);
             client.start();
