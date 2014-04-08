@@ -2,8 +2,11 @@ package com.ldbc.socialnet.neo4j.integration;
 
 import com.ldbc.driver.Client;
 import com.ldbc.driver.ClientException;
-import com.ldbc.driver.WorkloadParams;
+import com.ldbc.driver.control.ConcurrentControlService;
+import com.ldbc.driver.control.LocalControlService;
+import com.ldbc.driver.control.WorkloadParams;
 import com.ldbc.driver.temporal.Duration;
+import com.ldbc.driver.temporal.Time;
 import com.ldbc.driver.util.TestUtils;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcInteractiveWorkload;
 import com.ldbc.socialnet.neo4j.workload.TestGraph;
@@ -21,7 +24,9 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -75,6 +80,11 @@ public class IntegrationTest {
             boolean showStatus = true;
             TimeUnit timeUnit = TimeUnit.MILLISECONDS;
             String resultFilePath = null;
+            Double timeCompressionRatio = 1.0;
+            Duration gctDeltaDuration = Duration.fromSeconds(10);
+            List<String> peerIds = new ArrayList<>();
+            Duration toleratedExecutionDelay = Duration.fromSeconds(1);
+
             Map<String, String> userParams = new HashMap<String, String>();
             userParams.put(LdbcInteractiveWorkload.PARAMETERS_FILENAME_KEY, TestUtils.getResource("/parameters.json").getAbsolutePath());
             userParams.put(Neo4jDb.PATH_KEY, dbDir);
@@ -88,6 +98,11 @@ public class IntegrationTest {
             userParams.put(LdbcInteractiveWorkload.QUERY_5_KEY, "1");
             userParams.put(LdbcInteractiveWorkload.QUERY_6_KEY, "1");
             userParams.put(LdbcInteractiveWorkload.QUERY_7_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.QUERY_8_KEY, "0");
+            userParams.put(LdbcInteractiveWorkload.QUERY_9_KEY, "0");
+            userParams.put(LdbcInteractiveWorkload.QUERY_10_KEY, "0");
+            userParams.put(LdbcInteractiveWorkload.QUERY_11_KEY, "0");
+            userParams.put(LdbcInteractiveWorkload.QUERY_12_KEY, "0");
 
             WorkloadParams params = new WorkloadParams(
                     userParams,
@@ -97,9 +112,15 @@ public class IntegrationTest {
                     threadCount,
                     showStatus,
                     timeUnit,
-                    resultFilePath);
+                    resultFilePath,
+                    timeCompressionRatio,
+                    gctDeltaDuration,
+                    peerIds,
+                    toleratedExecutionDelay);
 
-            Client client = new Client(params);
+            Time workloadStartTime = Time.now().plus(Duration.fromSeconds(1));
+            ConcurrentControlService controlService = new LocalControlService(workloadStartTime, params);
+            Client client = new Client(controlService);
             client.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,6 +140,11 @@ public class IntegrationTest {
             boolean showStatus = true;
             TimeUnit timeUnit = TimeUnit.MILLISECONDS;
             String resultFilePath = "test_results.json";
+            Double timeCompressionRatio = 1.0;
+            Duration gctDeltaDuration = Duration.fromSeconds(10);
+            List<String> peerIds = new ArrayList<>();
+            Duration toleratedExecutionDelay = Duration.fromSeconds(1);
+
             Map<String, String> userParams = new HashMap<String, String>();
             userParams.put(LdbcInteractiveWorkload.PARAMETERS_FILENAME_KEY, TestUtils.getResource("/parameters.json").getAbsolutePath());
             userParams.put(Neo4jDb.PATH_KEY, dbDir);
@@ -132,6 +158,11 @@ public class IntegrationTest {
             userParams.put(LdbcInteractiveWorkload.QUERY_5_KEY, "1");
             userParams.put(LdbcInteractiveWorkload.QUERY_6_KEY, "1");
             userParams.put(LdbcInteractiveWorkload.QUERY_7_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.QUERY_8_KEY, "0");
+            userParams.put(LdbcInteractiveWorkload.QUERY_9_KEY, "0");
+            userParams.put(LdbcInteractiveWorkload.QUERY_10_KEY, "0");
+            userParams.put(LdbcInteractiveWorkload.QUERY_11_KEY, "0");
+            userParams.put(LdbcInteractiveWorkload.QUERY_12_KEY, "0");
 
             WorkloadParams params = new WorkloadParams(
                     userParams,
@@ -141,9 +172,15 @@ public class IntegrationTest {
                     threadCount,
                     showStatus,
                     timeUnit,
-                    resultFilePath);
+                    resultFilePath,
+                    timeCompressionRatio,
+                    gctDeltaDuration,
+                    peerIds,
+                    toleratedExecutionDelay);
 
-            Client client = new Client(params);
+            Time workloadStartTime = Time.now().plus(Duration.fromSeconds(1));
+            ConcurrentControlService controlService = new LocalControlService(workloadStartTime, params);
+            Client client = new Client(controlService);
             client.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -176,7 +213,10 @@ public class IntegrationTest {
                     "-P", ldbcSocnetInteractiveTestPropertiesPath,
                     "-P", ldbcDriverTestPropertiesPath});
 
-            Client client = new Client(params);
+
+            Time workloadStartTime = Time.now().plus(Duration.fromSeconds(1));
+            ConcurrentControlService controlService = new LocalControlService(workloadStartTime, params);
+            Client client = new Client(controlService);
             client.start();
         } catch (Exception e) {
             e.printStackTrace();

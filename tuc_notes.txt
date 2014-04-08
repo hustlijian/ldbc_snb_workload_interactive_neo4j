@@ -1,0 +1,86 @@
+--- TUC Notes ---
+
+TODOS:
+ - SPEC RG Cloud Working Group
+ - http://graphbench.org/
+ - [[[Mike Bryant]]] graph<-->RDF
+ - [[[Alex Iosup]]] LDBC Driver discussion
+ - get paper from Thilo, or at least slides, Neo4j scales MUCH better than MySQL
+ - Euretos wanted nested properties/documents
+ - TShirts for Neo4j speakers & Sparsity guys
+
+Title:  
+Speaker: 
+Company: 
+Summary: 
+Keywords: 
+
+---
+
+Title:  Benchmarking Graph Processing Platforms: A Vision
+Speaker: Alex Iosup
+Company: TUDelft
+Summary: metrics, graph/data diversity, algorithm diversity, elasticity (as in cloud), compared Neo4j against 4-5 data processing engines, Neo4j bad at inject, very fast at BFS in comparison with others but only when enough RAM was present and it ran out of RAM faster, all others were horizontally scalable, non others were transactional, focus on analytics rather than transactional/interactive
+Keywords: graph, benchmarking, analytics
+Questions: version? queries? papers? how is performance measured? how is the workload generated? was is the process of comparing, insuring repeatability, etc.?
+
+<<<Neo4j>>>
+Title:  Archival Integration with Neo4j
+Speaker: Mike Bryant
+Company: 
+Summary: electronic descriptions of Holocaust-related material from archives, model it to make it searchable/linked, heirarchies in SQL were not necessary slow but very complicated, Neo4j because heterogeous & evolving, traversals of unknown depth, small graph 1Mnodes, no real performance problems besides cold cache, running v1.9, integrity/constraint a big problem that they plan to solve by exporting to another tool to perform check, versioning (not just of nodes but of sub-graphs) another problem
+Keywords: neo4j, production
+Questions: how do you map from graph-to-RDF or RDF-to-graph?
+
+<<<Neo4j>>>
+Title: Bio Informatics (FIND OUT FULL TITLE)
+Speaker: Thilo Muth
+Company: 
+Summary: functionnal acvitivites of microbial communities, which organisms are in sea-water etc., Peptide->Protein->Species (& Enzymes, Pathways, ...), filter contaminents from samples depending on what they link to (to know if they are in fact contaminents or not), application generates Cypher when domain experts select filters etc., 
+Keywords: life sciences, neo4j, "Meta Proteome Analyzer"
+Thilo Muth of Magdeburg uni presenting https://code.google.com/p/meta-proteome-analyzer at @LDBCproject TUC - interactive tool to analyze & visualize metaproteomics & proteomics using @neo4j
+
+<<<Neo4j>>>
+Title:  Euretos - Brain
+Speaker: Davy Suvee
+Company: 
+Summary: biomedical articles (including pubmed), search papers, combine many datasets, uses nanopub.org: contains smallest units of publishable info (assertions/triples), www.euretos.com/brain, exploration & analysis platform, millions of concepts/triples/nanopubs, knowledge graph in Neo4j, list of concepts in MongoDB (attributes), classifies data so concepts (e.g., malaria) do not occur a million times in different concepts but search can be narrowed down based on knowledge/context, visualizes how publications are connected with interactive visual navigation, by weighting relationships between things UNCOMMON paths can be returned (i.e., outliers in big datasets), 
+Keywords: neo4j, biomed, classification, search, link, recommend
+Question: how exactly is MongoDB used? what is in Neo4j and what in MongoDB? which version Neo4j? 2.1 fixes super nodes? did you hear of MERGE for inline updates?
+
+Title:  Regularities in bisimulation durections of big graphs
+Speaker: Yongming Muo
+Company: TUDelft(?) and ???
+Summary: 
+Keywords: 
+
+<<<Neo4j>>>
+Title:  Energy (GET FULL TITLE
+Speaker: Chris Davis
+Company: 
+Summary: energy, policies, aggregated data, neo4j, graph modeling, enipedia.tudelft.nl, stores sources of power generation around the world incl. producers/consumers, aggregate and link, agent based modeling (how agents act based on the actions of other agents), collaborative wiki, using Virtuoso with Neo4j, 
+Keywords: "tedious data" vs big data: distributed, complex, human readable, integration of different formats
+Questions: have you seen iea.org? what do you use Neo4j for exactly? which feature? what is your twitter?
+
+
+my short answer is no, I don't know how you would express that.
+
+my longer answer is even if this were possible - which it very well may be - I would advise against it.
+
+multiple algorithms 'do' "min-cut max-flow"(http://en.wikipedia.org/wiki/Max-flow_min-cut_theorem), these will all have different performance characteristics and, because clustering is computationally expensive, I'd guess you want control over the specific algorithm implementation used.
+Cypher is a declarative language, you specify WHAT you're looking for but not HOW to do it, and it will be difficult to specify such a complex problem in a way that the Cypher engine can properly deduce what you're trying to do. that will make it hard for Cypher (and any declarative language engine, for that matter) to produce an efficient query plan.
+
+my suggestion is find the specific algorithm you wish to use, implement it using the "Neo4j Java API"(http://docs.neo4j.org/chunked/stable/tutorials-java-embedded.html)
+if you're running Neo4j in embedded mode you're done at that point. if you're running Neo4j server you'll need to run that code as an "Unmanaged Server Extension"(http://docs.neo4j.org/chunked/stable/server-unmanaged-extensions.html)
+
+AFAIK the family of algorithms you're after are called 'Community Detection algorithms'. There are non-overlapping (communities do not overlap) and overlapping variants - non-overlapping is generally easier to implement and understand. Common algorithms are:
+Non-overlapping: Louvain
+Overlapping: Label Propagation Algorithm (LPA) (this is typically non-overlapping, but there are extensions to make it overlapping)
+
+Here are a few C++ code examples of several algorithms (Louvain, Oslom (overlapping), LPA (non-overlapping), and Infomap)
+https://sites.google.com/site/andrealancichinetti/software
+
+And if you want to go cutting edge I was recommended taking a look at the SCD algorithm
+Academic paper: "High Quality, Scalable and Parallel Community Detection for Large Real Graphs"
+http://www.dama.upc.edu/publications/fp546prat.pdf
+C++ implementation: https://github.com/DAMA-UPC/SCD

@@ -398,19 +398,14 @@ public abstract class QueryCorrectnessTest {
         assertThat(exceptionThrown, is(false));
     }
 
+    @Ignore
     @Test
     public void query7ShouldReturnExpectedResult() {
         long personId = 1;
 
-        Calendar c = Calendar.getInstance();
-        c.clear();
-        c.set(2013, Calendar.SEPTEMBER, 6, 20, 0, 0);
-        Date endDate = c.getTime();
-        long durationHours = 24;
-        long durationMillis = TimeUnit.MILLISECONDS.convert(durationHours, TimeUnit.HOURS);
         int limit = 10;
 
-        LdbcQuery7 operation7 = new LdbcQuery7(personId, endDate, durationMillis, limit);
+        LdbcQuery7 operation7 = new LdbcQuery7(personId, limit);
         Neo4jQuery7 query7 = neo4jQuery7Impl();
 
         // TODO uncomment to print query
@@ -475,9 +470,6 @@ public abstract class QueryCorrectnessTest {
     }
 
     boolean resultsEqual(LdbcQuery5Result result1, LdbcQuery5Result result2) {
-        // TODO remove
-        System.out.println(result1 + ":" + result2);
-
         if (false == result1.forumTitle().equals(result2.forumTitle())) return false;
         if (result1.postCount() != result2.postCount()) return false;
         if (result1.commentCount() != result2.commentCount()) return false;
