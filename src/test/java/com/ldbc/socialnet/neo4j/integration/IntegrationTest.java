@@ -3,8 +3,8 @@ package com.ldbc.socialnet.neo4j.integration;
 import com.ldbc.driver.Client;
 import com.ldbc.driver.ClientException;
 import com.ldbc.driver.control.ConcurrentControlService;
+import com.ldbc.driver.control.ConsoleAndFileDriverConfiguration;
 import com.ldbc.driver.control.LocalControlService;
-import com.ldbc.driver.control.WorkloadParams;
 import com.ldbc.driver.temporal.Duration;
 import com.ldbc.driver.temporal.Time;
 import com.ldbc.driver.util.TestUtils;
@@ -104,7 +104,7 @@ public class IntegrationTest {
             userParams.put(LdbcInteractiveWorkload.QUERY_11_KEY, "0");
             userParams.put(LdbcInteractiveWorkload.QUERY_12_KEY, "0");
 
-            WorkloadParams params = new WorkloadParams(
+            ConsoleAndFileDriverConfiguration params = new ConsoleAndFileDriverConfiguration(
                     userParams,
                     Neo4jDb.class.getName(),
                     LdbcInteractiveWorkload.class.getName(),
@@ -164,7 +164,7 @@ public class IntegrationTest {
             userParams.put(LdbcInteractiveWorkload.QUERY_11_KEY, "0");
             userParams.put(LdbcInteractiveWorkload.QUERY_12_KEY, "0");
 
-            WorkloadParams params = new WorkloadParams(
+            ConsoleAndFileDriverConfiguration params = new ConsoleAndFileDriverConfiguration(
                     userParams,
                     Neo4jDb.class.getName(),
                     LdbcInteractiveWorkload.class.getName(),
@@ -208,7 +208,7 @@ public class IntegrationTest {
             assertThat(new File(ldbcSocnetInteractiveTestPropertiesPath).exists(), is(true));
             assertThat(new File(ldbcDriverTestPropertiesPath).exists(), is(true));
 
-            WorkloadParams params = WorkloadParams.fromArgs(new String[]{
+            ConsoleAndFileDriverConfiguration params = ConsoleAndFileDriverConfiguration.fromArgs(new String[]{
                     "-P", neo4jLdbcSocnetInteractiveTestPropertiesPath,
                     "-P", ldbcSocnetInteractiveTestPropertiesPath,
                     "-P", ldbcDriverTestPropertiesPath});
