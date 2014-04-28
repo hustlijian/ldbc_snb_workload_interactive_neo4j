@@ -86,11 +86,14 @@ public class IntegrationTest {
             Duration toleratedExecutionDelay = Duration.fromSeconds(1);
 
             Map<String, String> userParams = new HashMap<String, String>();
+            userParams.put(LdbcInteractiveWorkload.UPDATE_STREAM_FILENAME_KEY, "ldbc_driver/workloads/ldbc/socnet/interactive/updates.csv");
+            userParams.put(LdbcInteractiveWorkload.READ_RATIO_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.WRITE_RATIO_KEY, "0");
             userParams.put(LdbcInteractiveWorkload.PARAMETERS_FILENAME_KEY, TestUtils.getResource("/parameters.json").getAbsolutePath());
             userParams.put(Neo4jDb.PATH_KEY, dbDir);
             userParams.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_STEPS);
 
-            userParams.put(LdbcInteractiveWorkload.INTERLEAVE_DURATION_KEY, Duration.fromMilli(10).asMilli().toString());
+            userParams.put(LdbcInteractiveWorkload.INTERLEAVE_DURATION_KEY, Long.toString(Duration.fromMilli(10).asMilli()));
             userParams.put(LdbcInteractiveWorkload.QUERY_1_KEY, "1");
             userParams.put(LdbcInteractiveWorkload.QUERY_2_KEY, "1");
             userParams.put(LdbcInteractiveWorkload.QUERY_3_KEY, "1");
@@ -141,16 +144,19 @@ public class IntegrationTest {
             TimeUnit timeUnit = TimeUnit.MILLISECONDS;
             String resultFilePath = "test_results.json";
             Double timeCompressionRatio = 1.0;
-            Duration gctDeltaDuration = Duration.fromSeconds(10);
+            Duration gctDeltaDuration = Duration.fromSeconds(1000);
             List<String> peerIds = new ArrayList<>();
-            Duration toleratedExecutionDelay = Duration.fromSeconds(1);
+            Duration toleratedExecutionDelay = Duration.fromSeconds(100);
 
             Map<String, String> userParams = new HashMap<String, String>();
             userParams.put(LdbcInteractiveWorkload.PARAMETERS_FILENAME_KEY, TestUtils.getResource("/parameters.json").getAbsolutePath());
             userParams.put(Neo4jDb.PATH_KEY, dbDir);
             userParams.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_CYPHER);
 
-            userParams.put(LdbcInteractiveWorkload.INTERLEAVE_DURATION_KEY, Duration.fromMilli(10).asMilli().toString());
+            userParams.put(LdbcInteractiveWorkload.UPDATE_STREAM_FILENAME_KEY, "ldbc_driver/workloads/ldbc/socnet/interactive/updates.csv");
+            userParams.put(LdbcInteractiveWorkload.READ_RATIO_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.WRITE_RATIO_KEY, "0");
+            userParams.put(LdbcInteractiveWorkload.INTERLEAVE_DURATION_KEY, Long.toString(Duration.fromMilli(10).asMilli()));
             userParams.put(LdbcInteractiveWorkload.QUERY_1_KEY, "1");
             userParams.put(LdbcInteractiveWorkload.QUERY_2_KEY, "1");
             userParams.put(LdbcInteractiveWorkload.QUERY_3_KEY, "1");
@@ -211,7 +217,8 @@ public class IntegrationTest {
             ConsoleAndFileDriverConfiguration params = ConsoleAndFileDriverConfiguration.fromArgs(new String[]{
                     "-P", neo4jLdbcSocnetInteractiveTestPropertiesPath,
                     "-P", ldbcSocnetInteractiveTestPropertiesPath,
-                    "-P", ldbcDriverTestPropertiesPath});
+                    "-P", ldbcDriverTestPropertiesPath,
+                    "-p", ConsoleAndFileDriverConfiguration.TOLERATED_EXECUTION_DELAY_ARG, Long.toString(Duration.fromMinutes(1).asMilli())});
 
 
             Time workloadStartTime = Time.now().plus(Duration.fromSeconds(1));

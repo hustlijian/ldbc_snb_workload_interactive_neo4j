@@ -7,6 +7,11 @@ import java.util.Set;
 
 public class CsvFiles {
     /*
+     * Update Stream
+     */
+    public static final String UPDATE_STREAM = "updateStream_0.csv";
+
+    /*
      * Nodes
      */
 
