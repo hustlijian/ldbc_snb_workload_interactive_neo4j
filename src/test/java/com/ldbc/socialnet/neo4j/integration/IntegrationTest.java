@@ -33,6 +33,9 @@ import java.util.concurrent.TimeUnit;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+// TODO make importer code usable without config
+// TODO then use importer here
+// TODO include small sample dataset in repo, so integration testing can be done using it
 public class IntegrationTest {
     public static String dbDir = "tempDb";
 
@@ -52,15 +55,9 @@ public class IntegrationTest {
     }
 
     private static void buildGraph(GraphDatabaseService db, ExecutionEngine engine) {
+        // TODO import dataset here
         try (Transaction tx = db.beginTx()) {
-            engine.execute(TestGraph.Creator.createGraphQuery(), TestGraph.Creator.createGraphQueryParams());
-            tx.success();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
-        try (Transaction tx = db.beginTx()) {
-            for (String createIndexQuery : TestGraph.Creator.createIndexQueries()) {
+            for (String createIndexQuery : TestGraph.createIndexQueries()) {
                 engine.execute(createIndexQuery);
             }
             tx.success();
@@ -68,6 +65,11 @@ public class IntegrationTest {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    @Test
+    public void shouldFailSoIDoNotForgetToFixThisTestClass() {
+        assertThat(true, is(false));
     }
 
     @Test

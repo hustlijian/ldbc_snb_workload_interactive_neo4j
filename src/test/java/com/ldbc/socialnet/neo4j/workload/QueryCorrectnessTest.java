@@ -1,19 +1,18 @@
 package com.ldbc.socialnet.neo4j.workload;
 
+import com.ldbc.driver.runtime.ConcurrentErrorReporter;
 import com.ldbc.driver.util.MapUtils;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.*;
-import com.ldbc.socialnet.workload.neo4j.transaction.*;
+import com.ldbc.socialnet.workload.neo4j.interactive.*;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.helpers.collection.IteratorUtil;
 import org.neo4j.kernel.impl.util.FileUtils;
 
 import java.io.File;
@@ -30,38 +29,29 @@ public abstract class QueryCorrectnessTest {
     public static GraphDatabaseService db = null;
     public static ExecutionEngine engine = null;
 
-    @BeforeClass
-    public static void openDb() throws IOException {
+    @Before
+    public void x() throws IOException {
         FileUtils.deleteRecursively(new File(dbDir));
         db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
         engine = new ExecutionEngine(db);
-
-        // TODO uncomment to print CREATE
-        System.out.println();
-        System.out.println(MapUtils.prettyPrint(TestGraph.Creator.createGraphQueryParams()));
-        System.out.println(TestGraph.Creator.createGraphQuery());
-
-        buildGraph(engine, db);
-        db.shutdown();
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
-        engine = new ExecutionEngine(db);
     }
 
-    @AfterClass
-    public static void closeDb() throws IOException {
+    @After
+    public void closeDb() throws IOException {
         db.shutdown();
+        FileUtils.deleteRecursively(new File(dbDir));
     }
 
-    public static void buildGraph(ExecutionEngine engine, GraphDatabaseService db) {
+    public static void buildGraph(ExecutionEngine engine, GraphDatabaseService db, String createQuery, Map<String, Object> queryParams) {
         try (Transaction tx = db.beginTx()) {
-            engine.execute(TestGraph.Creator.createGraphQuery(), TestGraph.Creator.createGraphQueryParams());
+            engine.execute(createQuery, queryParams);
             tx.success();
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
         try (Transaction tx = db.beginTx()) {
-            for (String createIndexQuery : TestGraph.Creator.createIndexQueries()) {
+            for (String createIndexQuery : TestGraph.createIndexQueries()) {
                 engine.execute(createIndexQuery);
             }
             tx.success();
@@ -85,65 +75,92 @@ public abstract class QueryCorrectnessTest {
 
     public abstract Neo4jQuery7 neo4jQuery7Impl();
 
-    // TODO return Neo4jQueryX
-    public abstract Object neo4jQuery8Impl();
+    public abstract Neo4jQuery8 neo4jQuery8Impl();
 
-    // TODO return Neo4jQueryX
-    public abstract Object neo4jQuery9Impl();
+    public abstract Neo4jQuery9 neo4jQuery9Impl();
 
-    // TODO return Neo4jQueryX
-    public abstract Object neo4jQuery10Impl();
+    public abstract Neo4jQuery10 neo4jQuery10Impl();
 
-    // TODO return Neo4jQueryX
-    public abstract Object neo4jQuery11Impl();
+    public abstract Neo4jQuery11 neo4jQuery11Impl();
 
     // TODO return Neo4jQueryX
     public abstract Object neo4jQuery12Impl();
 
+    // TODO return Neo4jQueryX
+    public abstract Object neo4jQuery13Impl();
+
+    // TODO return Neo4jQueryX
+    public abstract Object neo4jQuery14Impl();
+
     @Test
-    public void query1ShouldReturnExpectedResult() {
-        LdbcQuery1 operation1 = new LdbcQuery1("alex", 10);
-        Neo4jQuery1 query1 = neo4jQuery1Impl();
-
-        // TODO uncomment to print query
-        System.out.println(operation1.toString() + "\n" + query1.description() + "\n");
-
-        boolean exceptionThrown = false;
-        try (Transaction tx = db.beginTx()) {
-            Iterator<LdbcQuery1Result> result = query1.execute(db, engine, operation1);
-
-            // Has 1 result
-            assertThat(result.hasNext(), is(true));
-
-            LdbcQuery1Result firstRow = result.next();
-
-            // Has only 1 result
-            assertThat(result.hasNext(), is(false));
-
-            assertThat(firstRow.firstName(), is("alex"));
-            assertThat(firstRow.personCity(), is("stockholm"));
-
-            Set<String> resultCompanies = new HashSet<String>(firstRow.companies());
-            Set<String> expectedCompanies = new HashSet<String>(Arrays.asList(new String[]{
-                    "swedish institute of computer science, sweden(2010)", "neo technology, sweden(2012)"}));
-            assertThat(resultCompanies, equalTo(expectedCompanies));
-
-            Set<String> resultUnis = new HashSet<String>(firstRow.unis());
-            Set<String> expectedUnis = new HashSet<String>(Arrays.asList(new String[]{
-                    "royal institute of technology, stockholm(2008)",
-                    "auckland university of technology, auckland(2006)"}));
-            assertThat(resultUnis, equalTo(expectedUnis));
-
-            tx.success();
-        } catch (Exception e) {
-            e.printStackTrace();
-            exceptionThrown = true;
-        }
-        assertThat(exceptionThrown, is(false));
+    public void query1ShouldReturnExpectedResult() throws IOException {
+//        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query1GraphMaker();
+//
+//        // TODO uncomment to print CREATE
+//        System.out.println();
+//        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
+//        System.out.println(queryGraphMaker.graph());
+//
+//        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
+//        db.shutdown();
+//        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
+//        engine = new ExecutionEngine(db);
+//
+//        LdbcQuery1 operation1 = new LdbcQuery1("alex", 10);
+//        Neo4jQuery1 query1 = neo4jQuery1Impl();
+//
+//        // TODO uncomment to print query
+//        System.out.println(operation1.toString() + "\n" + query1.description() + "\n");
+//
+//        boolean exceptionThrown = false;
+//        try (Transaction tx = db.beginTx()) {
+//            Iterator<LdbcQuery1Result> result = query1.execute(db, engine, operation1);
+//
+//            // Has 1 result
+//            assertThat(result.hasNext(), is(true));
+//
+//            LdbcQuery1Result firstRow = result.next();
+//
+//            // Has only 1 result
+//            assertThat(result.hasNext(), is(false));
+//
+//            assertThat(firstRow.firstName(), is("alex"));
+//            assertThat(firstRow.personCity(), is("stockholm"));
+//
+//            Set<String> resultCompanies = new HashSet<String>(firstRow.companies());
+//            Set<String> expectedCompanies = new HashSet<String>(Arrays.asList(new String[]{
+//                    "swedish institute of computer science, sweden(2010)", "neo technology, sweden(2012)"}));
+//            assertThat(resultCompanies, equalTo(expectedCompanies));
+//
+//            Set<String> resultUnis = new HashSet<String>(firstRow.unis());
+//            Set<String> expectedUnis = new HashSet<String>(Arrays.asList(new String[]{
+//                    "royal institute of technology, stockholm(2008)",
+//                    "auckland university of technology, auckland(2006)"}));
+//            assertThat(resultUnis, equalTo(expectedUnis));
+//
+//            tx.success();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            exceptionThrown = true;
+//        }
+//        assertThat(exceptionThrown, is(false));
+        assertThat(true, is(false));
     }
 
     @Test
-    public void query2ShouldReturnExpectedResult() {
+    public void query2ShouldReturnExpectedResult() throws IOException {
+        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query2GraphMaker();
+
+        // TODO uncomment to print CREATE
+        System.out.println();
+        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
+        System.out.println(queryGraphMaker.graph());
+
+        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
+        db.shutdown();
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
+        engine = new ExecutionEngine(db);
+
         long personId = 1;
         Calendar c = Calendar.getInstance();
         c.clear();
@@ -221,7 +238,19 @@ public abstract class QueryCorrectnessTest {
     }
 
     @Test
-    public void query3ShouldReturnExpectedResult() {
+    public void query3ShouldReturnExpectedResult() throws IOException {
+        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query3GraphMaker();
+
+        // TODO uncomment to print CREATE
+        System.out.println();
+        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
+        System.out.println(queryGraphMaker.graph());
+
+        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
+        db.shutdown();
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
+        engine = new ExecutionEngine(db);
+
         long personId = 1;
         String countryX = "new zealand";
         String countryY = "sweden";
@@ -273,7 +302,19 @@ public abstract class QueryCorrectnessTest {
     }
 
     @Test
-    public void query4ShouldReturnExpectedResult() {
+    public void query4ShouldReturnExpectedResult() throws IOException {
+        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query4GraphMaker();
+
+        // TODO uncomment to print CREATE
+        System.out.println();
+        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
+        System.out.println(queryGraphMaker.graph());
+
+        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
+        db.shutdown();
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
+        engine = new ExecutionEngine(db);
+
         long personId = 1;
         Calendar c = Calendar.getInstance();
         c.clear();
@@ -320,7 +361,19 @@ public abstract class QueryCorrectnessTest {
     }
 
     @Test
-    public void query5ShouldReturnExpectedResult() {
+    public void query5ShouldReturnExpectedResult() throws IOException {
+        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query5GraphMaker();
+
+        // TODO uncomment to print CREATE
+        System.out.println();
+        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
+        System.out.println(queryGraphMaker.graph());
+
+        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
+        db.shutdown();
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
+        engine = new ExecutionEngine(db);
+
         long personId = 1;
         Calendar c = Calendar.getInstance();
         c.clear();
@@ -338,14 +391,11 @@ public abstract class QueryCorrectnessTest {
             Iterator<LdbcQuery5Result> result = query5.execute(db, engine, operation5);
 
             assertThat(result.hasNext(), is(true));
-            assertThat(resultsEqual(result.next(), new LdbcQuery5Result("everything cakes and pies", 5, 2)),
-                    is(true));
+            assertThat(result.next(), equalTo(new LdbcQuery5Result("everything cakes and pies", 5)));
             assertThat(result.hasNext(), is(true));
-            assertThat(resultsEqual(result.next(), new LdbcQuery5Result("boats are not submarines", 2, 1)),
-                    is(true));
+            assertThat(result.next(), equalTo(new LdbcQuery5Result("boats are not submarines", 2)));
             assertThat(result.hasNext(), is(true));
-            assertThat(resultsEqual(result.next(), new LdbcQuery5Result("kiwis sheep and bungy jumping", 1, 0)),
-                    is(true));
+            assertThat(result.next(), equalTo(new LdbcQuery5Result("kiwis sheep and bungy jumping", 1)));
             assertThat(result.hasNext(), is(false));
 
             tx.success();
@@ -357,7 +407,19 @@ public abstract class QueryCorrectnessTest {
     }
 
     @Test
-    public void query6ShouldReturnExpectedResult() {
+    public void query6ShouldReturnExpectedResult() throws IOException {
+        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query6GraphMaker();
+
+        // TODO uncomment to print CREATE
+        System.out.println();
+        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
+        System.out.println(queryGraphMaker.graph());
+
+        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
+        db.shutdown();
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
+        engine = new ExecutionEngine(db);
+
         long personId = 1;
         String tagName = "lol";
         int limit = 10;
@@ -398,12 +460,22 @@ public abstract class QueryCorrectnessTest {
         assertThat(exceptionThrown, is(false));
     }
 
-    @Ignore
     @Test
     public void query7ShouldReturnExpectedResult() {
-        long personId = 1;
+        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query7GraphMaker();
 
-        int limit = 10;
+        // TODO uncomment to print CREATE
+        System.out.println();
+        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
+        System.out.println(queryGraphMaker.graph());
+
+        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
+        db.shutdown();
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
+        engine = new ExecutionEngine(db);
+
+        long personId = 1;
+        int limit = 5;
 
         LdbcQuery7 operation7 = new LdbcQuery7(personId, limit);
         Neo4jQuery7 query7 = neo4jQuery7Impl();
@@ -411,56 +483,373 @@ public abstract class QueryCorrectnessTest {
         // TODO uncomment to print query
         System.out.println(operation7.toString() + "\n" + query7.description() + "\n");
 
+        String stackTrace = null;
         boolean exceptionThrown = false;
         try (Transaction tx = db.beginTx()) {
             Iterator<LdbcQuery7Result> result = query7.execute(db, engine, operation7);
 
-            LdbcQuery7Result row = null;
+            LdbcQuery7Result row;
 
             row = result.next();
-            assertThat(row.tagName(), is("lol"));
-            assertThat(row.tagCount(), is(3L));
+            assertThat(row.personId(), is(2L));
+            assertThat(row.personFirstName(), is("friend"));
+            assertThat(row.personLastName(), is("one"));
+            assertThat(row.likeCreationDate().getTime(), is(5L));
+            assertThat(row.isNew(), is(false));
+            assertThat(row.postId(), is(1L));
+            assertThat(row.postContent(), equalTo("p1"));
+            assertThat(row.milliSecondDelay(), equalTo(5L));
 
             row = result.next();
-            assertThat(row.tagName(), is("wtf"));
-            assertThat(row.tagCount(), is(2L));
+            assertThat(row.personId(), is(4L));
+            assertThat(row.personFirstName(), is("friend"));
+            assertThat(row.personLastName(), is("three"));
+            assertThat(row.likeCreationDate().getTime(), is(5L));
+            assertThat(row.isNew(), is(false));
+            assertThat(row.postId(), is(1L));
+            assertThat(row.postContent(), equalTo("p1"));
+            assertThat(row.milliSecondDelay(), equalTo(5L));
 
             row = result.next();
-            assertThat(row.tagName(), is("cake"));
-            assertThat(row.tagCount(), is(1L));
+            assertThat(row.personId(), is(4L));
+            assertThat(row.personFirstName(), is("friend"));
+            assertThat(row.personLastName(), is("three"));
+            assertThat(row.likeCreationDate().getTime(), is(4L));
+            assertThat(row.isNew(), is(false));
+            assertThat(row.postId(), is(2L));
+            assertThat(row.postContent(), equalTo("p2"));
+            assertThat(row.milliSecondDelay(), equalTo(4L));
+
+            row = result.next();
+            assertThat(row.personId(), is(6L));
+            assertThat(row.personFirstName(), is("friendfriend"));
+            assertThat(row.personLastName(), is("two"));
+            assertThat(row.likeCreationDate().getTime(), is(3L));
+            assertThat(row.isNew(), is(true));
+            assertThat(row.postId(), is(1L));
+            assertThat(row.postContent(), equalTo("p1"));
+            assertThat(row.milliSecondDelay(), equalTo(3L));
+
+            row = result.next();
+            assertThat(row.personId(), is(6L));
+            assertThat(row.personFirstName(), is("friendfriend"));
+            assertThat(row.personLastName(), is("two"));
+            assertThat(row.likeCreationDate().getTime(), is(2L));
+            assertThat(row.isNew(), is(true));
+            assertThat(row.postId(), is(2L));
+            assertThat(row.postContent(), equalTo("p2"));
+            assertThat(row.milliSecondDelay(), equalTo(2L));
 
             assertThat(result.hasNext(), is(false));
 
             tx.success();
         } catch (Exception e) {
-            e.printStackTrace();
+            stackTrace = ConcurrentErrorReporter.stackTraceToString(e);
             exceptionThrown = true;
         }
-        assertThat(exceptionThrown, is(false));
+        assertThat(stackTrace, exceptionThrown, is(false));
     }
 
-    @Ignore
     @Test
     public void query8ShouldReturnExpectedResult() {
-        assertThat(true, is(false));
+        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query8GraphMaker();
+
+        // TODO uncomment to print CREATE
+        System.out.println();
+        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
+        System.out.println(queryGraphMaker.graph());
+
+        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
+        db.shutdown();
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
+        engine = new ExecutionEngine(db);
+
+        long personId = 0;
+        int limit = 7;
+
+        LdbcQuery8 operation8 = new LdbcQuery8(personId, limit);
+        Neo4jQuery8 query8 = neo4jQuery8Impl();
+
+        // TODO uncomment to print query
+        System.out.println(operation8.toString() + "\n" + query8.description() + "\n");
+
+        String stackTrace = null;
+        boolean exceptionThrown = false;
+        try (Transaction tx = db.beginTx()) {
+            Iterator<LdbcQuery8Result> result = query8.execute(db, engine, operation8);
+
+            LdbcQuery8Result row;
+
+            row = result.next();
+            assertThat(row.personId(), is(2L));
+            assertThat(row.personFirstName(), is("friend"));
+            assertThat(row.personLastName(), is("two"));
+            assertThat(row.replyCreationDate(), is(8L));
+            assertThat(row.replyId(), is(13L));
+            assertThat(row.replyContent(), is("C13"));
+
+            row = result.next();
+            assertThat(row.personId(), is(3L));
+            assertThat(row.personFirstName(), is("friend"));
+            assertThat(row.personLastName(), is("three"));
+            assertThat(row.replyCreationDate(), is(6L));
+            assertThat(row.replyId(), is(12L));
+            assertThat(row.replyContent(), is("C12"));
+
+            row = result.next();
+            assertThat(row.personId(), is(1L));
+            assertThat(row.personFirstName(), is("friend"));
+            assertThat(row.personLastName(), is("one"));
+            assertThat(row.replyCreationDate(), is(5L));
+            assertThat(row.replyId(), is(2111L));
+            assertThat(row.replyContent(), is("C2111"));
+
+            row = result.next();
+            assertThat(row.personId(), is(1L));
+            assertThat(row.personFirstName(), is("friend"));
+            assertThat(row.personLastName(), is("one"));
+            assertThat(row.replyCreationDate(), is(4L));
+            assertThat(row.replyId(), is(111L));
+            assertThat(row.replyContent(), is("C111"));
+
+            row = result.next();
+            assertThat(row.personId(), is(2L));
+            assertThat(row.personFirstName(), is("friend"));
+            assertThat(row.personLastName(), is("two"));
+            assertThat(row.replyCreationDate(), is(4L));
+            assertThat(row.replyId(), is(112L));
+            assertThat(row.replyContent(), is("C112"));
+
+            row = result.next();
+            assertThat(row.personId(), is(3L));
+            assertThat(row.personFirstName(), is("friend"));
+            assertThat(row.personLastName(), is("three"));
+            assertThat(row.replyCreationDate(), is(3L));
+            assertThat(row.replyId(), is(11L));
+            assertThat(row.replyContent(), is("C11"));
+            row = result.next();
+            assertThat(row.personId(), is(2L));
+            assertThat(row.personFirstName(), is("friend"));
+            assertThat(row.personLastName(), is("two"));
+            assertThat(row.replyCreationDate(), is(2L));
+            assertThat(row.replyId(), is(211L));
+            assertThat(row.replyContent(), is("C211"));
+
+            assertThat(result.hasNext(), is(false));
+
+            tx.success();
+        } catch (Exception e) {
+            stackTrace = ConcurrentErrorReporter.stackTraceToString(e);
+            exceptionThrown = true;
+        }
+        assertThat(stackTrace, exceptionThrown, is(false));
     }
 
-    @Ignore
     @Test
     public void query9ShouldReturnExpectedResult() {
-        assertThat(true, is(false));
+        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query9GraphMaker();
+
+        // TODO uncomment to print CREATE
+        System.out.println();
+        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
+        System.out.println(queryGraphMaker.graph());
+
+        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
+        db.shutdown();
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
+        engine = new ExecutionEngine(db);
+
+        long personId = 0;
+        long latestDateAsMilli = 12;
+        int limit = 7;
+
+        LdbcQuery9 operation9 = new LdbcQuery9(personId, latestDateAsMilli, limit);
+        Neo4jQuery9 query9 = neo4jQuery9Impl();
+
+        // TODO uncomment to print query
+        System.out.println(operation9.toString() + "\n" + query9.description() + "\n");
+
+        String stackTrace = null;
+        boolean exceptionThrown = false;
+        try (Transaction tx = db.beginTx()) {
+            Iterator<LdbcQuery9Result> result = query9.execute(db, engine, operation9);
+
+            LdbcQuery9Result row;
+
+            row = result.next();
+            assertThat(row.getPostOrCommentId(), equalTo(11L));
+            assertThat(row.getPostOrCommentCreationDate(), is(11L));
+            assertThat(row.getPostOrCommentContent(), equalTo("P11"));
+
+            row = result.next();
+            assertThat(row.getPostOrCommentId(), equalTo(1211L));
+            assertThat(row.getPostOrCommentCreationDate(), is(10L));
+            assertThat(row.getPostOrCommentContent(), equalTo("C1211"));
+
+            row = result.next();
+            assertThat(row.getPostOrCommentId(), equalTo(2111L));
+            assertThat(row.getPostOrCommentCreationDate(), is(8L));
+            assertThat(row.getPostOrCommentContent(), equalTo("C2111"));
+
+            row = result.next();
+            assertThat(row.getPostOrCommentId(), equalTo(211L));
+            assertThat(row.getPostOrCommentCreationDate(), is(7L));
+            assertThat(row.getPostOrCommentContent(), equalTo("C211"));
+
+            row = result.next();
+            assertThat(row.getPostOrCommentId(), equalTo(21L));
+            assertThat(row.getPostOrCommentCreationDate(), is(6L));
+            assertThat(row.getPostOrCommentContent(), equalTo("P21"));
+
+            row = result.next();
+            assertThat(row.getPostOrCommentId(), equalTo(12L));
+            assertThat(row.getPostOrCommentCreationDate(), is(4L));
+            assertThat(row.getPostOrCommentContent(), equalTo("P12"));
+
+            row = result.next();
+            assertThat(row.getPostOrCommentId(), equalTo(311L));
+            assertThat(row.getPostOrCommentCreationDate(), is(4L));
+            assertThat(row.getPostOrCommentContent(), equalTo("C311"));
+
+            assertThat(result.hasNext(), is(false));
+
+            tx.success();
+        } catch (Exception e) {
+            stackTrace = ConcurrentErrorReporter.stackTraceToString(e);
+            exceptionThrown = true;
+        }
+        assertThat(stackTrace, exceptionThrown, is(false));
     }
 
-    @Ignore
     @Test
     public void query10ShouldReturnExpectedResult() {
-        assertThat(true, is(false));
+        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query10GraphMaker();
+
+        // TODO uncomment to print CREATE
+        System.out.println();
+        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
+        System.out.println(queryGraphMaker.graph());
+
+        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
+        db.shutdown();
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
+        engine = new ExecutionEngine(db);
+
+        long personId = 0;
+        int horoscopeMonth1 = 2;
+        int horoscopeMonth2 = 3;
+        int limit = 7;
+
+        LdbcQuery10 operation10 = new LdbcQuery10(personId, horoscopeMonth1, horoscopeMonth2, limit);
+        Neo4jQuery10 query10 = neo4jQuery10Impl();
+
+        // TODO uncomment to print query
+        System.out.println("\n" + operation10.toString() + "\n" + query10.description() + "\n");
+
+        String stackTrace = null;
+        boolean exceptionThrown = false;
+        try (Transaction tx = db.beginTx()) {
+            Iterator<LdbcQuery10Result> result = query10.execute(db, engine, operation10);
+
+            LdbcQuery10Result row;
+
+            row = result.next();
+            assertThat(row.personId(), equalTo(11L));
+            assertThat(row.personFirstName(), equalTo("friendfriend"));
+            assertThat(row.personLastName(), equalTo("one one"));
+            assertThat(row.commonInterestScore(), equalTo(1 / 3D));
+            assertThat(row.gender(), equalTo("female"));
+            assertThat(row.personCityName(), equalTo("city1"));
+
+            row = result.next();
+            assertThat(row.personId(), equalTo(21L));
+            assertThat(row.personFirstName(), equalTo("friendfriend"));
+            assertThat(row.personLastName(), equalTo("two one"));
+            assertThat(row.commonInterestScore(), equalTo(1 / 3D));
+            assertThat(row.gender(), equalTo("male"));
+            assertThat(row.personCityName(), equalTo("city0"));
+
+            row = result.next();
+            assertThat(row.personId(), equalTo(12L));
+            assertThat(row.personFirstName(), equalTo("friendfriend"));
+            assertThat(row.personLastName(), equalTo("one two"));
+            assertThat(row.commonInterestScore(), equalTo(0D));
+            assertThat(row.gender(), equalTo("male"));
+            assertThat(row.personCityName(), equalTo("city0"));
+
+            row = result.next();
+            assertThat(row.personId(), equalTo(22L));
+            assertThat(row.personFirstName(), equalTo("friendfriend"));
+            assertThat(row.personLastName(), equalTo("two two"));
+            assertThat(row.commonInterestScore(), equalTo(0D));
+            assertThat(row.gender(), equalTo("male"));
+            assertThat(row.personCityName(), equalTo("city0"));
+
+            assertThat(result.hasNext(), is(false));
+
+            tx.success();
+        } catch (Exception e) {
+            stackTrace = ConcurrentErrorReporter.stackTraceToString(e);
+            exceptionThrown = true;
+        }
+        assertThat(stackTrace, exceptionThrown, is(false));
     }
 
-    @Ignore
     @Test
     public void query11ShouldReturnExpectedResult() {
-        assertThat(true, is(false));
+        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query11GraphMaker();
+
+        // TODO uncomment to print CREATE
+        System.out.println();
+        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
+        System.out.println(queryGraphMaker.graph());
+
+        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
+        db.shutdown();
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
+        engine = new ExecutionEngine(db);
+
+
+        long personId = 0;
+        String countryName = "country0";
+        int maxWorkFromYear = 4;
+        int limit = 3;
+
+        LdbcQuery11 operation11 = new LdbcQuery11(personId, countryName, maxWorkFromYear, limit);
+        Neo4jQuery11 query11 = neo4jQuery11Impl();
+
+        // TODO uncomment to print query
+        System.out.println("\n" + operation11.toString() + "\n" + query11.description() + "\n");
+
+        String stackTrace = null;
+        boolean exceptionThrown = false;
+        try (Transaction tx = db.beginTx()) {
+            Iterator<LdbcQuery11Result> result = query11.execute(db, engine, operation11);
+
+            LdbcQuery11Result row;
+
+            row = result.next();
+            assertThat(row.personId(), equalTo(1L));
+            assertThat(row.personFirstName(), equalTo("friend"));
+            assertThat(row.personLastName(), equalTo("one"));
+            assertThat(row.organizationName(), equalTo("company zero"));
+            assertThat(row.organizationWorkFromYear(), equalTo(2));
+
+            row = result.next();
+            assertThat(row.personId(), equalTo(11L));
+            assertThat(row.personFirstName(), equalTo("friend friend"));
+            assertThat(row.personLastName(), equalTo("one one"));
+            assertThat(row.organizationName(), equalTo("company zero"));
+            assertThat(row.organizationWorkFromYear(), equalTo(3));
+
+            assertThat(result.hasNext(), is(false));
+
+            tx.success();
+        } catch (Exception e) {
+            stackTrace = ConcurrentErrorReporter.stackTraceToString(e);
+            exceptionThrown = true;
+        }
+        assertThat(stackTrace, exceptionThrown, is(false));
     }
 
     @Ignore
@@ -469,29 +858,10 @@ public abstract class QueryCorrectnessTest {
         assertThat(true, is(false));
     }
 
-    boolean resultsEqual(LdbcQuery5Result result1, LdbcQuery5Result result2) {
-        if (false == result1.forumTitle().equals(result2.forumTitle())) return false;
-        if (result1.postCount() != result2.postCount()) return false;
-        if (result1.commentCount() != result2.commentCount()) return false;
-        if (result1.count() != result2.count()) return false;
-        return true;
-    }
-
-    int resultCount(String queryString, Map<String, Object> queryParams, String resultName) {
-        try (Transaction tx = db.beginTx()) {
-            ExecutionResult resultWithIndex = engine.execute(queryString, queryParams);
-            return IteratorUtil.count(resultWithIndex.columnAs(resultName));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    String resultToString(Iterator<?> result) {
-        StringBuilder sb = new StringBuilder();
-        while (result.hasNext()) {
-            sb.append(result.next().toString()).append("\n");
-        }
-        return sb.toString();
-    }
+//    boolean resultsEqual(LdbcQuery5Result result1, LdbcQuery5Result result2) {
+//        if (false == result1.forumTitle().equals(result2.forumTitle())) return false;
+//        if (result1.postCount() != result2.postCount()) return false;
+//        if (result1.count() != result2.count()) return false;
+//        return true;
+//    }
 }

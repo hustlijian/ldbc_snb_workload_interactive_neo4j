@@ -14,13 +14,13 @@ import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery4;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery5;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery6;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery7;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.LdbcQuery1HandlerEmbeddedCypher;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.LdbcQuery2HandlerEmbeddedCypher;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.LdbcQuery3HandlerEmbeddedCypher;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.LdbcQuery4HandlerEmbeddedCypher;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.LdbcQuery5HandlerEmbeddedCypher;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.LdbcQuery6HandlerEmbeddedCypher;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_cypher.LdbcQuery7HandlerEmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher.LdbcQuery1HandlerEmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher.LdbcQuery2HandlerEmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher.LdbcQuery3HandlerEmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher.LdbcQuery4HandlerEmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher.LdbcQuery5HandlerEmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher.LdbcQuery6HandlerEmbeddedCypher;
+import com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher.LdbcQuery7HandlerEmbeddedCypher;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
 
 public class Neo4jDbCommandsEmbeddedCypher extends Neo4jDbCommands

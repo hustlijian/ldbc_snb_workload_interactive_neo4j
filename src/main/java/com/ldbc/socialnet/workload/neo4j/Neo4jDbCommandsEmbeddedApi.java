@@ -13,16 +13,16 @@ import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery4;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery5;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery6;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery7;
-import com.ldbc.socialnet.workload.neo4j.transaction.LdbcTraversers;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery1HandlerEmbeddedApi;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery2HandlerEmbeddedApi;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery3HandlerEmbeddedApi;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery4HandlerEmbeddedApi;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery5HandlerEmbeddedApi;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery6HandlerEmbeddedApi;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcQuery7HandlerEmbeddedApi;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcTraversersRaw;
-import com.ldbc.socialnet.workload.neo4j.transaction.embedded_api_steps.LdbcTraversersSteps;
+import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
+import com.ldbc.socialnet.workload.neo4j.interactive.embedded_api_steps.LdbcQuery1HandlerEmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.interactive.embedded_api_steps.LdbcQuery2HandlerEmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.interactive.embedded_api_steps.LdbcQuery3HandlerEmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.interactive.embedded_api_steps.LdbcQuery4HandlerEmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.interactive.embedded_api_steps.LdbcQuery5HandlerEmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.interactive.embedded_api_steps.LdbcQuery6HandlerEmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.interactive.embedded_api_steps.LdbcQuery7HandlerEmbeddedApi;
+import com.ldbc.socialnet.workload.neo4j.interactive.embedded_api_steps.LdbcTraversersRaw;
+import com.ldbc.socialnet.workload.neo4j.interactive.embedded_api_steps.LdbcTraversersSteps;
 import com.ldbc.socialnet.workload.neo4j.utils.Config;
 
 public class Neo4jDbCommandsEmbeddedApi extends Neo4jDbCommands

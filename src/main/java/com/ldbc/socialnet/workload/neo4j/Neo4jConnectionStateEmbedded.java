@@ -4,7 +4,7 @@ import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 import com.ldbc.driver.DbConnectionState;
-import com.ldbc.socialnet.workload.neo4j.transaction.LdbcTraversers;
+import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
 
 public class Neo4jConnectionStateEmbedded extends DbConnectionState
 {
