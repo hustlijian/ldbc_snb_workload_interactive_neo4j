@@ -34,357 +34,414 @@ public class TestGraph {
                    /*
                     * Persons
                     */
-                    + " (alex:" + Nodes.Person + " {alex}), "
-                    + "(aiya:" + Nodes.Person + " {aiya}), "
-                    + "(jake:" + Nodes.Person + " {jake}), "
-                    + "(peter:" + Nodes.Person + " {peter}),\n"
-                    + " (stranger:" + Nodes.Person + " {stranger}), "
-                    + "(nicky:" + Nodes.Person + " {nicky}),"
-                    + "(unknown:" + Nodes.Person + " {unknown}),\n"
-                   /*
-                   * Cities
-                   */
-                    + " (auckland:" + Nodes.Place + ":" + Place.Type.City + " {auckland}), "
-                    + " (stockholm:" + Nodes.Place + ":" + Place.Type.City + " {stockholm}),"
-                    + " (munich:" + Nodes.Place + ":" + Place.Type.City + " {munich}),\n"
-                    + " (london:" + Nodes.Place + ":" + Place.Type.City + " {london}),"
-                    + " (melbourne:" + Nodes.Place + ":" + Place.Type.City + " {melbourne}),\n"
-                   /*
-                   * Countries
-                   */
-                    + " (se:" + Nodes.Place + ":" + Place.Type.Country + " {sweden}),"
-                    + " (nz:" + Nodes.Place + ":" + Place.Type.Country + " {new_zealand}),\n"
-                    + " (de:" + Nodes.Place + ":" + Place.Type.Country + " {germany}),"
-                    + " (au:" + Nodes.Place + ":" + Place.Type.Country + " {australia}),\n"
-                    + " (uk:" + Nodes.Place + ":" + Place.Type.Country + " {england}),\n"
+                    + " (person0:" + Nodes.Person + " {person0}),\n"
+                    + " (f1:" + Nodes.Person + " {f1}),\n"
+                    + " (f2:" + Nodes.Person + " {f2}),\n"
+                    + " (f3:" + Nodes.Person + " {f3}),\n"
+                    + " (ff11:" + Nodes.Person + " {ff11}),\n"
+                    + " (fff111:" + Nodes.Person + " {fff111}),\n"
+                    + " (ffff1111:" + Nodes.Person + " {ffff1111}),\n"
+                    + " (ff21:" + Nodes.Person + " {ff21}),\n"
+                    + " (fff211:" + Nodes.Person + " {fff211}),\n"
+                    + " (ff31:" + Nodes.Person + " {ff31}),\n"
                    /*
                    * Universities
                    */
-                    + " (aut:" + Nodes.Organisation + ":" + Organisation.Type.University + " {aut}),"
-                    + " (kth:" + Nodes.Organisation + ":" + Organisation.Type.University + " {kth}),\n"
+                    + " (uni0:" + Nodes.Organisation + ":" + Organisation.Type.University + " {uni0}),\n"
+                    + " (uni1:" + Nodes.Organisation + ":" + Organisation.Type.University + " {uni1}),\n"
+                    + " (uni2:" + Nodes.Organisation + ":" + Organisation.Type.University + " {uni2}),\n"
                    /*
                    * Companies
                    */
-                    + " (sics:" + Nodes.Organisation + ":" + Organisation.Type.Company + " {sics}),"
-                    + " (neo:" + Nodes.Organisation + ":" + Organisation.Type.Company + " {neo}),"
-                    + " (hot:" + Nodes.Organisation + ":" + Organisation.Type.Company + " {hot}),\n"
+                    + " (company0:" + Nodes.Organisation + ":" + Organisation.Type.Company + " {company0}),\n"
+                    + " (company1:" + Nodes.Organisation + ":" + Organisation.Type.Company + " {company1}),\n"
+                   /*
+                   * Cities
+                   */
+                    + " (city0:" + Nodes.Place + ":" + Place.Type.City + " {city0}),\n"
+                    + " (city1:" + Nodes.Place + ":" + Place.Type.City + " {city1}),\n"
+                   /*
+                   * Countries
+                   */
+                    + " (country0:" + Nodes.Place + ":" + Place.Type.Country + " {country0}),\n"
+                    + " (country1:" + Nodes.Place + ":" + Place.Type.Country + " {country1}),\n"
                    /*
                    * RELATIONSHIP
                    */
                     + "\n// --- RELATIONSHIPS ---\n\n"
                    /*
-                    * City-Country
-                    */
-                    + " (stockholm)-[:" + Rels.IS_LOCATED_IN + "]->(se),"
-                    + " (auckland)-[:" + Rels.IS_LOCATED_IN + "]->(nz),\n"
-                    + " (munich)-[:" + Rels.IS_LOCATED_IN + "]->(de),"
-                    + " (london)-[:" + Rels.IS_LOCATED_IN + "]->(uk),"
-                    + " (melbourne)-[:" + Rels.IS_LOCATED_IN + "]->(au),\n"
-                   /*
-                    * Organization-Country
-                    */
-                    + " (neo)<-[:" + Rels.WORKS_AT + " {alexWorkAtNeo}]-(alex),"
-                    + " (stockholm)<-[:" + Rels.IS_LOCATED_IN + "]-(kth),\n"
-                    + " (auckland)<-[:" + Rels.IS_LOCATED_IN + "]-(aut),"
-                    + " (se)<-[:" + Rels.IS_LOCATED_IN + "]-(sics),\n"
-                    + " (nz)<-[:" + Rels.IS_LOCATED_IN + "]-(hot),\n"
-                   /*
-                    * Nicky
-                    */
-                    + " (nicky)-[:" + Rels.IS_LOCATED_IN + "]->(london),\n"
-                   /*
-                    * Alex
-                    */
-                    + " (alex)-[:" + Rels.IS_LOCATED_IN + "]->(stockholm),\n"
-                    + " (se)<-[:" + Rels.IS_LOCATED_IN + "]-(neo),\n"
-                    + " (kth)<-[:" + Rels.STUDY_AT + " {alexStudyAtKth}]-(alex),\n"
-                    + " (aut)<-[:" + Rels.STUDY_AT + " {alexStudyAtAut}]-(alex),\n"
-                    + " (sics)<-[:" + Rels.WORKS_AT + " {alexWorkAtSics}]-(alex),\n"
-                   /*
-                    * Aiya
-                    */
-                    + " (aiya)-[:" + Rels.IS_LOCATED_IN + "]->(auckland),\n"
-                    + " (hot)<-[:" + Rels.WORKS_AT + " {aiyaWorkAtHot}]-(aiya),\n"
-                   /*
-                    * Jake
-                    */
-                    + " (jake)-[:" + Rels.IS_LOCATED_IN + "]->(stockholm),\n"
-                   /*
-                   * Peter
-                   */
-                    + " (peter)-[:" + Rels.IS_LOCATED_IN + "]->(munich),\n"
-                   /*
-                    * Stranger
-                    */
-                    + " (stranger)-[:" + Rels.IS_LOCATED_IN + "]->(stockholm),\n"
-                   /*
-                    * Unknown
-                    */
-                    + " (unknown)-[:" + Rels.IS_LOCATED_IN + "]->(stockholm)\n"
-                   /*
                    * Person-Person
                    */
-                    + "FOREACH (n IN [jake, aiya, peter] | CREATE (alex)-[:" + Rels.KNOWS + "]->(n) )\n"
-                    + "FOREACH (n IN [nicky] | CREATE (aiya)-[:" + Rels.KNOWS + "]->(n) )";
+                    + " (person0)-[:" + Rels.KNOWS + "]->(f1),\n"
+                    + " (person0)-[:" + Rels.KNOWS + "]->(f2),\n"
+                    + " (person0)-[:" + Rels.KNOWS + "]->(f3),\n"
+                    + " (f1)-[:" + Rels.KNOWS + "]->(ff11),\n"
+                    + " (f2)-[:" + Rels.KNOWS + "]->(ff11),\n"
+                    + " (f2)-[:" + Rels.KNOWS + "]->(ff21),\n"
+                    + " (f3)-[:" + Rels.KNOWS + "]->(ff31),\n"
+                    + " (ff11)-[:" + Rels.KNOWS + "]->(fff111),\n"
+                    + " (fff111)-[:" + Rels.KNOWS + "]->(ffff1111),\n"
+                    + " (ffff1111)-[:" + Rels.KNOWS + "]->(fffff11111),\n"
+                    + " (ff21)-[:" + Rels.KNOWS + "]->(fff211),\n"
+                    + " (f3)-[:" + Rels.KNOWS + "]->(f2),\n"
+                   /*
+                   * Person-City
+                   */
+                    + " (person0)-[:" + Rels.IS_LOCATED_IN + "]->(city0),\n"
+                    + " (f1)-[:" + Rels.IS_LOCATED_IN + "]->(city0),\n"
+                    + " (ff11)-[:" + Rels.IS_LOCATED_IN + "]->(city0),\n"
+                    + " (fff111)-[:" + Rels.IS_LOCATED_IN + "]->(city0),\n"
+                    + " (ffff1111)-[:" + Rels.IS_LOCATED_IN + "]->(city0),\n"
+                    + " (fffff11111)-[:" + Rels.IS_LOCATED_IN + "]->(city0),\n"
+                    + " (f2)-[:" + Rels.IS_LOCATED_IN + "]->(city1),\n"
+                    + " (ff21)-[:" + Rels.IS_LOCATED_IN + "]->(city1),\n"
+                    + " (fff211)-[:" + Rels.IS_LOCATED_IN + "]->(city1),\n"
+                    + " (f3)-[:" + Rels.IS_LOCATED_IN + "]->(city1),\n"
+                    + " (ff31)-[:" + Rels.IS_LOCATED_IN + "]->(city1),\n"
+                   /*
+                    * City-Country
+                    */
+                    + " (city0)-[:" + Rels.IS_PART_OF + "]->(country0),\n"
+                    + " (city1)-[:" + Rels.IS_PART_OF + "]->(country1),\n"
+                   /*
+                    * Company-Country
+                    */
+                    + " (company0)-[:" + Rels.IS_LOCATED_IN + " ]->(country0),\n"
+                    + " (company1)-[:" + Rels.IS_LOCATED_IN + " ]->(country1),\n"
+                   /*
+                    * University-City
+                    */
+                    + " (uni0)-[:" + Rels.IS_LOCATED_IN + " ]->(city1),\n"
+                    + " (uni1)-[:" + Rels.IS_LOCATED_IN + " ]->(city0),\n"
+                    + " (uni2)-[:" + Rels.IS_LOCATED_IN + " ]->(city0),\n"
+                   /*
+                    * Person-University
+                    */
+                    + " (f1)-[:" + Rels.STUDY_AT + " {f1StudyAtUni0}]->(uni0),\n"
+                    + " (ff11)-[:" + Rels.STUDY_AT + " {ff11StudyAtUni1}]->(uni1),\n"
+                    + " (ff11)-[:" + Rels.STUDY_AT + " {ff11StudyAtUni2}]->(uni2),\n"
+                    + " (f2)-[:" + Rels.STUDY_AT + " {f2StudyAtUni2}]->(uni2),\n"
+                   /*
+                    * Person-Company
+                    */
+                    + " (f1)-[:" + Rels.WORKS_AT + " {f1WorkAtCompany0}]->(company0),\n"
+                    + " (f3)-[:" + Rels.WORKS_AT + " {f3WorkAtCompany0}]->(company0),\n"
+                    + " (ff21)-[:" + Rels.WORKS_AT + " {ff21WorkAtCompany1}]->(company1)\n";
         }
 
         @Override
         public Map<String, Object> params() {
-            return MapUtil.map("alex", TestPersons.alex(), "aiya", TestPersons.aiya(), "jake", TestPersons.jake(), "peter",
-                    TestPersons.peter(), "stranger", TestPersons.stranger(), "nicky", TestPersons.nicky(), "unknown",
-                    TestPersons.unknownGuy(), "auckland", TestCities.auckland(), "stockholm", TestCities.stockholm(),
-                    "munich", TestCities.munich(), "london", TestCities.london(), "melbourne", TestCities.melbourne(),
-                    "sweden", TestCountries.sweden(), "new_zealand", TestCountries.newZealand(), "germany",
-                    TestCountries.germany(), "australia", TestCountries.australia(), "england",
-                    TestCountries.england(), "aut", TestUniversities.aut(), "kth", TestUniversities.kth(), "sics",
-                    TestCompanies.sics(), "neo", TestCompanies.neo(), "hot", TestCompanies.hot(), "alexWorkAtSics",
-                    TestWorksAt.alexWorkAtSics(), "alexWorkAtNeo", TestWorksAt.alexWorkAtNeo(), "aiyaWorkAtHot",
-                    TestWorksAt.aiyaWorkAtHot(), "alexStudyAtAut", TestStudyAt.alexStudyAtAut(), "alexStudyAtKth",
-                    TestStudyAt.alexStudyAtKth());
+            return MapUtil.map(
+                    // Persons
+                    "person0", TestPersons.person0(),
+                    "f1", TestPersons.f1(),
+                    "f2", TestPersons.f2(),
+                    "f3", TestPersons.f3(),
+                    "ff11", TestPersons.ff11(),
+                    "fff111", TestPersons.fff111(),
+                    "ffff1111", TestPersons.ffff1111(),
+                    "fffff11111", TestPersons.fffff11111(),
+                    "ff21", TestPersons.ff21(),
+                    "fff211", TestPersons.fff211(),
+                    "ff31", TestPersons.ff31(),
+                    // Universities
+                    "uni0", TestUniversities.uni0(),
+                    "uni1", TestUniversities.uni1(),
+                    "uni2", TestUniversities.uni2(),
+                    // Companies
+                    "company0", TestCompanies.company0(),
+                    "company1", TestCompanies.company1(),
+                    // Cities
+                    "city0", TestCities.city0(),
+                    "city1", TestCities.city1(),
+                    // Countries
+                    "country0", TestCountries.country0(),
+                    "country1", TestCountries.country1(),
+                    // WorkAt
+                    "f1WorkAtCompany0", TestWorkAt.f1WorkAtCompany0(),
+                    "f3WorkAtCompany0", TestWorkAt.f3WorkAtCompany0(),
+                    "ff21WorkAtCompany1", TestWorkAt.ff21WorkAtCompany1(),
+                    // StudyAt
+                    "f1StudyAtUni0", TestStudyAt.f1StudyAtUni0(),
+                    "ff11StudyAtUni1", TestStudyAt.ff11StudyAtUni1(),
+                    "ff11StudyAtUni2", TestStudyAt.ff11StudyAtUni2(),
+                    "f2StudyAtUni2", TestStudyAt.f2StudyAtUni2()
+            );
         }
 
-        protected static class TestWorksAt {
-            protected static Map<String, Object> alexWorkAtSics() {
-                return MapUtil.map(WorksAt.WORK_FROM, 2010);
+        protected static class TestPersons {
+            protected static Map<String, Object> person0() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 0L);
+                params.put(Person.FIRST_NAME, "person");
+                params.put(Person.LAST_NAME, "zero");
+                params.put(Person.CREATION_DATE, 0L);
+                params.put(Person.BIRTHDAY, 0L);
+                params.put(Person.BROWSER_USED, "browser0");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"person0email1", "person0email2"});
+                params.put(Person.GENDER, "gender0");
+                params.put(Person.LANGUAGES, new String[]{"person0language0", "person0language1"});
+                params.put(Person.LOCATION_IP, "ip0");
+                return params;
             }
 
-            protected static Map<String, Object> alexWorkAtNeo() {
-                return MapUtil.map(WorksAt.WORK_FROM, 2012);
+            protected static Map<String, Object> f1() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 1L);
+                params.put(Person.FIRST_NAME, "name0");
+                params.put(Person.LAST_NAME, "last1");
+                params.put(Person.CREATION_DATE, 1L);
+                params.put(Person.BIRTHDAY, 1L);
+                params.put(Person.BROWSER_USED, "browser1");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"friend1email1", "friend1email2"});
+                params.put(Person.GENDER, "gender1");
+                params.put(Person.LANGUAGES, new String[]{"friend1language0"});
+                params.put(Person.LOCATION_IP, "ip1");
+                return params;
             }
 
-            protected static Map<String, Object> aiyaWorkAtHot() {
-                return MapUtil.map(WorksAt.WORK_FROM, 2005);
-            }
-        }
-
-        protected static class TestStudyAt {
-            protected static Map<String, Object> alexStudyAtAut() {
-                return MapUtil.map(StudiesAt.CLASS_YEAR, 2006);
-            }
-
-            protected static Map<String, Object> alexStudyAtKth() {
-                return MapUtil.map(StudiesAt.CLASS_YEAR, 2008);
-            }
-        }
-
-        protected static class TestCompanies {
-            protected static Map<String, Object> sics() {
-                return MapUtil.map(Organisation.NAME, "swedish institute of computer science");
+            protected static Map<String, Object> f2() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 2L);
+                params.put(Person.FIRST_NAME, "name0");
+                params.put(Person.LAST_NAME, "last2");
+                params.put(Person.CREATION_DATE, 2L);
+                params.put(Person.BIRTHDAY, 2L);
+                params.put(Person.BROWSER_USED, "browser2");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{});
+                params.put(Person.GENDER, "gender2");
+                params.put(Person.LANGUAGES, new String[]{"friend2language0", "friend2language1"});
+                params.put(Person.LOCATION_IP, "ip2");
+                return params;
             }
 
-            protected static Map<String, Object> neo() {
-                return MapUtil.map(Place.NAME, "neo technology");
+            protected static Map<String, Object> f3() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 3L);
+                params.put(Person.FIRST_NAME, "name0");
+                params.put(Person.LAST_NAME, "last3");
+                params.put(Person.CREATION_DATE, 3L);
+                params.put(Person.BIRTHDAY, 3L);
+                params.put(Person.BROWSER_USED, "browser3");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"friend3email1", "friend3email2"});
+                params.put(Person.GENDER, "gender3");
+                params.put(Person.LANGUAGES, new String[]{"friend3language0"});
+                params.put(Person.LOCATION_IP, "ip3");
+                return params;
             }
 
-            protected static Map<String, Object> hot() {
-                return MapUtil.map(Place.NAME, "house of travel");
+            protected static Map<String, Object> ff11() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 11L);
+                params.put(Person.FIRST_NAME, "name0");
+                params.put(Person.LAST_NAME, "last11");
+                params.put(Person.CREATION_DATE, 11L);
+                params.put(Person.BIRTHDAY, 11L);
+                params.put(Person.BROWSER_USED, "browser11");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{});
+                params.put(Person.GENDER, "gender11");
+                params.put(Person.LANGUAGES, new String[]{});
+                params.put(Person.LOCATION_IP, "ip11");
+                return params;
+            }
+
+            protected static Map<String, Object> fff111() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 111L);
+                params.put(Person.FIRST_NAME, "name1");
+                params.put(Person.LAST_NAME, "last111");
+                params.put(Person.CREATION_DATE, 111L);
+                params.put(Person.BIRTHDAY, 111L);
+                params.put(Person.BROWSER_USED, "browser111");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"fff111email1", "fff111email2", "fff111email3"});
+                params.put(Person.GENDER, "gender111");
+                params.put(Person.LANGUAGES, new String[]{"fff111language0", "fff111language1", "fff111language2"});
+                params.put(Person.LOCATION_IP, "ip111");
+                return params;
+            }
+
+            protected static Map<String, Object> ffff1111() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 1111L);
+                params.put(Person.FIRST_NAME, "name0");
+                params.put(Person.LAST_NAME, "last1111");
+                params.put(Person.CREATION_DATE, 1111L);
+                params.put(Person.BIRTHDAY, 1111L);
+                params.put(Person.BROWSER_USED, "browser1111");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"ffff1111email1"});
+                params.put(Person.GENDER, "gender1111");
+                params.put(Person.LANGUAGES, new String[]{"ffff1111language0"});
+                params.put(Person.LOCATION_IP, "ip1111");
+                return params;
+            }
+
+            protected static Map<String, Object> fffff11111() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 11111L);
+                params.put(Person.FIRST_NAME, "name0");
+                params.put(Person.LAST_NAME, "last11111");
+                params.put(Person.CREATION_DATE, 11111L);
+                params.put(Person.BIRTHDAY, 11111L);
+                params.put(Person.BROWSER_USED, "browser11111");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"fffff11111email1"});
+                params.put(Person.GENDER, "gender11111");
+                params.put(Person.LANGUAGES, new String[]{"fffff11111language0"});
+                params.put(Person.LOCATION_IP, "ip11111");
+                return params;
+            }
+
+            protected static Map<String, Object> ff21() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 21L);
+                params.put(Person.FIRST_NAME, "name1");
+                params.put(Person.LAST_NAME, "last21");
+                params.put(Person.CREATION_DATE, 21L);
+                params.put(Person.BIRTHDAY, 21L);
+                params.put(Person.BROWSER_USED, "browser21");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{});
+                params.put(Person.GENDER, "gender21");
+                params.put(Person.LANGUAGES, new String[]{});
+                params.put(Person.LOCATION_IP, "ip21");
+                return params;
+            }
+
+            protected static Map<String, Object> fff211() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 211L);
+                params.put(Person.FIRST_NAME, "name1");
+                params.put(Person.LAST_NAME, "last211");
+                params.put(Person.CREATION_DATE, 211L);
+                params.put(Person.BIRTHDAY, 211L);
+                params.put(Person.BROWSER_USED, "browser211");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"fff211email1"});
+                params.put(Person.GENDER, "gender211");
+                params.put(Person.LANGUAGES, new String[]{});
+                params.put(Person.LOCATION_IP, "ip211");
+                return params;
+            }
+
+            protected static Map<String, Object> ff31() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 31L);
+                params.put(Person.FIRST_NAME, "name0");
+                params.put(Person.LAST_NAME, "last31");
+                params.put(Person.CREATION_DATE, 31L);
+                params.put(Person.BIRTHDAY, 31L);
+                params.put(Person.BROWSER_USED, "browser31");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{});
+                params.put(Person.GENDER, "gender31");
+                params.put(Person.LANGUAGES, new String[]{});
+                params.put(Person.LOCATION_IP, "ip31");
+                return params;
             }
         }
 
         protected static class TestUniversities {
-            protected static Map<String, Object> aut() {
-                return MapUtil.map(Organisation.NAME, "auckland university of technology");
+            protected static Map<String, Object> uni0() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Organisation.NAME, "uni0");
+                return params;
             }
 
-            protected static Map<String, Object> kth() {
-                return MapUtil.map(Place.NAME, "royal institute of technology");
+            protected static Map<String, Object> uni1() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Organisation.NAME, "uni1");
+                return params;
+            }
+
+            protected static Map<String, Object> uni2() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Organisation.NAME, "uni2");
+                return params;
             }
         }
 
-        protected static class TestCountries {
-            protected static Map<String, Object> sweden() {
-                return MapUtil.map(Place.NAME, "sweden");
+        protected static class TestCompanies {
+            protected static Map<String, Object> company0() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Organisation.NAME, "company0");
+                return params;
             }
 
-            protected static Map<String, Object> newZealand() {
-                return MapUtil.map(Place.NAME, "new zealand");
-            }
-
-            protected static Map<String, Object> germany() {
-                return MapUtil.map(Place.NAME, "germany");
-            }
-
-            protected static Map<String, Object> australia() {
-                return MapUtil.map(Place.NAME, "australia");
-            }
-
-            protected static Map<String, Object> england() {
-                return MapUtil.map(Place.NAME, "england");
+            protected static Map<String, Object> company1() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Organisation.NAME, "company1");
+                return params;
             }
         }
 
         protected static class TestCities {
-
-            protected static Map<String, Object> munich() {
-                return MapUtil.map(Place.NAME, "munich");
+            protected static Map<String, Object> city0() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Place.NAME, "city0");
+                return params;
             }
 
-            protected static Map<String, Object> melbourne() {
-                return MapUtil.map(Place.NAME, "melbourne");
-            }
-
-            protected static Map<String, Object> stockholm() {
-                return MapUtil.map(Place.NAME, "stockholm");
-            }
-
-            protected static Map<String, Object> auckland() {
-                return MapUtil.map(Place.NAME, "auckland");
-            }
-
-            protected static Map<String, Object> london() {
-                return MapUtil.map(Place.NAME, "london");
+            protected static Map<String, Object> city1() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Place.NAME, "city1");
+                return params;
             }
         }
 
-        protected static class TestPersons {
-            protected static Map<String, Object> alex() {
+        protected static class TestCountries {
+            protected static Map<String, Object> country0() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Person.ID, 1L);
-                params.put(Person.FIRST_NAME, "alex");
-                params.put(Person.LAST_NAME, "averbuch");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2012, Calendar.JUNE, 6);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1982, Calendar.JANUARY, 23);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "chrome");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"alex.averbuch@gmail.com",
-                        "alex.averbuch@neotechnology.com"});
-                params.put(Person.GENDER, "male");
-                params.put(Person.LANGUAGES, new String[]{"english", "swedish"});
-                params.put(Person.LOCATION_IP, "192.168.42.24");
+                params.put(Place.NAME, "country0");
                 return params;
             }
 
-            protected static Map<String, Object> aiya() {
+            protected static Map<String, Object> country1() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Person.ID, 2L);
-                params.put(Person.FIRST_NAME, "aiya");
-                params.put(Person.LAST_NAME, "thorpe");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2013, Calendar.MAY, 19);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1983, Calendar.SEPTEMBER, 8);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "safari");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"aiya.thorpe@gmail.com"});
-                params.put(Person.GENDER, "female");
-                params.put(Person.LANGUAGES, new String[]{"english"});
-                params.put(Person.LOCATION_IP, "192.161.48.1");
+                params.put(Place.NAME, "country1");
+                return params;
+            }
+        }
+
+        protected static class TestWorkAt {
+            protected static Map<String, Object> f1WorkAtCompany0() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(WorksAt.WORK_FROM, 0);
                 return params;
             }
 
-            protected static Map<String, Object> jake() {
+            protected static Map<String, Object> f3WorkAtCompany0() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Person.ID, 3L);
-                params.put(Person.FIRST_NAME, "jacob");
-                params.put(Person.LAST_NAME, "hansson");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 10);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1987, Calendar.JULY, 21);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "safari");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"jakewins@gmail.com", "jake@neotechnology.com"});
-                params.put(Person.GENDER, "male");
-                params.put(Person.LANGUAGES, new String[]{"english", "swedish"});
-                params.put(Person.LOCATION_IP, "172.124.98.31");
+                params.put(WorksAt.WORK_FROM, 1);
                 return params;
             }
 
-            protected static Map<String, Object> peter() {
+            protected static Map<String, Object> ff21WorkAtCompany1() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Person.ID, 4L);
-                params.put(Person.FIRST_NAME, "peter");
-                params.put(Person.LAST_NAME, "rentschler");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2013, Calendar.JANUARY, 5);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1982, Calendar.JUNE, 5);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "firefox");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"peter.rentschler@gmx.de"});
-                params.put(Person.GENDER, "male");
-                params.put(Person.LANGUAGES, new String[]{"english", "german"});
-                params.put(Person.LOCATION_IP, "12.24.158.11");
+                params.put(WorksAt.WORK_FROM, 2);
+                return params;
+            }
+        }
+
+        protected static class TestStudyAt {
+            protected static Map<String, Object> f1StudyAtUni0() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(StudiesAt.CLASS_YEAR, 0);
                 return params;
             }
 
-            protected static Map<String, Object> stranger() {
+            protected static Map<String, Object> ff11StudyAtUni1() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Person.ID, 5L);
-                params.put(Person.FIRST_NAME, "stranger");
-                params.put(Person.LAST_NAME, "dude");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2012, Calendar.OCTOBER, 15);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1985, Calendar.FEBRUARY, 11);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "internet explorer");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"dr.strange@love.com"});
-                params.put(Person.GENDER, "male");
-                params.put(Person.LANGUAGES, new String[]{"english"});
-                params.put(Person.LOCATION_IP, "12.24.158.11");
+                params.put(StudiesAt.CLASS_YEAR, 1);
                 return params;
             }
 
-            protected static Map<String, Object> nicky() {
+            protected static Map<String, Object> ff11StudyAtUni2() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Person.ID, 6L);
-                params.put(Person.FIRST_NAME, "nicky");
-                params.put(Person.LAST_NAME, "toothill");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2013, Calendar.JUNE, 8);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1982, Calendar.AUGUST, 11);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "safari");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"nicky@provider.com"});
-                params.put(Person.GENDER, "female");
-                params.put(Person.LANGUAGES, new String[]{"english", "spanish"});
-                params.put(Person.LOCATION_IP, "12.171.48.1");
+                params.put(StudiesAt.CLASS_YEAR, 2);
                 return params;
             }
 
-            protected static Map<String, Object> unknownGuy() {
+            protected static Map<String, Object> f2StudyAtUni2() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Person.ID, 7L);
-                params.put(Person.FIRST_NAME, "unknown");
-                params.put(Person.LAST_NAME, "guy");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2012, Calendar.OCTOBER, 18);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1989, Calendar.MARCH, 21);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "firefox");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"unknown@email.com"});
-                params.put(Person.GENDER, "male");
-                params.put(Person.LANGUAGES, new String[]{"english"});
-                params.put(Person.LOCATION_IP, "112.216.53.199");
+                params.put(StudiesAt.CLASS_YEAR, 3);
                 return params;
             }
-
         }
     }
 

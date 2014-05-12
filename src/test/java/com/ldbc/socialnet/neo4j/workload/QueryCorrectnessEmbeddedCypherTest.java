@@ -61,20 +61,17 @@ public class QueryCorrectnessEmbeddedCypherTest extends QueryCorrectnessTest {
     }
 
     @Override
-    public Object neo4jQuery12Impl() {
-        // TODO Auto-generated method stub
-        return null;
+    public Neo4jQuery12 neo4jQuery12Impl() {
+        return new Neo4jQuery12EmbeddedCypher();
     }
 
     @Override
-    public Object neo4jQuery13Impl() {
-        // TODO Auto-generated method stub
-        return null;
+    public Neo4jQuery13 neo4jQuery13Impl() {
+        return new Neo4jQuery13EmbeddedCypher();
     }
 
     @Override
-    public Object neo4jQuery14Impl() {
-        // TODO Auto-generated method stub
-        return null;
+    public Neo4jQuery14 neo4jQuery14Impl() {
+        return new Neo4jQuery14EmbeddedCypher();
     }
 }

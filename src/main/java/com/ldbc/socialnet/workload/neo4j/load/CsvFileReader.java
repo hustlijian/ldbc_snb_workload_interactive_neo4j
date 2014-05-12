@@ -64,7 +64,7 @@ public class CsvFileReader implements Iterator<String[]>
         {
             String errMsg = String.format( "Error retrieving next csv entry from file [%s]", csvReader );
             logger.error( errMsg, e );
-            throw new RuntimeException( errMsg, e.getCause() );
+            throw new RuntimeException( errMsg, e );
         }
     }
 
@@ -95,7 +95,7 @@ public class CsvFileReader implements Iterator<String[]>
         {
             String errMsg = String.format( "Error closing file [%s]", csvReader );
             logger.error( errMsg, e );
-            throw new RuntimeException( errMsg, e.getCause() );
+            throw new RuntimeException( errMsg, e );
         }
         return true;
     }

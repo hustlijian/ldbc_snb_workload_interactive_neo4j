@@ -32,7 +32,7 @@ public class LdbcQuery3HandlerEmbeddedCypher extends OperationHandler<LdbcQuery3
                     "Error executing query\n%s\n%s",
                     operation.toString(),
                     ConcurrentErrorReporter.stackTraceToString(e));
-            throw new DbException(errMsg, e.getCause());
+            throw new DbException(errMsg, e);
         }
 
         return operation.buildResult(resultCode, result);

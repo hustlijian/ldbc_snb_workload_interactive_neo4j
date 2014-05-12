@@ -5,27 +5,27 @@ import com.ldbc.driver.DbException;
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
 import com.ldbc.driver.runtime.ConcurrentErrorReporter;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery7;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery7Result;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery9;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery9Result;
 import com.ldbc.socialnet.workload.neo4j.Neo4jConnectionStateEmbedded;
-import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery7;
+import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery9;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 
 import java.util.List;
 
-public class LdbcQuery7HandlerEmbeddedCypher extends OperationHandler<LdbcQuery7> {
+public class LdbcQuery9HandlerEmbeddedCypher extends OperationHandler<LdbcQuery9> {
     @Override
-    protected OperationResult executeOperation(LdbcQuery7 operation) throws DbException {
+    protected OperationResult executeOperation(LdbcQuery9 operation) throws DbException {
         ExecutionEngine engine = ((Neo4jConnectionStateEmbedded) dbConnectionState()).executionEngine();
         GraphDatabaseService db = ((Neo4jConnectionStateEmbedded) dbConnectionState()).db();
-        Neo4jQuery7 query7 = new Neo4jQuery7EmbeddedCypher();
-        List<LdbcQuery7Result> result = null;
+        Neo4jQuery9 query9 = new Neo4jQuery9EmbeddedCypher();
+        List<LdbcQuery9Result> result;
 
         int resultCode = 0;
         try (Transaction tx = db.beginTx()) {
-            result = ImmutableList.copyOf(query7.execute(db, engine, operation));
+            result = ImmutableList.copyOf(query9.execute(db, engine, operation));
             tx.success();
         } catch (Exception e) {
             String errMsg = String.format(

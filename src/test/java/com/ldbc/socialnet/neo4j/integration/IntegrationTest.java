@@ -87,28 +87,37 @@ public class IntegrationTest {
             List<String> peerIds = new ArrayList<>();
             Duration toleratedExecutionDelay = Duration.fromSeconds(1);
 
-            Map<String, String> userParams = new HashMap<String, String>();
-            userParams.put(LdbcInteractiveWorkload.UPDATE_STREAM_FILENAME_KEY, "ldbc_driver/workloads/ldbc/socnet/interactive/updates.csv");
+            Map<String, String> userParams = new HashMap<>();
+            userParams.put(LdbcInteractiveWorkload.WRITE_STREAM_FILENAME_KEY, "ldbc_driver/workloads/ldbc/socnet/interactive/updates.csv");
             userParams.put(LdbcInteractiveWorkload.READ_RATIO_KEY, "1");
             userParams.put(LdbcInteractiveWorkload.WRITE_RATIO_KEY, "0");
             userParams.put(LdbcInteractiveWorkload.PARAMETERS_FILENAME_KEY, TestUtils.getResource("/parameters.json").getAbsolutePath());
             userParams.put(Neo4jDb.PATH_KEY, dbDir);
-            userParams.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_STEPS);
+            userParams.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_CYPHER);
 
             userParams.put(LdbcInteractiveWorkload.INTERLEAVE_DURATION_KEY, Long.toString(Duration.fromMilli(10).asMilli()));
-            userParams.put(LdbcInteractiveWorkload.QUERY_1_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.QUERY_2_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.QUERY_3_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.QUERY_4_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.QUERY_5_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.QUERY_6_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.QUERY_7_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.QUERY_8_KEY, "0");
-            userParams.put(LdbcInteractiveWorkload.QUERY_9_KEY, "0");
-            userParams.put(LdbcInteractiveWorkload.QUERY_10_KEY, "0");
-            userParams.put(LdbcInteractiveWorkload.QUERY_11_KEY, "0");
-            userParams.put(LdbcInteractiveWorkload.QUERY_12_KEY, "0");
-
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_1_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_2_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_3_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_4_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_5_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_6_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_7_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_8_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_9_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_10_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_11_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_12_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_13_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_14_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_1_KEY, "false");
+            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_2_KEY, "false");
+            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_3_KEY, "false");
+            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_4_KEY, "false");
+            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_5_KEY, "false");
+            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_6_KEY, "false");
+            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_7_KEY, "false");
+            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_8_KEY, "false");
             ConsoleAndFileDriverConfiguration params = new ConsoleAndFileDriverConfiguration(
                     userParams,
                     Neo4jDb.class.getName(),
@@ -155,22 +164,32 @@ public class IntegrationTest {
             userParams.put(Neo4jDb.PATH_KEY, dbDir);
             userParams.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_CYPHER);
 
-            userParams.put(LdbcInteractiveWorkload.UPDATE_STREAM_FILENAME_KEY, "ldbc_driver/workloads/ldbc/socnet/interactive/updates.csv");
+            userParams.put(LdbcInteractiveWorkload.WRITE_STREAM_FILENAME_KEY, "ldbc_driver/workloads/ldbc/socnet/interactive/updates.csv");
             userParams.put(LdbcInteractiveWorkload.READ_RATIO_KEY, "1");
             userParams.put(LdbcInteractiveWorkload.WRITE_RATIO_KEY, "0");
             userParams.put(LdbcInteractiveWorkload.INTERLEAVE_DURATION_KEY, Long.toString(Duration.fromMilli(10).asMilli()));
-            userParams.put(LdbcInteractiveWorkload.QUERY_1_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.QUERY_2_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.QUERY_3_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.QUERY_4_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.QUERY_5_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.QUERY_6_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.QUERY_7_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.QUERY_8_KEY, "0");
-            userParams.put(LdbcInteractiveWorkload.QUERY_9_KEY, "0");
-            userParams.put(LdbcInteractiveWorkload.QUERY_10_KEY, "0");
-            userParams.put(LdbcInteractiveWorkload.QUERY_11_KEY, "0");
-            userParams.put(LdbcInteractiveWorkload.QUERY_12_KEY, "0");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_1_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_2_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_3_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_4_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_5_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_6_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_7_KEY, "1");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_8_KEY, "0");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_9_KEY, "0");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_10_KEY, "0");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_11_KEY, "0");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_12_KEY, "0");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_13_KEY, "0");
+            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_14_KEY, "0");
+            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_1_KEY, "false");
+            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_2_KEY, "false");
+            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_3_KEY, "false");
+            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_4_KEY, "false");
+            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_5_KEY, "false");
+            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_6_KEY, "false");
+            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_7_KEY, "false");
+            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_8_KEY, "false");
 
             ConsoleAndFileDriverConfiguration params = new ConsoleAndFileDriverConfiguration(
                     userParams,

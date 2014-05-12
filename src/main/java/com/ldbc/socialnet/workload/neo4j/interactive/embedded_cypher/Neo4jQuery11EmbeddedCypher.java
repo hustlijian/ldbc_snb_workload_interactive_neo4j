@@ -2,7 +2,6 @@ package com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
-import com.ldbc.driver.util.MapUtils;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery11;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery11Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery11;
@@ -59,7 +58,6 @@ public class Neo4jQuery11EmbeddedCypher implements Neo4jQuery11 {
                 new Function<Map<String, Object>, LdbcQuery11Result>() {
                     @Override
                     public LdbcQuery11Result apply(Map<String, Object> row) {
-                        System.out.println(MapUtils.prettyPrint(row));
                         return new LdbcQuery11Result(
                                 (long) row.get("friendId"),
                                 (String) row.get("friendFirstName"),

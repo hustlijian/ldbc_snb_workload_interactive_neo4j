@@ -1,5 +1,6 @@
 package com.ldbc.socialnet.workload.neo4j.load;
 
+import com.ldbc.driver.util.TestUtils;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.load.tempindex.TempIndexFactory;
 import com.ldbc.socialnet.workload.neo4j.load.tempindex.TroveTempIndexFactory;
@@ -13,38 +14,57 @@ import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+/*
+MAVEN_OPTS="-server -XX:+UseConcMarkSweepGC -Xmx512m" mvn exec:java -Dexec.mainClass=com.ldbc.socialnet.workload.importer.LdbcSocialNetworkNeo4jImporter -Dexec.arguments="db/,/Users/alexaverbuch/IdeaProjects/ldbc_socialnet_bm/ldbc_socialnet_dbgen/outputDir/,/Users/alexaverbuch/IdeaProjects/ldbc_socialnet_importer/src/main/resources/neo4j_import_dev.properties"
+ */
 public class LdbcSocialNeworkNeo4jImporter {
-    /*
-     TODO code improvements here
-       - make it possible/easier to free a TempIndex midway through load to free memory
-       - add readme with links to ldbc projects
-       - support reading series of csv lines and making them all available
-          - for example, for when subsequent lines work on the same ID/Node/Rel
-       - add class to Domain with AttributeNames for each Entity
-       - make scaling.txt into a spreadsheet
-       - add Message and MessageType.Comment|Post
-     TODO code improvements ldbc_driver
-       - EMPTY_MAP in MapUtils?       
-    */
-
     private final static Logger logger = Logger.getLogger(LdbcSocialNeworkNeo4jImporter.class);
 
+
     public static void main(String[] args) throws IOException {
-        LdbcSocialNeworkNeo4jImporter ldbcSocialNetworkLoader = new LdbcSocialNeworkNeo4jImporter(Config.DB_DIR,
-                Config.DATA_DIR);
+        // TODO remove this line
+        args = new String[]{Config.DB_DIR, Config.DATA_DIR, TestUtils.getResource("/neo4j_import_dev.properties").getAbsolutePath()};
+
+        if (args.length != 3)
+            throw new RuntimeException(String.format("Expected 3 parameters: dbDir, dataDir, importerPropertiesPath\n" +
+                    "Found %s: %s", args.length, Arrays.toString(args)));
+        String dbDir = args[0];
+        String dataDir = args[1];
+        if (new File(dataDir).exists() == false)
+            throw new RuntimeException(String.format("CSV not found: %s", dataDir));
+        String importerPropertiesPath = args[2];
+        if (new File(importerPropertiesPath).exists() == false)
+            throw new RuntimeException(String.format("Neo4j properties file not found: %s", importerPropertiesPath));
+
+        LdbcSocialNeworkNeo4jImporter ldbcSocialNetworkLoader = new LdbcSocialNeworkNeo4jImporter(dbDir, dataDir, importerPropertiesPath);
         ldbcSocialNetworkLoader.load();
     }
 
+    // TODO old main, worked fine, remove when new version works
+//    public static void main(String[] args) throws IOException {
+//        LdbcSocialNeworkNeo4jImporter ldbcSocialNetworkLoader = new LdbcSocialNeworkNeo4jImporter(Config.DB_DIR,
+//                Config.DATA_DIR);
+//        ldbcSocialNetworkLoader.load();
+//    }
+
     private final String dbDir;
     private final String csvDataDir;
+    private final Map<String, String> importerProperties;
 
-    public LdbcSocialNeworkNeo4jImporter(String dbDirPath, String csvDataDir) {
+    public LdbcSocialNeworkNeo4jImporter(String dbDirPath, String csvDataDir, String importerPropertiesPath) throws IOException {
         this.dbDir = new File(dbDirPath).getAbsolutePath();
         this.csvDataDir = csvDataDir;
+        Map tempNeo4jImportConfig = new Properties();
+        ((Properties) tempNeo4jImportConfig).load(new FileInputStream(new File(importerPropertiesPath)));
+        importerProperties = tempNeo4jImportConfig;
     }
 
     public void load() throws IOException {

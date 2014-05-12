@@ -85,9 +85,7 @@ public class Neo4jDb extends Db {
         try {
             commands.cleanUp();
         } catch (Exception e) {
-            String msg = "Error encountered during cleanup";
-            logger.error(msg, e.getCause());
-            throw new DbException(msg, e.getCause());
+            throw new DbException("Error encountered during cleanup", e);
         }
     }
 

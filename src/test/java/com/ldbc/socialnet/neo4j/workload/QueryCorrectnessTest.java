@@ -1,5 +1,6 @@
 package com.ldbc.socialnet.neo4j.workload;
 
+import com.google.common.collect.Lists;
 import com.ldbc.driver.runtime.ConcurrentErrorReporter;
 import com.ldbc.driver.util.MapUtils;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.*;
@@ -83,8 +84,7 @@ public abstract class QueryCorrectnessTest {
 
     public abstract Neo4jQuery11 neo4jQuery11Impl();
 
-    // TODO return Neo4jQueryX
-    public abstract Object neo4jQuery12Impl();
+    public abstract Neo4jQuery12 neo4jQuery12Impl();
 
     // TODO return Neo4jQueryX
     public abstract Object neo4jQuery13Impl();
@@ -94,57 +94,130 @@ public abstract class QueryCorrectnessTest {
 
     @Test
     public void query1ShouldReturnExpectedResult() throws IOException {
-//        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query1GraphMaker();
-//
-//        // TODO uncomment to print CREATE
-//        System.out.println();
-//        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
-//        System.out.println(queryGraphMaker.graph());
-//
-//        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
-//        db.shutdown();
-//        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
-//        engine = new ExecutionEngine(db);
-//
-//        LdbcQuery1 operation1 = new LdbcQuery1("alex", 10);
-//        Neo4jQuery1 query1 = neo4jQuery1Impl();
-//
-//        // TODO uncomment to print query
-//        System.out.println(operation1.toString() + "\n" + query1.description() + "\n");
-//
-//        boolean exceptionThrown = false;
-//        try (Transaction tx = db.beginTx()) {
-//            Iterator<LdbcQuery1Result> result = query1.execute(db, engine, operation1);
-//
-//            // Has 1 result
-//            assertThat(result.hasNext(), is(true));
-//
-//            LdbcQuery1Result firstRow = result.next();
-//
-//            // Has only 1 result
-//            assertThat(result.hasNext(), is(false));
-//
-//            assertThat(firstRow.firstName(), is("alex"));
-//            assertThat(firstRow.personCity(), is("stockholm"));
-//
-//            Set<String> resultCompanies = new HashSet<String>(firstRow.companies());
-//            Set<String> expectedCompanies = new HashSet<String>(Arrays.asList(new String[]{
-//                    "swedish institute of computer science, sweden(2010)", "neo technology, sweden(2012)"}));
-//            assertThat(resultCompanies, equalTo(expectedCompanies));
-//
-//            Set<String> resultUnis = new HashSet<String>(firstRow.unis());
-//            Set<String> expectedUnis = new HashSet<String>(Arrays.asList(new String[]{
-//                    "royal institute of technology, stockholm(2008)",
-//                    "auckland university of technology, auckland(2006)"}));
-//            assertThat(resultUnis, equalTo(expectedUnis));
-//
-//            tx.success();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            exceptionThrown = true;
-//        }
-//        assertThat(exceptionThrown, is(false));
-        assertThat(true, is(false));
+        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query1GraphMaker();
+
+        // TODO uncomment to print CREATE
+        System.out.println();
+        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
+        System.out.println(queryGraphMaker.graph());
+
+        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
+        db.shutdown();
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
+        engine = new ExecutionEngine(db);
+
+        long personId = 0;
+        String friendName = "name0";
+        int limit = 6;
+        LdbcQuery1 operation1 = new LdbcQuery1(personId, friendName, limit);
+        Neo4jQuery1 query1 = neo4jQuery1Impl();
+
+        // TODO uncomment to print query
+        System.out.println(operation1.toString() + "\n" + query1.description() + "\n");
+
+        boolean exceptionThrown = false;
+        try (Transaction tx = db.beginTx()) {
+            Iterator<LdbcQuery1Result> result = query1.execute(db, engine, operation1);
+
+            LdbcQuery1Result row;
+
+            row = result.next();
+            assertThat(row.friendId(), equalTo(1L));
+            assertThat(row.friendLastName(), equalTo("last1"));
+            assertThat(row.distanceFromPerson(), equalTo(1));
+            assertThat(row.friendBirthday(), equalTo(1L));
+            assertThat(row.friendCreationDate(), equalTo(1L));
+            assertThat(row.friendGender(), equalTo("gender1"));
+            assertThat(row.friendBrowserUsed(), equalTo("browser1"));
+            assertThat(row.friendLocationIp(), equalTo("ip1"));
+            assertThat(row.friendEmails(), equalTo((Collection) Lists.newArrayList("friend1email1", "friend1email2")));
+            assertThat(row.friendLanguages(), equalTo((Collection) Lists.newArrayList("friend1language0")));
+            assertThat(row.friendCityName(), equalTo("city0"));
+            // TODO
+//            assertThat(row.friendUniversities(), equalTo((Collection) Lists.newArrayList("...")));
+            // TODO
+//            assertThat(row.friendCompanies(), equalTo((Collection) Lists.newArrayList("...")));
+            System.out.println(row.toString());
+            assertThat(true, is(false)); // until checks added for commented out sections above
+
+            row = result.next();
+            assertThat(row.friendId(), equalTo(2L));
+            assertThat(row.friendLastName(), equalTo("last2"));
+            assertThat(row.distanceFromPerson(), equalTo(1));
+            assertThat(row.friendBirthday(), equalTo(2L));
+            assertThat(row.friendCreationDate(), equalTo(2L));
+            assertThat(row.friendGender(), equalTo("gender2"));
+            assertThat(row.friendBrowserUsed(), equalTo("browser2"));
+            assertThat(row.friendLocationIp(), equalTo("ip2"));
+            assertThat(row.friendEmails(), equalTo((Collection) Lists.newArrayList()));
+            assertThat(row.friendLanguages(), equalTo((Collection) Lists.newArrayList("friend2language0", "friend2language1")));
+            assertThat(row.friendCityName(), equalTo("city1"));
+            // TODO
+//            assertThat(row.friendUniversities(), equalTo((Collection) Lists.newArrayList("...")));
+            // TODO
+//            assertThat(row.friendCompanies(), equalTo((Collection) Lists.newArrayList("...")));
+            System.out.println(row.toString());
+
+            row = result.next();
+            assertThat(row.friendId(), equalTo(3L));
+            assertThat(row.friendLastName(), equalTo("last3"));
+            assertThat(row.distanceFromPerson(), equalTo(1));
+            assertThat(row.friendBirthday(), equalTo(3L));
+            assertThat(row.friendCreationDate(), equalTo(3L));
+            assertThat(row.friendGender(), equalTo("gender3"));
+            assertThat(row.friendBrowserUsed(), equalTo("browser3"));
+            assertThat(row.friendLocationIp(), equalTo("ip3"));
+            assertThat(row.friendEmails(), equalTo((Collection) Lists.newArrayList("friend3email1", "friend3email2")));
+            assertThat(row.friendLanguages(), equalTo((Collection) Lists.newArrayList("friend3language0")));
+            assertThat(row.friendCityName(), equalTo("city1"));
+            // TODO
+//            assertThat(row.friendUniversities(), equalTo((Collection) Lists.newArrayList("...")));
+            // TODO
+//            assertThat(row.friendCompanies(), equalTo((Collection) Lists.newArrayList("...")));
+            System.out.println(row.toString());
+
+            row = result.next();
+            assertThat(row.friendId(), equalTo(11L));
+            assertThat(row.friendLastName(), equalTo("last11"));
+            assertThat(row.distanceFromPerson(), equalTo(2));
+            assertThat(row.friendBirthday(), equalTo(11L));
+            assertThat(row.friendCreationDate(), equalTo(11L));
+            assertThat(row.friendGender(), equalTo("gender11"));
+            assertThat(row.friendBrowserUsed(), equalTo("browser11"));
+            assertThat(row.friendLocationIp(), equalTo("ip11"));
+            assertThat(row.friendEmails(), equalTo((Collection) Lists.newArrayList()));
+            assertThat(row.friendLanguages(), equalTo((Collection) Lists.newArrayList()));
+            assertThat(row.friendCityName(), equalTo("city0"));
+            // TODO
+//            assertThat(row.friendUniversities(), equalTo((Collection) Lists.newArrayList("...")));
+            // TODO
+//            assertThat(row.friendCompanies(), equalTo((Collection) Lists.newArrayList("...")));
+            System.out.println(row.toString());
+
+            row = result.next();
+            assertThat(row.friendId(), equalTo(31L));
+            assertThat(row.friendLastName(), equalTo("last31"));
+            assertThat(row.distanceFromPerson(), equalTo(2));
+            assertThat(row.friendBirthday(), equalTo(31L));
+            assertThat(row.friendCreationDate(), equalTo(31L));
+            assertThat(row.friendGender(), equalTo("gender31"));
+            assertThat(row.friendBrowserUsed(), equalTo("browser31"));
+            assertThat(row.friendLocationIp(), equalTo("ip31"));
+            assertThat(row.friendEmails(), equalTo((Collection) Lists.newArrayList()));
+            assertThat(row.friendLanguages(), equalTo((Collection) Lists.newArrayList()));
+            assertThat(row.friendCityName(), equalTo("city1"));
+            // TODO
+//            assertThat(row.friendUniversities(), equalTo((Collection) Lists.newArrayList("...")));
+            // TODO
+//            assertThat(row.friendCompanies(), equalTo((Collection) Lists.newArrayList("...")));
+            System.out.println(row.toString());
+
+            tx.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            exceptionThrown = true;
+        }
+        assertThat(exceptionThrown, is(false));
     }
 
     @Test
@@ -857,11 +930,4 @@ public abstract class QueryCorrectnessTest {
     public void query12ShouldReturnExpectedResult() {
         assertThat(true, is(false));
     }
-
-//    boolean resultsEqual(LdbcQuery5Result result1, LdbcQuery5Result result2) {
-//        if (false == result1.forumTitle().equals(result2.forumTitle())) return false;
-//        if (result1.postCount() != result2.postCount()) return false;
-//        if (result1.count() != result2.count()) return false;
-//        return true;
-//    }
 }
