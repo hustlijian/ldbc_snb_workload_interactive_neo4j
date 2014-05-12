@@ -1,5 +1,11 @@
 package com.ldbc.socialnet.workload.neo4j.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Properties;
+
 public class Utils {
     public static String[] copyArrayAndAddElement(String[] oldArray, String newElement) {
         if (null == oldArray) {
@@ -10,5 +16,11 @@ public class Utils {
             newArray[newArray.length - 1] = newElement;
             return newArray;
         }
+    }
+
+    public static Map loadConfig(String dbConfigFilePath) throws IOException {
+        Map dbConfig = new Properties();
+        ((Properties) dbConfig).load(new FileInputStream(new File(dbConfigFilePath)));
+        return dbConfig;
     }
 }

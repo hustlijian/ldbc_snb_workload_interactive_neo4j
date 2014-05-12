@@ -19,7 +19,7 @@ import com.ldbc.socialnet.workload.neo4j.load.tempindex.TempIndex;
 import com.ldbc.socialnet.workload.neo4j.load.tempindex.TroveTempIndexFactory;
 
 @Ignore
-public class PerfTests
+public class TempIndexPerformanceTests
 {
     /*
     // -Xmx40g --> 421,000,000

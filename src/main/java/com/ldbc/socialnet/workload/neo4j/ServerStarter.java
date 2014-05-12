@@ -1,32 +1,26 @@
 package com.ldbc.socialnet.workload.neo4j;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-
+import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.kernel.GraphDatabaseAPI;
-import org.neo4j.kernel.impl.util.FileUtils;
-import org.neo4j.server.CommunityNeoServer;
 import org.neo4j.server.WrappingNeoServerBootstrapper;
 
-import com.ldbc.socialnet.workload.neo4j.utils.Config;
+import java.io.IOException;
+import java.util.Map;
 
-public class ServerStarter
-{
-    public static void main( String[] args ) throws IOException
-    {
+public class ServerStarter {
+    public static void main(String[] args) throws IOException {
+        String dbDirPath = args[0];
+        String dbConfigPath = args[1];
+        Map dbConfig = Utils.loadConfig(dbConfigPath);
         ServerStarter serverStarter = new ServerStarter();
-        serverStarter.start( Config.DB_DIR, Config.NEO4J_RUN_CONFIG );
+        serverStarter.start(dbDirPath, dbConfig);
     }
 
-    void start( String path, Map<String, String> config ) throws IOException
-    {
-        GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder( path ).setConfig( config ).newGraphDatabase();
-        WrappingNeoServerBootstrapper server = new WrappingNeoServerBootstrapper( (GraphDatabaseAPI) db );
+    void start(String path, Map<String, String> config) throws IOException {
+        GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(path).setConfig(config).newGraphDatabase();
+        WrappingNeoServerBootstrapper server = new WrappingNeoServerBootstrapper((GraphDatabaseAPI) db);
 
         // CommunityServerBuilder serverBuilder =
         // CommunityServerBuilder.server();
@@ -38,29 +32,22 @@ public class ServerStarter
 
         server.start();
 
-        try
-        {
-            while ( true )
-            {
-                Thread.sleep( 50 );
+        try {
+            while (true) {
+                Thread.sleep(50);
             }
-        }
-        catch ( InterruptedException e )
-        {
+        } catch (InterruptedException e) {
             server.stop();
         }
     }
 
-    private void registerShutdownHook( final GraphDatabaseService graphDb )
-    {
-        Runtime.getRuntime().addShutdownHook( new Thread()
-        {
+    private void registerShutdownHook(final GraphDatabaseService graphDb) {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
-            public void run()
-            {
+            public void run() {
                 graphDb.shutdown();
             }
-        } );
+        });
     }
 
 }

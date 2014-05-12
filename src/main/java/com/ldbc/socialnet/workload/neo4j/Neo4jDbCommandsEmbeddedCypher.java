@@ -5,24 +5,35 @@ import com.ldbc.driver.DbConnectionState;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.*;
 import com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher.*;
-import com.ldbc.socialnet.workload.neo4j.utils.Config;
+import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
+import java.io.IOException;
+import java.util.Map;
+
 public class Neo4jDbCommandsEmbeddedCypher extends Neo4jDbCommands {
-    final private String path;
+    final private String dbPath;
+    final private String configPath;
     private ExecutionEngine queryEngine;
     private GraphDatabaseService db;
     private DbConnectionState dbConnectionState;
 
-    public Neo4jDbCommandsEmbeddedCypher(String path) {
-        this.path = path;
+    public Neo4jDbCommandsEmbeddedCypher(String dbPath, String configPath) {
+        this.dbPath = dbPath;
+        this.configPath = configPath;
     }
 
     @Override
-    public void init() {
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(path).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
+    public void init() throws DbException {
+        Map dbConfig;
+        try {
+            dbConfig = Utils.loadConfig(configPath);
+        } catch (IOException e) {
+            throw new DbException("Unable to load Neo4j DB config", e);
+        }
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbPath).setConfig(dbConfig).newGraphDatabase();
         queryEngine = new ExecutionEngine(db);
         dbConnectionState = new Neo4jConnectionStateEmbedded(db, queryEngine, null);
         registerShutdownHook(db);

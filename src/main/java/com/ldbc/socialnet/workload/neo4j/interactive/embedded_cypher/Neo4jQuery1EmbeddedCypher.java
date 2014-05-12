@@ -55,14 +55,10 @@ public class Neo4jQuery1EmbeddedCypher implements Neo4jQuery1 {
             + "OPTIONAL MATCH (friend)-[:" + Rels.IS_LOCATED_IN + "]->(friendCity:" + Place.Type.City + ")\n"
 
             + "OPTIONAL MATCH (friend)-[studyAt:" + Rels.STUDY_AT + "]->(uni:" + Organisation.Type.University + ")-[:" + Rels.IS_LOCATED_IN + "]->(uniCity:" + Place.Type.City + ")\n"
-            // TODO make "unis" an array of String rather than 1 string, for validation this will be necessary
-            + "WITH friend, collect([uni." + Organisation.NAME + " , uniCity." + Place.NAME + " , studyAt." + StudiesAt.CLASS_YEAR + "]) AS unis, friendCity, distance\n"
-//            + "WITH friend, collect(uni." + Organisation.NAME + " + ', ' + uniCity." + Place.NAME + "+ '(' + studyAt." + StudiesAt.CLASS_YEAR + " + ')') AS unis, friendCity, distance\n"
+            + "WITH friend, collect(uni." + Organisation.NAME + " + ',' + uniCity." + Place.NAME + " + ',' + studyAt." + StudiesAt.CLASS_YEAR + ") AS unis, friendCity, distance\n"
 
-            + "OPTIONAL MATCH (person)-[worksAt:" + Rels.WORKS_AT + "]->(company:" + Organisation.Type.Company + ")-[:" + Rels.IS_LOCATED_IN + "]->(companyCountry:" + Nodes.Place + ":" + Place.Type.Country + ")\n"
-            // TODO make "companies" an array of String rather than 1 string, for validation this will be necessary
-            + "WITH friend, collect([company." + Organisation.NAME + ", companyCountry." + Place.NAME + ", worksAt." + WorksAt.WORK_FROM + "]) AS companies, unis, friendCity, distance\n"
-//            + "WITH friend, collect(company." + Organisation.NAME + " + ', ' + companyCountry." + Place.NAME + " + '('+ worksAt." + WorksAt.WORK_FROM + " + ')') AS companies, unis, friendCity, distance\n"
+            + "OPTIONAL MATCH (friend)-[worksAt:" + Rels.WORKS_AT + "]->(company:" + Organisation.Type.Company + ")-[:" + Rels.IS_LOCATED_IN + "]->(companyCountry:" + Nodes.Place + ":" + Place.Type.Country + ")\n"
+            + "WITH friend, collect(company." + Organisation.NAME + " + ',' + companyCountry." + Place.NAME + " + ',' + worksAt." + WorksAt.WORK_FROM + ") AS companies, unis, friendCity, distance\n"
 
             + "RETURN"
             + " friend." + Person.ID + " AS id,"
@@ -76,8 +72,8 @@ public class Neo4jQuery1EmbeddedCypher implements Neo4jQuery1 {
             + " friend." + Person.EMAIL_ADDRESSES + " AS emails,"
             + " friend." + Person.LANGUAGES + " AS languages,"
             + " friendCity." + Place.NAME + " AS cityName,"
-            + " [uni IN unis WHERE not(uni[0] IS NULL)] AS unis,"
-            + " [company IN companies WHERE not(company[0] IS NULL)] AS companies\n"
+            + " unis,"
+            + " companies\n"
             + "ORDER BY distance ASC, friend." + Person.LAST_NAME + " ASC";
 
     // TODO try this shortest path approach too

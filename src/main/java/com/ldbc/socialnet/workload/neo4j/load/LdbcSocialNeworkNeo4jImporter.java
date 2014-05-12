@@ -1,11 +1,10 @@
 package com.ldbc.socialnet.workload.neo4j.load;
 
-import com.ldbc.driver.util.TestUtils;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.load.tempindex.TempIndexFactory;
 import com.ldbc.socialnet.workload.neo4j.load.tempindex.TroveTempIndexFactory;
-import com.ldbc.socialnet.workload.neo4j.utils.Config;
 import com.ldbc.socialnet.workload.neo4j.utils.GraphUtils;
+import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 import org.apache.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
@@ -14,12 +13,10 @@ import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -28,11 +25,7 @@ MAVEN_OPTS="-server -XX:+UseConcMarkSweepGC -Xmx512m" mvn exec:java -Dexec.mainC
 public class LdbcSocialNeworkNeo4jImporter {
     private final static Logger logger = Logger.getLogger(LdbcSocialNeworkNeo4jImporter.class);
 
-
     public static void main(String[] args) throws IOException {
-        // TODO remove this line
-        args = new String[]{Config.DB_DIR, Config.DATA_DIR, TestUtils.getResource("/neo4j_import_dev.properties").getAbsolutePath()};
-
         if (args.length != 3)
             throw new RuntimeException(String.format("Expected 3 parameters: dbDir, dataDir, importerPropertiesPath\n" +
                     "Found %s: %s", args.length, Arrays.toString(args)));
@@ -48,23 +41,14 @@ public class LdbcSocialNeworkNeo4jImporter {
         ldbcSocialNetworkLoader.load();
     }
 
-    // TODO old main, worked fine, remove when new version works
-//    public static void main(String[] args) throws IOException {
-//        LdbcSocialNeworkNeo4jImporter ldbcSocialNetworkLoader = new LdbcSocialNeworkNeo4jImporter(Config.DB_DIR,
-//                Config.DATA_DIR);
-//        ldbcSocialNetworkLoader.load();
-//    }
-
     private final String dbDir;
     private final String csvDataDir;
-    private final Map<String, String> importerProperties;
+    private final Map<String, String> importerConfig;
 
     public LdbcSocialNeworkNeo4jImporter(String dbDirPath, String csvDataDir, String importerPropertiesPath) throws IOException {
         this.dbDir = new File(dbDirPath).getAbsolutePath();
         this.csvDataDir = csvDataDir;
-        Map tempNeo4jImportConfig = new Properties();
-        ((Properties) tempNeo4jImportConfig).load(new FileInputStream(new File(importerPropertiesPath)));
-        importerProperties = tempNeo4jImportConfig;
+        importerConfig = Utils.loadConfig(importerPropertiesPath);
     }
 
     public void load() throws IOException {
@@ -72,7 +56,7 @@ public class LdbcSocialNeworkNeo4jImporter {
         FileUtils.deleteRecursively(new File(dbDir));
 
         logger.info("Instantiating Neo4j BatchInserter");
-        BatchInserter batchInserter = BatchInserters.inserter(dbDir, Config.NEO4J_IMPORT_CONFIG);
+        BatchInserter batchInserter = BatchInserters.inserter(dbDir, importerConfig);
 
         /*
         * CSV Files

@@ -2,8 +2,8 @@ package com.ldbc.socialnet.neo4j.utils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.ldbc.driver.util.TestUtils;
 import com.ldbc.socialnet.workload.neo4j.load.CsvFiles;
-import com.ldbc.socialnet.workload.neo4j.utils.Config;
 import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 import org.junit.Test;
 
@@ -36,7 +36,7 @@ public class UtilsTests {
     @Test
     public void shouldBeNoDifferenceBetweenAllCsvFilesAndConstantDefinedCsvFiles() throws IOException {
         // Given
-        String csvDir = new File(Config.DATA_DIR).getAbsolutePath() + "/";
+        String csvDir = new File(TestUtils.getResource("/test_csv_files").getAbsolutePath()).getAbsolutePath() + "/";
 
         /*
          * Nodes
@@ -91,12 +91,12 @@ public class UtilsTests {
         // When
 
         // Then
-        int prefixLength = Config.DATA_DIR.length();
+        int prefixLength = TestUtils.getResource("/test_csv_files").getAbsolutePath().length();
 
         HashSet<String> definedMinusFolder = Sets.newHashSet(defined);
-        definedMinusFolder.removeAll(CsvFiles.all(Config.DATA_DIR));
+        definedMinusFolder.removeAll(CsvFiles.all(TestUtils.getResource("/test_csv_files").getAbsolutePath()));
 
-        HashSet<String> folderMinusDefined = (HashSet<String>) CsvFiles.all(Config.DATA_DIR);
+        HashSet<String> folderMinusDefined = (HashSet<String>) CsvFiles.all(TestUtils.getResource("/test_csv_files").getAbsolutePath());
         folderMinusDefined.removeAll(defined);
 
         assertThat(String.format("Files not found in folder: %s", removePrefixes(Lists.newArrayList(definedMinusFolder), prefixLength)), definedMinusFolder, equalTo(Sets.<String>newHashSet()));

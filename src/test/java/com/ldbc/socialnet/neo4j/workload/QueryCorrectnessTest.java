@@ -1,11 +1,12 @@
 package com.ldbc.socialnet.neo4j.workload;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.ldbc.driver.runtime.ConcurrentErrorReporter;
 import com.ldbc.driver.util.MapUtils;
+import com.ldbc.driver.util.TestUtils;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.*;
 import com.ldbc.socialnet.workload.neo4j.interactive.*;
-import com.ldbc.socialnet.workload.neo4j.utils.Config;
+import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -31,10 +32,8 @@ public abstract class QueryCorrectnessTest {
     public static ExecutionEngine engine = null;
 
     @Before
-    public void x() throws IOException {
+    public void init() throws IOException {
         FileUtils.deleteRecursively(new File(dbDir));
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
-        engine = new ExecutionEngine(db);
     }
 
     @After
@@ -86,25 +85,29 @@ public abstract class QueryCorrectnessTest {
 
     public abstract Neo4jQuery12 neo4jQuery12Impl();
 
-    // TODO return Neo4jQueryX
-    public abstract Object neo4jQuery13Impl();
+    public abstract Neo4jQuery13 neo4jQuery13Impl();
 
-    // TODO return Neo4jQueryX
-    public abstract Object neo4jQuery14Impl();
+    public abstract Neo4jQuery14 neo4jQuery14Impl();
 
-    @Test
-    public void query1ShouldReturnExpectedResult() throws IOException {
-        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query1GraphMaker();
-
+    public void createDb(TestGraph.QueryGraphMaker queryGraphMaker) throws IOException {
         // TODO uncomment to print CREATE
         System.out.println();
         System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
         System.out.println(queryGraphMaker.graph());
 
+        Map dbImportConfig = Utils.loadConfig(TestUtils.getResource("/neo4j_import_dev.properties").getAbsolutePath());
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(dbImportConfig).newGraphDatabase();
+        engine = new ExecutionEngine(db);
         buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
         db.shutdown();
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
+        Map dbRunConfig = Utils.loadConfig(TestUtils.getResource("/neo4j_run_dev.properties").getAbsolutePath());
+        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(dbRunConfig).newGraphDatabase();
         engine = new ExecutionEngine(db);
+    }
+
+    @Test
+    public void query1ShouldReturnExpectedResult() throws IOException {
+        createDb(new TestGraph.Query1GraphMaker());
 
         long personId = 0;
         String friendName = "name0";
@@ -130,15 +133,11 @@ public abstract class QueryCorrectnessTest {
             assertThat(row.friendGender(), equalTo("gender1"));
             assertThat(row.friendBrowserUsed(), equalTo("browser1"));
             assertThat(row.friendLocationIp(), equalTo("ip1"));
-            assertThat(row.friendEmails(), equalTo((Collection) Lists.newArrayList("friend1email1", "friend1email2")));
-            assertThat(row.friendLanguages(), equalTo((Collection) Lists.newArrayList("friend1language0")));
+            assertThat(row.friendEmails(), equalTo((Set) Sets.newHashSet("friend1email1", "friend1email2")));
+            assertThat(row.friendLanguages(), equalTo((Set) Sets.newHashSet("friend1language0")));
             assertThat(row.friendCityName(), equalTo("city0"));
-            // TODO
-//            assertThat(row.friendUniversities(), equalTo((Collection) Lists.newArrayList("...")));
-            // TODO
-//            assertThat(row.friendCompanies(), equalTo((Collection) Lists.newArrayList("...")));
-            System.out.println(row.toString());
-            assertThat(true, is(false)); // until checks added for commented out sections above
+            assertThat(row.friendUniversities(), equalTo((Set) Sets.newHashSet("uni0,city1,0")));
+            assertThat(row.friendCompanies(), equalTo((Set) Sets.newHashSet("company0,country0,0")));
 
             row = result.next();
             assertThat(row.friendId(), equalTo(2L));
@@ -149,14 +148,11 @@ public abstract class QueryCorrectnessTest {
             assertThat(row.friendGender(), equalTo("gender2"));
             assertThat(row.friendBrowserUsed(), equalTo("browser2"));
             assertThat(row.friendLocationIp(), equalTo("ip2"));
-            assertThat(row.friendEmails(), equalTo((Collection) Lists.newArrayList()));
-            assertThat(row.friendLanguages(), equalTo((Collection) Lists.newArrayList("friend2language0", "friend2language1")));
+            assertThat(row.friendEmails(), equalTo((Set) Sets.newHashSet()));
+            assertThat(row.friendLanguages(), equalTo((Set) Sets.newHashSet("friend2language0", "friend2language1")));
             assertThat(row.friendCityName(), equalTo("city1"));
-            // TODO
-//            assertThat(row.friendUniversities(), equalTo((Collection) Lists.newArrayList("...")));
-            // TODO
-//            assertThat(row.friendCompanies(), equalTo((Collection) Lists.newArrayList("...")));
-            System.out.println(row.toString());
+            assertThat(row.friendUniversities(), equalTo((Set) Sets.newHashSet("uni2,city0,3")));
+            assertThat(row.friendCompanies(), equalTo((Set) Sets.newHashSet()));
 
             row = result.next();
             assertThat(row.friendId(), equalTo(3L));
@@ -167,14 +163,12 @@ public abstract class QueryCorrectnessTest {
             assertThat(row.friendGender(), equalTo("gender3"));
             assertThat(row.friendBrowserUsed(), equalTo("browser3"));
             assertThat(row.friendLocationIp(), equalTo("ip3"));
-            assertThat(row.friendEmails(), equalTo((Collection) Lists.newArrayList("friend3email1", "friend3email2")));
-            assertThat(row.friendLanguages(), equalTo((Collection) Lists.newArrayList("friend3language0")));
+            assertThat(row.friendEmails(), equalTo((Set) Sets.newHashSet("friend3email1", "friend3email2")));
+            assertThat(row.friendLanguages(), equalTo((Set) Sets.newHashSet("friend3language0")));
             assertThat(row.friendCityName(), equalTo("city1"));
-            // TODO
-//            assertThat(row.friendUniversities(), equalTo((Collection) Lists.newArrayList("...")));
-            // TODO
-//            assertThat(row.friendCompanies(), equalTo((Collection) Lists.newArrayList("...")));
-            System.out.println(row.toString());
+            assertThat(row.friendUniversities(), equalTo((Set) Sets.newHashSet()));
+            assertThat(row.friendCompanies(), equalTo((Set) Sets.newHashSet("company0,country0,1")));
+
 
             row = result.next();
             assertThat(row.friendId(), equalTo(11L));
@@ -185,14 +179,11 @@ public abstract class QueryCorrectnessTest {
             assertThat(row.friendGender(), equalTo("gender11"));
             assertThat(row.friendBrowserUsed(), equalTo("browser11"));
             assertThat(row.friendLocationIp(), equalTo("ip11"));
-            assertThat(row.friendEmails(), equalTo((Collection) Lists.newArrayList()));
-            assertThat(row.friendLanguages(), equalTo((Collection) Lists.newArrayList()));
+            assertThat(row.friendEmails(), equalTo((Set) Sets.newHashSet()));
+            assertThat(row.friendLanguages(), equalTo((Set) Sets.newHashSet()));
             assertThat(row.friendCityName(), equalTo("city0"));
-            // TODO
-//            assertThat(row.friendUniversities(), equalTo((Collection) Lists.newArrayList("...")));
-            // TODO
-//            assertThat(row.friendCompanies(), equalTo((Collection) Lists.newArrayList("...")));
-            System.out.println(row.toString());
+            assertThat(row.friendUniversities(), equalTo((Set) Sets.newHashSet("uni1,city0,1", "uni2,city0,2")));
+            assertThat(row.friendCompanies(), equalTo((Set) Sets.newHashSet()));
 
             row = result.next();
             assertThat(row.friendId(), equalTo(31L));
@@ -203,14 +194,11 @@ public abstract class QueryCorrectnessTest {
             assertThat(row.friendGender(), equalTo("gender31"));
             assertThat(row.friendBrowserUsed(), equalTo("browser31"));
             assertThat(row.friendLocationIp(), equalTo("ip31"));
-            assertThat(row.friendEmails(), equalTo((Collection) Lists.newArrayList()));
-            assertThat(row.friendLanguages(), equalTo((Collection) Lists.newArrayList()));
+            assertThat(row.friendEmails(), equalTo((Set) Sets.newHashSet()));
+            assertThat(row.friendLanguages(), equalTo((Set) Sets.newHashSet()));
             assertThat(row.friendCityName(), equalTo("city1"));
-            // TODO
-//            assertThat(row.friendUniversities(), equalTo((Collection) Lists.newArrayList("...")));
-            // TODO
-//            assertThat(row.friendCompanies(), equalTo((Collection) Lists.newArrayList("...")));
-            System.out.println(row.toString());
+            assertThat(row.friendUniversities(), equalTo((Set) Sets.newHashSet()));
+            assertThat(row.friendCompanies(), equalTo((Set) Sets.newHashSet()));
 
             tx.success();
         } catch (Exception e) {
@@ -222,17 +210,7 @@ public abstract class QueryCorrectnessTest {
 
     @Test
     public void query2ShouldReturnExpectedResult() throws IOException {
-        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query2GraphMaker();
-
-        // TODO uncomment to print CREATE
-        System.out.println();
-        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
-        System.out.println(queryGraphMaker.graph());
-
-        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
-        db.shutdown();
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
-        engine = new ExecutionEngine(db);
+        createDb(new TestGraph.Query2GraphMaker());
 
         long personId = 1;
         Calendar c = Calendar.getInstance();
@@ -312,17 +290,7 @@ public abstract class QueryCorrectnessTest {
 
     @Test
     public void query3ShouldReturnExpectedResult() throws IOException {
-        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query3GraphMaker();
-
-        // TODO uncomment to print CREATE
-        System.out.println();
-        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
-        System.out.println(queryGraphMaker.graph());
-
-        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
-        db.shutdown();
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
-        engine = new ExecutionEngine(db);
+        createDb(new TestGraph.Query3GraphMaker());
 
         long personId = 1;
         String countryX = "new zealand";
@@ -376,17 +344,7 @@ public abstract class QueryCorrectnessTest {
 
     @Test
     public void query4ShouldReturnExpectedResult() throws IOException {
-        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query4GraphMaker();
-
-        // TODO uncomment to print CREATE
-        System.out.println();
-        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
-        System.out.println(queryGraphMaker.graph());
-
-        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
-        db.shutdown();
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
-        engine = new ExecutionEngine(db);
+        createDb(new TestGraph.Query4GraphMaker());
 
         long personId = 1;
         Calendar c = Calendar.getInstance();
@@ -435,17 +393,7 @@ public abstract class QueryCorrectnessTest {
 
     @Test
     public void query5ShouldReturnExpectedResult() throws IOException {
-        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query5GraphMaker();
-
-        // TODO uncomment to print CREATE
-        System.out.println();
-        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
-        System.out.println(queryGraphMaker.graph());
-
-        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
-        db.shutdown();
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
-        engine = new ExecutionEngine(db);
+        createDb(new TestGraph.Query5GraphMaker());
 
         long personId = 1;
         Calendar c = Calendar.getInstance();
@@ -481,17 +429,7 @@ public abstract class QueryCorrectnessTest {
 
     @Test
     public void query6ShouldReturnExpectedResult() throws IOException {
-        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query6GraphMaker();
-
-        // TODO uncomment to print CREATE
-        System.out.println();
-        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
-        System.out.println(queryGraphMaker.graph());
-
-        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
-        db.shutdown();
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
-        engine = new ExecutionEngine(db);
+        createDb(new TestGraph.Query6GraphMaker());
 
         long personId = 1;
         String tagName = "lol";
@@ -534,18 +472,8 @@ public abstract class QueryCorrectnessTest {
     }
 
     @Test
-    public void query7ShouldReturnExpectedResult() {
-        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query7GraphMaker();
-
-        // TODO uncomment to print CREATE
-        System.out.println();
-        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
-        System.out.println(queryGraphMaker.graph());
-
-        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
-        db.shutdown();
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
-        engine = new ExecutionEngine(db);
+    public void query7ShouldReturnExpectedResult() throws IOException {
+        createDb(new TestGraph.Query7GraphMaker());
 
         long personId = 1;
         int limit = 5;
@@ -624,18 +552,8 @@ public abstract class QueryCorrectnessTest {
     }
 
     @Test
-    public void query8ShouldReturnExpectedResult() {
-        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query8GraphMaker();
-
-        // TODO uncomment to print CREATE
-        System.out.println();
-        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
-        System.out.println(queryGraphMaker.graph());
-
-        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
-        db.shutdown();
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
-        engine = new ExecutionEngine(db);
+    public void query8ShouldReturnExpectedResult() throws IOException {
+        createDb(new TestGraph.Query8GraphMaker());
 
         long personId = 0;
         int limit = 7;
@@ -719,18 +637,8 @@ public abstract class QueryCorrectnessTest {
     }
 
     @Test
-    public void query9ShouldReturnExpectedResult() {
-        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query9GraphMaker();
-
-        // TODO uncomment to print CREATE
-        System.out.println();
-        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
-        System.out.println(queryGraphMaker.graph());
-
-        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
-        db.shutdown();
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
-        engine = new ExecutionEngine(db);
+    public void query9ShouldReturnExpectedResult() throws IOException {
+        createDb(new TestGraph.Query9GraphMaker());
 
         long personId = 0;
         long latestDateAsMilli = 12;
@@ -795,18 +703,8 @@ public abstract class QueryCorrectnessTest {
     }
 
     @Test
-    public void query10ShouldReturnExpectedResult() {
-        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query10GraphMaker();
-
-        // TODO uncomment to print CREATE
-        System.out.println();
-        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
-        System.out.println(queryGraphMaker.graph());
-
-        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
-        db.shutdown();
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
-        engine = new ExecutionEngine(db);
+    public void query10ShouldReturnExpectedResult() throws IOException {
+        createDb(new TestGraph.Query10GraphMaker());
 
         long personId = 0;
         int horoscopeMonth1 = 2;
@@ -869,19 +767,8 @@ public abstract class QueryCorrectnessTest {
     }
 
     @Test
-    public void query11ShouldReturnExpectedResult() {
-        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query11GraphMaker();
-
-        // TODO uncomment to print CREATE
-        System.out.println();
-        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
-        System.out.println(queryGraphMaker.graph());
-
-        buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
-        db.shutdown();
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(Config.NEO4J_RUN_CONFIG).newGraphDatabase();
-        engine = new ExecutionEngine(db);
-
+    public void query11ShouldReturnExpectedResult() throws IOException {
+        createDb(new TestGraph.Query11GraphMaker());
 
         long personId = 0;
         String countryName = "country0";
@@ -928,6 +815,18 @@ public abstract class QueryCorrectnessTest {
     @Ignore
     @Test
     public void query12ShouldReturnExpectedResult() {
+        assertThat(true, is(false));
+    }
+
+    @Ignore
+    @Test
+    public void query13ShouldReturnExpectedResult() {
+        assertThat(true, is(false));
+    }
+
+    @Ignore
+    @Test
+    public void query14ShouldReturnExpectedResult() {
         assertThat(true, is(false));
     }
 }
