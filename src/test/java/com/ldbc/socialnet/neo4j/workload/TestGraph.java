@@ -4309,7 +4309,544 @@ public class TestGraph {
                 return params;
             }
         }
+    }
 
+    public static class Query12GraphMaker implements QueryGraphMaker {
+
+        @Override
+        public String graph() {
+            return "CREATE\n"
+                    + "\n// --- NODES ---\n\n"
+                   /*
+                    * Persons
+                    */
+                    + " (person0:" + Nodes.Person + " {person0}),\n"
+                    + " (f1:" + Nodes.Person + " {f1}),\n"
+                    + " (f2:" + Nodes.Person + " {f2}),\n"
+                    + " (f3:" + Nodes.Person + " {f3}),\n"
+                    + " (f4:" + Nodes.Person + " {f4}),\n"
+                    + " (f5:" + Nodes.Person + " {f5}),\n"
+                    + " (ff11:" + Nodes.Person + " {ff11}),\n"
+                   /*
+                    * TagClass
+                    */
+                    + " (tc1:" + Nodes.TagClass + " {tc1}),\n"
+                    + " (tc11:" + Nodes.TagClass + " {tc11}),\n"
+                    + " (tc12:" + Nodes.TagClass + " {tc12}),\n"
+                    + " (tc121:" + Nodes.TagClass + " {tc121}),\n"
+                    + " (tc1211:" + Nodes.TagClass + " {tc1211}),\n"
+                    + " (tc2:" + Nodes.TagClass + " {tc2}),\n"
+                    + " (tc21:" + Nodes.TagClass + " {tc21}),\n"
+                   /*
+                    * Tag
+                    */
+                    + " (t11:" + Nodes.Tag + " {t11}),\n"
+                    + " (t111:" + Nodes.Tag + " {t111}),\n"
+                    + " (t112:" + Nodes.Tag + " {t112}),\n"
+                    + " (t12111:" + Nodes.Tag + " {t12111}),\n"
+                    + " (t21:" + Nodes.Tag + " {t21}),\n"
+                    + " (t211:" + Nodes.Tag + " {t211}),\n"
+                   /*
+                    * Post
+                    */
+                    + " (p11:" + Nodes.Post + "),\n"
+                    + " (p111:" + Nodes.Post + "),\n"
+                    + " (p112:" + Nodes.Post + "),\n"
+                    + " (p12111:" + Nodes.Post + "),\n"
+                    + " (p21:" + Nodes.Post + "),\n"
+                    + " (p211:" + Nodes.Post + "),\n"
+                   /*
+                    * Comment
+                    */
+                    + " (c111:" + Nodes.Comment + "),\n"
+                    + " (c1111:" + Nodes.Comment + "),\n"
+                    + " (c11111:" + Nodes.Comment + "),\n"
+                    + " (c111111:" + Nodes.Comment + "),\n"
+                    + " (c11112:" + Nodes.Comment + "),\n"
+                    + " (c1112:" + Nodes.Comment + "),\n"
+                    + " (c1121:" + Nodes.Comment + "),\n"
+                    + " (c11211:" + Nodes.Comment + "),\n"
+                    + " (c112111:" + Nodes.Comment + "),\n"
+                    + " (c112112:" + Nodes.Comment + "),\n"
+                    + " (c121111:" + Nodes.Comment + "),\n"
+                    + " (c211:" + Nodes.Comment + "),\n"
+                    + " (c2111:" + Nodes.Comment + "),\n"
+
+                    + "\n// --- RELATIONSHIPS ---\n\n"
+                   /*
+                    * Person-Person
+                    */
+                    + "(person0)-[:" + Rels.KNOWS + "]->(f1),\n"
+                    + "(person0)-[:" + Rels.KNOWS + "]->(f2),\n"
+                    + "(person0)-[:" + Rels.KNOWS + "]->(f3),\n"
+                    + "(person0)-[:" + Rels.KNOWS + "]->(f4),\n"
+                    + "(person0)-[:" + Rels.KNOWS + "]->(f5),\n"
+                    + "(f1)-[:" + Rels.KNOWS + "]->(ff11),\n"
+                   /*
+                    * Person-Comment
+                    */
+                    + "(f1)<-[:" + Rels.HAS_CREATOR + "]-(c111111),\n"
+                    + "(f1)<-[:" + Rels.HAS_CREATOR + "]-(c1111),\n"
+                    + "(f1)<-[:" + Rels.HAS_CREATOR + "]-(c11211),\n"
+                    + "(f1)<-[:" + Rels.HAS_CREATOR + "]-(c121111),\n"
+                    + "(f2)<-[:" + Rels.HAS_CREATOR + "]-(c1112),\n"
+                    + "(f2)<-[:" + Rels.HAS_CREATOR + "]-(c112111),\n"
+                    + "(f3)<-[:" + Rels.HAS_CREATOR + "]-(c112112),\n"
+                    + "(f3)<-[:" + Rels.HAS_CREATOR + "]-(c111),\n"
+                    + "(f3)<-[:" + Rels.HAS_CREATOR + "]-(c211),\n"
+                    + "(f3)<-[:" + Rels.HAS_CREATOR + "]-(c2111),\n"
+                    + "(ff11)<-[:" + Rels.HAS_CREATOR + "]-(c11112),\n"
+                    + "(ff11)<-[:" + Rels.HAS_CREATOR + "]-(c11111),\n"
+                    + "(ff11)<-[:" + Rels.HAS_CREATOR + "]-(c1121),\n"
+                   /*
+                    * Comment-Comment
+                    */
+                    + "(c1111)<-[:" + Rels.REPLY_OF + "]-(c11111),\n"
+                    + "(c1111)<-[:" + Rels.REPLY_OF + "]-(c11112),\n"
+                    + "(c11111)<-[:" + Rels.REPLY_OF + "]-(c111111),\n"
+                    + "(c1121)<-[:" + Rels.REPLY_OF + "]-(c11211),\n"
+                    + "(c11211)<-[:" + Rels.REPLY_OF + "]-(c112111),\n"
+                    + "(c11211)<-[:" + Rels.REPLY_OF + "]-(c112112),\n"
+                   /*
+                    * Comment-Post
+                    */
+                    + "(p11)<-[:" + Rels.REPLY_OF + "]-(c111),\n"
+                    + "(p111)<-[:" + Rels.REPLY_OF + "]-(c1111),\n"
+                    + "(p111)<-[:" + Rels.REPLY_OF + "]-(c1112),\n"
+                    + "(p112)<-[:" + Rels.REPLY_OF + "]-(c1121),\n"
+                    + "(p12111)<-[:" + Rels.REPLY_OF + "]-(c121111),\n"
+                    + "(p21)<-[:" + Rels.REPLY_OF + "]-(c211),\n"
+                    + "(p211)<-[:" + Rels.REPLY_OF + "]-(c2111),\n"
+                   /*
+                    * Post-Tag
+                    */
+                    + "(p11)-[:" + Rels.HAS_TAG + "]->(t11),\n"
+                    + "(p111)-[:" + Rels.HAS_TAG + "]->(t111),\n"
+                    + "(p112)-[:" + Rels.HAS_TAG + "]->(t112),\n"
+                    + "(p12111)-[:" + Rels.HAS_TAG + "]->(t12111),\n"
+                    + "(p12111)-[:" + Rels.HAS_TAG + "]->(t21),\n"
+                    + "(p21)-[:" + Rels.HAS_TAG + "]->(t21),\n"
+                    + "(p211)-[:" + Rels.HAS_TAG + "]->(t211),\n"
+                   /*
+                    * Tag-TagClass
+                    */
+                    + "(tc1)<-[:" + Rels.HAS_TYPE + "]-(t11),\n"
+                    + "(tc11)<-[:" + Rels.HAS_TYPE + "]-(t111),\n"
+                    + "(tc11)<-[:" + Rels.HAS_TYPE + "]-(t112),\n"
+                    + "(tc1211)<-[:" + Rels.HAS_TYPE + "]-(t12111),\n"
+                    + "(tc2)<-[:" + Rels.HAS_TYPE + "]-(t21),\n"
+                    + "(tc21)<-[:" + Rels.HAS_TYPE + "]-(t211),\n"
+                   /*
+                    * TagClass-TagClass
+                    */
+                    + "(tc11)-[:" + Rels.IS_SUBCLASS_OF + "]->(tc1),\n"
+                    + "(tc12)-[:" + Rels.IS_SUBCLASS_OF + "]->(tc1),\n"
+                    + "(tc121)-[:" + Rels.IS_SUBCLASS_OF + "]->(tc12),\n"
+                    + "(tc1211)-[:" + Rels.IS_SUBCLASS_OF + "]->(tc121),\n"
+                    + "(tc21)-[:" + Rels.IS_SUBCLASS_OF + "]->(tc2)\n";
+        }
+
+        @Override
+        public Map<String, Object> params() {
+            return MapUtil.map(
+                    // Persons
+                    "person0", TestPersons.person0(),
+                    "f1", TestPersons.f1(),
+                    "f2", TestPersons.f2(),
+                    "f3", TestPersons.f3(),
+                    "f4", TestPersons.f4(),
+                    "f5", TestPersons.f5(),
+                    "ff11", TestPersons.ff11(),
+                    // Tags
+                    "t11", TestTags.t11(),
+                    "t111", TestTags.t111(),
+                    "t112", TestTags.t112(),
+                    "t12111", TestTags.t12111(),
+                    "t21", TestTags.t21(),
+                    "t211", TestTags.t211(),
+                    // TagClasses
+                    "tc1", TestTagClasses.tc1(),
+                    "tc11", TestTagClasses.tc11(),
+                    "tc12", TestTagClasses.tc12(),
+                    "tc121", TestTagClasses.tc121(),
+                    "tc1211", TestTagClasses.tc1211(),
+                    "tc2", TestTagClasses.tc2(),
+                    "tc21", TestTagClasses.tc21()
+            );
+        }
+
+        protected static class TestPersons {
+            protected static Map<String, Object> person0() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 0L);
+                params.put(Person.FIRST_NAME, "person");
+                params.put(Person.LAST_NAME, "0");
+                return params;
+            }
+
+            protected static Map<String, Object> f1() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 1L);
+                params.put(Person.FIRST_NAME, "f");
+                params.put(Person.LAST_NAME, "1");
+                return params;
+            }
+
+            protected static Map<String, Object> f2() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 2L);
+                params.put(Person.FIRST_NAME, "f");
+                params.put(Person.LAST_NAME, "2");
+                return params;
+            }
+
+            protected static Map<String, Object> f3() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 3L);
+                params.put(Person.FIRST_NAME, "f");
+                params.put(Person.LAST_NAME, "3");
+                return params;
+            }
+
+            protected static Map<String, Object> f4() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 4L);
+                params.put(Person.FIRST_NAME, "f");
+                params.put(Person.LAST_NAME, "4");
+                return params;
+            }
+
+            protected static Map<String, Object> f5() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 5L);
+                params.put(Person.FIRST_NAME, "f");
+                params.put(Person.LAST_NAME, "5");
+                return params;
+            }
+
+            protected static Map<String, Object> ff11() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 11L);
+                params.put(Person.FIRST_NAME, "ff");
+                params.put(Person.LAST_NAME, "11");
+                return params;
+            }
+        }
+
+        protected static class TestTags {
+            protected static Map<String, Object> t11() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Tag.NAME, "tag11");
+                return params;
+            }
+
+            protected static Map<String, Object> t111() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Tag.NAME, "tag111");
+                return params;
+            }
+
+            protected static Map<String, Object> t112() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Tag.NAME, "tag112");
+                return params;
+            }
+
+            protected static Map<String, Object> t12111() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Tag.NAME, "tag12111");
+                return params;
+            }
+
+            protected static Map<String, Object> t21() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Tag.NAME, "tag21");
+                return params;
+            }
+
+            protected static Map<String, Object> t211() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Tag.NAME, "tag211");
+                return params;
+            }
+        }
+
+        protected static class TestTagClasses {
+            protected static Map<String, Object> tc1() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(TagClass.URI, 1L);
+                return params;
+            }
+
+            protected static Map<String, Object> tc11() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(TagClass.URI, 11L);
+                return params;
+            }
+
+            protected static Map<String, Object> tc12() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(TagClass.URI, 12L);
+                return params;
+            }
+
+            protected static Map<String, Object> tc121() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(TagClass.URI, 121L);
+                return params;
+            }
+
+            protected static Map<String, Object> tc1211() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(TagClass.URI, 1211L);
+                return params;
+            }
+
+            protected static Map<String, Object> tc2() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(TagClass.URI, 2L);
+                return params;
+            }
+
+            protected static Map<String, Object> tc21() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(TagClass.URI, 21L);
+                return params;
+            }
+        }
+    }
+
+    public static class Query13GraphMaker implements QueryGraphMaker {
+
+        @Override
+        public String graph() {
+            return "CREATE\n"
+                    + "\n// --- NODES ---\n\n"
+                   /*
+                    * Persons
+                    */
+                    + " (p0:" + Nodes.Person + " {" + Person.ID + ":0}),\n"
+                    + " (p1:" + Nodes.Person + " {" + Person.ID + ":1}),\n"
+                    + " (p2:" + Nodes.Person + " {" + Person.ID + ":2}),\n"
+                    + " (p3:" + Nodes.Person + " {" + Person.ID + ":3}),\n"
+                    + " (p4:" + Nodes.Person + " {" + Person.ID + ":4}),\n"
+                    + " (p5:" + Nodes.Person + " {" + Person.ID + ":5}),\n"
+                    + " (p6:" + Nodes.Person + " {" + Person.ID + ":6}),\n"
+                    + " (p7:" + Nodes.Person + " {" + Person.ID + ":7}),\n"
+
+                    + "\n// --- RELATIONSHIPS ---\n\n"
+                   /*
+                    * Person-Person
+                    */
+                    + "(p0)-[:" + Rels.KNOWS + "]->(p1),\n"
+                    + "(p1)-[:" + Rels.KNOWS + "]->(p3),\n"
+                    + "(p1)<-[:" + Rels.KNOWS + "]-(p2),\n"
+                    + "(p3)-[:" + Rels.KNOWS + "]->(p2),\n"
+                    + "(p2)<-[:" + Rels.KNOWS + "]-(p4),\n"
+                    + "(p4)-[:" + Rels.KNOWS + "]->(p7),\n"
+                    + "(p4)-[:" + Rels.KNOWS + "]->(p6),\n"
+                    + "(p6)<-[:" + Rels.KNOWS + "]-(p5)";
+        }
+
+        @Override
+        public Map<String, Object> params() {
+            return MapUtil.map();
+        }
+    }
+
+    public static class Query14GraphMaker implements QueryGraphMaker {
+
+        @Override
+        public String graph() {
+            return "CREATE\n"
+                    + "\n// --- NODES ---\n\n"
+                   /*
+                    * Persons
+                    */
+                    + " (person0:" + Nodes.Person + " {person0}),\n"
+                    + " (person1:" + Nodes.Person + " {person1}),\n"
+                    + " (person2:" + Nodes.Person + " {person2}),\n"
+                    + " (person3:" + Nodes.Person + " {person3}),\n"
+                   /*
+                    * Post
+                    */
+                    + " (post0:" + Nodes.Post + " {post0}),\n"
+                    + " (post1:" + Nodes.Post + " {post1}),\n"
+                   /*
+                    * Comment
+                    */
+                    + " (comment0:" + Nodes.Comment + " {comment0}),\n"
+                    + " (comment1:" + Nodes.Comment + " {comment1}),\n"
+                    + " (comment2:" + Nodes.Comment + " {comment2}),\n"
+                    + " (comment3:" + Nodes.Comment + " {comment3}),\n"
+                    + " (comment4:" + Nodes.Comment + " {comment4}),\n"
+                    + " (comment5:" + Nodes.Comment + " {comment5}),\n"
+                    + " (comment6:" + Nodes.Comment + " {comment6}),\n"
+                    + " (comment7:" + Nodes.Comment + " {comment7}),\n"
+                    + " (comment8:" + Nodes.Comment + " {comment8}),\n"
+
+                    + "\n// --- RELATIONSHIPS ---\n\n"
+                   /*
+                    * Person-Comment
+                    */
+                    + "(person0)<-[:" + Rels.HAS_CREATOR + "]-(comment1),\n"
+                    + "(person0)<-[:" + Rels.HAS_CREATOR + "]-(comment5),\n"
+                    + "(person0)<-[:" + Rels.HAS_CREATOR + "]-(comment8),\n"
+                    + "(person1)<-[:" + Rels.HAS_CREATOR + "]-(comment0),\n"
+                    + "(person1)<-[:" + Rels.HAS_CREATOR + "]-(comment2),\n"
+                    + "(person1)<-[:" + Rels.HAS_CREATOR + "]-(comment4),\n"
+                    + "(person1)<-[:" + Rels.HAS_CREATOR + "]-(comment6),\n"
+                    + "(person2)<-[:" + Rels.HAS_CREATOR + "]-(comment3),\n"
+                    + "(person3)<-[:" + Rels.HAS_CREATOR + "]-(comment7),\n"
+                   /*
+                    * Person-Post
+                    */
+                    + "(person0)<-[:" + Rels.HAS_CREATOR + "]-(post0),\n"
+                    + "(person3)<-[:" + Rels.HAS_CREATOR + "]-(post1),\n"
+                   /*
+                    * Comment-Post
+                    */
+                    + "(post0)<-[:" + Rels.REPLY_OF + "]-(comment0),\n"
+                    + "(post1)<-[:" + Rels.REPLY_OF + "]-(comment5),\n"
+                   /*
+                    * Comment-Comment
+                    */
+                    + "(comment0)<-[:" + Rels.REPLY_OF + "]-(comment1),\n"
+                    + "(comment0)<-[:" + Rels.REPLY_OF + "]-(comment3),\n"
+                    + "(comment1)<-[:" + Rels.REPLY_OF + "]-(comment2),\n"
+                    + "(comment3)<-[:" + Rels.REPLY_OF + "]-(comment4),\n"
+                    + "(comment5)<-[:" + Rels.REPLY_OF + "]-(comment6),\n"
+                    + "(comment6)<-[:" + Rels.REPLY_OF + "]-(comment7),\n"
+                    + "(comment7)<-[:" + Rels.REPLY_OF + "]-(comment8)";
+        }
+
+        @Override
+        public Map<String, Object> params() {
+            return MapUtil.map(
+                    // Persons
+                    "person0", TestPersons.person0(),
+                    "person1", TestPersons.person1(),
+                    "person2", TestPersons.person2(),
+                    "person3", TestPersons.person3(),
+                    // Posts
+                    "post0", TestPosts.post0(),
+                    "post1", TestPosts.post1(),
+                    // Comments
+                    "comment0", TestComments.comment0(),
+                    "comment1", TestComments.comment1(),
+                    "comment2", TestComments.comment2(),
+                    "comment3", TestComments.comment3(),
+                    "comment4", TestComments.comment4(),
+                    "comment5", TestComments.comment5(),
+                    "comment6", TestComments.comment6(),
+                    "comment7", TestComments.comment7(),
+                    "comment8", TestComments.comment8()
+            );
+        }
+
+        protected static class TestPersons {
+            protected static Map<String, Object> person0() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 0L);
+                params.put(Person.FIRST_NAME, "person");
+                params.put(Person.LAST_NAME, "0");
+                return params;
+            }
+
+            protected static Map<String, Object> person1() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 1L);
+                params.put(Person.FIRST_NAME, "person");
+                params.put(Person.LAST_NAME, "1");
+                return params;
+            }
+
+            protected static Map<String, Object> person2() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 2L);
+                params.put(Person.FIRST_NAME, "person");
+                params.put(Person.LAST_NAME, "2");
+                return params;
+            }
+
+            protected static Map<String, Object> person3() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 3L);
+                params.put(Person.FIRST_NAME, "person");
+                params.put(Person.LAST_NAME, "3");
+                return params;
+            }
+        }
+
+        protected static class TestPosts {
+            protected static Map<String, Object> post0() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Post.ID, 0L);
+                return params;
+            }
+
+            protected static Map<String, Object> post1() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Post.ID, 1L);
+                return params;
+            }
+        }
+
+        protected static class TestComments {
+            protected static Map<String, Object> comment0() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Comment.ID, 0L);
+                return params;
+            }
+
+            protected static Map<String, Object> comment1() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Comment.ID, 1L);
+                return params;
+            }
+
+            protected static Map<String, Object> comment2() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Comment.ID, 2L);
+                return params;
+            }
+
+            protected static Map<String, Object> comment3() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Comment.ID, 3L);
+                return params;
+            }
+
+            protected static Map<String, Object> comment4() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Comment.ID, 4L);
+                return params;
+            }
+
+            protected static Map<String, Object> comment5() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Comment.ID, 5L);
+                return params;
+            }
+
+            protected static Map<String, Object> comment6() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Comment.ID, 6L);
+                return params;
+            }
+
+            protected static Map<String, Object> comment7() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Comment.ID, 7L);
+                return params;
+            }
+
+            protected static Map<String, Object> comment8() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Comment.ID, 8L);
+                return params;
+            }
+        }
     }
 
     public static class All implements QueryGraphMaker {

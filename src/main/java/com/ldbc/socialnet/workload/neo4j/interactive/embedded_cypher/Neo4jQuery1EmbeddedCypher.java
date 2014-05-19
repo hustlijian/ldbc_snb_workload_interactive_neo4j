@@ -74,7 +74,8 @@ public class Neo4jQuery1EmbeddedCypher implements Neo4jQuery1 {
             + " friendCity." + Place.NAME + " AS cityName,"
             + " unis,"
             + " companies\n"
-            + "ORDER BY distance ASC, friend." + Person.LAST_NAME + " ASC";
+            + "ORDER BY distance ASC, friend." + Person.LAST_NAME + " ASC\n"
+            + "LIMIT {limit}";
 
     // TODO try this shortest path approach too
     /*

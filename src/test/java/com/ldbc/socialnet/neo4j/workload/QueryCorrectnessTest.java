@@ -1,5 +1,6 @@
 package com.ldbc.socialnet.neo4j.workload;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.ldbc.driver.runtime.ConcurrentErrorReporter;
 import com.ldbc.driver.util.MapUtils;
@@ -9,7 +10,6 @@ import com.ldbc.socialnet.workload.neo4j.interactive.*;
 import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import static com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery14Result.PathNode;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -231,17 +232,6 @@ public abstract class QueryCorrectnessTest {
 
             LdbcQuery2Result row = null;
 
-            /*
-            3   jacob   hansson 3   [jake3] tjena   1378504800000
-            2   aiya    thorpe  5   [aiya1] kia ora 1378418400000
-            3   jacob   hansson 2   [jake2] hej 1378335600000
-            3   jacob   hansson 1   [jake1] hello   1378332060000
-            */
-
-            // TODO * add post.id to nodes when bulk loading
-
-            // TODO * add calendar.clear() everywhere it is used
-
             // 3 jacob hansson 3 [jake3] tjena 1378504800000
             row = result.next();
             assertThat(row.personId(), is(3L));
@@ -301,8 +291,9 @@ public abstract class QueryCorrectnessTest {
         Date endDate = c.getTime();
         int durationDays = 4;
         long durationMillis = TimeUnit.MILLISECONDS.convert(durationDays, TimeUnit.DAYS);
+        int limit = 2;
 
-        LdbcQuery3 operation3 = new LdbcQuery3(personId, countryX, countryY, endDate, durationMillis);
+        LdbcQuery3 operation3 = new LdbcQuery3(personId, countryX, countryY, endDate, durationMillis, limit);
         Neo4jQuery3 query3 = neo4jQuery3Impl();
 
         // TODO uncomment to print query
@@ -353,8 +344,9 @@ public abstract class QueryCorrectnessTest {
         Date endDate = c.getTime();
         long durationDays = 2;
         long durationMillis = TimeUnit.MILLISECONDS.convert(durationDays, TimeUnit.DAYS);
+        int limit = 10;
 
-        LdbcQuery4 operation4 = new LdbcQuery4(personId, endDate, durationMillis);
+        LdbcQuery4 operation4 = new LdbcQuery4(personId, endDate, durationMillis, limit);
         Neo4jQuery4 query4 = neo4jQuery4Impl();
 
         // TODO uncomment to print query
@@ -812,21 +804,151 @@ public abstract class QueryCorrectnessTest {
         assertThat(stackTrace, exceptionThrown, is(false));
     }
 
-    @Ignore
     @Test
-    public void query12ShouldReturnExpectedResult() {
-        assertThat(true, is(false));
+    public void query12ShouldReturnExpectedResult() throws IOException {
+        createDb(new TestGraph.Query12GraphMaker());
+
+        long personId = 0;
+        long tagClassId = 1;
+        int limit = 4;
+
+        LdbcQuery12 operation12 = new LdbcQuery12(personId, tagClassId, limit);
+        Neo4jQuery12 query12 = neo4jQuery12Impl();
+
+        // TODO uncomment to print query
+        System.out.println("\n" + operation12.toString() + "\n" + query12.description() + "\n");
+
+        String stackTrace = null;
+        boolean exceptionThrown = false;
+        try (Transaction tx = db.beginTx()) {
+            Iterator<LdbcQuery12Result> result = query12.execute(db, engine, operation12);
+
+            LdbcQuery12Result row;
+
+            row = result.next();
+            assertThat(row.personId(), equalTo(1L));
+            assertThat(row.personFirstName(), equalTo("f"));
+            assertThat(row.personLastName(), equalTo("1"));
+            assertThat(row.tagNames().size(), equalTo(3));
+            assertThat(Sets.newHashSet(row.tagNames()), equalTo(Sets.newHashSet("tag111", "tag112", "tag12111")));
+            assertThat(row.replyCount(), equalTo(4L));
+
+            row = result.next();
+            assertThat(row.personId(), equalTo(2L));
+            assertThat(row.personFirstName(), equalTo("f"));
+            assertThat(row.personLastName(), equalTo("2"));
+            assertThat(row.tagNames().size(), equalTo(2));
+            assertThat(Sets.newHashSet(row.tagNames()), equalTo(Sets.newHashSet("tag111", "tag112")));
+            assertThat(row.replyCount(), equalTo(2L));
+
+            row = result.next();
+            assertThat(row.personId(), equalTo(3L));
+            assertThat(row.personFirstName(), equalTo("f"));
+            assertThat(row.personLastName(), equalTo("3"));
+            assertThat(row.tagNames().size(), equalTo(2));
+            assertThat(Sets.newHashSet(row.tagNames()), equalTo(Sets.newHashSet("tag112", "tag11")));
+            assertThat(row.replyCount(), equalTo(2L));
+
+            row = result.next();
+            assertThat(row.personId(), equalTo(4L));
+            assertThat(row.personFirstName(), equalTo("f"));
+            assertThat(row.personLastName(), equalTo("4"));
+            assertThat(row.tagNames().size(), equalTo(0));
+            assertThat(Sets.newHashSet(row.tagNames()), equalTo(Sets.<String>newHashSet()));
+            assertThat(row.replyCount(), equalTo(0L));
+
+            assertThat(result.hasNext(), is(false));
+
+            tx.success();
+        } catch (Exception e) {
+            stackTrace = ConcurrentErrorReporter.stackTraceToString(e);
+            exceptionThrown = true;
+        }
+        assertThat(stackTrace, exceptionThrown, is(false));
     }
 
-    @Ignore
     @Test
-    public void query13ShouldReturnExpectedResult() {
-        assertThat(true, is(false));
+    public void query13ShouldReturnExpectedResult() throws IOException {
+        createDb(new TestGraph.Query13GraphMaker());
+
+        long personId1 = 0;
+        long personId2 = 5;
+
+        LdbcQuery13 operation13 = new LdbcQuery13(personId1, personId2);
+        Neo4jQuery13 query13 = neo4jQuery13Impl();
+
+        // TODO uncomment to print query
+        System.out.println("\n" + operation13.toString() + "\n" + query13.description() + "\n");
+
+        String stackTrace = null;
+        boolean exceptionThrown = false;
+        try (Transaction tx = db.beginTx()) {
+            Iterator<LdbcQuery13Result> result = query13.execute(db, engine, operation13);
+
+            LdbcQuery13Result row;
+
+            row = result.next();
+            assertThat(row.shortestPathLength(), equalTo(5));
+
+            assertThat(result.hasNext(), is(false));
+
+            tx.success();
+        } catch (Exception e) {
+            stackTrace = ConcurrentErrorReporter.stackTraceToString(e);
+            exceptionThrown = true;
+        }
+        assertThat(stackTrace, exceptionThrown, is(false));
     }
 
-    @Ignore
     @Test
-    public void query14ShouldReturnExpectedResult() {
-        assertThat(true, is(false));
+    public void query14ShouldReturnExpectedResult() throws IOException {
+        createDb(new TestGraph.Query14GraphMaker());
+
+        long personId1 = 0;
+        long personId2 = 1;
+        int limit = 5;
+
+        LdbcQuery14 operation14 = new LdbcQuery14(personId1, personId2, limit);
+        Neo4jQuery14 query14 = neo4jQuery14Impl();
+
+        // TODO uncomment to print query
+        System.out.println("\n" + operation14.toString() + "\n" + query14.description() + "\n");
+
+        String stackTrace = null;
+        boolean exceptionThrown = false;
+        try (Transaction tx = db.beginTx()) {
+            Iterator<LdbcQuery14Result> result = query14.execute(db, engine, operation14);
+
+            LdbcQuery14Result row;
+
+            row = result.next();
+            assertThat(row.weight(), equalTo(1.0));
+            assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Post", 0L), new PathNode("Comment", 0L), new PathNode("Person", 1L))));
+
+            row = result.next();
+            assertThat(row.weight(), equalTo(0.5));
+            assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Comment", 5L), new PathNode("Comment", 6L), new PathNode("Person", 1L))));
+
+            row = result.next();
+            assertThat(row.weight(), equalTo(0.5));
+            assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Comment", 1L), new PathNode("Comment", 0L), new PathNode("Person", 1L))));
+
+
+            row = result.next();
+            assertThat(row.weight(), equalTo(0.5));
+            assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Comment", 1L), new PathNode("Comment", 2L), new PathNode("Person", 1L))));
+
+            row = result.next();
+            assertThat(row.weight(), equalTo(2.0));
+            assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Post", 0L), new PathNode("Comment", 0L), new PathNode("Comment", 1L), new PathNode("Comment", 2L), new PathNode("Person", 1L))));
+
+            assertThat(result.hasNext(), is(false));
+
+            tx.success();
+        } catch (Exception e) {
+            stackTrace = ConcurrentErrorReporter.stackTraceToString(e);
+            exceptionThrown = true;
+        }
+        assertThat(stackTrace, exceptionThrown, is(false));
     }
 }

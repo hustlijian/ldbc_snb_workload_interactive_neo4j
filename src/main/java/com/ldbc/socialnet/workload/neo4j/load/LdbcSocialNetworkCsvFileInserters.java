@@ -328,7 +328,7 @@ public class LdbcSocialNetworkCsvFileInserters {
             public void insert(Object[] columnValues) {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 long id = Long.parseLong((String) columnValues[0]);
-                properties.put("id", id);
+                properties.put(Domain.Post.ID, id);
                 properties.put(Domain.Post.IMAGE_FILE, columnValues[1]);
                 String creationDateString = (String) columnValues[2];
                 try {

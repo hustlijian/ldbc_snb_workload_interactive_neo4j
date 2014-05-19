@@ -66,7 +66,8 @@ public class Neo4jQuery10EmbeddedCypher implements Neo4jQuery10 {
             + "   ELSE commonPostCount / (allPostCount + 0.0)\n"
             + "  END"
             + " AS commonInterestScore\n"
-            + "ORDER BY commonInterestScore DESC, personId ASC";
+            + "ORDER BY commonInterestScore DESC, personId ASC\n"
+            + "LIMIT {limit}";
 
     private static final String QUERY_STRING_ALSO_WORKS = ""
             + "MATCH (person:" + Nodes.Person + " {" + Person.ID + ":{person_id}})-[:" + Rels.HAS_INTEREST + "]->(interest:" + Nodes.Tag + ")\n"

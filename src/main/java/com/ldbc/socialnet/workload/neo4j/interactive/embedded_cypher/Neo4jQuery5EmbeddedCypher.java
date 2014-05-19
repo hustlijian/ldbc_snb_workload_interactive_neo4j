@@ -15,9 +15,16 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class Neo4jQuery5EmbeddedCypher implements Neo4jQuery5 {
+    private static final String QUERY_STRING = ""
+            + "MATCH (person:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{person_id}})-[:" + Domain.Rels.KNOWS + "*1..2]-(friend:" + Domain.Nodes.Person + ")<-[membership:" + Domain.Rels.HAS_MEMBER + "]-(forum:" + Domain.Nodes.Forum + ")\n"
+            + "WHERE membership." + Domain.HasMember.JOIN_DATE + ">{join_date}\n"
+            + "MATCH (friend)<-[:" + Domain.Rels.HAS_CREATOR + "]-(post:" + Domain.Nodes.Post + ")<-[:" + Domain.Rels.CONTAINER_OF + "]-(forum)\n"
+            + "RETURN forum." + Domain.Forum.TITLE + " AS forum, count(post) AS postCount\n"
+            + "ORDER BY postCount DESC";
+
     @Override
     public String description() {
-        return queryPosts();
+        return QUERY_STRING;
     }
 
     @Override
@@ -29,7 +36,7 @@ public class Neo4jQuery5EmbeddedCypher implements Neo4jQuery5 {
                 return new LdbcQuery5Result((String) row.get("forum"), (long) row.get("postCount"));
             }
         };
-        return Iterables.transform(engine.execute(queryPosts(), cypherParams), transformFun).iterator();
+        return Iterables.transform(engine.execute(QUERY_STRING, cypherParams), transformFun).iterator();
     }
 
     private Map<String, Object> buildParams(long personId, Date date) {
@@ -39,14 +46,4 @@ public class Neo4jQuery5EmbeddedCypher implements Neo4jQuery5 {
         return queryParams;
     }
 
-    private String queryPosts() {
-        return ""
-                + "MATCH (person:" + Domain.Nodes.Person + ")-[:" + Domain.Rels.KNOWS + "*1..2]-(friend:" + Domain.Nodes.Person + ")\n"
-                + "WHERE person." + Domain.Person.ID + "={person_id}\n"
-                + "MATCH (friend)<-[membership:" + Domain.Rels.HAS_MEMBER + "]-(forum:" + Domain.Nodes.Forum + ")\n"
-                + "WHERE membership." + Domain.HasMember.JOIN_DATE + ">{join_date}\n"
-                + "MATCH (friend)<-[:" + Domain.Rels.HAS_CREATOR + "]-(post:" + Domain.Nodes.Post + ")<-[:" + Domain.Rels.CONTAINER_OF + "]-(forum)\n"
-                + "RETURN forum.title AS forum, count(post) AS postCount\n"
-                + "ORDER BY postCount DESC";
-    }
 }
