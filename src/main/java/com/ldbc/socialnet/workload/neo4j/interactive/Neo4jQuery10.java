@@ -3,7 +3,7 @@ package com.ldbc.socialnet.workload.neo4j.interactive;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery10;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery10Result;
 
-public interface Neo4jQuery10 extends Neo4jQuery<LdbcQuery10, LdbcQuery10Result> {
+public abstract class Neo4jQuery10<CONNECTION> implements Neo4jQuery<LdbcQuery10, LdbcQuery10Result, CONNECTION> {
     /*
     Q10 - Who to connect with?
         Description

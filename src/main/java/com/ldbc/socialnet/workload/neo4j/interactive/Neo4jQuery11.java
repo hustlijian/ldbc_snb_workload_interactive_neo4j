@@ -3,7 +3,7 @@ package com.ldbc.socialnet.workload.neo4j.interactive;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery11;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery11Result;
 
-public interface Neo4jQuery11 extends Neo4jQuery<LdbcQuery11, LdbcQuery11Result> {
+public abstract class Neo4jQuery11<CONNECTION> implements Neo4jQuery<LdbcQuery11, LdbcQuery11Result, CONNECTION> {
     /*
     Q11 - Referral
     Description

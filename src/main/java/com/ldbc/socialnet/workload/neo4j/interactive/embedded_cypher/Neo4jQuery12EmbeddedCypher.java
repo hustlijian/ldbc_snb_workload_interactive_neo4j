@@ -7,14 +7,13 @@ import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery12Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery12;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class Neo4jQuery12EmbeddedCypher implements Neo4jQuery12 {
+public class Neo4jQuery12EmbeddedCypher extends Neo4jQuery12<ExecutionEngine> {
     /*
     Q12 - Expert Search
     Description
@@ -79,7 +78,7 @@ public class Neo4jQuery12EmbeddedCypher implements Neo4jQuery12 {
     }
 
     @Override
-    public Iterator<LdbcQuery12Result> execute(GraphDatabaseService db, ExecutionEngine engine, LdbcQuery12 operation) {
+    public Iterator<LdbcQuery12Result> execute(ExecutionEngine engine, LdbcQuery12 operation) {
         return Iterators.transform(engine.execute(QUERY_STRING, buildParams(operation)).iterator(),
                 new Function<Map<String, Object>, LdbcQuery12Result>() {
                     @Override

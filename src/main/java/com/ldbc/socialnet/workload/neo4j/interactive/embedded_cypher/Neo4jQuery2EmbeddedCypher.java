@@ -7,13 +7,12 @@ import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery2Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery2;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class Neo4jQuery2EmbeddedCypher implements Neo4jQuery2 {
+public class Neo4jQuery2EmbeddedCypher extends Neo4jQuery2<ExecutionEngine> {
     private static final String QUERY_STRING = ""
             + "MATCH (:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{person_id}})-[:" + Domain.Rels.KNOWS + "]-(friend:" + Domain.Nodes.Person + ")<-[:" + Domain.Rels.HAS_CREATOR + "]-(post:" + Domain.Nodes.Post + ")\n"
             + "WHERE post." + Domain.Post.CREATION_DATE + " <= {max_date}\n"
@@ -33,7 +32,7 @@ public class Neo4jQuery2EmbeddedCypher implements Neo4jQuery2 {
     }
 
     @Override
-    public Iterator<LdbcQuery2Result> execute(GraphDatabaseService db, ExecutionEngine engine, LdbcQuery2 operation) {
+    public Iterator<LdbcQuery2Result> execute(ExecutionEngine engine, LdbcQuery2 operation) {
         return Iterators.transform(engine.execute(QUERY_STRING, buildParams(operation)).iterator(),
                 new Function<Map<String, Object>, LdbcQuery2Result>() {
                     @Override

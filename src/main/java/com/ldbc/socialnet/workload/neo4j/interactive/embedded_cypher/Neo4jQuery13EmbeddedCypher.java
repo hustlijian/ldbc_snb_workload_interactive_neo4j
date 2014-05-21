@@ -7,13 +7,12 @@ import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery13Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery13;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class Neo4jQuery13EmbeddedCypher implements Neo4jQuery13 {
+public class Neo4jQuery13EmbeddedCypher extends Neo4jQuery13<ExecutionEngine> {
     /*
         Description
             Find the length of the shortest path between two persons according to the relation knows.
@@ -33,7 +32,7 @@ public class Neo4jQuery13EmbeddedCypher implements Neo4jQuery13 {
     }
 
     @Override
-    public Iterator<LdbcQuery13Result> execute(GraphDatabaseService db, ExecutionEngine engine, LdbcQuery13 operation) {
+    public Iterator<LdbcQuery13Result> execute(ExecutionEngine engine, LdbcQuery13 operation) {
         return Iterators.transform(engine.execute(QUERY_STRING, buildParams(operation)).iterator(),
                 new Function<Map<String, Object>, LdbcQuery13Result>() {
                     @Override

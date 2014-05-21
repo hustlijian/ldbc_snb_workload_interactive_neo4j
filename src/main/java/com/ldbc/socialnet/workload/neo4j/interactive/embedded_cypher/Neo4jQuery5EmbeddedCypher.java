@@ -7,14 +7,13 @@ import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery5Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery5;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class Neo4jQuery5EmbeddedCypher implements Neo4jQuery5 {
+public class Neo4jQuery5EmbeddedCypher extends Neo4jQuery5<ExecutionEngine> {
     private static final String QUERY_STRING = ""
             + "MATCH (person:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{person_id}})-[:" + Domain.Rels.KNOWS + "*1..2]-(friend:" + Domain.Nodes.Person + ")<-[membership:" + Domain.Rels.HAS_MEMBER + "]-(forum:" + Domain.Nodes.Forum + ")\n"
             + "WHERE membership." + Domain.HasMember.JOIN_DATE + ">{join_date}\n"
@@ -28,7 +27,7 @@ public class Neo4jQuery5EmbeddedCypher implements Neo4jQuery5 {
     }
 
     @Override
-    public Iterator<LdbcQuery5Result> execute(GraphDatabaseService db, ExecutionEngine engine, LdbcQuery5 operation) {
+    public Iterator<LdbcQuery5Result> execute(ExecutionEngine engine, LdbcQuery5 operation) {
         Map<String, Object> cypherParams = buildParams(operation.personId(), operation.joinDate());
         Function<Map<String, Object>, LdbcQuery5Result> transformFun = new Function<Map<String, Object>, LdbcQuery5Result>() {
             @Override

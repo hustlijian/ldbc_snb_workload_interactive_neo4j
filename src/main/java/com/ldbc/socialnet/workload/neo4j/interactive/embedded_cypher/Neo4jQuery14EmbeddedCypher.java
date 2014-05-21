@@ -9,11 +9,10 @@ import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery14Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery14;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.*;
 
-public class Neo4jQuery14EmbeddedCypher implements Neo4jQuery14 {
+public class Neo4jQuery14EmbeddedCypher extends Neo4jQuery14<ExecutionEngine> {
     /*
         Description
             Find all paths between two specified persons, where paths may be comprised of: Person, Comment, and Post entities; Knows, ReplyOf, and HasCreator relationships.
@@ -47,7 +46,7 @@ public class Neo4jQuery14EmbeddedCypher implements Neo4jQuery14 {
     }
 
     @Override
-    public Iterator<LdbcQuery14Result> execute(GraphDatabaseService db, ExecutionEngine engine, LdbcQuery14 operation) {
+    public Iterator<LdbcQuery14Result> execute(ExecutionEngine engine, LdbcQuery14 operation) {
         return Iterators.transform(engine.execute(QUERY_STRING, buildParams(operation)).iterator(),
                 new Function<Map<String, Object>, LdbcQuery14Result>() {
                     @Override

@@ -3,8 +3,7 @@ package com.ldbc.socialnet.workload.neo4j.interactive;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery6;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery6Result;
 
-public interface Neo4jQuery6 extends Neo4jQuery<LdbcQuery6, LdbcQuery6Result>
-{
+public abstract class Neo4jQuery6<CONNECTION> implements Neo4jQuery<LdbcQuery6, LdbcQuery6Result, CONNECTION> {
     /*
     QUERY 6
 

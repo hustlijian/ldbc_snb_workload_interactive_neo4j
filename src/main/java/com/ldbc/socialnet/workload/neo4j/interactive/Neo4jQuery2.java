@@ -3,8 +3,7 @@ package com.ldbc.socialnet.workload.neo4j.interactive;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery2;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery2Result;
 
-public interface Neo4jQuery2 extends Neo4jQuery<LdbcQuery2, LdbcQuery2Result>
-{
+public abstract class Neo4jQuery2<CONNECTION> implements Neo4jQuery<LdbcQuery2, LdbcQuery2Result, CONNECTION> {
     /*
     QUERY2:
         Find the newest 20 posts from your friends

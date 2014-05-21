@@ -3,7 +3,7 @@ package com.ldbc.socialnet.workload.neo4j.interactive;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery14;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery14Result;
 
-public interface Neo4jQuery14 extends Neo4jQuery<LdbcQuery14, LdbcQuery14Result> {
+public abstract class Neo4jQuery14<CONNECTION> implements Neo4jQuery<LdbcQuery14, LdbcQuery14Result, CONNECTION> {
 /*
     Description
         What is the best way of approaching a specific person that is not a direct contact?

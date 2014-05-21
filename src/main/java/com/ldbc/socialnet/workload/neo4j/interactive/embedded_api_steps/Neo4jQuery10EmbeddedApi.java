@@ -1,5 +1,7 @@
 package com.ldbc.socialnet.workload.neo4j.interactive.embedded_api_steps;
 
+import com.ldbc.driver.DbException;
+import com.ldbc.driver.Operation;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery10;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery10Result;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery9;
@@ -12,7 +14,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.Iterator;
 
-public class Neo4jQuery10EmbeddedApi implements Neo4jQuery10 {
+public class Neo4jQuery10EmbeddedApi extends Neo4jQuery10<GraphDatabaseService> {
     private final LdbcTraversers traversers;
 
     public Neo4jQuery10EmbeddedApi(LdbcTraversers traversers) {
@@ -25,7 +27,7 @@ public class Neo4jQuery10EmbeddedApi implements Neo4jQuery10 {
     }
 
     @Override
-    public Iterator<LdbcQuery10Result> execute(GraphDatabaseService db, ExecutionEngine engine, LdbcQuery10 operation) {
+    public Iterator<LdbcQuery10Result> execute(GraphDatabaseService db, LdbcQuery10 operation) {
         return null;
     }
 }

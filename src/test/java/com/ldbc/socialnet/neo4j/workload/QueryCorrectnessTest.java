@@ -2,11 +2,10 @@ package com.ldbc.socialnet.neo4j.workload;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.ldbc.driver.runtime.ConcurrentErrorReporter;
+import com.ldbc.driver.DbException;
 import com.ldbc.driver.util.MapUtils;
 import com.ldbc.driver.util.TestUtils;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.*;
-import com.ldbc.socialnet.workload.neo4j.interactive.*;
 import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 import org.junit.After;
 import org.junit.Before;
@@ -28,9 +27,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public abstract class QueryCorrectnessTest {
-    public static String dbDir = "tempDb";
-    public static GraphDatabaseService db = null;
-    public static ExecutionEngine engine = null;
+    private static String dbDir = "tempDb";
+    private static GraphDatabaseService db = null;
+    private static ExecutionEngine engine = null;
 
     @Before
     public void init() throws IOException {
@@ -62,33 +61,33 @@ public abstract class QueryCorrectnessTest {
         }
     }
 
-    public abstract Neo4jQuery1 neo4jQuery1Impl();
+    public abstract Iterator<LdbcQuery1Result> neo4jQuery1Impl(String path, LdbcQuery1 operation) throws DbException;
 
-    public abstract Neo4jQuery2 neo4jQuery2Impl();
+    public abstract Iterator<LdbcQuery2Result> neo4jQuery2Impl(String path, LdbcQuery2 operation) throws DbException;
 
-    public abstract Neo4jQuery3 neo4jQuery3Impl();
+    public abstract Iterator<LdbcQuery3Result> neo4jQuery3Impl(String path, LdbcQuery3 operation) throws DbException;
 
-    public abstract Neo4jQuery4 neo4jQuery4Impl();
+    public abstract Iterator<LdbcQuery4Result> neo4jQuery4Impl(String path, LdbcQuery4 operation) throws DbException;
 
-    public abstract Neo4jQuery5 neo4jQuery5Impl();
+    public abstract Iterator<LdbcQuery5Result> neo4jQuery5Impl(String path, LdbcQuery5 operation) throws DbException;
 
-    public abstract Neo4jQuery6 neo4jQuery6Impl();
+    public abstract Iterator<LdbcQuery6Result> neo4jQuery6Impl(String path, LdbcQuery6 operation) throws DbException;
 
-    public abstract Neo4jQuery7 neo4jQuery7Impl();
+    public abstract Iterator<LdbcQuery7Result> neo4jQuery7Impl(String path, LdbcQuery7 operation) throws DbException;
 
-    public abstract Neo4jQuery8 neo4jQuery8Impl();
+    public abstract Iterator<LdbcQuery8Result> neo4jQuery8Impl(String path, LdbcQuery8 operation) throws DbException;
 
-    public abstract Neo4jQuery9 neo4jQuery9Impl();
+    public abstract Iterator<LdbcQuery9Result> neo4jQuery9Impl(String path, LdbcQuery9 operation) throws DbException;
 
-    public abstract Neo4jQuery10 neo4jQuery10Impl();
+    public abstract Iterator<LdbcQuery10Result> neo4jQuery10Impl(String path, LdbcQuery10 operation) throws DbException;
 
-    public abstract Neo4jQuery11 neo4jQuery11Impl();
+    public abstract Iterator<LdbcQuery11Result> neo4jQuery11Impl(String path, LdbcQuery11 operation) throws DbException;
 
-    public abstract Neo4jQuery12 neo4jQuery12Impl();
+    public abstract Iterator<LdbcQuery12Result> neo4jQuery12Impl(String path, LdbcQuery12 operation) throws DbException;
 
-    public abstract Neo4jQuery13 neo4jQuery13Impl();
+    public abstract Iterator<LdbcQuery13Result> neo4jQuery13Impl(String path, LdbcQuery13 operation) throws DbException;
 
-    public abstract Neo4jQuery14 neo4jQuery14Impl();
+    public abstract Iterator<LdbcQuery14Result> neo4jQuery14Impl(String path, LdbcQuery14 operation) throws DbException;
 
     public void createDb(TestGraph.QueryGraphMaker queryGraphMaker) throws IOException {
         // TODO uncomment to print CREATE
@@ -101,116 +100,120 @@ public abstract class QueryCorrectnessTest {
         engine = new ExecutionEngine(db);
         buildGraph(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
         db.shutdown();
-        Map dbRunConfig = Utils.loadConfig(TestUtils.getResource("/neo4j_run_dev.properties").getAbsolutePath());
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbDir).setConfig(dbRunConfig).newGraphDatabase();
-        engine = new ExecutionEngine(db);
     }
 
     @Test
-    public void query1ShouldReturnExpectedResult() throws IOException {
+    public void query1ShouldReturnExpectedResult() throws IOException, DbException {
         createDb(new TestGraph.Query1GraphMaker());
 
         long personId = 0;
         String friendName = "name0";
         int limit = 6;
-        LdbcQuery1 operation1 = new LdbcQuery1(personId, friendName, limit);
-        Neo4jQuery1 query1 = neo4jQuery1Impl();
+        LdbcQuery1 operation = new LdbcQuery1(personId, friendName, limit);
 
-        // TODO uncomment to print query
-        System.out.println(operation1.toString() + "\n" + query1.description() + "\n");
+        Iterator<LdbcQuery1Result> result = neo4jQuery1Impl(dbDir, operation);
 
-        boolean exceptionThrown = false;
-        try (Transaction tx = db.beginTx()) {
-            Iterator<LdbcQuery1Result> result = query1.execute(db, engine, operation1);
+        LdbcQuery1Result row;
 
-            LdbcQuery1Result row;
+        row = result.next();
 
-            row = result.next();
-            assertThat(row.friendId(), equalTo(1L));
-            assertThat(row.friendLastName(), equalTo("last1"));
-            assertThat(row.distanceFromPerson(), equalTo(1));
-            assertThat(row.friendBirthday(), equalTo(1L));
-            assertThat(row.friendCreationDate(), equalTo(1L));
-            assertThat(row.friendGender(), equalTo("gender1"));
-            assertThat(row.friendBrowserUsed(), equalTo("browser1"));
-            assertThat(row.friendLocationIp(), equalTo("ip1"));
-            assertThat(row.friendEmails(), equalTo((Set) Sets.newHashSet("friend1email1", "friend1email2")));
-            assertThat(row.friendLanguages(), equalTo((Set) Sets.newHashSet("friend1language0")));
-            assertThat(row.friendCityName(), equalTo("city0"));
-            assertThat(row.friendUniversities(), equalTo((Set) Sets.newHashSet("uni0,city1,0")));
-            assertThat(row.friendCompanies(), equalTo((Set) Sets.newHashSet("company0,country0,0")));
+        // TODO remove
+        System.out.println(row.toString());
 
-            row = result.next();
-            assertThat(row.friendId(), equalTo(2L));
-            assertThat(row.friendLastName(), equalTo("last2"));
-            assertThat(row.distanceFromPerson(), equalTo(1));
-            assertThat(row.friendBirthday(), equalTo(2L));
-            assertThat(row.friendCreationDate(), equalTo(2L));
-            assertThat(row.friendGender(), equalTo("gender2"));
-            assertThat(row.friendBrowserUsed(), equalTo("browser2"));
-            assertThat(row.friendLocationIp(), equalTo("ip2"));
-            assertThat(row.friendEmails(), equalTo((Set) Sets.newHashSet()));
-            assertThat(row.friendLanguages(), equalTo((Set) Sets.newHashSet("friend2language0", "friend2language1")));
-            assertThat(row.friendCityName(), equalTo("city1"));
-            assertThat(row.friendUniversities(), equalTo((Set) Sets.newHashSet("uni2,city0,3")));
-            assertThat(row.friendCompanies(), equalTo((Set) Sets.newHashSet()));
+        assertThat(row.friendId(), equalTo(1L));
+        assertThat(row.friendLastName(), equalTo("last1"));
+        assertThat(row.distanceFromPerson(), equalTo(1));
+        assertThat(row.friendBirthday(), equalTo(1L));
+        assertThat(row.friendCreationDate(), equalTo(1L));
+        assertThat(row.friendGender(), equalTo("gender1"));
+        assertThat(row.friendBrowserUsed(), equalTo("browser1"));
+        assertThat(row.friendLocationIp(), equalTo("ip1"));
+        assertThat(row.friendEmails(), equalTo((Set) Sets.newHashSet("friend1email1", "friend1email2")));
+        assertThat(row.friendLanguages(), equalTo((Set) Sets.newHashSet("friend1language0")));
+        assertThat(row.friendCityName(), equalTo("city0"));
+        assertThat(row.friendUniversities(), equalTo((Set) Sets.newHashSet("uni0,city1,0")));
+        assertThat(row.friendCompanies(), equalTo((Set) Sets.newHashSet("company0,country0,0")));
 
-            row = result.next();
-            assertThat(row.friendId(), equalTo(3L));
-            assertThat(row.friendLastName(), equalTo("last3"));
-            assertThat(row.distanceFromPerson(), equalTo(1));
-            assertThat(row.friendBirthday(), equalTo(3L));
-            assertThat(row.friendCreationDate(), equalTo(3L));
-            assertThat(row.friendGender(), equalTo("gender3"));
-            assertThat(row.friendBrowserUsed(), equalTo("browser3"));
-            assertThat(row.friendLocationIp(), equalTo("ip3"));
-            assertThat(row.friendEmails(), equalTo((Set) Sets.newHashSet("friend3email1", "friend3email2")));
-            assertThat(row.friendLanguages(), equalTo((Set) Sets.newHashSet("friend3language0")));
-            assertThat(row.friendCityName(), equalTo("city1"));
-            assertThat(row.friendUniversities(), equalTo((Set) Sets.newHashSet()));
-            assertThat(row.friendCompanies(), equalTo((Set) Sets.newHashSet("company0,country0,1")));
+        row = result.next();
+
+        // TODO remove
+        System.out.println(row.toString());
+
+        assertThat(row.friendId(), equalTo(2L));
+        assertThat(row.friendLastName(), equalTo("last2"));
+        assertThat(row.distanceFromPerson(), equalTo(1));
+        assertThat(row.friendBirthday(), equalTo(2L));
+        assertThat(row.friendCreationDate(), equalTo(2L));
+        assertThat(row.friendGender(), equalTo("gender2"));
+        assertThat(row.friendBrowserUsed(), equalTo("browser2"));
+        assertThat(row.friendLocationIp(), equalTo("ip2"));
+        assertThat(row.friendEmails(), equalTo((Set) Sets.newHashSet()));
+        assertThat(row.friendLanguages(), equalTo((Set) Sets.newHashSet("friend2language0", "friend2language1")));
+        assertThat(row.friendCityName(), equalTo("city1"));
+        assertThat(row.friendUniversities(), equalTo((Set) Sets.newHashSet("uni2,city0,3")));
+        assertThat(row.friendCompanies(), equalTo((Set) Sets.newHashSet()));
+
+        row = result.next();
+
+        // TODO remove
+        System.out.println(row.toString());
+
+        assertThat(row.friendId(), equalTo(3L));
+        assertThat(row.friendLastName(), equalTo("last3"));
+        assertThat(row.distanceFromPerson(), equalTo(1));
+        assertThat(row.friendBirthday(), equalTo(3L));
+        assertThat(row.friendCreationDate(), equalTo(3L));
+        assertThat(row.friendGender(), equalTo("gender3"));
+        assertThat(row.friendBrowserUsed(), equalTo("browser3"));
+        assertThat(row.friendLocationIp(), equalTo("ip3"));
+        assertThat(row.friendEmails(), equalTo((Set) Sets.newHashSet("friend3email1", "friend3email2")));
+        assertThat(row.friendLanguages(), equalTo((Set) Sets.newHashSet("friend3language0")));
+        assertThat(row.friendCityName(), equalTo("city1"));
+        assertThat(row.friendUniversities(), equalTo((Set) Sets.newHashSet()));
+        assertThat(row.friendCompanies(), equalTo((Set) Sets.newHashSet("company0,country0,1")));
 
 
-            row = result.next();
-            assertThat(row.friendId(), equalTo(11L));
-            assertThat(row.friendLastName(), equalTo("last11"));
-            assertThat(row.distanceFromPerson(), equalTo(2));
-            assertThat(row.friendBirthday(), equalTo(11L));
-            assertThat(row.friendCreationDate(), equalTo(11L));
-            assertThat(row.friendGender(), equalTo("gender11"));
-            assertThat(row.friendBrowserUsed(), equalTo("browser11"));
-            assertThat(row.friendLocationIp(), equalTo("ip11"));
-            assertThat(row.friendEmails(), equalTo((Set) Sets.newHashSet()));
-            assertThat(row.friendLanguages(), equalTo((Set) Sets.newHashSet()));
-            assertThat(row.friendCityName(), equalTo("city0"));
-            assertThat(row.friendUniversities(), equalTo((Set) Sets.newHashSet("uni1,city0,1", "uni2,city0,2")));
-            assertThat(row.friendCompanies(), equalTo((Set) Sets.newHashSet()));
+        row = result.next();
 
-            row = result.next();
-            assertThat(row.friendId(), equalTo(31L));
-            assertThat(row.friendLastName(), equalTo("last31"));
-            assertThat(row.distanceFromPerson(), equalTo(2));
-            assertThat(row.friendBirthday(), equalTo(31L));
-            assertThat(row.friendCreationDate(), equalTo(31L));
-            assertThat(row.friendGender(), equalTo("gender31"));
-            assertThat(row.friendBrowserUsed(), equalTo("browser31"));
-            assertThat(row.friendLocationIp(), equalTo("ip31"));
-            assertThat(row.friendEmails(), equalTo((Set) Sets.newHashSet()));
-            assertThat(row.friendLanguages(), equalTo((Set) Sets.newHashSet()));
-            assertThat(row.friendCityName(), equalTo("city1"));
-            assertThat(row.friendUniversities(), equalTo((Set) Sets.newHashSet()));
-            assertThat(row.friendCompanies(), equalTo((Set) Sets.newHashSet()));
+        // TODO remove
+        System.out.println(row.toString());
 
-            tx.success();
-        } catch (Exception e) {
-            e.printStackTrace();
-            exceptionThrown = true;
-        }
-        assertThat(exceptionThrown, is(false));
+        assertThat(row.friendId(), equalTo(11L));
+        assertThat(row.friendLastName(), equalTo("last11"));
+        assertThat(row.distanceFromPerson(), equalTo(2));
+        assertThat(row.friendBirthday(), equalTo(11L));
+        assertThat(row.friendCreationDate(), equalTo(11L));
+        assertThat(row.friendGender(), equalTo("gender11"));
+        assertThat(row.friendBrowserUsed(), equalTo("browser11"));
+        assertThat(row.friendLocationIp(), equalTo("ip11"));
+        assertThat(row.friendEmails(), equalTo((Set) Sets.newHashSet()));
+        assertThat(row.friendLanguages(), equalTo((Set) Sets.newHashSet()));
+        assertThat(row.friendCityName(), equalTo("city0"));
+        assertThat(row.friendUniversities(), equalTo((Set) Sets.newHashSet("uni1,city0,1", "uni2,city0,2")));
+        assertThat(row.friendCompanies(), equalTo((Set) Sets.newHashSet()));
+
+        row = result.next();
+
+        // TODO remove
+        System.out.println(row.toString());
+
+        assertThat(row.friendId(), equalTo(31L));
+        assertThat(row.friendLastName(), equalTo("last31"));
+        assertThat(row.distanceFromPerson(), equalTo(2));
+        assertThat(row.friendBirthday(), equalTo(31L));
+        assertThat(row.friendCreationDate(), equalTo(31L));
+        assertThat(row.friendGender(), equalTo("gender31"));
+        assertThat(row.friendBrowserUsed(), equalTo("browser31"));
+        assertThat(row.friendLocationIp(), equalTo("ip31"));
+        assertThat(row.friendEmails(), equalTo((Set) Sets.newHashSet()));
+        assertThat(row.friendLanguages(), equalTo((Set) Sets.newHashSet()));
+        assertThat(row.friendCityName(), equalTo("city1"));
+        assertThat(row.friendUniversities(), equalTo((Set) Sets.newHashSet()));
+        assertThat(row.friendCompanies(), equalTo((Set) Sets.newHashSet()));
     }
 
     @Test
-    public void query2ShouldReturnExpectedResult() throws IOException {
+    public void query2ShouldReturnExpectedResult() throws IOException, DbException {
         createDb(new TestGraph.Query2GraphMaker());
 
         long personId = 1;
@@ -221,65 +224,52 @@ public abstract class QueryCorrectnessTest {
         int limit = 4;
 
         LdbcQuery2 operation = new LdbcQuery2(personId, maxDate, limit);
-        Neo4jQuery2 query = neo4jQuery2Impl();
 
-        // TODO uncomment to print query
-        System.out.println(operation.toString() + "\n" + query.description() + "\n");
+        Iterator<LdbcQuery2Result> result = neo4jQuery2Impl(dbDir, operation);
 
-        boolean exceptionThrown = false;
-        try (Transaction tx = db.beginTx()) {
-            Iterator<LdbcQuery2Result> result = query.execute(db, engine, operation);
+        LdbcQuery2Result row;
 
-            LdbcQuery2Result row = null;
+        // 3 jacob hansson 3 [jake3] tjena 1378504800000
+        row = result.next();
+        assertThat(row.personId(), is(3L));
+        assertThat(row.personFirstName(), is("jacob"));
+        assertThat(row.personLastName(), is("hansson"));
+        assertThat(row.postId(), is(3L));
+        assertThat(row.postContent(), is("[jake3] tjena"));
+        assertThat(row.postDate(), is(1378504800000L));
 
-            // 3 jacob hansson 3 [jake3] tjena 1378504800000
-            row = result.next();
-            assertThat(row.personId(), is(3L));
-            assertThat(row.personFirstName(), is("jacob"));
-            assertThat(row.personLastName(), is("hansson"));
-            assertThat(row.postId(), is(3L));
-            assertThat(row.postContent(), is("[jake3] tjena"));
-            assertThat(row.postDate(), is(1378504800000L));
+        // 2 aiya thorpe 5 [aiya1] kia ora 1378418400000
+        row = result.next();
+        assertThat(row.personId(), is(2L));
+        assertThat(row.personFirstName(), is("aiya"));
+        assertThat(row.personLastName(), is("thorpe"));
+        assertThat(row.postId(), is(5L));
+        assertThat(row.postContent(), is("[aiya1] kia ora"));
+        assertThat(row.postDate(), is(1378418400000L));
 
-            // 2 aiya thorpe 5 [aiya1] kia ora 1378418400000
-            row = result.next();
-            assertThat(row.personId(), is(2L));
-            assertThat(row.personFirstName(), is("aiya"));
-            assertThat(row.personLastName(), is("thorpe"));
-            assertThat(row.postId(), is(5L));
-            assertThat(row.postContent(), is("[aiya1] kia ora"));
-            assertThat(row.postDate(), is(1378418400000L));
+        // 3 jacob hansson 2 [jake2] hej 1378335600000
+        row = result.next();
+        assertThat(row.personId(), is(3L));
+        assertThat(row.personFirstName(), is("jacob"));
+        assertThat(row.personLastName(), is("hansson"));
+        assertThat(row.postId(), is(2L));
+        assertThat(row.postContent(), is("[jake2] hej"));
+        assertThat(row.postDate(), is(1378335600000L));
 
-            // 3 jacob hansson 2 [jake2] hej 1378335600000
-            row = result.next();
-            assertThat(row.personId(), is(3L));
-            assertThat(row.personFirstName(), is("jacob"));
-            assertThat(row.personLastName(), is("hansson"));
-            assertThat(row.postId(), is(2L));
-            assertThat(row.postContent(), is("[jake2] hej"));
-            assertThat(row.postDate(), is(1378335600000L));
+        // 3 jacob hansson 1 [jake1] hello 1378332060000
+        row = result.next();
+        assertThat(row.personId(), is(3L));
+        assertThat(row.personFirstName(), is("jacob"));
+        assertThat(row.personLastName(), is("hansson"));
+        assertThat(row.postId(), is(1L));
+        assertThat(row.postContent(), is("[jake1] hello"));
+        assertThat(row.postDate(), is(1378332060000L));
 
-            // 3 jacob hansson 1 [jake1] hello 1378332060000
-            row = result.next();
-            assertThat(row.personId(), is(3L));
-            assertThat(row.personFirstName(), is("jacob"));
-            assertThat(row.personLastName(), is("hansson"));
-            assertThat(row.postId(), is(1L));
-            assertThat(row.postContent(), is("[jake1] hello"));
-            assertThat(row.postDate(), is(1378332060000L));
-
-            assertThat(result.hasNext(), is(false));
-
-            tx.success();
-        } catch (Exception e) {
-            e.printStackTrace();
-            exceptionThrown = true;
-        }
-        assertThat(exceptionThrown, is(false));
+        assertThat(result.hasNext(), is(false));
     }
 
     @Test
-    public void query3ShouldReturnExpectedResult() throws IOException {
+    public void query3ShouldReturnExpectedResult() throws IOException, DbException {
         createDb(new TestGraph.Query3GraphMaker());
 
         long personId = 1;
@@ -293,48 +283,35 @@ public abstract class QueryCorrectnessTest {
         long durationMillis = TimeUnit.MILLISECONDS.convert(durationDays, TimeUnit.DAYS);
         int limit = 2;
 
-        LdbcQuery3 operation3 = new LdbcQuery3(personId, countryX, countryY, endDate, durationMillis, limit);
-        Neo4jQuery3 query3 = neo4jQuery3Impl();
+        LdbcQuery3 operation = new LdbcQuery3(personId, countryX, countryY, endDate, durationMillis, limit);
+        Iterator<LdbcQuery3Result> result = neo4jQuery3Impl(dbDir, operation);
 
-        // TODO uncomment to print query
-        System.out.println(operation3.toString() + "\n" + query3.description() + "\n");
+        // Has at least 1 result
+        assertThat(result.hasNext(), is(true));
 
-        boolean exceptionThrown = false;
-        try (Transaction tx = db.beginTx()) {
-            Iterator<LdbcQuery3Result> result = query3.execute(db, engine, operation3);
+        LdbcQuery3Result firstRow = result.next();
 
-            // Has at least 1 result
-            assertThat(result.hasNext(), is(true));
+        assertThat(firstRow.friendName(), is("jacob hansson"));
+        assertThat(firstRow.xCount(), is(1L));
+        assertThat(firstRow.yCount(), is(2L));
+        assertThat(firstRow.xyCount(), is(3L));
 
-            LdbcQuery3Result firstRow = result.next();
+        // Has at least 2 results
+        assertThat(result.hasNext(), is(true));
 
-            assertThat(firstRow.friendName(), is("jacob hansson"));
-            assertThat(firstRow.xCount(), is(1L));
-            assertThat(firstRow.yCount(), is(2L));
-            assertThat(firstRow.xyCount(), is(3L));
+        LdbcQuery3Result secondRow = result.next();
 
-            // Has at least 2 results
-            assertThat(result.hasNext(), is(true));
+        assertThat(secondRow.friendName(), is("aiya thorpe"));
+        assertThat(secondRow.xCount(), is(1L));
+        assertThat(secondRow.yCount(), is(1L));
+        assertThat(secondRow.xyCount(), is(2L));
 
-            LdbcQuery3Result secondRow = result.next();
-
-            assertThat(secondRow.friendName(), is("aiya thorpe"));
-            assertThat(secondRow.xCount(), is(1L));
-            assertThat(secondRow.yCount(), is(1L));
-            assertThat(secondRow.xyCount(), is(2L));
-
-            // Has exactly 2 results, no more
-            assertThat(result.hasNext(), is(false));
-            tx.success();
-        } catch (Exception e) {
-            e.printStackTrace();
-            exceptionThrown = true;
-        }
-        assertThat(exceptionThrown, is(false));
+        // Has exactly 2 results, no more
+        assertThat(result.hasNext(), is(false));
     }
 
     @Test
-    public void query4ShouldReturnExpectedResult() throws IOException {
+    public void query4ShouldReturnExpectedResult() throws IOException, DbException {
         createDb(new TestGraph.Query4GraphMaker());
 
         long personId = 1;
@@ -346,45 +323,31 @@ public abstract class QueryCorrectnessTest {
         long durationMillis = TimeUnit.MILLISECONDS.convert(durationDays, TimeUnit.DAYS);
         int limit = 10;
 
-        LdbcQuery4 operation4 = new LdbcQuery4(personId, endDate, durationMillis, limit);
-        Neo4jQuery4 query4 = neo4jQuery4Impl();
+        LdbcQuery4 operation = new LdbcQuery4(personId, endDate, durationMillis, limit);
+        Iterator<LdbcQuery4Result> result = neo4jQuery4Impl(dbDir, operation);
 
-        // TODO uncomment to print query
-        System.out.println(operation4.toString() + "\n" + query4.description() + "\n");
+        int expectedRowCount = 5;
+        int actualRowCount = 0;
 
-        boolean exceptionThrown = false;
-        try (Transaction tx = db.beginTx()) {
-            Iterator<LdbcQuery4Result> result = query4.execute(db, engine, operation4);
+        assertThat(result.next(), equalTo(new LdbcQuery4Result("pie", 3)));
+        assertThat(result.next(), equalTo(new LdbcQuery4Result("lol", 2)));
+        actualRowCount = 2;
 
-            int expectedRowCount = 5;
-            int actualRowCount = 0;
+        Map<String, Integer> validTags = new HashMap<>();
+        validTags.put("cake", 1);
+        validTags.put("yolo", 1);
+        validTags.put("wtf", 1);
 
-            assertThat(result.next(), equalTo(new LdbcQuery4Result("pie", 3)));
-            assertThat(result.next(), equalTo(new LdbcQuery4Result("lol", 2)));
-            actualRowCount = 2;
-
-            Map<String, Integer> validTags = new HashMap<String, Integer>();
-            validTags.put("cake", 1);
-            validTags.put("yolo", 1);
-            validTags.put("wtf", 1);
-
-            while (result.hasNext()) {
-                LdbcQuery4Result row = result.next();
-                assertThat(row.tagCount(), is(validTags.get(row.tagName())));
-                actualRowCount++;
-            }
-            assertThat(actualRowCount, is(expectedRowCount));
-
-            tx.success();
-        } catch (Exception e) {
-            e.printStackTrace();
-            exceptionThrown = true;
+        while (result.hasNext()) {
+            LdbcQuery4Result row = result.next();
+            assertThat(row.tagCount(), is(validTags.get(row.tagName())));
+            actualRowCount++;
         }
-        assertThat(exceptionThrown, is(false));
+        assertThat(actualRowCount, is(expectedRowCount));
     }
 
     @Test
-    public void query5ShouldReturnExpectedResult() throws IOException {
+    public void query5ShouldReturnExpectedResult() throws IOException, DbException {
         createDb(new TestGraph.Query5GraphMaker());
 
         long personId = 1;
@@ -393,309 +356,236 @@ public abstract class QueryCorrectnessTest {
         c.set(2013, Calendar.JANUARY, 8);
         Date joinDate = c.getTime();
 
-        LdbcQuery5 operation5 = new LdbcQuery5(personId, joinDate);
-        Neo4jQuery5 query5 = neo4jQuery5Impl();
+        LdbcQuery5 operation = new LdbcQuery5(personId, joinDate);
+        Iterator<LdbcQuery5Result> result = neo4jQuery5Impl(dbDir, operation);
 
-        // TODO uncomment to print query
-        System.out.println(operation5.toString() + "\n" + query5.description() + "\n");
-
-        boolean exceptionThrown = false;
-        try (Transaction tx = db.beginTx()) {
-            Iterator<LdbcQuery5Result> result = query5.execute(db, engine, operation5);
-
-            assertThat(result.hasNext(), is(true));
-            assertThat(result.next(), equalTo(new LdbcQuery5Result("everything cakes and pies", 5)));
-            assertThat(result.hasNext(), is(true));
-            assertThat(result.next(), equalTo(new LdbcQuery5Result("boats are not submarines", 2)));
-            assertThat(result.hasNext(), is(true));
-            assertThat(result.next(), equalTo(new LdbcQuery5Result("kiwis sheep and bungy jumping", 1)));
-            assertThat(result.hasNext(), is(false));
-
-            tx.success();
-        } catch (Exception e) {
-            e.printStackTrace();
-            exceptionThrown = true;
-        }
-        assertThat(exceptionThrown, is(false));
+        assertThat(result.hasNext(), is(true));
+        assertThat(result.next(), equalTo(new LdbcQuery5Result("everything cakes and pies", 5)));
+        assertThat(result.hasNext(), is(true));
+        assertThat(result.next(), equalTo(new LdbcQuery5Result("boats are not submarines", 2)));
+        assertThat(result.hasNext(), is(true));
+        assertThat(result.next(), equalTo(new LdbcQuery5Result("kiwis sheep and bungy jumping", 1)));
+        assertThat(result.hasNext(), is(false));
     }
 
     @Test
-    public void query6ShouldReturnExpectedResult() throws IOException {
+    public void query6ShouldReturnExpectedResult() throws IOException, DbException {
         createDb(new TestGraph.Query6GraphMaker());
 
         long personId = 1;
         String tagName = "lol";
         int limit = 10;
 
-        LdbcQuery6 operation6 = new LdbcQuery6(personId, tagName, limit);
-        Neo4jQuery6 query6 = neo4jQuery6Impl();
+        LdbcQuery6 operation = new LdbcQuery6(personId, tagName, limit);
+        Iterator<LdbcQuery6Result> result = neo4jQuery6Impl(dbDir, operation);
 
-        // TODO uncomment to print query
-        System.out.println(operation6.toString() + "\n" + query6.description() + "\n");
+        int expectedRowCount = 3;
+        int actualRowCount = 0;
 
-        boolean exceptionThrown = false;
-        try (Transaction tx = db.beginTx()) {
-            Iterator<LdbcQuery6Result> result = query6.execute(db, engine, operation6);
+        Map<String, Long> validTagCounts = new HashMap<>();
+        validTagCounts.put("wtf", 2L);
+        validTagCounts.put("pie", 2L);
+        validTagCounts.put("cake", 1L);
 
-            int expectedRowCount = 3;
-            int actualRowCount = 0;
-
-            Map<String, Long> validTagCounts = new HashMap<String, Long>();
-            validTagCounts.put("wtf", 2L);
-            validTagCounts.put("pie", 2L);
-            validTagCounts.put("cake", 1L);
-
-            while (result.hasNext()) {
-                LdbcQuery6Result row = result.next();
-                String tag = row.tagName();
-                assertThat(validTagCounts.containsKey(tag), is(true));
-                long tagCount = row.tagCount();
-                assertThat(validTagCounts.get(tag), equalTo(tagCount));
-                actualRowCount++;
-            }
-            assertThat(expectedRowCount, equalTo(actualRowCount));
-
-            tx.success();
-        } catch (Exception e) {
-            e.printStackTrace();
-            exceptionThrown = true;
+        while (result.hasNext()) {
+            LdbcQuery6Result row = result.next();
+            String tag = row.tagName();
+            assertThat(validTagCounts.containsKey(tag), is(true));
+            long tagCount = row.tagCount();
+            assertThat(validTagCounts.get(tag), equalTo(tagCount));
+            actualRowCount++;
         }
-        assertThat(exceptionThrown, is(false));
+        assertThat(expectedRowCount, equalTo(actualRowCount));
     }
 
     @Test
-    public void query7ShouldReturnExpectedResult() throws IOException {
+    public void query7ShouldReturnExpectedResult() throws IOException, DbException {
         createDb(new TestGraph.Query7GraphMaker());
 
         long personId = 1;
         int limit = 5;
 
-        LdbcQuery7 operation7 = new LdbcQuery7(personId, limit);
-        Neo4jQuery7 query7 = neo4jQuery7Impl();
+        LdbcQuery7 operation = new LdbcQuery7(personId, limit);
+        Iterator<LdbcQuery7Result> result = neo4jQuery7Impl(dbDir, operation);
 
-        // TODO uncomment to print query
-        System.out.println(operation7.toString() + "\n" + query7.description() + "\n");
+        LdbcQuery7Result row;
 
-        String stackTrace = null;
-        boolean exceptionThrown = false;
-        try (Transaction tx = db.beginTx()) {
-            Iterator<LdbcQuery7Result> result = query7.execute(db, engine, operation7);
+        row = result.next();
+        assertThat(row.personId(), is(2L));
+        assertThat(row.personFirstName(), is("friend"));
+        assertThat(row.personLastName(), is("one"));
+        assertThat(row.likeCreationDate().getTime(), is(5L));
+        assertThat(row.isNew(), is(false));
+        assertThat(row.postId(), is(1L));
+        assertThat(row.postContent(), equalTo("p1"));
+        assertThat(row.milliSecondDelay(), equalTo(5L));
 
-            LdbcQuery7Result row;
+        row = result.next();
+        assertThat(row.personId(), is(4L));
+        assertThat(row.personFirstName(), is("friend"));
+        assertThat(row.personLastName(), is("three"));
+        assertThat(row.likeCreationDate().getTime(), is(5L));
+        assertThat(row.isNew(), is(false));
+        assertThat(row.postId(), is(1L));
+        assertThat(row.postContent(), equalTo("p1"));
+        assertThat(row.milliSecondDelay(), equalTo(5L));
 
-            row = result.next();
-            assertThat(row.personId(), is(2L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("one"));
-            assertThat(row.likeCreationDate().getTime(), is(5L));
-            assertThat(row.isNew(), is(false));
-            assertThat(row.postId(), is(1L));
-            assertThat(row.postContent(), equalTo("p1"));
-            assertThat(row.milliSecondDelay(), equalTo(5L));
+        row = result.next();
+        assertThat(row.personId(), is(4L));
+        assertThat(row.personFirstName(), is("friend"));
+        assertThat(row.personLastName(), is("three"));
+        assertThat(row.likeCreationDate().getTime(), is(4L));
+        assertThat(row.isNew(), is(false));
+        assertThat(row.postId(), is(2L));
+        assertThat(row.postContent(), equalTo("p2"));
+        assertThat(row.milliSecondDelay(), equalTo(4L));
 
-            row = result.next();
-            assertThat(row.personId(), is(4L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("three"));
-            assertThat(row.likeCreationDate().getTime(), is(5L));
-            assertThat(row.isNew(), is(false));
-            assertThat(row.postId(), is(1L));
-            assertThat(row.postContent(), equalTo("p1"));
-            assertThat(row.milliSecondDelay(), equalTo(5L));
+        row = result.next();
+        assertThat(row.personId(), is(6L));
+        assertThat(row.personFirstName(), is("friendfriend"));
+        assertThat(row.personLastName(), is("two"));
+        assertThat(row.likeCreationDate().getTime(), is(3L));
+        assertThat(row.isNew(), is(true));
+        assertThat(row.postId(), is(1L));
+        assertThat(row.postContent(), equalTo("p1"));
+        assertThat(row.milliSecondDelay(), equalTo(3L));
 
-            row = result.next();
-            assertThat(row.personId(), is(4L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("three"));
-            assertThat(row.likeCreationDate().getTime(), is(4L));
-            assertThat(row.isNew(), is(false));
-            assertThat(row.postId(), is(2L));
-            assertThat(row.postContent(), equalTo("p2"));
-            assertThat(row.milliSecondDelay(), equalTo(4L));
+        row = result.next();
+        assertThat(row.personId(), is(6L));
+        assertThat(row.personFirstName(), is("friendfriend"));
+        assertThat(row.personLastName(), is("two"));
+        assertThat(row.likeCreationDate().getTime(), is(2L));
+        assertThat(row.isNew(), is(true));
+        assertThat(row.postId(), is(2L));
+        assertThat(row.postContent(), equalTo("p2"));
+        assertThat(row.milliSecondDelay(), equalTo(2L));
 
-            row = result.next();
-            assertThat(row.personId(), is(6L));
-            assertThat(row.personFirstName(), is("friendfriend"));
-            assertThat(row.personLastName(), is("two"));
-            assertThat(row.likeCreationDate().getTime(), is(3L));
-            assertThat(row.isNew(), is(true));
-            assertThat(row.postId(), is(1L));
-            assertThat(row.postContent(), equalTo("p1"));
-            assertThat(row.milliSecondDelay(), equalTo(3L));
-
-            row = result.next();
-            assertThat(row.personId(), is(6L));
-            assertThat(row.personFirstName(), is("friendfriend"));
-            assertThat(row.personLastName(), is("two"));
-            assertThat(row.likeCreationDate().getTime(), is(2L));
-            assertThat(row.isNew(), is(true));
-            assertThat(row.postId(), is(2L));
-            assertThat(row.postContent(), equalTo("p2"));
-            assertThat(row.milliSecondDelay(), equalTo(2L));
-
-            assertThat(result.hasNext(), is(false));
-
-            tx.success();
-        } catch (Exception e) {
-            stackTrace = ConcurrentErrorReporter.stackTraceToString(e);
-            exceptionThrown = true;
-        }
-        assertThat(stackTrace, exceptionThrown, is(false));
+        assertThat(result.hasNext(), is(false));
     }
 
     @Test
-    public void query8ShouldReturnExpectedResult() throws IOException {
+    public void query8ShouldReturnExpectedResult() throws IOException, DbException {
         createDb(new TestGraph.Query8GraphMaker());
 
         long personId = 0;
         int limit = 7;
 
-        LdbcQuery8 operation8 = new LdbcQuery8(personId, limit);
-        Neo4jQuery8 query8 = neo4jQuery8Impl();
+        LdbcQuery8 operation = new LdbcQuery8(personId, limit);
+        Iterator<LdbcQuery8Result> result = neo4jQuery8Impl(dbDir, operation);
 
-        // TODO uncomment to print query
-        System.out.println(operation8.toString() + "\n" + query8.description() + "\n");
+        LdbcQuery8Result row;
 
-        String stackTrace = null;
-        boolean exceptionThrown = false;
-        try (Transaction tx = db.beginTx()) {
-            Iterator<LdbcQuery8Result> result = query8.execute(db, engine, operation8);
+        row = result.next();
+        assertThat(row.personId(), is(2L));
+        assertThat(row.personFirstName(), is("friend"));
+        assertThat(row.personLastName(), is("two"));
+        assertThat(row.replyCreationDate(), is(8L));
+        assertThat(row.replyId(), is(13L));
+        assertThat(row.replyContent(), is("C13"));
 
-            LdbcQuery8Result row;
+        row = result.next();
+        assertThat(row.personId(), is(3L));
+        assertThat(row.personFirstName(), is("friend"));
+        assertThat(row.personLastName(), is("three"));
+        assertThat(row.replyCreationDate(), is(6L));
+        assertThat(row.replyId(), is(12L));
+        assertThat(row.replyContent(), is("C12"));
 
-            row = result.next();
-            assertThat(row.personId(), is(2L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("two"));
-            assertThat(row.replyCreationDate(), is(8L));
-            assertThat(row.replyId(), is(13L));
-            assertThat(row.replyContent(), is("C13"));
+        row = result.next();
+        assertThat(row.personId(), is(1L));
+        assertThat(row.personFirstName(), is("friend"));
+        assertThat(row.personLastName(), is("one"));
+        assertThat(row.replyCreationDate(), is(5L));
+        assertThat(row.replyId(), is(2111L));
+        assertThat(row.replyContent(), is("C2111"));
 
-            row = result.next();
-            assertThat(row.personId(), is(3L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("three"));
-            assertThat(row.replyCreationDate(), is(6L));
-            assertThat(row.replyId(), is(12L));
-            assertThat(row.replyContent(), is("C12"));
+        row = result.next();
+        assertThat(row.personId(), is(1L));
+        assertThat(row.personFirstName(), is("friend"));
+        assertThat(row.personLastName(), is("one"));
+        assertThat(row.replyCreationDate(), is(4L));
+        assertThat(row.replyId(), is(111L));
+        assertThat(row.replyContent(), is("C111"));
 
-            row = result.next();
-            assertThat(row.personId(), is(1L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("one"));
-            assertThat(row.replyCreationDate(), is(5L));
-            assertThat(row.replyId(), is(2111L));
-            assertThat(row.replyContent(), is("C2111"));
+        row = result.next();
+        assertThat(row.personId(), is(2L));
+        assertThat(row.personFirstName(), is("friend"));
+        assertThat(row.personLastName(), is("two"));
+        assertThat(row.replyCreationDate(), is(4L));
+        assertThat(row.replyId(), is(112L));
+        assertThat(row.replyContent(), is("C112"));
 
-            row = result.next();
-            assertThat(row.personId(), is(1L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("one"));
-            assertThat(row.replyCreationDate(), is(4L));
-            assertThat(row.replyId(), is(111L));
-            assertThat(row.replyContent(), is("C111"));
+        row = result.next();
+        assertThat(row.personId(), is(3L));
+        assertThat(row.personFirstName(), is("friend"));
+        assertThat(row.personLastName(), is("three"));
+        assertThat(row.replyCreationDate(), is(3L));
+        assertThat(row.replyId(), is(11L));
+        assertThat(row.replyContent(), is("C11"));
+        row = result.next();
+        assertThat(row.personId(), is(2L));
+        assertThat(row.personFirstName(), is("friend"));
+        assertThat(row.personLastName(), is("two"));
+        assertThat(row.replyCreationDate(), is(2L));
+        assertThat(row.replyId(), is(211L));
+        assertThat(row.replyContent(), is("C211"));
 
-            row = result.next();
-            assertThat(row.personId(), is(2L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("two"));
-            assertThat(row.replyCreationDate(), is(4L));
-            assertThat(row.replyId(), is(112L));
-            assertThat(row.replyContent(), is("C112"));
-
-            row = result.next();
-            assertThat(row.personId(), is(3L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("three"));
-            assertThat(row.replyCreationDate(), is(3L));
-            assertThat(row.replyId(), is(11L));
-            assertThat(row.replyContent(), is("C11"));
-            row = result.next();
-            assertThat(row.personId(), is(2L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("two"));
-            assertThat(row.replyCreationDate(), is(2L));
-            assertThat(row.replyId(), is(211L));
-            assertThat(row.replyContent(), is("C211"));
-
-            assertThat(result.hasNext(), is(false));
-
-            tx.success();
-        } catch (Exception e) {
-            stackTrace = ConcurrentErrorReporter.stackTraceToString(e);
-            exceptionThrown = true;
-        }
-        assertThat(stackTrace, exceptionThrown, is(false));
+        assertThat(result.hasNext(), is(false));
     }
 
     @Test
-    public void query9ShouldReturnExpectedResult() throws IOException {
+    public void query9ShouldReturnExpectedResult() throws IOException, DbException {
         createDb(new TestGraph.Query9GraphMaker());
 
         long personId = 0;
         long latestDateAsMilli = 12;
         int limit = 7;
 
-        LdbcQuery9 operation9 = new LdbcQuery9(personId, latestDateAsMilli, limit);
-        Neo4jQuery9 query9 = neo4jQuery9Impl();
+        LdbcQuery9 operation = new LdbcQuery9(personId, latestDateAsMilli, limit);
+        Iterator<LdbcQuery9Result> result = neo4jQuery9Impl(dbDir, operation);
 
-        // TODO uncomment to print query
-        System.out.println(operation9.toString() + "\n" + query9.description() + "\n");
+        LdbcQuery9Result row;
 
-        String stackTrace = null;
-        boolean exceptionThrown = false;
-        try (Transaction tx = db.beginTx()) {
-            Iterator<LdbcQuery9Result> result = query9.execute(db, engine, operation9);
+        row = result.next();
+        assertThat(row.getPostOrCommentId(), equalTo(11L));
+        assertThat(row.getPostOrCommentCreationDate(), is(11L));
+        assertThat(row.getPostOrCommentContent(), equalTo("P11"));
 
-            LdbcQuery9Result row;
+        row = result.next();
+        assertThat(row.getPostOrCommentId(), equalTo(1211L));
+        assertThat(row.getPostOrCommentCreationDate(), is(10L));
+        assertThat(row.getPostOrCommentContent(), equalTo("C1211"));
 
-            row = result.next();
-            assertThat(row.getPostOrCommentId(), equalTo(11L));
-            assertThat(row.getPostOrCommentCreationDate(), is(11L));
-            assertThat(row.getPostOrCommentContent(), equalTo("P11"));
+        row = result.next();
+        assertThat(row.getPostOrCommentId(), equalTo(2111L));
+        assertThat(row.getPostOrCommentCreationDate(), is(8L));
+        assertThat(row.getPostOrCommentContent(), equalTo("C2111"));
 
-            row = result.next();
-            assertThat(row.getPostOrCommentId(), equalTo(1211L));
-            assertThat(row.getPostOrCommentCreationDate(), is(10L));
-            assertThat(row.getPostOrCommentContent(), equalTo("C1211"));
+        row = result.next();
+        assertThat(row.getPostOrCommentId(), equalTo(211L));
+        assertThat(row.getPostOrCommentCreationDate(), is(7L));
+        assertThat(row.getPostOrCommentContent(), equalTo("C211"));
 
-            row = result.next();
-            assertThat(row.getPostOrCommentId(), equalTo(2111L));
-            assertThat(row.getPostOrCommentCreationDate(), is(8L));
-            assertThat(row.getPostOrCommentContent(), equalTo("C2111"));
+        row = result.next();
+        assertThat(row.getPostOrCommentId(), equalTo(21L));
+        assertThat(row.getPostOrCommentCreationDate(), is(6L));
+        assertThat(row.getPostOrCommentContent(), equalTo("P21"));
 
-            row = result.next();
-            assertThat(row.getPostOrCommentId(), equalTo(211L));
-            assertThat(row.getPostOrCommentCreationDate(), is(7L));
-            assertThat(row.getPostOrCommentContent(), equalTo("C211"));
+        row = result.next();
+        assertThat(row.getPostOrCommentId(), equalTo(12L));
+        assertThat(row.getPostOrCommentCreationDate(), is(4L));
+        assertThat(row.getPostOrCommentContent(), equalTo("P12"));
 
-            row = result.next();
-            assertThat(row.getPostOrCommentId(), equalTo(21L));
-            assertThat(row.getPostOrCommentCreationDate(), is(6L));
-            assertThat(row.getPostOrCommentContent(), equalTo("P21"));
+        row = result.next();
+        assertThat(row.getPostOrCommentId(), equalTo(311L));
+        assertThat(row.getPostOrCommentCreationDate(), is(4L));
+        assertThat(row.getPostOrCommentContent(), equalTo("C311"));
 
-            row = result.next();
-            assertThat(row.getPostOrCommentId(), equalTo(12L));
-            assertThat(row.getPostOrCommentCreationDate(), is(4L));
-            assertThat(row.getPostOrCommentContent(), equalTo("P12"));
-
-            row = result.next();
-            assertThat(row.getPostOrCommentId(), equalTo(311L));
-            assertThat(row.getPostOrCommentCreationDate(), is(4L));
-            assertThat(row.getPostOrCommentContent(), equalTo("C311"));
-
-            assertThat(result.hasNext(), is(false));
-
-            tx.success();
-        } catch (Exception e) {
-            stackTrace = ConcurrentErrorReporter.stackTraceToString(e);
-            exceptionThrown = true;
-        }
-        assertThat(stackTrace, exceptionThrown, is(false));
+        assertThat(result.hasNext(), is(false));
     }
 
     @Test
-    public void query10ShouldReturnExpectedResult() throws IOException {
+    public void query10ShouldReturnExpectedResult() throws IOException, DbException {
         createDb(new TestGraph.Query10GraphMaker());
 
         long personId = 0;
@@ -703,63 +593,48 @@ public abstract class QueryCorrectnessTest {
         int horoscopeMonth2 = 3;
         int limit = 7;
 
-        LdbcQuery10 operation10 = new LdbcQuery10(personId, horoscopeMonth1, horoscopeMonth2, limit);
-        Neo4jQuery10 query10 = neo4jQuery10Impl();
+        LdbcQuery10 operation = new LdbcQuery10(personId, horoscopeMonth1, horoscopeMonth2, limit);
+        Iterator<LdbcQuery10Result> result = neo4jQuery10Impl(dbDir, operation);
 
-        // TODO uncomment to print query
-        System.out.println("\n" + operation10.toString() + "\n" + query10.description() + "\n");
+        LdbcQuery10Result row;
 
-        String stackTrace = null;
-        boolean exceptionThrown = false;
-        try (Transaction tx = db.beginTx()) {
-            Iterator<LdbcQuery10Result> result = query10.execute(db, engine, operation10);
+        row = result.next();
+        assertThat(row.personId(), equalTo(11L));
+        assertThat(row.personFirstName(), equalTo("friendfriend"));
+        assertThat(row.personLastName(), equalTo("one one"));
+        assertThat(row.commonInterestScore(), equalTo(1 / 3D));
+        assertThat(row.gender(), equalTo("female"));
+        assertThat(row.personCityName(), equalTo("city1"));
 
-            LdbcQuery10Result row;
+        row = result.next();
+        assertThat(row.personId(), equalTo(21L));
+        assertThat(row.personFirstName(), equalTo("friendfriend"));
+        assertThat(row.personLastName(), equalTo("two one"));
+        assertThat(row.commonInterestScore(), equalTo(1 / 3D));
+        assertThat(row.gender(), equalTo("male"));
+        assertThat(row.personCityName(), equalTo("city0"));
 
-            row = result.next();
-            assertThat(row.personId(), equalTo(11L));
-            assertThat(row.personFirstName(), equalTo("friendfriend"));
-            assertThat(row.personLastName(), equalTo("one one"));
-            assertThat(row.commonInterestScore(), equalTo(1 / 3D));
-            assertThat(row.gender(), equalTo("female"));
-            assertThat(row.personCityName(), equalTo("city1"));
+        row = result.next();
+        assertThat(row.personId(), equalTo(12L));
+        assertThat(row.personFirstName(), equalTo("friendfriend"));
+        assertThat(row.personLastName(), equalTo("one two"));
+        assertThat(row.commonInterestScore(), equalTo(0D));
+        assertThat(row.gender(), equalTo("male"));
+        assertThat(row.personCityName(), equalTo("city0"));
 
-            row = result.next();
-            assertThat(row.personId(), equalTo(21L));
-            assertThat(row.personFirstName(), equalTo("friendfriend"));
-            assertThat(row.personLastName(), equalTo("two one"));
-            assertThat(row.commonInterestScore(), equalTo(1 / 3D));
-            assertThat(row.gender(), equalTo("male"));
-            assertThat(row.personCityName(), equalTo("city0"));
+        row = result.next();
+        assertThat(row.personId(), equalTo(22L));
+        assertThat(row.personFirstName(), equalTo("friendfriend"));
+        assertThat(row.personLastName(), equalTo("two two"));
+        assertThat(row.commonInterestScore(), equalTo(0D));
+        assertThat(row.gender(), equalTo("male"));
+        assertThat(row.personCityName(), equalTo("city0"));
 
-            row = result.next();
-            assertThat(row.personId(), equalTo(12L));
-            assertThat(row.personFirstName(), equalTo("friendfriend"));
-            assertThat(row.personLastName(), equalTo("one two"));
-            assertThat(row.commonInterestScore(), equalTo(0D));
-            assertThat(row.gender(), equalTo("male"));
-            assertThat(row.personCityName(), equalTo("city0"));
-
-            row = result.next();
-            assertThat(row.personId(), equalTo(22L));
-            assertThat(row.personFirstName(), equalTo("friendfriend"));
-            assertThat(row.personLastName(), equalTo("two two"));
-            assertThat(row.commonInterestScore(), equalTo(0D));
-            assertThat(row.gender(), equalTo("male"));
-            assertThat(row.personCityName(), equalTo("city0"));
-
-            assertThat(result.hasNext(), is(false));
-
-            tx.success();
-        } catch (Exception e) {
-            stackTrace = ConcurrentErrorReporter.stackTraceToString(e);
-            exceptionThrown = true;
-        }
-        assertThat(stackTrace, exceptionThrown, is(false));
+        assertThat(result.hasNext(), is(false));
     }
 
     @Test
-    public void query11ShouldReturnExpectedResult() throws IOException {
+    public void query11ShouldReturnExpectedResult() throws IOException, DbException {
         createDb(new TestGraph.Query11GraphMaker());
 
         long personId = 0;
@@ -767,188 +642,128 @@ public abstract class QueryCorrectnessTest {
         int maxWorkFromYear = 4;
         int limit = 3;
 
-        LdbcQuery11 operation11 = new LdbcQuery11(personId, countryName, maxWorkFromYear, limit);
-        Neo4jQuery11 query11 = neo4jQuery11Impl();
+        LdbcQuery11 operation = new LdbcQuery11(personId, countryName, maxWorkFromYear, limit);
+        Iterator<LdbcQuery11Result> result = neo4jQuery11Impl(dbDir, operation);
 
-        // TODO uncomment to print query
-        System.out.println("\n" + operation11.toString() + "\n" + query11.description() + "\n");
+        LdbcQuery11Result row;
 
-        String stackTrace = null;
-        boolean exceptionThrown = false;
-        try (Transaction tx = db.beginTx()) {
-            Iterator<LdbcQuery11Result> result = query11.execute(db, engine, operation11);
+        row = result.next();
+        assertThat(row.personId(), equalTo(1L));
+        assertThat(row.personFirstName(), equalTo("friend"));
+        assertThat(row.personLastName(), equalTo("one"));
+        assertThat(row.organizationName(), equalTo("company zero"));
+        assertThat(row.organizationWorkFromYear(), equalTo(2));
 
-            LdbcQuery11Result row;
+        row = result.next();
+        assertThat(row.personId(), equalTo(11L));
+        assertThat(row.personFirstName(), equalTo("friend friend"));
+        assertThat(row.personLastName(), equalTo("one one"));
+        assertThat(row.organizationName(), equalTo("company zero"));
+        assertThat(row.organizationWorkFromYear(), equalTo(3));
 
-            row = result.next();
-            assertThat(row.personId(), equalTo(1L));
-            assertThat(row.personFirstName(), equalTo("friend"));
-            assertThat(row.personLastName(), equalTo("one"));
-            assertThat(row.organizationName(), equalTo("company zero"));
-            assertThat(row.organizationWorkFromYear(), equalTo(2));
-
-            row = result.next();
-            assertThat(row.personId(), equalTo(11L));
-            assertThat(row.personFirstName(), equalTo("friend friend"));
-            assertThat(row.personLastName(), equalTo("one one"));
-            assertThat(row.organizationName(), equalTo("company zero"));
-            assertThat(row.organizationWorkFromYear(), equalTo(3));
-
-            assertThat(result.hasNext(), is(false));
-
-            tx.success();
-        } catch (Exception e) {
-            stackTrace = ConcurrentErrorReporter.stackTraceToString(e);
-            exceptionThrown = true;
-        }
-        assertThat(stackTrace, exceptionThrown, is(false));
+        assertThat(result.hasNext(), is(false));
     }
 
     @Test
-    public void query12ShouldReturnExpectedResult() throws IOException {
+    public void query12ShouldReturnExpectedResult() throws IOException, DbException {
         createDb(new TestGraph.Query12GraphMaker());
 
         long personId = 0;
         long tagClassId = 1;
         int limit = 4;
 
-        LdbcQuery12 operation12 = new LdbcQuery12(personId, tagClassId, limit);
-        Neo4jQuery12 query12 = neo4jQuery12Impl();
+        LdbcQuery12 operation = new LdbcQuery12(personId, tagClassId, limit);
+        Iterator<LdbcQuery12Result> result = neo4jQuery12Impl(dbDir, operation);
 
-        // TODO uncomment to print query
-        System.out.println("\n" + operation12.toString() + "\n" + query12.description() + "\n");
+        LdbcQuery12Result row;
 
-        String stackTrace = null;
-        boolean exceptionThrown = false;
-        try (Transaction tx = db.beginTx()) {
-            Iterator<LdbcQuery12Result> result = query12.execute(db, engine, operation12);
+        row = result.next();
+        assertThat(row.personId(), equalTo(1L));
+        assertThat(row.personFirstName(), equalTo("f"));
+        assertThat(row.personLastName(), equalTo("1"));
+        assertThat(row.tagNames().size(), equalTo(3));
+        assertThat(Sets.newHashSet(row.tagNames()), equalTo(Sets.newHashSet("tag111", "tag112", "tag12111")));
+        assertThat(row.replyCount(), equalTo(4L));
 
-            LdbcQuery12Result row;
+        row = result.next();
+        assertThat(row.personId(), equalTo(2L));
+        assertThat(row.personFirstName(), equalTo("f"));
+        assertThat(row.personLastName(), equalTo("2"));
+        assertThat(row.tagNames().size(), equalTo(2));
+        assertThat(Sets.newHashSet(row.tagNames()), equalTo(Sets.newHashSet("tag111", "tag112")));
+        assertThat(row.replyCount(), equalTo(2L));
 
-            row = result.next();
-            assertThat(row.personId(), equalTo(1L));
-            assertThat(row.personFirstName(), equalTo("f"));
-            assertThat(row.personLastName(), equalTo("1"));
-            assertThat(row.tagNames().size(), equalTo(3));
-            assertThat(Sets.newHashSet(row.tagNames()), equalTo(Sets.newHashSet("tag111", "tag112", "tag12111")));
-            assertThat(row.replyCount(), equalTo(4L));
+        row = result.next();
+        assertThat(row.personId(), equalTo(3L));
+        assertThat(row.personFirstName(), equalTo("f"));
+        assertThat(row.personLastName(), equalTo("3"));
+        assertThat(row.tagNames().size(), equalTo(2));
+        assertThat(Sets.newHashSet(row.tagNames()), equalTo(Sets.newHashSet("tag112", "tag11")));
+        assertThat(row.replyCount(), equalTo(2L));
 
-            row = result.next();
-            assertThat(row.personId(), equalTo(2L));
-            assertThat(row.personFirstName(), equalTo("f"));
-            assertThat(row.personLastName(), equalTo("2"));
-            assertThat(row.tagNames().size(), equalTo(2));
-            assertThat(Sets.newHashSet(row.tagNames()), equalTo(Sets.newHashSet("tag111", "tag112")));
-            assertThat(row.replyCount(), equalTo(2L));
+        row = result.next();
+        assertThat(row.personId(), equalTo(4L));
+        assertThat(row.personFirstName(), equalTo("f"));
+        assertThat(row.personLastName(), equalTo("4"));
+        assertThat(row.tagNames().size(), equalTo(0));
+        assertThat(Sets.newHashSet(row.tagNames()), equalTo(Sets.<String>newHashSet()));
+        assertThat(row.replyCount(), equalTo(0L));
 
-            row = result.next();
-            assertThat(row.personId(), equalTo(3L));
-            assertThat(row.personFirstName(), equalTo("f"));
-            assertThat(row.personLastName(), equalTo("3"));
-            assertThat(row.tagNames().size(), equalTo(2));
-            assertThat(Sets.newHashSet(row.tagNames()), equalTo(Sets.newHashSet("tag112", "tag11")));
-            assertThat(row.replyCount(), equalTo(2L));
-
-            row = result.next();
-            assertThat(row.personId(), equalTo(4L));
-            assertThat(row.personFirstName(), equalTo("f"));
-            assertThat(row.personLastName(), equalTo("4"));
-            assertThat(row.tagNames().size(), equalTo(0));
-            assertThat(Sets.newHashSet(row.tagNames()), equalTo(Sets.<String>newHashSet()));
-            assertThat(row.replyCount(), equalTo(0L));
-
-            assertThat(result.hasNext(), is(false));
-
-            tx.success();
-        } catch (Exception e) {
-            stackTrace = ConcurrentErrorReporter.stackTraceToString(e);
-            exceptionThrown = true;
-        }
-        assertThat(stackTrace, exceptionThrown, is(false));
+        assertThat(result.hasNext(), is(false));
     }
 
     @Test
-    public void query13ShouldReturnExpectedResult() throws IOException {
+    public void query13ShouldReturnExpectedResult() throws IOException, DbException {
         createDb(new TestGraph.Query13GraphMaker());
 
         long personId1 = 0;
         long personId2 = 5;
 
-        LdbcQuery13 operation13 = new LdbcQuery13(personId1, personId2);
-        Neo4jQuery13 query13 = neo4jQuery13Impl();
+        LdbcQuery13 operation = new LdbcQuery13(personId1, personId2);
+        Iterator<LdbcQuery13Result> result = neo4jQuery13Impl(dbDir, operation);
 
-        // TODO uncomment to print query
-        System.out.println("\n" + operation13.toString() + "\n" + query13.description() + "\n");
+        LdbcQuery13Result row;
 
-        String stackTrace = null;
-        boolean exceptionThrown = false;
-        try (Transaction tx = db.beginTx()) {
-            Iterator<LdbcQuery13Result> result = query13.execute(db, engine, operation13);
+        row = result.next();
+        assertThat(row.shortestPathLength(), equalTo(5));
 
-            LdbcQuery13Result row;
-
-            row = result.next();
-            assertThat(row.shortestPathLength(), equalTo(5));
-
-            assertThat(result.hasNext(), is(false));
-
-            tx.success();
-        } catch (Exception e) {
-            stackTrace = ConcurrentErrorReporter.stackTraceToString(e);
-            exceptionThrown = true;
-        }
-        assertThat(stackTrace, exceptionThrown, is(false));
+        assertThat(result.hasNext(), is(false));
     }
 
     @Test
-    public void query14ShouldReturnExpectedResult() throws IOException {
+    public void query14ShouldReturnExpectedResult() throws IOException, DbException {
         createDb(new TestGraph.Query14GraphMaker());
 
         long personId1 = 0;
         long personId2 = 1;
         int limit = 5;
 
-        LdbcQuery14 operation14 = new LdbcQuery14(personId1, personId2, limit);
-        Neo4jQuery14 query14 = neo4jQuery14Impl();
+        LdbcQuery14 operation = new LdbcQuery14(personId1, personId2, limit);
+        Iterator<LdbcQuery14Result> result = neo4jQuery14Impl(dbDir, operation);
 
-        // TODO uncomment to print query
-        System.out.println("\n" + operation14.toString() + "\n" + query14.description() + "\n");
+        LdbcQuery14Result row;
 
-        String stackTrace = null;
-        boolean exceptionThrown = false;
-        try (Transaction tx = db.beginTx()) {
-            Iterator<LdbcQuery14Result> result = query14.execute(db, engine, operation14);
+        row = result.next();
+        assertThat(row.weight(), equalTo(1.0));
+        assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Post", 0L), new PathNode("Comment", 0L), new PathNode("Person", 1L))));
 
-            LdbcQuery14Result row;
+        row = result.next();
+        assertThat(row.weight(), equalTo(0.5));
+        assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Comment", 5L), new PathNode("Comment", 6L), new PathNode("Person", 1L))));
 
-            row = result.next();
-            assertThat(row.weight(), equalTo(1.0));
-            assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Post", 0L), new PathNode("Comment", 0L), new PathNode("Person", 1L))));
-
-            row = result.next();
-            assertThat(row.weight(), equalTo(0.5));
-            assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Comment", 5L), new PathNode("Comment", 6L), new PathNode("Person", 1L))));
-
-            row = result.next();
-            assertThat(row.weight(), equalTo(0.5));
-            assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Comment", 1L), new PathNode("Comment", 0L), new PathNode("Person", 1L))));
+        row = result.next();
+        assertThat(row.weight(), equalTo(0.5));
+        assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Comment", 1L), new PathNode("Comment", 0L), new PathNode("Person", 1L))));
 
 
-            row = result.next();
-            assertThat(row.weight(), equalTo(0.5));
-            assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Comment", 1L), new PathNode("Comment", 2L), new PathNode("Person", 1L))));
+        row = result.next();
+        assertThat(row.weight(), equalTo(0.5));
+        assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Comment", 1L), new PathNode("Comment", 2L), new PathNode("Person", 1L))));
 
-            row = result.next();
-            assertThat(row.weight(), equalTo(2.0));
-            assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Post", 0L), new PathNode("Comment", 0L), new PathNode("Comment", 1L), new PathNode("Comment", 2L), new PathNode("Person", 1L))));
+        row = result.next();
+        assertThat(row.weight(), equalTo(2.0));
+        assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Post", 0L), new PathNode("Comment", 0L), new PathNode("Comment", 1L), new PathNode("Comment", 2L), new PathNode("Person", 1L))));
 
-            assertThat(result.hasNext(), is(false));
-
-            tx.success();
-        } catch (Exception e) {
-            stackTrace = ConcurrentErrorReporter.stackTraceToString(e);
-            exceptionThrown = true;
-        }
-        assertThat(stackTrace, exceptionThrown, is(false));
+        assertThat(result.hasNext(), is(false));
     }
 }

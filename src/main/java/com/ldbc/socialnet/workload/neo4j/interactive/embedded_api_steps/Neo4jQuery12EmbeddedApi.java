@@ -4,12 +4,11 @@ import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery12;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery12Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery12;
-import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.Iterator;
 
-public class Neo4jQuery12EmbeddedApi implements Neo4jQuery12 {
+public class Neo4jQuery12EmbeddedApi extends Neo4jQuery12<GraphDatabaseService> {
     private final LdbcTraversers traversers;
 
     public Neo4jQuery12EmbeddedApi(LdbcTraversers traversers) {
@@ -22,7 +21,7 @@ public class Neo4jQuery12EmbeddedApi implements Neo4jQuery12 {
     }
 
     @Override
-    public Iterator<LdbcQuery12Result> execute(GraphDatabaseService db, ExecutionEngine engine, LdbcQuery12 operation) {
+    public Iterator<LdbcQuery12Result> execute(GraphDatabaseService db, LdbcQuery12 operation) {
         return null;
     }
 }

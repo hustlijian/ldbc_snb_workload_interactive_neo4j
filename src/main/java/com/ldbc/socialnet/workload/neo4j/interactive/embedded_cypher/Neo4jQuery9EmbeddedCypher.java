@@ -6,7 +6,6 @@ import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery9;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery9Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery9;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,7 +13,7 @@ import java.util.Map;
 
 import static com.ldbc.socialnet.workload.neo4j.Domain.*;
 
-public class Neo4jQuery9EmbeddedCypher implements Neo4jQuery9 {
+public class Neo4jQuery9EmbeddedCypher extends Neo4jQuery9<ExecutionEngine> {
     /*
         Q9 - Find the newest 20 posts from your friends within 2 steps
         Description
@@ -51,7 +50,7 @@ public class Neo4jQuery9EmbeddedCypher implements Neo4jQuery9 {
     }
 
     @Override
-    public Iterator<LdbcQuery9Result> execute(GraphDatabaseService db, ExecutionEngine engine, LdbcQuery9 operation) {
+    public Iterator<LdbcQuery9Result> execute(ExecutionEngine engine, LdbcQuery9 operation) {
         return Iterators.transform(engine.execute(QUERY_STRING, buildParams(operation)).iterator(),
                 new Function<Map<String, Object>, LdbcQuery9Result>() {
                     @Override

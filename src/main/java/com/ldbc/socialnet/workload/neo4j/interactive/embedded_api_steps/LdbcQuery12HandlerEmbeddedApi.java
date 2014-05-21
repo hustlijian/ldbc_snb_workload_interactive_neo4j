@@ -9,8 +9,6 @@ import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery12;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery12Result;
 import com.ldbc.socialnet.workload.neo4j.Neo4jConnectionStateEmbedded;
 import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
-import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery12;
-import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 
@@ -19,16 +17,12 @@ import java.util.List;
 public class LdbcQuery12HandlerEmbeddedApi extends OperationHandler<LdbcQuery12> {
     @Override
     protected OperationResult executeOperation(LdbcQuery12 operation) throws DbException {
-        ExecutionEngine engine = ((Neo4jConnectionStateEmbedded) dbConnectionState()).executionEngine();
         GraphDatabaseService db = ((Neo4jConnectionStateEmbedded) dbConnectionState()).db();
         LdbcTraversers traversers = ((Neo4jConnectionStateEmbedded) dbConnectionState()).traversers();
-        Neo4jQuery12 query = new Neo4jQuery12EmbeddedApi(traversers);
         List<LdbcQuery12Result> result;
-
-        // TODO find way to do this
         int resultCode = 0;
         try (Transaction tx = db.beginTx()) {
-            result = ImmutableList.copyOf(query.execute(db, engine, operation));
+            result = ImmutableList.copyOf(new Neo4jQuery12EmbeddedApi(traversers).execute(db, operation));
             tx.success();
         } catch (Exception e) {
             String errMsg = String.format(

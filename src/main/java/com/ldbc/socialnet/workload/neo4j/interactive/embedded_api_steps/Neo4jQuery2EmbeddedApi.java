@@ -12,7 +12,6 @@ import com.ldbc.socialnet.workload.neo4j.Domain.Person;
 import com.ldbc.socialnet.workload.neo4j.Domain.Post;
 import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery2;
-import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
@@ -22,7 +21,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-public class Neo4jQuery2EmbeddedApi implements Neo4jQuery2 {
+public class Neo4jQuery2EmbeddedApi extends Neo4jQuery2<GraphDatabaseService> {
     private final LdbcTraversers traversers;
 
     public Neo4jQuery2EmbeddedApi(LdbcTraversers traversers) {
@@ -35,7 +34,7 @@ public class Neo4jQuery2EmbeddedApi implements Neo4jQuery2 {
     }
 
     @Override
-    public Iterator<LdbcQuery2Result> execute(GraphDatabaseService db, ExecutionEngine engine, LdbcQuery2 operation) {
+    public Iterator<LdbcQuery2Result> execute(GraphDatabaseService db, LdbcQuery2 operation) {
         /*
         MATCH (:Person {id:{person_id}})-[:KNOWS]-(friend:Person)<-[:HAS_CREATOR]-(post:Post)
         WHERE post.creationDate<={max_date}

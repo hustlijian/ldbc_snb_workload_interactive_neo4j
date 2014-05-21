@@ -8,7 +8,6 @@ import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery1Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery1;
-import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 
@@ -17,7 +16,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-public class Neo4jQuery1EmbeddedApi implements Neo4jQuery1 {
+public class Neo4jQuery1EmbeddedApi extends Neo4jQuery1<GraphDatabaseService> {
     private final LdbcTraversers traversers;
 
     public Neo4jQuery1EmbeddedApi(LdbcTraversers traversers) {
@@ -30,7 +29,7 @@ public class Neo4jQuery1EmbeddedApi implements Neo4jQuery1 {
     }
 
     @Override
-    public Iterator<LdbcQuery1Result> execute(GraphDatabaseService db, ExecutionEngine engine, LdbcQuery1 params) {
+    public Iterator<LdbcQuery1Result> execute(GraphDatabaseService db, LdbcQuery1 params) {
         /*
         Given a person’s first name, return up to 10 people with the same first name sorted by last name. 
         Persons are returned (e.g. as for a search page with top 10 shown), 

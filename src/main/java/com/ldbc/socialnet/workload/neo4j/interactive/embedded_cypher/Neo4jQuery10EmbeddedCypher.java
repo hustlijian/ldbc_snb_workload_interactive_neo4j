@@ -6,7 +6,6 @@ import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery10;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery10Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery10;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,7 +13,7 @@ import java.util.Map;
 
 import static com.ldbc.socialnet.workload.neo4j.Domain.*;
 
-public class Neo4jQuery10EmbeddedCypher implements Neo4jQuery10 {
+public class Neo4jQuery10EmbeddedCypher extends Neo4jQuery10<ExecutionEngine> {
     /*
     Q10 - Who to connect with?
         Description
@@ -105,7 +104,7 @@ public class Neo4jQuery10EmbeddedCypher implements Neo4jQuery10 {
     }
 
     @Override
-    public Iterator<LdbcQuery10Result> execute(GraphDatabaseService db, ExecutionEngine engine, LdbcQuery10 operation) {
+    public Iterator<LdbcQuery10Result> execute(ExecutionEngine engine, LdbcQuery10 operation) {
         return Iterators.transform(engine.execute(QUERY_STRING, buildParams(operation)).iterator(),
                 new Function<Map<String, Object>, LdbcQuery10Result>() {
                     @Override

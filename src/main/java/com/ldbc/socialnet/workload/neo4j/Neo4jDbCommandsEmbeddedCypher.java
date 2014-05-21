@@ -5,6 +5,7 @@ import com.ldbc.driver.DbConnectionState;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.*;
 import com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher.*;
+import com.ldbc.socialnet.workload.neo4j.interactive.remote_cypher.LdbcQuery1HandlerRemoteCypher;
 import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -51,7 +52,7 @@ public class Neo4jDbCommandsEmbeddedCypher extends Neo4jDbCommands {
 
     @Override
     public void registerHandlersWithDb(Db db) throws DbException {
-        db.registerOperationHandler(LdbcQuery1.class, LdbcQuery1HandlerEmbeddedCypher.class);
+        db.registerOperationHandler(LdbcQuery1.class, LdbcQuery1HandlerRemoteCypher.class);
         db.registerOperationHandler(LdbcQuery2.class, LdbcQuery2HandlerEmbeddedCypher.class);
         db.registerOperationHandler(LdbcQuery3.class, LdbcQuery3HandlerEmbeddedCypher.class);
         db.registerOperationHandler(LdbcQuery4.class, LdbcQuery4HandlerEmbeddedCypher.class);

@@ -8,7 +8,6 @@ import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery5Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery5;
-import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.traversal.TraversalDescription;
@@ -16,7 +15,7 @@ import org.neo4j.traversal.steps.execution.StepsUtils;
 
 import java.util.*;
 
-public class Neo4jQuery5EmbeddedApi implements Neo4jQuery5 {
+public class Neo4jQuery5EmbeddedApi extends Neo4jQuery5<GraphDatabaseService> {
     private final LdbcTraversers traversers;
 
     public Neo4jQuery5EmbeddedApi(LdbcTraversers traversers) {
@@ -30,7 +29,7 @@ public class Neo4jQuery5EmbeddedApi implements Neo4jQuery5 {
 
     // TODO remove comment counting from this query
     @Override
-    public Iterator<LdbcQuery5Result> execute(GraphDatabaseService db, ExecutionEngine engine, LdbcQuery5 operation) {
+    public Iterator<LdbcQuery5Result> execute(GraphDatabaseService db, LdbcQuery5 operation) {
         /*
         What are the groups that your connections (friendship up to second hop) have joined after a certain date? 
         Order them by the number of posts and comments your connections made there.

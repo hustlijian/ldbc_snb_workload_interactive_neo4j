@@ -6,7 +6,6 @@ import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery11;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery11Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery11;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,7 +13,7 @@ import java.util.Map;
 
 import static com.ldbc.socialnet.workload.neo4j.Domain.*;
 
-public class Neo4jQuery11EmbeddedCypher implements Neo4jQuery11 {
+public class Neo4jQuery11EmbeddedCypher extends Neo4jQuery11<ExecutionEngine> {
     /*
     Q11 - Referral
     Description
@@ -53,7 +52,7 @@ public class Neo4jQuery11EmbeddedCypher implements Neo4jQuery11 {
     }
 
     @Override
-    public Iterator<LdbcQuery11Result> execute(GraphDatabaseService db, ExecutionEngine engine, LdbcQuery11 operation) {
+    public Iterator<LdbcQuery11Result> execute(ExecutionEngine engine, LdbcQuery11 operation) {
         return Iterators.transform(engine.execute(QUERY_STRING, buildParams(operation)).iterator(),
                 new Function<Map<String, Object>, LdbcQuery11Result>() {
                     @Override

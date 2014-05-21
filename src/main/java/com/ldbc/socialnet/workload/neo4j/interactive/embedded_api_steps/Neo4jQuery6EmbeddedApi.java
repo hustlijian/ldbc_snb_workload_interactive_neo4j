@@ -11,7 +11,6 @@ import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.Domain.Tag;
 import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery6;
-import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.traversal.steps.execution.StepsUtils;
@@ -19,7 +18,7 @@ import org.neo4j.traversal.steps.execution.StepsUtils;
 import java.util.*;
 import java.util.Map.Entry;
 
-public class Neo4jQuery6EmbeddedApi implements Neo4jQuery6 {
+public class Neo4jQuery6EmbeddedApi extends Neo4jQuery6<GraphDatabaseService> {
     private final LdbcTraversers traversers;
 
     public Neo4jQuery6EmbeddedApi(LdbcTraversers traversers) {
@@ -32,7 +31,7 @@ public class Neo4jQuery6EmbeddedApi implements Neo4jQuery6 {
     }
 
     @Override
-    public Iterator<LdbcQuery6Result> execute(GraphDatabaseService db, ExecutionEngine engine, LdbcQuery6 operation) {
+    public Iterator<LdbcQuery6Result> execute(GraphDatabaseService db, LdbcQuery6 operation) {
         /*
         QUERY 6
 

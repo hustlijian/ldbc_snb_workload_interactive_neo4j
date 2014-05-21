@@ -19,7 +19,6 @@ import java.util.List;
 public class LdbcQuery4HandlerEmbeddedApi extends OperationHandler<LdbcQuery4> {
     @Override
     protected OperationResult executeOperation(LdbcQuery4 operation) throws DbException {
-        ExecutionEngine engine = ((Neo4jConnectionStateEmbedded) dbConnectionState()).executionEngine();
         GraphDatabaseService db = ((Neo4jConnectionStateEmbedded) dbConnectionState()).db();
         LdbcTraversers traversers = ((Neo4jConnectionStateEmbedded) dbConnectionState()).traversers();
         Neo4jQuery4 query4 = new Neo4jQuery4EmbeddedApi(traversers);
@@ -28,7 +27,7 @@ public class LdbcQuery4HandlerEmbeddedApi extends OperationHandler<LdbcQuery4> {
         // TODO find way to do this
         int resultCode = 0;
         try (Transaction tx = db.beginTx()) {
-            result = ImmutableList.copyOf(query4.execute(db, engine, operation));
+            result = ImmutableList.copyOf(query4.execute(db, operation));
             tx.success();
         } catch (Exception e) {
             String errMsg = String.format(

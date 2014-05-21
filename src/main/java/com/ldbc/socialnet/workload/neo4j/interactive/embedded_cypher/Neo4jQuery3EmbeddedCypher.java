@@ -7,13 +7,12 @@ import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery3Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery3;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class Neo4jQuery3EmbeddedCypher implements Neo4jQuery3 {
+public class Neo4jQuery3EmbeddedCypher extends Neo4jQuery3<ExecutionEngine> {
     private static final String QUERY_STRING = ""
             + "MATCH (person:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{person_id}})-[:" + Domain.Rels.KNOWS + "*1..2]-(friend:" + Domain.Nodes.Person + ")"
             + "<-[:" + Domain.Rels.HAS_CREATOR + "]-(postX:" + Domain.Nodes.Post + ")-[:" + Domain.Rels.IS_LOCATED_IN + "]->(countryX:" + Domain.Place.Type.Country + ")\n"
@@ -32,7 +31,7 @@ public class Neo4jQuery3EmbeddedCypher implements Neo4jQuery3 {
     }
 
     @Override
-    public Iterator<LdbcQuery3Result> execute(GraphDatabaseService db, ExecutionEngine engine, LdbcQuery3 operation) {
+    public Iterator<LdbcQuery3Result> execute(ExecutionEngine engine, LdbcQuery3 operation) {
         return Iterators.transform(engine.execute(QUERY_STRING, buildParams(operation)).iterator(),
                 new Function<Map<String, Object>, LdbcQuery3Result>() {
                     @Override

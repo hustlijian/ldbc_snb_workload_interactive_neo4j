@@ -20,12 +20,11 @@ public class LdbcQuery12HandlerEmbeddedCypher extends OperationHandler<LdbcQuery
     protected OperationResult executeOperation(LdbcQuery12 operation) throws DbException {
         ExecutionEngine engine = ((Neo4jConnectionStateEmbedded) dbConnectionState()).executionEngine();
         GraphDatabaseService db = ((Neo4jConnectionStateEmbedded) dbConnectionState()).db();
-        Neo4jQuery12 query12 = new Neo4jQuery12EmbeddedCypher();
         List<LdbcQuery12Result> result;
 
         int resultCode = 0;
         try (Transaction tx = db.beginTx()) {
-            result = ImmutableList.copyOf(query12.execute(db, engine, operation));
+            result = ImmutableList.copyOf(new Neo4jQuery12EmbeddedCypher().execute(engine, operation));
             tx.success();
         } catch (Exception e) {
             String errMsg = String.format(

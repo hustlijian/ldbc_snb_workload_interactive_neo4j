@@ -8,7 +8,6 @@ import com.ldbc.driver.runtime.ConcurrentErrorReporter;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery4;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery4Result;
 import com.ldbc.socialnet.workload.neo4j.Neo4jConnectionStateEmbedded;
-import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery4;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
@@ -21,12 +20,10 @@ public class LdbcQuery4HandlerEmbeddedCypher extends OperationHandler<LdbcQuery4
     protected OperationResult executeOperation(LdbcQuery4 operation) throws DbException {
         ExecutionEngine engine = ((Neo4jConnectionStateEmbedded) dbConnectionState()).executionEngine();
         GraphDatabaseService db = ((Neo4jConnectionStateEmbedded) dbConnectionState()).db();
-        Neo4jQuery4 query4 = new Neo4jQuery4EmbeddedCypher();
-        List<LdbcQuery4Result> result = null;
-
+        List<LdbcQuery4Result> result;
         int resultCode = 0;
         try (Transaction tx = db.beginTx()) {
-            result = ImmutableList.copyOf(query4.execute(db, engine, operation));
+            result = ImmutableList.copyOf(new Neo4jQuery4EmbeddedCypher().execute(engine, operation));
             tx.success();
         } catch (Exception e) {
             String errMsg = String.format(

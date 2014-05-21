@@ -6,7 +6,6 @@ import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery6;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery6Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery6;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,7 +13,7 @@ import java.util.Map;
 
 import static com.ldbc.socialnet.workload.neo4j.Domain.*;
 
-public class Neo4jQuery6EmbeddedCypher implements Neo4jQuery6 {
+public class Neo4jQuery6EmbeddedCypher extends Neo4jQuery6<ExecutionEngine> {
     private static final String QUERY_STRING = ""
             + "MATCH (person:" + Nodes.Person + " {" + Person.ID + ":{person_id}})-[:" + Rels.KNOWS + "*1..2]-(:" + Nodes.Person + ")<-[:" + Rels.HAS_CREATOR + "]-(post:" + Nodes.Post + ")-[:" + Rels.HAS_TAG + "]->(:" + Nodes.Tag + " {" + Tag.NAME + ":{tag_name}})\n"
             + "WITH DISTINCT post\n"
@@ -30,7 +29,7 @@ public class Neo4jQuery6EmbeddedCypher implements Neo4jQuery6 {
     }
 
     @Override
-    public Iterator<LdbcQuery6Result> execute(GraphDatabaseService db, ExecutionEngine engine, LdbcQuery6 operation) {
+    public Iterator<LdbcQuery6Result> execute(ExecutionEngine engine, LdbcQuery6 operation) {
         return Iterators.transform(engine.execute(QUERY_STRING, buildParams(operation)).iterator(),
                 new Function<Map<String, Object>, LdbcQuery6Result>() {
                     @Override

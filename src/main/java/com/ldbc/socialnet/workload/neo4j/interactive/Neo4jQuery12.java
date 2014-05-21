@@ -1,11 +1,9 @@
 package com.ldbc.socialnet.workload.neo4j.interactive;
 
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery11;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery11Result;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery12;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery12Result;
 
-public interface Neo4jQuery12 extends Neo4jQuery<LdbcQuery12, LdbcQuery12Result> {
+public abstract class Neo4jQuery12<CONNECTION> implements Neo4jQuery<LdbcQuery12, LdbcQuery12Result, CONNECTION> {
 /*
     Description
         Find friends of a specified user that have replied the most to posts with a tag in a given category.
