@@ -66,7 +66,7 @@ public abstract class Neo4jQuery1<CONNECTION> implements Neo4jQuery<LdbcQuery1, 
             + " friendCity." + Domain.Place.NAME + " AS cityName,"
             + " unis,"
             + " companies\n"
-            + "ORDER BY distance ASC, friend." + Domain.Person.LAST_NAME + " ASC\n"
+            + "ORDER BY distance ASC, friend." + Domain.Person.LAST_NAME + " ASC, friend." + Domain.Person.ID + " ASC\n"
             + "LIMIT {" + LIMIT + "}";
 
     // TODO try this shortest path approach too

@@ -6,6 +6,7 @@ import com.ldbc.driver.Operation;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.*;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery;
 import com.ldbc.socialnet.workload.neo4j.interactive.remote_cypher.Neo4jQuery1RemoteCypher;
+import com.ldbc.socialnet.workload.neo4j.interactive.remote_cypher.Neo4jQuery2RemoteCypher;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -49,7 +50,7 @@ public class QueryCorrectnessRemoteCypherTest extends QueryCorrectnessTest {
 
     @Override
     public Iterator<LdbcQuery2Result> neo4jQuery2Impl(String path, LdbcQuery2 operation) throws DbException {
-        return null;
+        return executeQuery(operation, new Neo4jQuery2RemoteCypher(), path);
     }
 
     @Override

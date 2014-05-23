@@ -5,8 +5,8 @@ import com.ldbc.driver.DbException;
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResult;
 import com.ldbc.driver.runtime.ConcurrentErrorReporter;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery1;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery1Result;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery2;
+import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery2Result;
 import com.ldbc.socialnet.workload.neo4j.Neo4jConnectionStateEmbedded;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
@@ -14,26 +14,17 @@ import org.neo4j.graphdb.Transaction;
 import java.sql.Connection;
 import java.util.List;
 
-public class LdbcQuery1HandlerRemoteCypher extends OperationHandler<LdbcQuery1> {
+public class LdbcQuery2HandlerRemoteCypher extends OperationHandler<LdbcQuery2> {
     @Override
-    protected OperationResult executeOperation(LdbcQuery1 operation) throws DbException {
-
-//        // TODO this needs to be in DB
-//        // Make sure Neo4j Driver is registered
-//        try {
-//            Class.forName("org.neo4j.jdbc.Driver");
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-
+    protected OperationResult executeOperation(LdbcQuery2 operation) throws DbException {
         // TODO this needs to be in DB
         Connection connection = null;
 
         GraphDatabaseService db = ((Neo4jConnectionStateEmbedded) dbConnectionState()).db();
-        List<LdbcQuery1Result> result;
+        List<LdbcQuery2Result> result;
         int resultCode = 0;
         try (Transaction tx = db.beginTx()) {
-            result = ImmutableList.copyOf(new Neo4jQuery1RemoteCypher().execute(connection, operation));
+            result = ImmutableList.copyOf(new Neo4jQuery2RemoteCypher().execute(connection, operation));
             tx.success();
         } catch (Exception e) {
             String errMsg = String.format(
