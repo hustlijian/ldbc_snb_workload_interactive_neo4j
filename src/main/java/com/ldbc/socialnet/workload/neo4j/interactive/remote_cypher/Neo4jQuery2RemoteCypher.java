@@ -39,8 +39,6 @@ public class Neo4jQuery2RemoteCypher extends Neo4jQuery2<Connection> {
             this.resultSet = resultSet;
         }
 
-        git update-index --cacheinfo 160000 6f5cd278ae85114a50e7ff81e8788bcd146ff6b9 neo4j-jdbc
-
         @Override
         public boolean hasNext() {
             try {
