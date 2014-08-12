@@ -7,7 +7,6 @@ import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery7Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery7;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,11 +30,11 @@ public class Neo4jQuery7EmbeddedCypher extends Neo4jQuery7<ExecutionEngine> {
                                 (long) row.get("personId"),
                                 (String) row.get("personFirstName"),
                                 (String) row.get("personLastName"),
-                                new Date((long) row.get("likeDate")),
-                                (boolean) row.get("isNew"),
+                                (long) row.get("likeDate"),
                                 (long) row.get("postId"),
                                 (String) row.get("postContent"),
-                                (long) row.get("latency"));
+                                (int) row.get("latency"),
+                                (boolean) row.get("isNew"));
                     }
                 });
     }

@@ -1,7 +1,7 @@
 package com.ldbc.socialnet.workload.neo4j.interactive;
 
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery9;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery9Result;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery9;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery9Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 
 public abstract class Neo4jQuery9<CONNECTION> implements Neo4jQuery<LdbcQuery9, LdbcQuery9Result, CONNECTION> {

@@ -30,9 +30,9 @@ public class Neo4jQuery10EmbeddedCypher extends Neo4jQuery10<ExecutionEngine> {
                     @Override
                     public LdbcQuery10Result apply(Map<String, Object> row) {
                         return new LdbcQuery10Result(
+                                (long) row.get("personId"),
                                 (String) row.get("personFirstName"),
                                 (String) row.get("personLastName"),
-                                (long) row.get("personId"),
                                 (double) row.get("commonInterestScore"),
                                 (String) row.get("personGender"),
                                 (String) row.get("personCityName"));

@@ -4,6 +4,8 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
+import com.ldbc.driver.temporal.Duration;
+import com.ldbc.driver.temporal.Time;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery4;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery4Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
@@ -11,7 +13,6 @@ import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery4;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
-import org.neo4j.traversal.steps.execution.StepsUtils;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -47,19 +48,25 @@ public class Neo4jQuery4EmbeddedApi extends Neo4jQuery4<GraphDatabaseService> {
         ORDER BY tagCount DESC
         LIMIT 10         
         */
+        long startDateAsMilli = operation.startDate().getTime();
+        int durationHours = operation.durationDays() * 24;
+        long endDateAsMilli = Time.fromMilli(startDateAsMilli).plus(Duration.fromHours(durationHours)).asMilli();
+
         Iterator<Node> personIterator = db.findNodesByLabelAndProperty(Domain.Nodes.Person, Domain.Person.ID,
                 operation.personId()).iterator();
         if (false == personIterator.hasNext()) return Iterators.emptyIterator();
         Node person = personIterator.next();
         Iterator<String> tagNames = Iterators.transform(
-                traversers.friendPostTags(operation.minDateAsMilli(), operation.maxDateAsMilli()).traverse(person).nodes().iterator(),
+                traversers.friendPostTags(startDateAsMilli, endDateAsMilli).traverse(person).nodes().iterator(),
                 new Function<Node, String>() {
                     @Override
                     public String apply(Node endNode) {
                         return (String) endNode.getProperty(Domain.Tag.NAME);
                     }
                 });
-        Map<String, Integer> tagNamesCountMap = StepsUtils.count(tagNames);
+        // TODO uncomment
+//        Map<String, Integer> tagNamesCountMap = StepsUtils.count(tagNames);
+        Map<String, Integer> tagNamesCountMap = null;
         List<LdbcQuery4Result> tagCounts = Lists.newArrayList(Iterables.transform(tagNamesCountMap.entrySet(),
                 new Function<Entry<String, Integer>, LdbcQuery4Result>() {
                     @Override

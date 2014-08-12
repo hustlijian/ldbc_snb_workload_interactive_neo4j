@@ -29,7 +29,7 @@ public class Neo4jQuery6EmbeddedCypher extends Neo4jQuery6<ExecutionEngine> {
                     public LdbcQuery6Result apply(Map<String, Object> next) {
                         return new LdbcQuery6Result(
                                 (String) next.get("tagName"),
-                                (long) next.get("tagCount"));
+                                (int) next.get("tagCount"));
                     }
                 });
     }

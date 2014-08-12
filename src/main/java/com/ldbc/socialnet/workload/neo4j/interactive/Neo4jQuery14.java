@@ -1,13 +1,12 @@
 package com.ldbc.socialnet.workload.neo4j.interactive;
 
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery14;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery14Result;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery14;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery14Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 
 public abstract class Neo4jQuery14<CONNECTION> implements Neo4jQuery<LdbcQuery14, LdbcQuery14Result, CONNECTION> {
     protected static final Integer PERSON_ID_1 = 1;
     protected static final Integer PERSON_ID_2 = 2;
-    protected static final Integer LIMIT = 3;
 
     protected static final String QUERY_STRING = ""
             + "MATCH path = (person1:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID_1 + "}})<-[:" + Domain.Rels.HAS_CREATOR + "]-()-[r:" + Domain.Rels.REPLY_OF + "*0..]-()"
@@ -21,6 +20,5 @@ public abstract class Neo4jQuery14<CONNECTION> implements Neo4jQuery<LdbcQuery14
             + "     WHEN '" + Domain.Nodes.Comment + "' THEN weight + 0.5\n"
             + "     ELSE weight\n"
             + "   END) AS weight\n"
-            + "ORDER BY length(pathNodes) ASC, weight DESC\n"
-            + "LIMIT {" + LIMIT + "}";
+            + "ORDER BY length(pathNodes) ASC, weight DESC";
 }

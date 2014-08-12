@@ -1,15 +1,14 @@
 package com.ldbc.socialnet.workload.neo4j.interactive.remote_cypher;
 
 import com.ldbc.driver.DbException;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery7;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery7Result;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery7;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery7Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery7;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.Iterator;
 
 public class Neo4jQuery7RemoteCypher extends Neo4jQuery7<Connection> {
@@ -54,11 +53,11 @@ public class Neo4jQuery7RemoteCypher extends Neo4jQuery7<Connection> {
                         resultSet.getLong("personId"),
                         resultSet.getString("personFirstName"),
                         resultSet.getString("personLastName"),
-                        new Date(resultSet.getLong("likeDate")),
-                        resultSet.getBoolean("isNew"),
+                        resultSet.getLong("likeDate"),
                         resultSet.getLong("postId"),
                         resultSet.getString("postContent"),
-                        resultSet.getLong("latency"));
+                        resultSet.getInt("latency"),
+                        resultSet.getBoolean("isNew"));
             } catch (SQLException e) {
                 throw new RuntimeException("Error while retrieving next row", e);
             }

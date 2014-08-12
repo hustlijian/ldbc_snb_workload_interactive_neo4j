@@ -1,8 +1,8 @@
 package com.ldbc.socialnet.workload.neo4j.interactive.remote_cypher;
 
 import com.ldbc.driver.DbException;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery12;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery12Result;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery12;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery12Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery12;
 
 import java.sql.Connection;
@@ -22,7 +22,7 @@ public class Neo4jQuery12RemoteCypher extends Neo4jQuery12<Connection> {
     public Iterator<LdbcQuery12Result> execute(Connection connection, LdbcQuery12 operation) throws DbException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_STRING)) {
             preparedStatement.setLong(PERSON_ID, operation.personId());
-            preparedStatement.setLong(TAG_CLASS_ID, operation.tagClassId());
+            preparedStatement.setString(TAG_CLASS_NAME, operation.tagClassName());
             preparedStatement.setInt(LIMIT, operation.limit());
             ResultSet resultSet = preparedStatement.executeQuery();
             return new ResultSetIterator(resultSet);
@@ -56,7 +56,7 @@ public class Neo4jQuery12RemoteCypher extends Neo4jQuery12<Connection> {
                         resultSet.getString("friendFirstName"),
                         resultSet.getString("friendLastName"),
                         (Collection<String>) resultSet.getObject("tagNames"),
-                        resultSet.getLong("count"));
+                        resultSet.getInt("count"));
             } catch (SQLException e) {
                 throw new RuntimeException("Error while retrieving next row", e);
             }

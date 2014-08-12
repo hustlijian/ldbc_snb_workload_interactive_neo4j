@@ -1,8 +1,8 @@
 package com.ldbc.socialnet.workload.neo4j.interactive.remote_cypher;
 
 import com.ldbc.driver.DbException;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery5;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery5Result;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery5;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery5Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery5;
 
 import java.sql.Connection;
@@ -21,7 +21,7 @@ public class Neo4jQuery5RemoteCypher extends Neo4jQuery5<Connection> {
     public Iterator<LdbcQuery5Result> execute(Connection connection, LdbcQuery5 operation) throws DbException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_STRING)) {
             preparedStatement.setLong(PERSON_ID, operation.personId());
-            preparedStatement.setLong(JOIN_DATE, operation.joinDate().getTime());
+            preparedStatement.setLong(JOIN_DATE, operation.minDate().getTime());
             preparedStatement.setInt(LIMIT, operation.limit());
             ResultSet resultSet = preparedStatement.executeQuery();
             return new ResultSetIterator(resultSet);
@@ -52,7 +52,7 @@ public class Neo4jQuery5RemoteCypher extends Neo4jQuery5<Connection> {
             try {
                 return new LdbcQuery5Result(
                         resultSet.getString("forum"),
-                        resultSet.getLong("postCount"));
+                        resultSet.getInt("postCount"));
             } catch (SQLException e) {
                 throw new RuntimeException("Error while retrieving next row", e);
             }

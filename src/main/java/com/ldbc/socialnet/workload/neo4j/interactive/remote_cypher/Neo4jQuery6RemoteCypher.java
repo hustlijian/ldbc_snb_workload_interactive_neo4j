@@ -1,8 +1,8 @@
 package com.ldbc.socialnet.workload.neo4j.interactive.remote_cypher;
 
 import com.ldbc.driver.DbException;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery6;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery6Result;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery6;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery6Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery6;
 
 import java.sql.Connection;

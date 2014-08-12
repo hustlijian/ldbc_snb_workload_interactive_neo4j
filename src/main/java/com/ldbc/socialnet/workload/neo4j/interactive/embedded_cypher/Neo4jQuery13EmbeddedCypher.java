@@ -34,8 +34,8 @@ public class Neo4jQuery13EmbeddedCypher extends Neo4jQuery13<ExecutionEngine> {
 
     private Map<String, Object> buildParams(LdbcQuery13 operation) {
         Map<String, Object> queryParams = new HashMap<>();
-        queryParams.put(PERSON_ID_1_STRING, operation.personId1());
-        queryParams.put(PERSON_ID_2_STRING, operation.personId2());
+        queryParams.put(PERSON_ID_1_STRING, operation.person1Id());
+        queryParams.put(PERSON_ID_2_STRING, operation.person2Id());
         return queryParams;
     }
 }

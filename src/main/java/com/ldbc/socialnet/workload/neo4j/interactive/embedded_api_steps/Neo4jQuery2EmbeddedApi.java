@@ -44,7 +44,7 @@ public class Neo4jQuery2EmbeddedApi extends Neo4jQuery2<GraphDatabaseService> {
         if (false == personIterator.hasNext()) return Iterators.emptyIterator();
         final Node person = personIterator.next();
 
-        Iterator<Path> friendsAndPostsPaths = traversers.friendsPostsBeforeDate(operation.maxDateAsMilli()).traverse(
+        Iterator<Path> friendsAndPostsPaths = traversers.friendsPostsBeforeDate(operation.maxDate().getTime()).traverse(
                 person).iterator();
 
         /*
@@ -77,8 +77,8 @@ public class Neo4jQuery2EmbeddedApi extends Neo4jQuery2<GraphDatabaseService> {
     public static class CreationDateComparator implements Comparator<LdbcQuery2Result> {
         @Override
         public int compare(LdbcQuery2Result result1, LdbcQuery2Result result2) {
-            if (result1.postDate() == result2.postDate()) return 0;
-            if (result1.postDate() > result2.postDate()) return -1;
+            if (result1.postOrCommentCreationDate() == result2.postOrCommentCreationDate()) return 0;
+            if (result1.postOrCommentCreationDate() > result2.postOrCommentCreationDate()) return -1;
             return 1;
         }
     }

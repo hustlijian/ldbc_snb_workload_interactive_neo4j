@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 
+// TODO unignore
 @Ignore
 public class QueryCorrectnessRemoteCypherTest extends QueryCorrectnessTest {
 

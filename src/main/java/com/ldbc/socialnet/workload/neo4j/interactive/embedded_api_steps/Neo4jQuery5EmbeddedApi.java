@@ -1,6 +1,9 @@
 package com.ldbc.socialnet.workload.neo4j.interactive.embedded_api_steps;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 import com.ldbc.driver.util.Function2;
 import com.ldbc.driver.util.MapUtils;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery5;
@@ -11,7 +14,6 @@ import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery5;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.traversal.TraversalDescription;
-import org.neo4j.traversal.steps.execution.StepsUtils;
 
 import java.util.*;
 
@@ -67,8 +69,10 @@ public class Neo4jQuery5EmbeddedApi extends Neo4jQuery5<GraphDatabaseService> {
         if (false == personIterator.hasNext()) return Iterators.emptyIterator();
         final Node person = personIterator.next();
 
-        Iterator<Node> friendsIterator = StepsUtils.excluding(
-                StepsUtils.distinct(traversers.friendsAndFriendsOfFriends().traverse(person).nodes()), person);
+        // TODO uncomment
+//        Iterator<Node> friendsIterator = StepsUtils.excluding(
+//                StepsUtils.distinct(traversers.friendsAndFriendsOfFriends().traverse(person).nodes()), person);
+        Iterator<Node> friendsIterator = null;
         Set<Node> friendsSet = ImmutableSet.copyOf(friendsIterator);
         Node[] friendsArray = friendsSet.toArray(new Node[friendsSet.size()]);
 
@@ -76,8 +80,10 @@ public class Neo4jQuery5EmbeddedApi extends Neo4jQuery5<GraphDatabaseService> {
         MATCH (friend)<-[membership:HAS_MEMBER]-(forum:Forum)
         WHERE membership.joinDate>{join_date}
          */
-        List<Node> forums = ImmutableList.copyOf(StepsUtils.distinct(traversers.personsMembershipForums(
-                operation.minDate().getTime()).traverse(friendsArray).nodes().iterator()));
+        // TODO uncomment
+//        List<Node> forums = ImmutableList.copyOf(StepsUtils.distinct(traversers.personsMembershipForums(
+//                operation.minDate().getTime()).traverse(friendsArray).nodes().iterator()));
+        List<Node> forums = null;
 
         /*
         MATCH (friend)<-[:HAS_CREATOR]-(comment:Comment)
@@ -86,7 +92,7 @@ public class Neo4jQuery5EmbeddedApi extends Neo4jQuery5<GraphDatabaseService> {
         Set<Node> friendsComments = ImmutableSet.copyOf(traversers.personsComments().traverse(friendsArray).nodes());
         TraversalDescription commentsOnPostsInForumTraverser = traversers.commentsOnPostsInForum(friendsComments);
 
-        Map<Node, LdbcQuery5Result> forumCommentsMap = new HashMap<Node, LdbcQuery5Result>();
+        Map<Node, LdbcQuery5Result> forumCommentsMap = new HashMap<>();
         for (Node forum : forums) {
             String forumTitle = (String) forum.getProperty(Domain.Forum.TITLE);
             int postCount = 0;
@@ -99,7 +105,7 @@ public class Neo4jQuery5EmbeddedApi extends Neo4jQuery5<GraphDatabaseService> {
         MATCH (friend)<-[:HAS_CREATOR]-(post:Post)<-[:CONTAINER_OF]-(forum)
          */
         TraversalDescription postsInForumByFriendsTraverser = traversers.postsInForumByFriends(friendsSet);
-        Map<Node, LdbcQuery5Result> forumPostsMap = new HashMap<Node, LdbcQuery5Result>();
+        Map<Node, LdbcQuery5Result> forumPostsMap = new HashMap<>();
         for (final Node forum : forums) {
             String forumTitle = (String) forum.getProperty(Domain.Forum.TITLE);
             int postCount = Iterables.size(postsInForumByFriendsTraverser.traverse(forum));
@@ -131,8 +137,8 @@ public class Neo4jQuery5EmbeddedApi extends Neo4jQuery5<GraphDatabaseService> {
     public static class CommentAndPostCountComparator implements Comparator<LdbcQuery5Result> {
         @Override
         public int compare(LdbcQuery5Result result1, LdbcQuery5Result result2) {
-            if (result1.count() == result2.count()) return 0;
-            if (result1.count() > result2.count()) return -1;
+            if (result1.postCount() == result2.postCount()) return 0;
+            if (result1.postCount() > result2.postCount()) return -1;
             return 1;
         }
     }

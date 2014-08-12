@@ -41,7 +41,7 @@ public class Neo4jQuery9EmbeddedCypher extends Neo4jQuery9<ExecutionEngine> {
     private Map<String, Object> buildParams(LdbcQuery9 operation) {
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.put(PERSON_ID_STRING, operation.personId());
-        queryParams.put(LATEST_DATE_STRING, operation.date());
+        queryParams.put(LATEST_DATE_STRING, operation.maxDate().getTime());
         queryParams.put(LIMIT_STRING, operation.limit());
         return queryParams;
     }

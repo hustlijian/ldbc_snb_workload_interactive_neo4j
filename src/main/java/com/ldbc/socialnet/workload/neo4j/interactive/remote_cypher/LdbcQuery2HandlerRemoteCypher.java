@@ -3,13 +3,10 @@ package com.ldbc.socialnet.workload.neo4j.interactive.remote_cypher;
 import com.google.common.collect.ImmutableList;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.OperationHandler;
-import com.ldbc.driver.OperationResult;
 import com.ldbc.driver.OperationResultReport;
 import com.ldbc.driver.runtime.ConcurrentErrorReporter;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery2;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery2Result;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery2;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery2Result;
 import com.ldbc.socialnet.workload.neo4j.Neo4jConnectionStateEmbedded;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
@@ -20,7 +17,6 @@ import java.util.List;
 public class LdbcQuery2HandlerRemoteCypher extends OperationHandler<LdbcQuery2> {
     @Override
     protected OperationResultReport executeOperation(LdbcQuery2 operation) throws DbException {
-        OperationResult
         // TODO this needs to be in DB
         Connection connection = null;
 

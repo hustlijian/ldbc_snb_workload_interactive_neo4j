@@ -1,8 +1,10 @@
 package com.ldbc.socialnet.workload.neo4j.interactive.remote_cypher;
 
 import com.ldbc.driver.DbException;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery4;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery4Result;
+import com.ldbc.driver.temporal.Duration;
+import com.ldbc.driver.temporal.Time;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery4;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery4Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery4;
 
 import java.sql.Connection;
@@ -22,8 +24,11 @@ public class Neo4jQuery4RemoteCypher extends Neo4jQuery4<Connection> {
     public Iterator<LdbcQuery4Result> execute(Connection connection, LdbcQuery4 operation) throws DbException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_STRING)) {
             preparedStatement.setLong(PERSON_ID, operation.personId());
-            preparedStatement.setLong(MIN_DATE, operation.minDateAsMilli());
-            preparedStatement.setLong(MAX_DATE, operation.maxDateAsMilli());
+            long startDateAsMilli = operation.startDate().getTime();
+            int durationHours = operation.durationDays() * 24;
+            long endDateAsMilli = Time.fromMilli(startDateAsMilli).plus(Duration.fromHours(durationHours)).asMilli();
+            preparedStatement.setLong(MIN_DATE, startDateAsMilli);
+            preparedStatement.setLong(MAX_DATE, endDateAsMilli);
             preparedStatement.setInt(LIMIT, operation.limit());
             ResultSet resultSet = preparedStatement.executeQuery();
             return new ResultSetIterator(resultSet);

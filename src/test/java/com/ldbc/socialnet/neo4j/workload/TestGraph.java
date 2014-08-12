@@ -4575,42 +4575,49 @@ public class TestGraph {
             protected static Map<String, Object> tc1() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(TagClass.URI, 1L);
+                params.put(TagClass.NAME, "1");
                 return params;
             }
 
             protected static Map<String, Object> tc11() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(TagClass.URI, 11L);
+                params.put(TagClass.NAME, "11");
                 return params;
             }
 
             protected static Map<String, Object> tc12() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(TagClass.URI, 12L);
+                params.put(TagClass.NAME, "12");
                 return params;
             }
 
             protected static Map<String, Object> tc121() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(TagClass.URI, 121L);
+                params.put(TagClass.NAME, "121");
                 return params;
             }
 
             protected static Map<String, Object> tc1211() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(TagClass.URI, 1211L);
+                params.put(TagClass.NAME, "1211");
                 return params;
             }
 
             protected static Map<String, Object> tc2() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(TagClass.URI, 2L);
+                params.put(TagClass.NAME, "2");
                 return params;
             }
 
             protected static Map<String, Object> tc21() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(TagClass.URI, 21L);
+                params.put(TagClass.NAME, "21");
                 return params;
             }
         }

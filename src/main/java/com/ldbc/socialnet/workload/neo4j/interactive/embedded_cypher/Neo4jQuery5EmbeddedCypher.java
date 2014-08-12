@@ -29,14 +29,14 @@ public class Neo4jQuery5EmbeddedCypher extends Neo4jQuery5<ExecutionEngine> {
             public LdbcQuery5Result apply(Map<String, Object> row) {
                 return new LdbcQuery5Result(
                         (String) row.get("forum"),
-                        (long) row.get("postCount"));
+                        (int) row.get("postCount"));
             }
         };
         return Iterables.transform(engine.execute(QUERY_STRING, cypherParams), transformFun).iterator();
     }
 
     private Map<String, Object> buildParams(LdbcQuery5 operation) {
-        Map<String, Object> queryParams = new HashMap<String, Object>();
+        Map<String, Object> queryParams = new HashMap<>();
         queryParams.put(PERSON_ID_STRING, operation.personId());
         queryParams.put(JOIN_DATE_STRING, operation.minDate().getTime());
         queryParams.put(LIMIT_STRING, operation.limit());

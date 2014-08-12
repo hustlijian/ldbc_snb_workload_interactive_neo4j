@@ -1,19 +1,16 @@
 package com.ldbc.socialnet.workload.neo4j.interactive.embedded_api_steps;
 
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery6;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery6Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
-import com.ldbc.socialnet.workload.neo4j.Domain.Tag;
 import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery6;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
-import org.neo4j.traversal.steps.execution.StepsUtils;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -75,12 +72,16 @@ public class Neo4jQuery6EmbeddedApi extends Neo4jQuery6<GraphDatabaseService> {
         if (false == personIterator.hasNext()) return Iterators.emptyIterator();
         final Node person = personIterator.next();
 
-        List<Node> friends = ImmutableList.copyOf(StepsUtils.excluding(
-                StepsUtils.distinct(traversers.friendsAndFriendsOfFriends().traverse(person).nodes()), person));
+        // TODO uncomment
+//        List<Node> friends = ImmutableList.copyOf(StepsUtils.excluding(
+//                StepsUtils.distinct(traversers.friendsAndFriendsOfFriends().traverse(person).nodes()), person));
+        List<Node> friends = null;
         Node[] friendsArray = friends.toArray(new Node[friends.size()]);
 
-        List<Node> friendsPosts = ImmutableList.copyOf(StepsUtils.projectNodesFromPath(
-                traversers.personsPostsWithGivenTag(operation.tagName()).traverse(friendsArray), 1));
+        // TODO uncomment
+//        List<Node> friendsPosts = ImmutableList.copyOf(StepsUtils.projectNodesFromPath(
+//                traversers.personsPostsWithGivenTag(operation.tagName()).traverse(friendsArray), 1));
+        List<Node> friendsPosts = null;
 
         /*
         MATCH (post)-[:HAS_TAG]->(tag:Tag)
@@ -92,13 +93,15 @@ public class Neo4jQuery6EmbeddedApi extends Neo4jQuery6<GraphDatabaseService> {
         /*
         RETURN tag.name AS tagName, count(tag) AS tagCount
          */
-        Map<String, Integer> tagNameCounts = StepsUtils.count(Iterators.transform(tagNodes,
-                new Function<Node, String>() {
-                    @Override
-                    public String apply(Node tagNode) {
-                        return (String) tagNode.getProperty(Tag.NAME);
-                    }
-                }));
+        // TODO uncomment
+//        Map<String, Integer> tagNameCounts = StepsUtils.count(Iterators.transform(tagNodes,
+//                new Function<Node, String>() {
+//                    @Override
+//                    public String apply(Node tagNode) {
+//                        return (String) tagNode.getProperty(Tag.NAME);
+//                    }
+//                }));
+        Map<String, Integer> tagNameCounts = null;
 
         List<LdbcQuery6Result> result = Lists.newArrayList(Iterables.transform(tagNameCounts.entrySet(),
                 new Function<Entry<String, Integer>, LdbcQuery6Result>() {

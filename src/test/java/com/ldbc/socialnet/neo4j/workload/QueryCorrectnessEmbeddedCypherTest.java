@@ -3,11 +3,12 @@ package com.ldbc.socialnet.neo4j.workload;
 import com.google.common.collect.ImmutableList;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.Operation;
-import com.ldbc.driver.util.TestUtils;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.*;
+import com.ldbc.socialnet.neo4j.TestUtils;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery;
 import com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher.*;
 import com.ldbc.socialnet.workload.neo4j.utils.Utils;
+import org.junit.Ignore;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
@@ -18,6 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+// TODO unignore
+@Ignore
 public class QueryCorrectnessEmbeddedCypherTest extends QueryCorrectnessTest {
 
     private <OPERATION_RESULT, OPERATION extends Operation<List<OPERATION_RESULT>>> Iterator<OPERATION_RESULT> executeQuery(OPERATION operation,

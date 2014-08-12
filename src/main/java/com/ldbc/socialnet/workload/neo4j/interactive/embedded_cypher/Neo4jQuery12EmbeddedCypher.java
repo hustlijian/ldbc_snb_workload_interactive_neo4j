@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class Neo4jQuery12EmbeddedCypher extends Neo4jQuery12<ExecutionEngine> {
     protected static final String PERSON_ID_STRING = PERSON_ID.toString();
-    protected static final String TAG_CLASS_ID_STRING = TAG_CLASS_ID.toString();
+    protected static final String TAG_CLASS_NAME_STRING = TAG_CLASS_NAME.toString();
     protected static final String LIMIT_STRING = LIMIT.toString();
 
     @Override
@@ -33,7 +33,7 @@ public class Neo4jQuery12EmbeddedCypher extends Neo4jQuery12<ExecutionEngine> {
                                 (String) row.get("friendFirstName"),
                                 (String) row.get("friendLastName"),
                                 (Collection<String>) row.get("tagNames"),
-                                (long) row.get("count"));
+                                (int) row.get("count"));
                     }
                 });
     }
@@ -41,7 +41,7 @@ public class Neo4jQuery12EmbeddedCypher extends Neo4jQuery12<ExecutionEngine> {
     private Map<String, Object> buildParams(LdbcQuery12 operation) {
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.put(PERSON_ID_STRING, operation.personId());
-        queryParams.put(TAG_CLASS_ID_STRING, operation.tagClassId());
+        queryParams.put(TAG_CLASS_NAME_STRING, operation.tagClassName());
         queryParams.put(LIMIT_STRING, operation.limit());
         return queryParams;
     }

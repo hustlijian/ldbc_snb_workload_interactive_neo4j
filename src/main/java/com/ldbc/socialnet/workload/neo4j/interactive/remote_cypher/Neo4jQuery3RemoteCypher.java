@@ -1,8 +1,10 @@
 package com.ldbc.socialnet.workload.neo4j.interactive.remote_cypher;
 
 import com.ldbc.driver.DbException;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery3;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery3Result;
+import com.ldbc.driver.temporal.Duration;
+import com.ldbc.driver.temporal.Time;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery3;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery3Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery3;
 
 import java.sql.Connection;
@@ -21,10 +23,13 @@ public class Neo4jQuery3RemoteCypher extends Neo4jQuery3<Connection> {
     public Iterator<LdbcQuery3Result> execute(Connection connection, LdbcQuery3 operation) throws DbException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_STRING)) {
             preparedStatement.setLong(PERSON_ID, operation.personId());
-            preparedStatement.setString(COUNTRY_X, operation.countryX());
-            preparedStatement.setString(COUNTRY_Y, operation.countryY());
-            preparedStatement.setLong(MIN_DATE, operation.startDateAsMilli());
-            preparedStatement.setLong(MAX_DATE, operation.endDateAsMilli());
+            preparedStatement.setString(COUNTRY_X, operation.countryXName());
+            preparedStatement.setString(COUNTRY_Y, operation.countryYName());
+            long startDateAsMilli = operation.startDate().getTime();
+            int durationHours = operation.durationDays() * 24;
+            long endDateAsMilli = Time.fromMilli(startDateAsMilli).plus(Duration.fromHours(durationHours)).asMilli();
+            preparedStatement.setLong(MIN_DATE, startDateAsMilli);
+            preparedStatement.setLong(MAX_DATE, endDateAsMilli);
             preparedStatement.setInt(LIMIT, operation.limit());
             ResultSet resultSet = preparedStatement.executeQuery();
             return new ResultSetIterator(resultSet);
@@ -54,9 +59,12 @@ public class Neo4jQuery3RemoteCypher extends Neo4jQuery3<Connection> {
         public LdbcQuery3Result next() {
             try {
                 return new LdbcQuery3Result(
-                        resultSet.getString("friendName"),
+                        resultSet.getLong("friendId"),
+                        resultSet.getString("friendFirstName"),
+                        resultSet.getString("friendLastName"),
                         resultSet.getLong("xCount"),
-                        resultSet.getLong("yCount"));
+                        resultSet.getLong("yCount"),
+                        resultSet.getLong("xyCount"));
             } catch (SQLException e) {
                 throw new RuntimeException("Error while retrieving next row", e);
             }

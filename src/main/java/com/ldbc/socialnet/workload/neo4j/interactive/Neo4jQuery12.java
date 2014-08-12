@@ -1,12 +1,12 @@
 package com.ldbc.socialnet.workload.neo4j.interactive;
 
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery12;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery12Result;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery12;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery12Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 
 public abstract class Neo4jQuery12<CONNECTION> implements Neo4jQuery<LdbcQuery12, LdbcQuery12Result, CONNECTION> {
     protected static final Integer PERSON_ID = 1;
-    protected static final Integer TAG_CLASS_ID = 2;
+    protected static final Integer TAG_CLASS_NAME = 2;
     protected static final Integer LIMIT = 3;
 
     // TODO GOOD AND FINAL
@@ -14,7 +14,7 @@ public abstract class Neo4jQuery12<CONNECTION> implements Neo4jQuery<LdbcQuery12
             + "MATCH (:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID + "}})-[:" + Domain.Rels.KNOWS + "]-(friend:" + Domain.Nodes.Person + ")\n"
             + "OPTIONAL MATCH (friend)<-[:" + Domain.Rels.HAS_CREATOR + "]-(comment:" + Domain.Nodes.Comment + ")-[:" + Domain.Rels.REPLY_OF + "*]->()-[:" + Domain.Rels.HAS_TAG + "]->(tag:" + Domain.Nodes.Tag + ")"
             + "-[:" + Domain.Rels.HAS_TYPE + "]->(tagClass:" + Domain.Nodes.TagClass + ")-[:" + Domain.Rels.IS_SUBCLASS_OF + "*0..]->(baseTagClass:" + Domain.Nodes.TagClass + ")\n"
-            + "WHERE tagClass." + Domain.TagClass.URI + " = {" + TAG_CLASS_ID + "} OR baseTagClass." + Domain.TagClass.URI + " = {" + TAG_CLASS_ID + "}\n"
+            + "WHERE tagClass." + Domain.TagClass.NAME + " = {" + TAG_CLASS_NAME + "} OR baseTagClass." + Domain.TagClass.NAME + " = {" + TAG_CLASS_NAME + "}\n"
             + "RETURN"
             + " friend." + Domain.Person.ID + " AS friendId,"
             + " friend." + Domain.Person.FIRST_NAME + " AS friendFirstName,"

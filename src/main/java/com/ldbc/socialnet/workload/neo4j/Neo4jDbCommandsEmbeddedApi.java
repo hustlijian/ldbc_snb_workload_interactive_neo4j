@@ -22,7 +22,6 @@ public class Neo4jDbCommandsEmbeddedApi extends Neo4jDbCommands {
     private LdbcTraversers traversers;
 
     public enum LdbcTraversersType {
-        RAW,
         STEPS
     }
 
@@ -42,9 +41,6 @@ public class Neo4jDbCommandsEmbeddedApi extends Neo4jDbCommands {
         }
         db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbPath).setConfig(dbConfig).newGraphDatabase();
         switch (traversersType) {
-            case RAW:
-                traversers = new LdbcTraversersRaw(db);
-                break;
             case STEPS:
                 traversers = new LdbcTraversersSteps(db);
                 break;

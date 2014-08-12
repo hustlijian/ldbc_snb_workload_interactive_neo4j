@@ -1,8 +1,8 @@
 package com.ldbc.socialnet.workload.neo4j.interactive.remote_cypher;
 
 import com.ldbc.driver.DbException;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery9;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery9Result;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery9;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery9Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery9;
 
 import java.sql.Connection;
@@ -21,7 +21,7 @@ public class Neo4jQuery9RemoteCypher extends Neo4jQuery9<Connection> {
     public Iterator<LdbcQuery9Result> execute(Connection connection, LdbcQuery9 operation) throws DbException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_STRING)) {
             preparedStatement.setLong(PERSON_ID, operation.personId());
-            preparedStatement.setLong(LATEST_DATE, operation.date());
+            preparedStatement.setLong(LATEST_DATE, operation.maxDate().getTime());
             preparedStatement.setInt(LIMIT, operation.limit());
             ResultSet resultSet = preparedStatement.executeQuery();
             return new ResultSetIterator(resultSet);

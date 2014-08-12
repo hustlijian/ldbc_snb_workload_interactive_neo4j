@@ -5,6 +5,8 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
+import com.ldbc.driver.temporal.Duration;
+import com.ldbc.driver.temporal.Time;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery3;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery3Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
@@ -13,7 +15,6 @@ import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery3;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.traversal.TraversalDescription;
-import org.neo4j.traversal.steps.execution.StepsUtils;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -58,21 +59,27 @@ public class Neo4jQuery3EmbeddedApi extends Neo4jQuery3<GraphDatabaseService> {
         if (false == personIterator.hasNext()) return Iterators.emptyIterator();
         final Node person = personIterator.next();
 
-        Iterator<Node> friendsWithPerson = StepsUtils.distinct(traversers.friendsAndFriendsOfFriends().traverse(
-                person).nodes().iterator());
-        Iterator<Node> friends = Iterators.filter(StepsUtils.distinct(friendsWithPerson), new Predicate<Node>() {
-            @Override
-            public boolean apply(Node input) {
-                return !input.equals(person);
-            }
-        });
+        // TODO uncomment
+//        Iterator<Node> friendsWithPerson = StepsUtils.distinct(traversers.friendsAndFriendsOfFriends().traverse(
+//                person).nodes().iterator());
+        Iterator<Node> friendsWithPerson = null;
 
-        TraversalDescription postsInCountryX = traversers.postsInCountry(operation.countryX(),
-                operation.startDateAsMilli(), operation.endDateAsMilli());
-        TraversalDescription postsInCountryY = traversers.postsInCountry(operation.countryY(),
-                operation.startDateAsMilli(), operation.endDateAsMilli());
-        Function<Node, LdbcQuery3Result> nodeToLdbcQuery3ResultFun = new NodeToLdbcQuery3ResultFun(postsInCountryX,
-                postsInCountryY);
+        // TODO uncomment
+//        Iterator<Node> friends = Iterators.filter(StepsUtils.distinct(friendsWithPerson), new Predicate<Node>() {
+//            @Override
+//            public boolean apply(Node input) {
+//                return !input.equals(person);
+//            }
+//        });
+        Iterator<Node> friends = null;
+
+        long startDateAsMilli = operation.startDate().getTime();
+        int durationHours = operation.durationDays() * 24;
+        long endDateAsMilli = Time.fromMilli(startDateAsMilli).plus(Duration.fromHours(durationHours)).asMilli();
+
+        TraversalDescription postsInCountryX = traversers.postsInCountry(operation.countryXName(), startDateAsMilli, endDateAsMilli);
+        TraversalDescription postsInCountryY = traversers.postsInCountry(operation.countryYName(), startDateAsMilli, endDateAsMilli);
+        Function<Node, LdbcQuery3Result> nodeToLdbcQuery3ResultFun = new NodeToLdbcQuery3ResultFun(postsInCountryX, postsInCountryY);
         Iterator<LdbcQuery3Result> resultWithZeroCounts = Iterators.transform(friends, nodeToLdbcQuery3ResultFun);
 
         List<LdbcQuery3Result> result = Lists.newArrayList(Iterators.filter(resultWithZeroCounts,
@@ -100,17 +107,18 @@ public class Neo4jQuery3EmbeddedApi extends Neo4jQuery3<GraphDatabaseService> {
         public LdbcQuery3Result apply(Node friend) {
             int countryXPostCount = Iterables.size(postsInCountryX.traverse(friend));
             int countryYPostCount = Iterables.size(postsInCountryY.traverse(friend));
-            String friendName = friend.getProperty(Domain.Person.FIRST_NAME) + " "
-                    + friend.getProperty(Domain.Person.LAST_NAME);
-            return new LdbcQuery3Result(friendName, countryXPostCount, countryYPostCount);
+            long friendId = (long) friend.getProperty(Domain.Person.ID);
+            String friendFirstName = (String) friend.getProperty(Domain.Person.FIRST_NAME);
+            String friendLastName = (String) friend.getProperty(Domain.Person.LAST_NAME);
+            return new LdbcQuery3Result(friendId, friendFirstName, friendLastName, countryXPostCount, countryYPostCount, countryXPostCount + countryYPostCount);
         }
     }
 
     class CountComparator implements Comparator<LdbcQuery3Result> {
         @Override
         public int compare(LdbcQuery3Result result1, LdbcQuery3Result result2) {
-            if (result1.xyCount() == result2.xyCount()) return 0;
-            if (result1.xyCount() > result2.xyCount()) return -1;
+            if (result1.count() == result2.count()) return 0;
+            if (result1.count() > result2.count()) return -1;
             return 1;
         }
     }

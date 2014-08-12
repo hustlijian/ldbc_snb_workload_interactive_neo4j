@@ -1,7 +1,7 @@
 package com.ldbc.socialnet.workload.neo4j.interactive;
 
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery3;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery3Result;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery3;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery3Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 
 public abstract class Neo4jQuery3<CONNECTION> implements Neo4jQuery<LdbcQuery3, LdbcQuery3Result, CONNECTION> {
@@ -19,8 +19,8 @@ public abstract class Neo4jQuery3<CONNECTION> implements Neo4jQuery<LdbcQuery3, 
             + "WITH friend, count(DISTINCT postX) AS xCount\n"
             + "MATCH (friend)<-[:" + Domain.Rels.HAS_CREATOR + "]-(postY:" + Domain.Nodes.Post + ")-[:" + Domain.Rels.IS_LOCATED_IN + "]->(countryY:" + Domain.Place.Type.Country + " {" + Domain.Place.NAME + ":{" + COUNTRY_Y + "}})\n"
             + "WHERE postY." + Domain.Post.CREATION_DATE + ">={" + MIN_DATE + "} AND postY." + Domain.Post.CREATION_DATE + "<={" + MAX_DATE + "}\n"
-            + "WITH friend." + Domain.Person.FIRST_NAME + " + ' ' + friend." + Domain.Person.LAST_NAME + " AS friendName , xCount, count(DISTINCT postY) AS yCount\n"
-            + "RETURN friendName, xCount, yCount, xCount + yCount AS xyCount\n"
+            + "WITH friend." + Domain.Person.ID + " AS friendId, friend." + Domain.Person.FIRST_NAME + " AS friendFirstName, friend." + Domain.Person.LAST_NAME + " AS friendLastName , xCount, count(DISTINCT postY) AS yCount\n"
+            + "RETURN friendId, friendFirstName, friendLastName, xCount, yCount, xCount + yCount AS xyCount\n"
             + "ORDER BY xyCount DESC\n"
             + "LIMIT {" + LIMIT + "}";
 }
