@@ -3,9 +3,8 @@ package com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
-import com.ldbc.driver.util.MapUtils;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery1;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery1Result;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery1;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery1Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery1;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 

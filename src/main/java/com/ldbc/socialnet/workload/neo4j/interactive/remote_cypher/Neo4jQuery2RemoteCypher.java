@@ -69,5 +69,4 @@ public class Neo4jQuery2RemoteCypher extends Neo4jQuery2<Connection> {
             throw new UnsupportedOperationException("remove() not supported by " + getClass().getName());
         }
     }
-
 }

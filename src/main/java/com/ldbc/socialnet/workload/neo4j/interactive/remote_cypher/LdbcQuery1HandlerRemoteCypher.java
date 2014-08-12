@@ -3,10 +3,10 @@ package com.ldbc.socialnet.workload.neo4j.interactive.remote_cypher;
 import com.google.common.collect.ImmutableList;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.OperationHandler;
-import com.ldbc.driver.OperationResult;
+import com.ldbc.driver.OperationResultReport;
 import com.ldbc.driver.runtime.ConcurrentErrorReporter;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery1;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery1Result;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery1;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery1Result;
 import com.ldbc.socialnet.workload.neo4j.Neo4jConnectionStateEmbedded;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class LdbcQuery1HandlerRemoteCypher extends OperationHandler<LdbcQuery1> {
     @Override
-    protected OperationResult executeOperation(LdbcQuery1 operation) throws DbException {
+    protected OperationResultReport executeOperation(LdbcQuery1 operation) throws DbException {
 
 //        // TODO this needs to be in DB
 //        // Make sure Neo4j Driver is registered

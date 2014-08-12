@@ -2,22 +2,22 @@ package com.ldbc.socialnet.workload.neo4j.interactive;
 
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery8;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery8Result;
+import com.ldbc.socialnet.workload.neo4j.Domain;
 
 public abstract class Neo4jQuery8<CONNECTION> implements Neo4jQuery<LdbcQuery8, LdbcQuery8Result, CONNECTION> {
-    /*
-    QUERY 8 - Most recent replies
+    protected static final Integer PERSON_ID = 1;
+    protected static final Integer LIMIT = 2;
 
-    DESCRIPTION
-        This query retrieves the most recent (20) replies to all the posts and comments of the specified person.
-        Order them descending by creation date, and then ascending by reply URI.
-    PARAMETERS
-        Person
-    RETURN
-        Person.id (of the person who replied to the post)
-        Person.firstName (of the person who replied to the post)
-        Person.lastName (of the person who replied to the post)
-        CreationDate of the reply
-        Reply URI
-        Content of the reply
-     */
+    protected static final String QUERY_STRING = ""
+            + "MATCH (:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID + "}})<-[:" + Domain.Rels.HAS_CREATOR + "]-(post:" + Domain.Nodes.Post + ")\n"
+            + "MATCH (post)<-[:" + Domain.Rels.REPLY_OF + "*]-(comment:" + Domain.Nodes.Comment + ")-[:" + Domain.Rels.HAS_CREATOR + "]->(person:" + Domain.Nodes.Person + ")\n"
+            + "RETURN"
+            + " person." + Domain.Person.ID + " AS personId,"
+            + " person." + Domain.Person.FIRST_NAME + " AS personFirstName,"
+            + " person." + Domain.Person.LAST_NAME + " AS personLastName,"
+            + " comment." + Domain.Comment.ID + " AS commentId,"
+            + " comment." + Domain.Comment.CREATION_DATE + " AS commentCreationDate,"
+            + " comment." + Domain.Comment.CONTENT + " AS commentContent\n"
+            + "ORDER BY commentCreationDate DESC, commentId ASC\n"
+            + "LIMIT {" + LIMIT + "}";
 }

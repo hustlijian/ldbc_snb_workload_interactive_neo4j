@@ -3,10 +3,11 @@ package com.ldbc.socialnet.neo4j.workload;
 import com.google.common.collect.ImmutableList;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.Operation;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.*;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.*;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery;
 import com.ldbc.socialnet.workload.neo4j.interactive.remote_cypher.Neo4jQuery1RemoteCypher;
 import com.ldbc.socialnet.workload.neo4j.interactive.remote_cypher.Neo4jQuery2RemoteCypher;
+import org.junit.Ignore;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 
+@Ignore
 public class QueryCorrectnessRemoteCypherTest extends QueryCorrectnessTest {
 
     // jdbc:neo4j://<host>:<port>/, e.g. jdbc:neo4j://localhost:7474/

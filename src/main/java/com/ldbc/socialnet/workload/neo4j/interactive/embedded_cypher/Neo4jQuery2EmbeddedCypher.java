@@ -2,8 +2,8 @@ package com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery2;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery2Result;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery2;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery2Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery2;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 

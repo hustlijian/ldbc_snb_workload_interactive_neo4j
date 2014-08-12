@@ -5,7 +5,7 @@ import com.google.common.collect.Sets;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.util.MapUtils;
 import com.ldbc.driver.util.TestUtils;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.*;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.*;
 import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 import org.junit.After;
 import org.junit.Before;
@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery14Result.PathNode;
+import static com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery14Result.PathNode;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -356,7 +356,9 @@ public abstract class QueryCorrectnessTest {
         c.set(2013, Calendar.JANUARY, 8);
         Date joinDate = c.getTime();
 
-        LdbcQuery5 operation = new LdbcQuery5(personId, joinDate);
+        int limit = 3;
+
+        LdbcQuery5 operation = new LdbcQuery5(personId, joinDate, limit);
         Iterator<LdbcQuery5Result> result = neo4jQuery5Impl(dbDir, operation);
 
         assertThat(result.hasNext(), is(true));

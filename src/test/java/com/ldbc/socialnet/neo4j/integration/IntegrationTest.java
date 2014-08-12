@@ -8,7 +8,7 @@ import com.ldbc.driver.control.LocalControlService;
 import com.ldbc.driver.temporal.Duration;
 import com.ldbc.driver.temporal.Time;
 import com.ldbc.driver.util.TestUtils;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcInteractiveWorkload;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload;
 import com.ldbc.socialnet.workload.neo4j.Neo4jDb;
 import com.ldbc.socialnet.workload.neo4j.load.LdbcSocialNeworkNeo4jImporter;
 import org.apache.commons.io.FileUtils;
@@ -67,41 +67,41 @@ public class IntegrationTest {
             Duration toleratedExecutionDelay = Duration.fromMinutes(1);
 
             Map<String, String> userParams = new HashMap<>();
-            userParams.put(LdbcInteractiveWorkload.WRITE_STREAM_FILENAME_KEY, "ldbc_driver/workloads/ldbc/socnet/interactive/updates.csv");
-            userParams.put(LdbcInteractiveWorkload.READ_RATIO_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.WRITE_RATIO_KEY, "0");
-            userParams.put(LdbcInteractiveWorkload.PARAMETERS_FILENAME_KEY, TestUtils.getResource("/parameters.json").getAbsolutePath());
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_STREAM_FILENAME_KEY, "ldbc_driver/workloads/ldbc/socnet/interactive/updates.csv");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_RATIO_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_RATIO_KEY, "0");
+            userParams.put(LdbcSnbInteractiveWorkload.PARAMETERS_FILENAME_KEY, TestUtils.getResource("/parameters.json").getAbsolutePath());
             userParams.put(Neo4jDb.DB_PATH_KEY, dbDir);
             userParams.put(Neo4jDb.CONFIG_PATH_KEY, TestUtils.getResource("/neo4j_run_dev.properties").getAbsolutePath());
             userParams.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_CYPHER);
 
-            userParams.put(LdbcInteractiveWorkload.INTERLEAVE_DURATION_KEY, Long.toString(Duration.fromMilli(10).asMilli()));
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_1_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_2_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_3_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_4_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_5_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_6_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_7_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_8_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_9_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_10_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_11_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_12_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_13_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_14_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_1_KEY, "false");
-            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_2_KEY, "false");
-            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_3_KEY, "false");
-            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_4_KEY, "false");
-            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_5_KEY, "false");
-            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_6_KEY, "false");
-            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_7_KEY, "false");
-            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_8_KEY, "false");
+            userParams.put(LdbcSnbInteractiveWorkload.INTERLEAVE_DURATION_KEY, Long.toString(Duration.fromMilli(10).asMilli()));
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_1_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_2_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_3_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_4_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_5_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_6_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_7_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_8_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_9_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_10_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_11_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_12_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_13_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_14_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_OPERATION_1_ENABLE_KEY, "false");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_OPERATION_2_ENABLE_KEY, "false");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_OPERATION_3_ENABLE_KEY, "false");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_OPERATION_4_ENABLE_KEY, "false");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_OPERATION_5_ENABLE_KEY, "false");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_OPERATION_6_ENABLE_KEY, "false");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_OPERATION_7_ENABLE_KEY, "false");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_OPERATION_8_ENABLE_KEY, "false");
             ConsoleAndFileDriverConfiguration params = new ConsoleAndFileDriverConfiguration(
                     userParams,
                     Neo4jDb.class.getName(),
-                    LdbcInteractiveWorkload.class.getName(),
+                    LdbcSnbInteractiveWorkload.class.getName(),
                     operationCount,
                     threadCount,
                     showStatus,
@@ -140,43 +140,43 @@ public class IntegrationTest {
             Duration toleratedExecutionDelay = Duration.fromSeconds(100);
 
             Map<String, String> userParams = new HashMap<>();
-            userParams.put(LdbcInteractiveWorkload.PARAMETERS_FILENAME_KEY, TestUtils.getResource("/parameters.json").getAbsolutePath());
+            userParams.put(LdbcSnbInteractiveWorkload.PARAMETERS_FILENAME_KEY, TestUtils.getResource("/parameters.json").getAbsolutePath());
             userParams.put(Neo4jDb.DB_PATH_KEY, dbDir);
             String configPath = TestUtils.getResource("/neo4j_run_dev.properties").getAbsolutePath();
             userParams.put(Neo4jDb.CONFIG_PATH_KEY, configPath);
             userParams.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_CYPHER);
 
-            userParams.put(LdbcInteractiveWorkload.WRITE_STREAM_FILENAME_KEY, "ldbc_driver/workloads/ldbc/socnet/interactive/updates.csv");
-            userParams.put(LdbcInteractiveWorkload.READ_RATIO_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.WRITE_RATIO_KEY, "0");
-            userParams.put(LdbcInteractiveWorkload.INTERLEAVE_DURATION_KEY, Long.toString(Duration.fromMilli(10).asMilli()));
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_1_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_2_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_3_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_4_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_5_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_6_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_7_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_8_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_9_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_10_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_11_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_12_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_13_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.READ_OPERATION_14_KEY, "1");
-            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_1_KEY, "true");
-            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_2_KEY, "true");
-            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_3_KEY, "true");
-            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_4_KEY, "true");
-            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_5_KEY, "true");
-            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_6_KEY, "true");
-            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_7_KEY, "true");
-            userParams.put(LdbcInteractiveWorkload.WRITE_OPERATION_8_KEY, "true");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_STREAM_FILENAME_KEY, "ldbc_driver/workloads/ldbc/socnet/interactive/updates.csv");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_RATIO_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_RATIO_KEY, "0");
+            userParams.put(LdbcSnbInteractiveWorkload.INTERLEAVE_DURATION_KEY, Long.toString(Duration.fromMilli(10).asMilli()));
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_1_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_2_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_3_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_4_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_5_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_6_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_7_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_8_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_9_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_10_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_11_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_12_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_13_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.READ_OPERATION_14_INTERLEAVE_KEY, "1");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_OPERATION_1_ENABLE_KEY, "true");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_OPERATION_2_ENABLE_KEY, "true");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_OPERATION_3_ENABLE_KEY, "true");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_OPERATION_4_ENABLE_KEY, "true");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_OPERATION_5_ENABLE_KEY, "true");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_OPERATION_6_ENABLE_KEY, "true");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_OPERATION_7_ENABLE_KEY, "true");
+            userParams.put(LdbcSnbInteractiveWorkload.WRITE_OPERATION_8_ENABLE_KEY, "true");
 
             ConsoleAndFileDriverConfiguration params = new ConsoleAndFileDriverConfiguration(
                     userParams,
                     Neo4jDb.class.getName(),
-                    LdbcInteractiveWorkload.class.getName(),
+                    LdbcSnbInteractiveWorkload.class.getName(),
                     operationCount,
                     threadCount,
                     showStatus,

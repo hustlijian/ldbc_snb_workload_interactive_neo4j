@@ -3,7 +3,7 @@ package com.ldbc.socialnet.workload.neo4j;
 import com.ldbc.driver.Db;
 import com.ldbc.driver.DbConnectionState;
 import com.ldbc.driver.DbException;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.*;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.*;
 import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.interactive.embedded_api_steps.*;
 import com.ldbc.socialnet.workload.neo4j.utils.Utils;

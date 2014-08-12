@@ -2,8 +2,8 @@ package com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery7;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery7Result;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery7;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery7Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery7;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 
@@ -12,16 +12,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static com.ldbc.socialnet.workload.neo4j.Domain.*;
-
 public class Neo4jQuery7EmbeddedCypher extends Neo4jQuery7<ExecutionEngine> {
-    private static final String QUERY_STRING = ""
-            + "MATCH (start:" + Nodes.Person + " {" + Person.ID + ":{person_id}})<-[:" + Rels.HAS_CREATOR + "]-(post:" + Nodes.Post + ")<-[like:" + Rels.LIKES + "]-(person:" + Nodes.Person + ")\n"
-            + "RETURN person." + Person.ID + " AS personId, person." + Person.FIRST_NAME + " AS personFirstName, person." + Person.LAST_NAME + " AS personLastName,"
-            + " like." + Likes.CREATION_DATE + " AS likeDate,  NOT((person)-[:" + Rels.KNOWS + "]-(start)) AS isNew, post." + Post.ID + " AS postId,"
-            + " post." + Post.CONTENT + " AS postContent, like." + Likes.CREATION_DATE + " - post." + Post.CREATION_DATE + " AS latency\n"
-            + "ORDER BY like." + Likes.CREATION_DATE + " DESC, personId ASC\n"
-            + "LIMIT {limit}";
+    protected static final String PERSON_ID_STRING = PERSON_ID.toString();
+    protected static final String LIMIT_STRING = LIMIT.toString();
 
     @Override
     public String description() {
@@ -49,8 +42,8 @@ public class Neo4jQuery7EmbeddedCypher extends Neo4jQuery7<ExecutionEngine> {
 
     private Map<String, Object> buildParams(LdbcQuery7 operation) {
         Map<String, Object> queryParams = new HashMap<>();
-        queryParams.put("person_id", operation.personId());
-        queryParams.put("limit", operation.limit());
+        queryParams.put(PERSON_ID_STRING, operation.personId());
+        queryParams.put(LIMIT_STRING, operation.limit());
         return queryParams;
     }
 }

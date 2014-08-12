@@ -1,7 +1,7 @@
 package com.ldbc.socialnet.workload.neo4j.interactive.embedded_api_steps;
 
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery14;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery14Result;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery14;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery14Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery14;
 import org.neo4j.graphdb.GraphDatabaseService;

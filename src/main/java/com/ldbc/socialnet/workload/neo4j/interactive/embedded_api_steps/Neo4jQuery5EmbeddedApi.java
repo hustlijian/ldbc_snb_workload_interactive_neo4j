@@ -3,8 +3,8 @@ package com.ldbc.socialnet.workload.neo4j.interactive.embedded_api_steps;
 import com.google.common.collect.*;
 import com.ldbc.driver.util.Function2;
 import com.ldbc.driver.util.MapUtils;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery5;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery5Result;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery5;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery5Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery5;
@@ -77,7 +77,7 @@ public class Neo4jQuery5EmbeddedApi extends Neo4jQuery5<GraphDatabaseService> {
         WHERE membership.joinDate>{join_date}
          */
         List<Node> forums = ImmutableList.copyOf(StepsUtils.distinct(traversers.personsMembershipForums(
-                operation.joinDate().getTime()).traverse(friendsArray).nodes().iterator()));
+                operation.minDate().getTime()).traverse(friendsArray).nodes().iterator()));
 
         /*
         MATCH (friend)<-[:HAS_CREATOR]-(comment:Comment)

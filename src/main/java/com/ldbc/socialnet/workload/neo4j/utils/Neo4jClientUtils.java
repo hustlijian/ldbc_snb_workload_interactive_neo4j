@@ -3,7 +3,7 @@ package com.ldbc.socialnet.workload.neo4j.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ldbc.driver.data.ByteIterator;
+import com.ldbc.driver.generator.experimental.ByteIterator;
 
 public class Neo4jClientUtils
 {

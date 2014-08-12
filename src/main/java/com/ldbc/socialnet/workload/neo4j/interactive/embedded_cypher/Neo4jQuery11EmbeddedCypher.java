@@ -2,8 +2,8 @@ package com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery11;
-import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery11Result;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery11;
+import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery11Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery11;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 
@@ -11,40 +11,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static com.ldbc.socialnet.workload.neo4j.Domain.*;
-
 public class Neo4jQuery11EmbeddedCypher extends Neo4jQuery11<ExecutionEngine> {
-    /*
-    Q11 - Referral
-    Description
-        Find a friend of the specified person, or a friend of his friend (excluding the specified person), who has long worked in a company in a specified country.
-        Sort ascending by start date, and then ascending by person URI. Top 10 should be shown.
-    Parameter
-        Person
-        Country
-        max workFrom date
-    Result (for each result return)
-        Person.firstName
-        Person.lastName
-        Person-worksAt->.worksFrom
-        Person-worksAt->Organization.name
-        Person.Id
-    */
-
-    private static final String QUERY_STRING = ""
-            + "MATCH (:" + Nodes.Person + " {" + Person.ID + ":{person_id}})-[:" + Rels.KNOWS + "*1..2]-(friend:" + Nodes.Person + ")\n"
-            + "WITH DISTINCT friend\n"
-            + "MATCH (friend)-[worksAt:" + Rels.WORKS_AT + "]->(company:" + Organisation.Type.Company + ")\n"
-            + "WHERE worksAt." + WorksAt.WORK_FROM + " <= {work_from_year} AND "
-            + " (company)-[:" + Rels.IS_LOCATED_IN + "]->(:" + Place.Type.Country + " {" + Place.NAME + ":{country_name}})\n"
-            + "RETURN"
-            + " friend." + Person.ID + " AS friendId,"
-            + " friend." + Person.FIRST_NAME + " AS friendFirstName,"
-            + " friend." + Person.LAST_NAME + " AS friendLastName,"
-            + " worksAt." + WorksAt.WORK_FROM + " AS workFromYear,"
-            + " company." + Organisation.NAME + " AS companyName\n"
-            + "ORDER BY workFromYear ASC, friendId ASC\n"
-            + "LIMIT {limit}";
+    protected static final String PERSON_ID_STRING = PERSON_ID.toString();
+    protected static final String WORK_FROM_YEAR_STRING = WORK_FROM_YEAR.toString();
+    protected static final String COUNTRY_NAME_STRING = COUNTRY_NAME.toString();
+    protected static final String LIMIT_STRING = LIMIT.toString();
 
     @Override
     public String description() {
@@ -69,10 +40,10 @@ public class Neo4jQuery11EmbeddedCypher extends Neo4jQuery11<ExecutionEngine> {
 
     private Map<String, Object> buildParams(LdbcQuery11 operation) {
         Map<String, Object> queryParams = new HashMap<>();
-        queryParams.put("person_id", operation.personId());
-        queryParams.put("country_name", operation.country());
-        queryParams.put("work_from_year", operation.workFromYear());
-        queryParams.put("limit", operation.limit());
+        queryParams.put(PERSON_ID_STRING, operation.personId());
+        queryParams.put(COUNTRY_NAME_STRING, operation.countryName());
+        queryParams.put(WORK_FROM_YEAR_STRING, operation.workFromYear());
+        queryParams.put(LIMIT_STRING, operation.limit());
         return queryParams;
     }
 }

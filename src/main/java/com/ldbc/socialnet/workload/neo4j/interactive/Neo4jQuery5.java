@@ -2,41 +2,19 @@ package com.ldbc.socialnet.workload.neo4j.interactive;
 
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery5;
 import com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcQuery5Result;
+import com.ldbc.socialnet.workload.neo4j.Domain;
 
 public abstract class Neo4jQuery5<CONNECTION> implements Neo4jQuery<LdbcQuery5, LdbcQuery5Result, CONNECTION> {
-    /*
-    QUERY 5
+    protected static final Integer PERSON_ID = 1;
+    protected static final Integer JOIN_DATE = 2;
+    protected static final Integer LIMIT = 3;
 
-    Description
-        What are the groups that your connections (friendship up to second hop) have joined after a certain date? 
-        Order them by the number of posts and comments your connections made there.
-    
-    PARAMETERS:                
-        Person
-        Date
-    
-    RETURN:
-        Group
-        count
-     */
+    protected static final String QUERY_STRING = ""
+            + "MATCH (person:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID + "}})-[:" + Domain.Rels.KNOWS + "*1..2]-(friend:" + Domain.Nodes.Person + ")<-[membership:" + Domain.Rels.HAS_MEMBER + "]-(forum:" + Domain.Nodes.Forum + ")\n"
+            + "WHERE membership." + Domain.HasMember.JOIN_DATE + ">{" + JOIN_DATE + "}\n"
+            + "MATCH (friend)<-[:" + Domain.Rels.HAS_CREATOR + "]-(post:" + Domain.Nodes.Post + ")<-[:" + Domain.Rels.CONTAINER_OF + "]-(forum)\n"
+            + "RETURN forum." + Domain.Forum.TITLE + " AS forum, count(post) AS postCount\n"
+            + "ORDER BY postCount DESC\n"
+            + "LIMIT {" + LIMIT + "}";
 
-    /*
-        cakesAndPies - 2013, Calendar.OCTOBER, 2
-            Alex - 2013, Calendar.OCTOBER, 2 
-            Aiya - 2013, Calendar.OCTOBER, 3
-            Stranger - 2013, Calendar.OCTOBER, 4
-            Jake - 2013, Calendar.OCTOBER, 8 
-
-        redditAddicts - 2013, Calendar.OCTOBER, 22
-            Jake - 2013, Calendar.OCTOBER, 22
-
-        floatingBoats - 2013, Calendar.NOVEMBER, 13
-            Jake - 2013, Calendar.NOVEMBER, 13 
-            Alex - 2013, Calendar.NOVEMBER, 14
-            Peter -  2013, Calendar.NOVEMBER, 16 
-
-        kiwisSheepAndBungyJumping - 2013, Calendar.NOVEMBER, 1
-            Aiya - 2013, Calendar.NOVEMBER, 1
-            Alex - 2013, Calendar.NOVEMBER, 4
-     */
 }
