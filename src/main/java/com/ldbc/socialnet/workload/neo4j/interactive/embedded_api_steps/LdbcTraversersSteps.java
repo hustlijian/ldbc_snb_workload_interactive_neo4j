@@ -1,21 +1,29 @@
 package com.ldbc.socialnet.workload.neo4j.interactive.embedded_api_steps;
 
+import com.google.common.collect.Sets;
 import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
+import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.graphdb.traversal.Uniqueness;
+import org.neo4j.traversal.steps.Step;
+import org.neo4j.traversal.steps.StepsBuilder;
 
 import java.util.Set;
 
+import static com.ldbc.socialnet.workload.neo4j.Domain.*;
+import static org.neo4j.traversal.steps.Filters.node;
+import static org.neo4j.traversal.steps.Filters.relationship;
+import static org.neo4j.traversal.steps.PropertyContainerFilterDescriptor.PropertyContainerPredicate;
+
 public class LdbcTraversersSteps implements LdbcTraversers {
-    // TODO uncomment
-//    private final StepsBuilder stepsBuilder;
+    private final StepsBuilder stepsBuilder;
     private final TraversalDescription baseTraversalDescription;
 
     public LdbcTraversersSteps(GraphDatabaseService db) {
-        // TODO uncomment
-//        this.stepsBuilder = new StepsBuilder();
+        this.stepsBuilder = new StepsBuilder();
         this.baseTraversalDescription = db.traversalDescription().uniqueness(Uniqueness.NONE).breadthFirst();
     }
 
@@ -23,34 +31,28 @@ public class LdbcTraversersSteps implements LdbcTraversers {
     // uni.name, uniCity.name(studyAt.classYear)
     @Override
     public TraversalDescription personUniversities() {
-        // TODO uncomment
-//        return stepsBuilder.build(baseTraversalDescription,
-//
-//                Step.one(node(), relationship().hasType(Rels.STUDY_AT).hasDirection(Direction.OUTGOING)),
-//
-//                Step.one(node().hasLabel(Organisation.Type.University),
-//                        relationship().hasType(Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
-//
-//                Step.one(node().hasLabel(Place.Type.City)));
-        // TODO remove
-        return null;
+        return stepsBuilder.build(baseTraversalDescription,
+
+                Step.one(node(), relationship().hasType(Rels.STUDY_AT).hasDirection(Direction.OUTGOING)),
+
+                Step.one(node().hasLabel(Organisation.Type.University),
+                        relationship().hasType(Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
+
+                Step.one(node().hasLabel(Place.Type.City)));
     }
 
     // (companyCountry:PLACE:COUNTRY)<-[:IS_LOCATED_IN]-(company:COMPANY)<-[worksAt:WORKS_AT]-(person)
     // company.name, companyCountry.name(worksAt.workFrom)
     @Override
     public TraversalDescription personCompanies() {
-        // TODO uncomment
-//        return stepsBuilder.build(baseTraversalDescription,
-//
-//                Step.one(node(), relationship().hasType(Rels.WORKS_AT).hasDirection(Direction.OUTGOING)),
-//
-//                Step.one(node().hasLabel(Organisation.Type.Company),
-//                        relationship().hasType(Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
-//
-//                Step.one(node().hasLabel(Place.Type.Country)));
-        // TODO remove
-        return null;
+        return stepsBuilder.build(baseTraversalDescription,
+
+                Step.one(node(), relationship().hasType(Rels.WORKS_AT).hasDirection(Direction.OUTGOING)),
+
+                Step.one(node().hasLabel(Organisation.Type.Company),
+                        relationship().hasType(Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
+
+                Step.one(node().hasLabel(Place.Type.Country)));
     }
 
     /*
@@ -61,29 +63,25 @@ public class LdbcTraversersSteps implements LdbcTraversers {
      */
     @Override
     public TraversalDescription friendPostTags(final long minDate, final long maxDate) {
-        // TODO uncomment
-//        // TODO number range
-//        PropertyContainerPredicate creationDateCheck = new PropertyContainerPredicate() {
-//            @Override
-//            public boolean apply(PropertyContainer container) {
-//                long creationDate = (long) ((Node) container).getProperty(Post.CREATION_DATE);
-//                return (creationDate >= minDate && maxDate >= creationDate);
-//            }
-//        };
-//        return stepsBuilder.build(
-//                baseTraversalDescription,
-//
-//                Step.one(node(), relationship().hasType(Rels.KNOWS)),
-//
-//                Step.one(node().hasLabel(Nodes.Person),
-//                        relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
-//
-//                Step.one(node().hasLabel(Nodes.Post).conformsTo(creationDateCheck),
-//                        relationship().hasType(Rels.HAS_TAG).hasDirection(Direction.OUTGOING)),
-//
-//                Step.one(node().hasLabel(Nodes.Tag)));
-        // TODO remove
-        return null;
+        PropertyContainerPredicate creationDateCheck = new PropertyContainerPredicate() {
+            @Override
+            public boolean apply(PropertyContainer container) {
+                long creationDate = (long) container.getProperty(Post.CREATION_DATE);
+                return (creationDate >= minDate && maxDate >= creationDate);
+            }
+        };
+        return stepsBuilder.build(
+                baseTraversalDescription,
+
+                Step.one(node(), relationship().hasType(Rels.KNOWS)),
+
+                Step.one(node().hasLabel(Nodes.Person),
+                        relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
+
+                Step.one(node().hasLabel(Nodes.Post).conformsTo(creationDateCheck),
+                        relationship().hasType(Rels.HAS_TAG).hasDirection(Direction.OUTGOING)),
+
+                Step.one(node().hasLabel(Nodes.Tag)));
     }
 
     /*
@@ -93,24 +91,21 @@ public class LdbcTraversersSteps implements LdbcTraversers {
      */
     @Override
     public TraversalDescription friendsPostsBeforeDate(final long maxPostCreationDate) {
-        // TODO uncomment
-//        // TODO number range
-//        PropertyContainerPredicate creationDateCheck = new PropertyContainerPredicate() {
-//            @Override
-//            public boolean apply(PropertyContainer container) {
-//                long creationDate = (long) ((Node) container).getProperty(Post.CREATION_DATE);
-//                return (creationDate <= maxPostCreationDate);
-//            }
-//        };
-//        return stepsBuilder.build(baseTraversalDescription,
-//
-//                Step.one(node(), relationship().hasType(Rels.KNOWS)),
-//
-//                Step.one(node(), relationship().hasType(Rels.HAS_CREATOR)),
-//
-//                Step.one(node().hasLabel(Nodes.Post).conformsTo(creationDateCheck)));
-        // TODO remove
-        return null;
+        // TODO number range
+        PropertyContainerPredicate creationDateCheck = new PropertyContainerPredicate() {
+            @Override
+            public boolean apply(PropertyContainer container) {
+                long creationDate = (long) container.getProperty(Post.CREATION_DATE);
+                return (creationDate <= maxPostCreationDate);
+            }
+        };
+        return stepsBuilder.build(baseTraversalDescription,
+
+                Step.one(node(), relationship().hasType(Rels.KNOWS)),
+
+                Step.one(node(), relationship().hasType(Rels.HAS_CREATOR)),
+
+                Step.one(node().hasLabel(Nodes.Post).conformsTo(creationDateCheck)));
     }
 
     /*
@@ -118,12 +113,9 @@ public class LdbcTraversersSteps implements LdbcTraversers {
      */
     @Override
     public TraversalDescription friendsAndFriendsOfFriends() {
-        // TODO uncomment
-//        return stepsBuilder.build(baseTraversalDescription,
-//
-//                Step.manyRange(node(), relationship().hasType(Rels.KNOWS), 1, 2));
-        // TODO remove
-        return null;
+        return stepsBuilder.build(baseTraversalDescription,
+
+                Step.manyRange(node(), relationship().hasType(Rels.KNOWS), 1, 2));
     }
 
     /*
@@ -131,18 +123,15 @@ public class LdbcTraversersSteps implements LdbcTraversers {
      */
     @Override
     public TraversalDescription personsPostsWithGivenTag(final String tagName) {
-        // TODO uncomment
-//        return stepsBuilder.build(
-//                baseTraversalDescription,
-//
-//                Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
-//
-//                Step.one(node().hasLabel(Nodes.Post),
-//                        relationship().hasType(Rels.HAS_TAG).hasDirection(Direction.OUTGOING)),
-//
-//                Step.one(node().propertyEquals(Tag.NAME, tagName)));
-        // TODO remove
-        return null;
+        return stepsBuilder.build(
+                baseTraversalDescription,
+
+                Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
+
+                Step.one(node().hasLabel(Nodes.Post),
+                        relationship().hasType(Rels.HAS_TAG).hasDirection(Direction.OUTGOING)),
+
+                Step.one(node().propertyEquals(Tag.NAME, tagName)));
     }
 
     /*
@@ -151,14 +140,11 @@ public class LdbcTraversersSteps implements LdbcTraversers {
      */
     @Override
     public TraversalDescription tagsOnPosts(final String tagName) {
-        // TODO uncomment
-//        return stepsBuilder.build(baseTraversalDescription,
-//
-//                Step.one(node(), relationship().hasType(Rels.HAS_TAG).hasDirection(Direction.OUTGOING)),
-//
-//                Step.one(node().propertyNotEquals(Tag.NAME, tagName)));
-        // TODO remove
-        return null;
+        return stepsBuilder.build(baseTraversalDescription,
+
+                Step.one(node(), relationship().hasType(Rels.HAS_TAG).hasDirection(Direction.OUTGOING)),
+
+                Step.one(node().propertyNotEquals(Tag.NAME, tagName)));
     }
 
     /*
@@ -167,26 +153,23 @@ public class LdbcTraversersSteps implements LdbcTraversers {
      */
     @Override
     public TraversalDescription postsInCountry(final String countryX, final long minDate, final long maxDate) {
-        // TODO uncomment
-//        // TODO number range
-//        PropertyContainerPredicate creationDateCheck = new PropertyContainerPredicate() {
-//            @Override
-//            public boolean apply(PropertyContainer container) {
-//                long creationDate = (long) ((Node) container).getProperty(Post.CREATION_DATE);
-//                return (creationDate >= minDate && maxDate >= creationDate);
-//            }
-//        };
-//        return stepsBuilder.build(
-//                baseTraversalDescription,
-//
-//                Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
-//
-//                Step.one(node().hasLabel(Nodes.Post).conformsTo(creationDateCheck),
-//                        relationship().hasType(Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
-//
-//                Step.one(node().hasLabel(Place.Type.Country).propertyEquals(Place.NAME, countryX)));
-        // TODO remove
-        return null;
+        // TODO number range
+        PropertyContainerPredicate creationDateCheck = new PropertyContainerPredicate() {
+            @Override
+            public boolean apply(PropertyContainer container) {
+                long creationDate = (long) container.getProperty(Post.CREATION_DATE);
+                return (creationDate >= minDate && maxDate >= creationDate);
+            }
+        };
+        return stepsBuilder.build(
+                baseTraversalDescription,
+
+                Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
+
+                Step.one(node().hasLabel(Nodes.Post).conformsTo(creationDateCheck),
+                        relationship().hasType(Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
+
+                Step.one(node().hasLabel(Place.Type.Country).propertyEquals(Place.NAME, countryX)));
     }
 
     /*
@@ -195,25 +178,22 @@ public class LdbcTraversersSteps implements LdbcTraversers {
      */
     @Override
     public TraversalDescription personsMembershipForums(final long minDate) {
-        // TODO uncomment
-//        // TODO number range
-//        PropertyContainerPredicate joinDateCheck = new PropertyContainerPredicate() {
-//            @Override
-//            public boolean apply(PropertyContainer container) {
-//                long joinDate = (long) ((Relationship) container).getProperty(HasMember.JOIN_DATE);
-//                return joinDate > minDate;
-//            }
-//        };
-//        return stepsBuilder.build(baseTraversalDescription,
-//
-//                Step.one(
-//                        node(),
-//                        relationship().hasType(Rels.HAS_MEMBER).hasDirection(Direction.INCOMING).conformsTo(
-//                                joinDateCheck)),
-//
-//                Step.one(node().hasLabel(Nodes.Forum)));
-        // TODO remove
-        return null;
+        // TODO number range
+        PropertyContainerPredicate joinDateCheck = new PropertyContainerPredicate() {
+            @Override
+            public boolean apply(PropertyContainer container) {
+                long joinDate = (long) container.getProperty(HasMember.JOIN_DATE);
+                return joinDate > minDate;
+            }
+        };
+        return stepsBuilder.build(baseTraversalDescription,
+
+                Step.one(
+                        node(),
+                        relationship().hasType(Rels.HAS_MEMBER).hasDirection(Direction.INCOMING).conformsTo(
+                                joinDateCheck)),
+
+                Step.one(node().hasLabel(Nodes.Forum)));
     }
 
     /*
@@ -221,14 +201,11 @@ public class LdbcTraversersSteps implements LdbcTraversers {
      */
     @Override
     public TraversalDescription personsComments() {
-        // TODO uncomment
-//        return stepsBuilder.build(baseTraversalDescription,
-//
-//                Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
-//
-//                Step.one(node().hasLabel(Nodes.Comment)));
-        // TODO remove
-        return null;
+        return stepsBuilder.build(baseTraversalDescription,
+
+                Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
+
+                Step.one(node().hasLabel(Nodes.Comment)));
     }
 
     /*    
@@ -237,27 +214,23 @@ public class LdbcTraversersSteps implements LdbcTraversers {
      */
     @Override
     public TraversalDescription commentsOnPostsInForum(final Set<Node> knownComments) {
-        // TODO uncomment
-//        // TODO notHasLabel(Label)
-//        // TODO notHasProperty(String key)
-//        // TODO numberPropertyValueInRange(T extends Number in, T extends Number
-//        // max)
-//
-//        return stepsBuilder.build(
-//                baseTraversalDescription,
-//
-//                Step.one(node().hasLabel(Nodes.Forum),
-//                        relationship().hasType(Rels.CONTAINER_OF).hasDirection(Direction.OUTGOING)),
-//
-//                Step.one(node().hasLabel(Nodes.Post),
-//                        relationship().hasType(Rels.REPLY_OF).hasDirection(Direction.INCOMING)),
-//
-//                Step.manyRange(node().hasLabel(Nodes.Comment).notInSet(knownComments),
-//                        relationship().hasType(Rels.REPLY_OF).hasDirection(Direction.INCOMING), 0, Step.UNLIMITED),
-//
-//                Step.one(node().hasLabel(Nodes.Comment)));
-        // TODO remove
-        return null;
+        // TODO notHasLabel(Label)
+        // TODO notHasProperty(String key)
+        // TODO numberPropertyValueInRange(T extends Number in, T extends Number max)
+
+        return stepsBuilder.build(
+                baseTraversalDescription,
+
+                Step.one(node().hasLabel(Nodes.Forum),
+                        relationship().hasType(Rels.CONTAINER_OF).hasDirection(Direction.OUTGOING)),
+
+                Step.one(node().hasLabel(Nodes.Post),
+                        relationship().hasType(Rels.REPLY_OF).hasDirection(Direction.INCOMING)),
+
+                Step.manyRange(node().hasLabel(Nodes.Comment).notInSet(knownComments),
+                        relationship().hasType(Rels.REPLY_OF).hasDirection(Direction.INCOMING), 0, Step.UNLIMITED),
+
+                Step.one(node().hasLabel(Nodes.Comment)));
     }
 
     /*
@@ -265,19 +238,16 @@ public class LdbcTraversersSteps implements LdbcTraversers {
      */
     @Override
     public TraversalDescription postsInForumByFriends(final Set<Node> knownPersons) {
-        // TODO uncomment
-//        return stepsBuilder.build(
-//                baseTraversalDescription,
-//
-//                Step.one(node().hasLabel(Nodes.Forum),
-//                        relationship().hasType(Rels.CONTAINER_OF).hasDirection(Direction.OUTGOING)),
-//
-//                Step.one(node().hasLabel(Nodes.Post),
-//                        relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.OUTGOING)),
-//
-//                Step.one(node().inSet(knownPersons)));
-        // TODO remove
-        return null;
+        return stepsBuilder.build(
+                baseTraversalDescription,
+
+                Step.one(node().hasLabel(Nodes.Forum),
+                        relationship().hasType(Rels.CONTAINER_OF).hasDirection(Direction.OUTGOING)),
+
+                Step.one(node().hasLabel(Nodes.Post),
+                        relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.OUTGOING)),
+
+                Step.one(node().inSet(knownPersons)));
     }
 
     /*
@@ -286,33 +256,30 @@ public class LdbcTraversersSteps implements LdbcTraversers {
      */
     @Override
     public TraversalDescription postsInPersonsCountryInDateRangeNotCreatedByOtherPerson(final Node otherPerson) {
-        // TODO uncomment
-//        // TODO number range
-//        // TODO remove completely
-////        PropertyContainerPredicate creationDateRangeCheck = new PropertyContainerPredicate() {
-////            @Override
-////            public boolean apply(PropertyContainer container) {
-////                long creationDate = (long) ((Node) container).getProperty(Post.CREATION_DATE);
-////                return minDate < creationDate && creationDate < maxDate;
-////            }
-////        };
-//        return stepsBuilder.build(baseTraversalDescription,
-//
-//                Step.one(node(), relationship().hasType(Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
-//
-//                Step.one(node().hasLabel(Place.Type.City),
-//                        relationship().hasType(Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
-//
-//                Step.one(node().hasLabel(Place.Type.Country),
-//                        relationship().hasType(Rels.IS_LOCATED_IN).hasDirection(Direction.INCOMING)),
-//
-//                // TODO remove completely
-////                Step.one(node().hasLabel(Nodes.Post).conformsTo(creationDateRangeCheck),
-////                        relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.OUTGOING)),
-//
-//                Step.one(node().hasLabel(Nodes.Person).notInSet(Sets.newHashSet(otherPerson))));
-        // TODO remove
-        return null;
+        // TODO number range
+        // TODO remove completely
+//        PropertyContainerPredicate creationDateRangeCheck = new PropertyContainerPredicate() {
+//            @Override
+//            public boolean apply(PropertyContainer container) {
+//                long creationDate = (long) ((Node) container).getProperty(Post.CREATION_DATE);
+//                return minDate < creationDate && creationDate < maxDate;
+//            }
+//        };
+        return stepsBuilder.build(baseTraversalDescription,
+
+                Step.one(node(), relationship().hasType(Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
+
+                Step.one(node().hasLabel(Place.Type.City),
+                        relationship().hasType(Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
+
+                Step.one(node().hasLabel(Place.Type.Country),
+                        relationship().hasType(Rels.IS_LOCATED_IN).hasDirection(Direction.INCOMING)),
+
+                // TODO remove completely
+//                Step.one(node().hasLabel(Nodes.Post).conformsTo(creationDateRangeCheck),
+//                        relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.OUTGOING)),
+
+                Step.one(node().hasLabel(Nodes.Person).notInSet(Sets.newHashSet(otherPerson))));
     }
 
     /*
@@ -320,14 +287,11 @@ public class LdbcTraversersSteps implements LdbcTraversers {
      */
     @Override
     public TraversalDescription postsTags() {
-        // TODO uncomment
-//        return stepsBuilder.build(baseTraversalDescription,
-//
-//                Step.one(node(), relationship().hasType(Rels.HAS_TAG).hasDirection(Direction.OUTGOING)),
-//
-//                Step.one(node().hasLabel(Nodes.Tag)));
-        // TODO remove
-        return null;
+        return stepsBuilder.build(baseTraversalDescription,
+
+                Step.one(node(), relationship().hasType(Rels.HAS_TAG).hasDirection(Direction.OUTGOING)),
+
+                Step.one(node().hasLabel(Nodes.Tag)));
     }
 
 }

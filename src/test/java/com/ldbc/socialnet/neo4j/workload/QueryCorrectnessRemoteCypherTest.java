@@ -15,8 +15,6 @@ import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 
-// TODO unignore
-@Ignore
 public class QueryCorrectnessRemoteCypherTest extends QueryCorrectnessTest {
 
     // jdbc:neo4j://<host>:<port>/, e.g. jdbc:neo4j://localhost:7474/

@@ -19,8 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-// TODO unignore
-@Ignore
 public class QueryCorrectnessEmbeddedCypherTest extends QueryCorrectnessTest {
 
     private <OPERATION_RESULT, OPERATION extends Operation<List<OPERATION_RESULT>>> Iterator<OPERATION_RESULT> executeQuery(OPERATION operation,

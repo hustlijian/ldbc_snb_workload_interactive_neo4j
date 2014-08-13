@@ -17,8 +17,6 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-// TODO unignore
-@Ignore
 public class UtilsTests {
     @Test
     public void shouldCopyAndAppendElementToNewArrayWhenOldArrayNotNull() throws IOException {

@@ -25,8 +25,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-// TODO unignore
-@Ignore
 public abstract class QueryCorrectnessTest {
     private static String dbDir = "tempDb";
     private static GraphDatabaseService db = null;
