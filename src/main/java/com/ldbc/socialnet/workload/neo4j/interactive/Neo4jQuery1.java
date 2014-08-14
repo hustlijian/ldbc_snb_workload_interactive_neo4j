@@ -24,10 +24,11 @@ Sort results by their distance from the start Person, for Persons within the sam
 //            + "OPTIONAL MATCH (friend)-[:" + Domain.Rels.IS_LOCATED_IN + "]->(friendCity:" + Domain.Place.Type.City + ")\n"
             + "MATCH (friend)-[:" + Domain.Rels.IS_LOCATED_IN + "]->(friendCity:" + Domain.Place.Type.City + ")\n"
             + "OPTIONAL MATCH (friend)-[studyAt:" + Domain.Rels.STUDY_AT + "]->(uni:" + Domain.Organisation.Type.University + ")-[:" + Domain.Rels.IS_LOCATED_IN + "]->(uniCity:" + Domain.Place.Type.City + ")\n"
-            + "WITH friend, collect([uni." + Domain.Organisation.NAME + ", studyAt." + Domain.StudiesAt.CLASS_YEAR + ", uniCity." + Domain.Place.NAME + "]) AS unis, friendCity, distance\n"
+
+            + "WITH friend, collect(CASE uni." + Domain.Organisation.NAME + " WHEN null THEN null ELSE [uni." + Domain.Organisation.NAME + ", studyAt." + Domain.StudiesAt.CLASS_YEAR + ", uniCity." + Domain.Place.NAME + "] END) AS unis, friendCity, distance\n"
 
             + "OPTIONAL MATCH (friend)-[worksAt:" + Domain.Rels.WORKS_AT + "]->(company:" + Domain.Organisation.Type.Company + ")-[:" + Domain.Rels.IS_LOCATED_IN + "]->(companyCountry:" + Domain.Nodes.Place + ":" + Domain.Place.Type.Country + ")\n"
-            + "WITH friend, collect([company." + Domain.Organisation.NAME + ", worksAt." + Domain.WorksAt.WORK_FROM + ", companyCountry." + Domain.Place.NAME + "]) AS companies, unis, friendCity, distance\n"
+            + "WITH friend, collect(CASE company." + Domain.Organisation.NAME + " WHEN null THEN null ELSE [company." + Domain.Organisation.NAME + ", worksAt." + Domain.WorksAt.WORK_FROM + ", companyCountry." + Domain.Place.NAME + "] END) AS companies, unis, friendCity, distance\n"
 
             + "RETURN"
             + " friend." + Domain.Person.ID + " AS id,"
