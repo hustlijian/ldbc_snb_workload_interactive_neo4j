@@ -41,30 +41,31 @@ public class TestGraph {
                     + " (ff11:" + Nodes.Person + " {ff11}),\n"
                     + " (fff111:" + Nodes.Person + " {fff111}),\n"
                     + " (ffff1111:" + Nodes.Person + " {ffff1111}),\n"
+                    + " (fffff11111:" + Nodes.Person + " {fffff11111}),\n"
                     + " (ff21:" + Nodes.Person + " {ff21}),\n"
                     + " (fff211:" + Nodes.Person + " {fff211}),\n"
                     + " (ff31:" + Nodes.Person + " {ff31}),\n"
                    /*
                    * Universities
                    */
-                    + " (uni0:" + Nodes.Organisation + ":" + Organisation.Type.University + " {uni0}),\n"
-                    + " (uni1:" + Nodes.Organisation + ":" + Organisation.Type.University + " {uni1}),\n"
-                    + " (uni2:" + Nodes.Organisation + ":" + Organisation.Type.University + " {uni2}),\n"
+                    + " (uni0:" + Organisation.Type.University + " {uni0}),\n"
+                    + " (uni1:" + Organisation.Type.University + " {uni1}),\n"
+                    + " (uni2:" + Organisation.Type.University + " {uni2}),\n"
                    /*
                    * Companies
                    */
-                    + " (company0:" + Nodes.Organisation + ":" + Organisation.Type.Company + " {company0}),\n"
-                    + " (company1:" + Nodes.Organisation + ":" + Organisation.Type.Company + " {company1}),\n"
+                    + " (company0:" + Organisation.Type.Company + " {company0}),\n"
+                    + " (company1:" + Organisation.Type.Company + " {company1}),\n"
                    /*
                    * Cities
                    */
-                    + " (city0:" + Nodes.Place + ":" + Place.Type.City + " {city0}),\n"
-                    + " (city1:" + Nodes.Place + ":" + Place.Type.City + " {city1}),\n"
+                    + " (city0:" + Place.Type.City + " {city0}),\n"
+                    + " (city1:" + Place.Type.City + " {city1}),\n"
                    /*
                    * Countries
                    */
-                    + " (country0:" + Nodes.Place + ":" + Place.Type.Country + " {country0}),\n"
-                    + " (country1:" + Nodes.Place + ":" + Place.Type.Country + " {country1}),\n"
+                    + " (country0:" + Place.Type.Country + " {country0}),\n"
+                    + " (country1:" + Place.Type.Country + " {country1}),\n"
                    /*
                    * RELATIONSHIP
                    */
@@ -204,7 +205,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 2L);
                 params.put(Person.FIRST_NAME, "name0");
-                params.put(Person.LAST_NAME, "last2");
+                params.put(Person.LAST_NAME, "last0");
                 params.put(Person.CREATION_DATE, 2L);
                 params.put(Person.BIRTHDAY, 2L);
                 params.put(Person.BROWSER_USED, "browser2");
@@ -219,7 +220,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 3L);
                 params.put(Person.FIRST_NAME, "name0");
-                params.put(Person.LAST_NAME, "last3");
+                params.put(Person.LAST_NAME, "last0");
                 params.put(Person.CREATION_DATE, 3L);
                 params.put(Person.BIRTHDAY, 3L);
                 params.put(Person.BROWSER_USED, "browser3");

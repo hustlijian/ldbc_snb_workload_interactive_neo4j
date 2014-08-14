@@ -1,6 +1,5 @@
 package com.ldbc.socialnet.workload.neo4j.interactive.remote_cypher;
 
-import com.google.common.collect.Lists;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery1;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery1Result;
@@ -63,11 +62,11 @@ public class Neo4jQuery1RemoteCypher extends Neo4jQuery1<Connection> {
                         resultSet.getString("gender"),
                         resultSet.getString("browser"),
                         resultSet.getString("locationIp"),
-                        Lists.newArrayList((String[]) resultSet.getObject("emails")),
-                        Lists.newArrayList((String[]) resultSet.getObject("languages")),
+                        (Collection) resultSet.getObject("emails"),
+                        (Collection) resultSet.getObject("languages"),
                         resultSet.getString("cityName"),
-                        Lists.newArrayList((Collection<String>) resultSet.getObject("unis")),
-                        Lists.newArrayList((Collection<String>) resultSet.getObject("companies")));
+                        (Collection) resultSet.getObject("unis"),
+                        (Collection) resultSet.getObject("companies"));
             } catch (SQLException e) {
                 throw new RuntimeException("Error while retrieving next row", e);
             }

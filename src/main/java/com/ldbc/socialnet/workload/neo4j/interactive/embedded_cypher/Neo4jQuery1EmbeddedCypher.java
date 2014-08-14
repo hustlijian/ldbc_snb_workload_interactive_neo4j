@@ -41,8 +41,8 @@ public class Neo4jQuery1EmbeddedCypher extends Neo4jQuery1<ExecutionEngine> {
                                 Lists.newArrayList((String[]) row.get("emails")),
                                 Lists.newArrayList((String[]) row.get("languages")),
                                 (String) row.get("cityName"),
-                                (Collection<String>) row.get("unis"),
-                                (Collection<String>) row.get("companies"));
+                                (Collection) row.get("unis"),
+                                (Collection) row.get("companies"));
                     }
                 });
     }
