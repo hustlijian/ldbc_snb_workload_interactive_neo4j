@@ -131,8 +131,8 @@ public abstract class QueryCorrectnessTest {
                 Sets.<String>newHashSet(),
                 Sets.newHashSet("friend2language0", "friend2language1"),
                 "city1",
-                Sets.<List<String>>newHashSet(Lists.newArrayList("uni2", "3", "city0")),
-                Sets.<List<String>>newHashSet()
+                Sets.<List<Object>>newHashSet(Lists.<Object>newArrayList("uni2", 3, "city0")),
+                Sets.<List<Object>>newHashSet()
         );
 
         assertThat(actualRow, equalTo(expectedRow));
