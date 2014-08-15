@@ -110,16 +110,18 @@ public abstract class QueryCorrectnessTest {
         int limit = 6;
         LdbcQuery1 operation = new LdbcQuery1(personId, personUri, friendName, limit);
 
-        Iterator<LdbcQuery1Result> result = neo4jQuery1Impl(dbDir, operation);
-
+        Iterator<LdbcQuery1Result> result;
         LdbcQuery1Result actualRow;
+        LdbcQuery1Result expectedRow;
+
+        result = neo4jQuery1Impl(dbDir, operation);
 
         actualRow = result.next();
 
         // TODO remove
         System.out.println(actualRow.toString());
 
-        LdbcQuery1Result expectedRow = new LdbcQuery1Result(
+        expectedRow = new LdbcQuery1Result(
                 2L,
                 "last0",
                 1,
@@ -137,95 +139,97 @@ public abstract class QueryCorrectnessTest {
 
         assertThat(actualRow, equalTo(expectedRow));
 
-        assertThat(actualRow.friendId(), equalTo(2L));
-        assertThat(actualRow.friendLastName(), equalTo("last0"));
-        assertThat(actualRow.distanceFromPerson(), equalTo(1));
-        assertThat(actualRow.friendBirthday(), equalTo(2L));
-        assertThat(actualRow.friendCreationDate(), equalTo(2L));
-        assertThat(actualRow.friendGender(), equalTo("gender2"));
-        assertThat(actualRow.friendBrowserUsed(), equalTo("browser2"));
-        assertThat(actualRow.friendLocationIp(), equalTo("ip2"));
-        assertThat(actualRow.friendEmails(), equalTo((Iterable) Sets.newHashSet()));
-        assertThat(actualRow.friendLanguages(), equalTo((Iterable) Sets.newHashSet("friend2language0", "friend2language1")));
-        assertThat(actualRow.friendCityName(), equalTo("city1"));
-        assertThat(actualRow.friendUniversities(), equalTo((Iterable) Sets.<List<String>>newHashSet(Lists.newArrayList("uni2", "3", "city0"))));
-        assertThat(actualRow.friendCompanies(), equalTo((Iterable) Sets.<List<String>>newHashSet()));
+        actualRow = result.next();
+
+        // TODO remove
+        System.out.println(actualRow.toString());
+
+        expectedRow = new LdbcQuery1Result(
+                3L,
+                "last0",
+                1,
+                3L,
+                3L,
+                "gender3",
+                "browser3",
+                "ip3",
+                Sets.newHashSet("friend3email1", "friend3email2"),
+                Sets.newHashSet("friend3language0"),
+                "city1",
+                Lists.<List<Object>>newArrayList(),
+                Lists.<List<Object>>newArrayList(Lists.<Object>newArrayList("company0", 1, "country0"))
+        );
+
+        assertThat(actualRow, equalTo(expectedRow));
 
         actualRow = result.next();
 
         // TODO remove
         System.out.println(actualRow.toString());
 
-        assertThat(actualRow.friendId(), equalTo(3L));
-        assertThat(actualRow.friendLastName(), equalTo("last0"));
-        assertThat(actualRow.distanceFromPerson(), equalTo(1));
-        assertThat(actualRow.friendBirthday(), equalTo(3L));
-        assertThat(actualRow.friendCreationDate(), equalTo(3L));
-        assertThat(actualRow.friendGender(), equalTo("gender3"));
-        assertThat(actualRow.friendBrowserUsed(), equalTo("browser3"));
-        assertThat(actualRow.friendLocationIp(), equalTo("ip3"));
-        assertThat(actualRow.friendEmails(), equalTo((Iterable) Sets.newHashSet("friend3email1", "friend3email2")));
-        assertThat(actualRow.friendLanguages(), equalTo((Iterable) Sets.newHashSet("friend3language0")));
-        assertThat(actualRow.friendCityName(), equalTo("city1"));
-        assertThat(actualRow.friendUniversities(), equalTo((Iterable) Sets.<List<String>>newHashSet()));
-        assertThat(actualRow.friendCompanies(), equalTo((Iterable) Sets.<List<String>>newHashSet(Lists.newArrayList("company0", "1", "country0"))));
+        expectedRow = new LdbcQuery1Result(
+                1L,
+                "last1",
+                1,
+                1L,
+                1L,
+                "gender1",
+                "browser1",
+                "ip1",
+                Sets.newHashSet("friend1email1", "friend1email2"),
+                Sets.newHashSet("friend1language0"),
+                "city0",
+                Lists.<List<Object>>newArrayList(Lists.<Object>newArrayList("uni0", 0, "city1")),
+                Lists.<List<Object>>newArrayList(Lists.<Object>newArrayList("company0", 0, "country0"))
+        );
+
+        assertThat(actualRow, equalTo(expectedRow));
 
         actualRow = result.next();
 
         // TODO remove
         System.out.println(actualRow.toString());
 
-        assertThat(actualRow.friendId(), equalTo(1L));
-        assertThat(actualRow.friendLastName(), equalTo("last1"));
-        assertThat(actualRow.distanceFromPerson(), equalTo(1));
-        assertThat(actualRow.friendBirthday(), equalTo(1L));
-        assertThat(actualRow.friendCreationDate(), equalTo(1L));
-        assertThat(actualRow.friendGender(), equalTo("gender1"));
-        assertThat(actualRow.friendBrowserUsed(), equalTo("browser1"));
-        assertThat(actualRow.friendLocationIp(), equalTo("ip1"));
-        assertThat(actualRow.friendEmails(), equalTo((Iterable) Sets.newHashSet("friend1email1", "friend1email2")));
-        assertThat(actualRow.friendLanguages(), equalTo((Iterable) Sets.newHashSet("friend1language0")));
-        assertThat(actualRow.friendCityName(), equalTo("city0"));
-        assertThat(actualRow.friendUniversities(), equalTo((Iterable) Sets.<List<String>>newHashSet(Lists.newArrayList("uni0", "0", "city1"))));
-        assertThat(actualRow.friendCompanies(), equalTo((Iterable) Sets.<List<String>>newHashSet(Lists.newArrayList("company0", "0", "country0"))));
+        expectedRow = new LdbcQuery1Result(
+                11L,
+                "last11",
+                2,
+                11L,
+                11L,
+                "gender11",
+                "browser11",
+                "ip11",
+                Sets.<String>newHashSet(),
+                Sets.<String>newHashSet(),
+                "city0",
+                Lists.<List<Object>>newArrayList(Lists.<Object>newArrayList("uni1", 1, "city0"), Lists.<Object>newArrayList("uni2", 2, "city0")),
+                Lists.<List<Object>>newArrayList()
+        );
+
+        assertThat(actualRow, equalTo(expectedRow));
 
         actualRow = result.next();
 
         // TODO remove
         System.out.println(actualRow.toString());
 
-        assertThat(actualRow.friendId(), equalTo(11L));
-        assertThat(actualRow.friendLastName(), equalTo("last11"));
-        assertThat(actualRow.distanceFromPerson(), equalTo(2));
-        assertThat(actualRow.friendBirthday(), equalTo(11L));
-        assertThat(actualRow.friendCreationDate(), equalTo(11L));
-        assertThat(actualRow.friendGender(), equalTo("gender11"));
-        assertThat(actualRow.friendBrowserUsed(), equalTo("browser11"));
-        assertThat(actualRow.friendLocationIp(), equalTo("ip11"));
-        assertThat(actualRow.friendEmails(), equalTo((Iterable) Sets.newHashSet()));
-        assertThat(actualRow.friendLanguages(), equalTo((Iterable) Sets.newHashSet()));
-        assertThat(actualRow.friendCityName(), equalTo("city0"));
-        assertThat(actualRow.friendUniversities(), equalTo((Iterable) Sets.<List<String>>newHashSet(Lists.newArrayList("uni1", "1", "city0"), Lists.newArrayList("uni2", "2", "city0"))));
-        assertThat(actualRow.friendCompanies(), equalTo((Iterable) Sets.<List<String>>newHashSet()));
+        expectedRow = new LdbcQuery1Result(
+                31L,
+                "last31",
+                2,
+                31L,
+                31L,
+                "gender31",
+                "browser31",
+                "ip31",
+                Sets.<String>newHashSet(),
+                Sets.<String>newHashSet(),
+                "city1",
+                Lists.<List<Object>>newArrayList(),
+                Lists.<List<Object>>newArrayList()
+        );
 
-        actualRow = result.next();
-
-        // TODO remove
-        System.out.println(actualRow.toString());
-
-        assertThat(actualRow.friendId(), equalTo(31L));
-        assertThat(actualRow.friendLastName(), equalTo("last31"));
-        assertThat(actualRow.distanceFromPerson(), equalTo(2));
-        assertThat(actualRow.friendBirthday(), equalTo(31L));
-        assertThat(actualRow.friendCreationDate(), equalTo(31L));
-        assertThat(actualRow.friendGender(), equalTo("gender31"));
-        assertThat(actualRow.friendBrowserUsed(), equalTo("browser31"));
-        assertThat(actualRow.friendLocationIp(), equalTo("ip31"));
-        assertThat(actualRow.friendEmails(), equalTo((Iterable) Sets.newHashSet()));
-        assertThat(actualRow.friendLanguages(), equalTo((Iterable) Sets.newHashSet()));
-        assertThat(actualRow.friendCityName(), equalTo("city1"));
-        assertThat(actualRow.friendUniversities(), equalTo((Iterable) Sets.<List<String>>newHashSet()));
-        assertThat(actualRow.friendCompanies(), equalTo((Iterable) Sets.<List<String>>newHashSet()));
+        assertThat(actualRow, equalTo(expectedRow));
 
         assertThat(result.hasNext(), is(false));
 
@@ -242,19 +246,23 @@ public abstract class QueryCorrectnessTest {
         // TODO remove
         System.out.println(actualRow.toString());
 
-        assertThat(actualRow.friendId(), equalTo(21L));
-        assertThat(actualRow.friendLastName(), equalTo("last21"));
-        assertThat(actualRow.distanceFromPerson(), equalTo(2));
-        assertThat(actualRow.friendBirthday(), equalTo(21L));
-        assertThat(actualRow.friendCreationDate(), equalTo(21L));
-        assertThat(actualRow.friendGender(), equalTo("gender21"));
-        assertThat(actualRow.friendBrowserUsed(), equalTo("browser21"));
-        assertThat(actualRow.friendLocationIp(), equalTo("ip21"));
-        assertThat(actualRow.friendEmails(), equalTo((Iterable) Sets.newHashSet()));
-        assertThat(actualRow.friendLanguages(), equalTo((Iterable) Sets.newHashSet()));
-        assertThat(actualRow.friendCityName(), equalTo("city1"));
-        assertThat(actualRow.friendUniversities(), equalTo((Iterable) Sets.<List<String>>newHashSet()));
-        assertThat(actualRow.friendCompanies(), equalTo((Iterable) Sets.<List<String>>newHashSet(Lists.newArrayList("company1", "2", "country1"))));
+        expectedRow = new LdbcQuery1Result(
+                21L,
+                "last21",
+                2,
+                21L,
+                21L,
+                "gender21",
+                "browser21",
+                "ip21",
+                Sets.<String>newHashSet(),
+                Sets.<String>newHashSet(),
+                "city1",
+                Lists.<List<Object>>newArrayList(),
+                Lists.<List<Object>>newArrayList(Lists.<Object>newArrayList("company1", 2, "country1"))
+        );
+
+        assertThat(actualRow, equalTo(expectedRow));
 
         assertThat(result.hasNext(), is(false));
     }

@@ -27,6 +27,15 @@ public class LdbcTraversersSteps implements LdbcTraversers {
         this.baseTraversalDescription = db.traversalDescription().uniqueness(Uniqueness.NONE).breadthFirst();
     }
 
+    @Override
+    public TraversalDescription friendsUpToThreeHopsWithGivenFirstName(String firstName) {
+        return stepsBuilder.build(baseTraversalDescription,
+                Step.manyRange(node(), relationship().hasType(Rels.KNOWS).hasDirection(Direction.BOTH), 0, 1),
+                Step.one(node().hasLabel(Nodes.Person).propertyEquals(Person.FIRST_NAME, firstName))
+        );
+    }
+
+
     // (uniCity:CITY)<-[:IS_LOCATED_IN]-(uni:UNIVERSITY)<-[studyAt:STUDY_AT]-(person)
     // uni.name, uniCity.name(studyAt.classYear)
     @Override
@@ -35,8 +44,7 @@ public class LdbcTraversersSteps implements LdbcTraversers {
 
                 Step.one(node(), relationship().hasType(Rels.STUDY_AT).hasDirection(Direction.OUTGOING)),
 
-                Step.one(node().hasLabel(Organisation.Type.University),
-                        relationship().hasType(Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
+                Step.one(node().hasLabel(Organisation.Type.University), relationship().hasType(Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
 
                 Step.one(node().hasLabel(Place.Type.City)));
     }
@@ -49,8 +57,7 @@ public class LdbcTraversersSteps implements LdbcTraversers {
 
                 Step.one(node(), relationship().hasType(Rels.WORKS_AT).hasDirection(Direction.OUTGOING)),
 
-                Step.one(node().hasLabel(Organisation.Type.Company),
-                        relationship().hasType(Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
+                Step.one(node().hasLabel(Organisation.Type.Company), relationship().hasType(Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
 
                 Step.one(node().hasLabel(Place.Type.Country)));
     }

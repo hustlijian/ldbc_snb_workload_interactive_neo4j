@@ -14,6 +14,8 @@ public interface LdbcTraversers {
 
     TraversalDescription friendsPostsBeforeDate(final long maxPostCreationDate);
 
+    TraversalDescription friendsUpToThreeHopsWithGivenFirstName(String firstName);
+
     TraversalDescription friendsAndFriendsOfFriends();
 
     TraversalDescription personsPostsWithGivenTag(final String tagName);
