@@ -1,9 +1,17 @@
 package com.ldbc.socialnet.neo4j.workload;
 
+import com.ldbc.driver.util.MapUtils;
 import com.ldbc.driver.util.Tuple.Tuple2;
+import com.ldbc.socialnet.neo4j.TestUtils;
+import com.ldbc.socialnet.workload.neo4j.utils.Utils;
+import org.neo4j.cypher.javacompat.ExecutionEngine;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.helpers.collection.MapUtil;
 
+import java.io.IOException;
 import java.util.*;
 
 import static com.ldbc.socialnet.workload.neo4j.Domain.*;
@@ -16,6 +24,39 @@ public class TestGraph {
         }
         return createIndexQueries;
     }
+
+    public static void createDbFromQueryGraphMaker(TestGraph.QueryGraphMaker queryGraphMaker, String path) throws IOException {
+        // TODO uncomment to print CREATE
+        System.out.println();
+        System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
+        System.out.println(queryGraphMaker.graph());
+
+        Map dbImportConfig = Utils.loadConfig(TestUtils.getResource("/neo4j_import_dev.properties").getAbsolutePath());
+        GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(path).setConfig(dbImportConfig).newGraphDatabase();
+        ExecutionEngine engine = new ExecutionEngine(db);
+        createDbFromCypherQuery(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
+        db.shutdown();
+    }
+
+    public static void createDbFromCypherQuery(ExecutionEngine engine, GraphDatabaseService db, String createQuery, Map<String, Object> queryParams) {
+        try (Transaction tx = db.beginTx()) {
+            engine.execute(createQuery, queryParams);
+            tx.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+        try (Transaction tx = db.beginTx()) {
+            for (String createIndexQuery : TestGraph.createIndexQueries()) {
+                engine.execute(createIndexQuery);
+            }
+            tx.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
 
     public static interface QueryGraphMaker {
         String graph();
