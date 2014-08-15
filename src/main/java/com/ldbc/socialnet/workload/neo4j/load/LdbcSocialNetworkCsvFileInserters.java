@@ -489,8 +489,7 @@ public class LdbcSocialNetworkCsvFileInserters {
                 properties.put(Domain.Organisation.NAME, columnValues[2]);
                 // TODO only necessary if connecting to dbpedia
                 // properties.put( "url", columnValues[3] );
-                long organisationNodeId = batchInserter.createNode(properties, Domain.Nodes.Organisation,
-                        stringToOrganisationType((String) columnValues[1]));
+                long organisationNodeId = batchInserter.createNode(properties, stringToOrganisationType((String) columnValues[1]));
                 organisationsIndex.put(id, organisationNodeId);
             }
 
@@ -521,7 +520,7 @@ public class LdbcSocialNetworkCsvFileInserters {
                 properties.put(Domain.Place.NAME, columnValues[1]);
                 properties.put(Domain.Place.URI, columnValues[2]);
                 Domain.Place.Type placeType = stringToPlaceType((String) columnValues[3]);
-                long placeNodeId = batchInserter.createNode(properties, Domain.Nodes.Place, placeType);
+                long placeNodeId = batchInserter.createNode(properties, placeType);
                 placeIndex.put(id, placeNodeId);
             }
 

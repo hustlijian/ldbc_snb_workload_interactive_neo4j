@@ -25,7 +25,7 @@ public class QueryCorrectnessEmbeddedCypherTest extends QueryCorrectnessTest<Gra
             Neo4jQuery<OPERATION, OPERATION_RESULT, ExecutionEngine> query,
             GraphDatabaseService graphDatabaseService) throws DbException {
         // TODO uncomment to print query
-        System.out.println(operation.toString() + "\n" + query.description() + "\n");
+        System.out.println(query.description() + "\n");
         ExecutionEngine engine = new ExecutionEngine(graphDatabaseService);
         List<OPERATION_RESULT> results;
         try (Transaction tx = graphDatabaseService.beginTx()) {

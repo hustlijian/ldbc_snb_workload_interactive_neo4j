@@ -11,19 +11,18 @@ import java.util.Set;
 
 public class Domain {
     public static Iterable<Tuple2<Label, String>> labelPropertyPairsToIndex() {
-        List<Tuple2<Label, String>> labelPropertyPairsToIndex = new ArrayList<Tuple2<Label, String>>();
+        List<Tuple2<Label, String>> labelPropertyPairsToIndex = new ArrayList<>();
         labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Nodes.Tag, Tag.NAME));
         labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Nodes.Person, Person.ID));
         labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Nodes.Person, Person.FIRST_NAME));
         labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Nodes.Person, Person.LAST_NAME));
-        labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Nodes.Place, Place.NAME));
         labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Place.Type.City, Place.NAME));
         labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Place.Type.Country, Place.NAME));
         return labelPropertyPairsToIndex;
     }
 
     public static Set<Label> labelsToIndex() {
-        Set<Label> labelsToIndex = new HashSet<Label>();
+        Set<Label> labelsToIndex = new HashSet<>();
         for (Tuple2<Label, String> labelPropertyPair : labelPropertyPairsToIndex()) {
             labelsToIndex.add(labelPropertyPair._1());
         }
@@ -40,8 +39,6 @@ public class Domain {
         HAS_CREATOR,
         WORKS_AT,
         HAS_INTEREST,
-        HAS_EMAIL_ADDRESS,
-        ANNOTATED_WITH,
         LIKES,
         HAS_MEMBER,
         CONTAINER_OF,
@@ -56,10 +53,7 @@ public class Domain {
         Person,
         Forum,
         Tag,
-        TagClass,
-        Organisation,
-        Place,
-        EmailAddress
+        TagClass
     }
 
     /*

@@ -15,12 +15,10 @@ import org.neo4j.graphdb.*;
 import java.util.*;
 
 public class Neo4jQuery1EmbeddedApi extends Neo4jQuery1<GraphDatabaseService> {
-    private final LdbcTraversers traversers;
     private static final PersonLastNameAndIdComparator personLastNameAndIdComparator = new PersonLastNameAndIdComparator();
     private final Query1ResultProjectionFunction query1ResultProjectionFunction;
 
     public Neo4jQuery1EmbeddedApi(LdbcTraversers traversers) {
-        this.traversers = traversers;
         this.query1ResultProjectionFunction = new Query1ResultProjectionFunction(traversers);
     }
 

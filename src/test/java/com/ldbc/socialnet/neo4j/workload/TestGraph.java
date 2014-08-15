@@ -17,7 +17,7 @@ import java.util.*;
 import static com.ldbc.socialnet.workload.neo4j.Domain.*;
 
 public class TestGraph {
-    public static Iterable<String> createIndexQueries() {
+    private static Iterable<String> createIndexQueries() {
         List<String> createIndexQueries = new ArrayList<>();
         for (Tuple2<Label, String> labelAndProperty : labelPropertyPairsToIndex()) {
             createIndexQueries.add("CREATE INDEX ON :" + labelAndProperty._1() + "(" + labelAndProperty._2() + ")");
@@ -29,12 +29,12 @@ public class TestGraph {
         // TODO uncomment to print CREATE
         System.out.println();
         System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
-        System.out.println(queryGraphMaker.graph());
+        System.out.println(queryGraphMaker.queryString());
 
         Map dbImportConfig = Utils.loadConfig(TestUtils.getResource("/neo4j_import_dev.properties").getAbsolutePath());
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(path).setConfig(dbImportConfig).newGraphDatabase();
         ExecutionEngine engine = new ExecutionEngine(db);
-        createDbFromCypherQuery(engine, db, queryGraphMaker.graph(), queryGraphMaker.params());
+        createDbFromCypherQuery(engine, db, queryGraphMaker.queryString(), queryGraphMaker.params());
         db.shutdown();
     }
 
@@ -59,14 +59,14 @@ public class TestGraph {
 
 
     public static interface QueryGraphMaker {
-        String graph();
+        String queryString();
 
         Map<String, Object> params();
     }
 
     public static class Query1GraphMaker implements QueryGraphMaker {
         @Override
-        public String graph() {
+        public String queryString() {
             return "CREATE\n"
                    /*
                    * NOTES
@@ -489,7 +489,7 @@ public class TestGraph {
 
     public static class Query2GraphMaker implements QueryGraphMaker {
         @Override
-        public String graph() {
+        public String queryString() {
             return "CREATE\n"
                    /*
                    * NODES
@@ -1004,7 +1004,7 @@ public class TestGraph {
 
     public static class Query3GraphMaker implements QueryGraphMaker {
         @Override
-        public String graph() {
+        public String queryString() {
             return "CREATE\n"
                    /*
                    * NODES
@@ -1023,19 +1023,19 @@ public class TestGraph {
                    /*
                    * Cities
                    */
-                    + " (auckland:" + Nodes.Place + ":" + Place.Type.City + " {auckland}), "
-                    + " (stockholm:" + Nodes.Place + ":" + Place.Type.City + " {stockholm}),"
-                    + " (munich:" + Nodes.Place + ":" + Place.Type.City + " {munich}),\n"
-                    + " (london:" + Nodes.Place + ":" + Place.Type.City + " {london}),"
-                    + " (melbourne:" + Nodes.Place + ":" + Place.Type.City + " {melbourne}),\n"
+                    + " (auckland:" + Place.Type.City + " {auckland}), "
+                    + " (stockholm:" + Place.Type.City + " {stockholm}),"
+                    + " (munich:" + Place.Type.City + " {munich}),\n"
+                    + " (london:" + Place.Type.City + " {london}),"
+                    + " (melbourne:" + Place.Type.City + " {melbourne}),\n"
                    /*
                    * Countries
                    */
-                    + " (se:" + Nodes.Place + ":" + Place.Type.Country + " {sweden}),"
-                    + " (nz:" + Nodes.Place + ":" + Place.Type.Country + " {new_zealand}),\n"
-                    + " (de:" + Nodes.Place + ":" + Place.Type.Country + " {germany}),"
-                    + " (au:" + Nodes.Place + ":" + Place.Type.Country + " {australia}),\n"
-                    + " (uk:" + Nodes.Place + ":" + Place.Type.Country + " {england}),\n"
+                    + " (se:" + Place.Type.Country + " {sweden}),"
+                    + " (nz:" + Place.Type.Country + " {new_zealand}),\n"
+                    + " (de:" + Place.Type.Country + " {germany}),"
+                    + " (au:" + Place.Type.Country + " {australia}),\n"
+                    + " (uk:" + Place.Type.Country + " {england}),\n"
                    /*
                    * Posts
                    */
@@ -1630,7 +1630,7 @@ public class TestGraph {
 
     public static class Query4GraphMaker implements QueryGraphMaker {
         @Override
-        public String graph() {
+        public String queryString() {
             return "CREATE\n"
                    /*
                    * NODES
@@ -2088,7 +2088,7 @@ public class TestGraph {
 
     public static class Query5GraphMaker implements QueryGraphMaker {
         @Override
-        public String graph() {
+        public String queryString() {
             return "CREATE\n"
                    /*
                    * NODES
@@ -2685,7 +2685,7 @@ public class TestGraph {
 
     public static class Query6GraphMaker implements QueryGraphMaker {
         @Override
-        public String graph() {
+        public String queryString() {
             return "CREATE\n"
 
                     + "\n// --- NODES ---\n\n"
@@ -3157,7 +3157,7 @@ public class TestGraph {
 
     public static class Query7GraphMaker implements QueryGraphMaker {
         @Override
-        public String graph() {
+        public String queryString() {
             return "CREATE\n"
                     + "\n// --- NODES ---\n\n"
                    /*
@@ -3413,7 +3413,7 @@ public class TestGraph {
     public static class Query8GraphMaker implements QueryGraphMaker {
 
         @Override
-        public String graph() {
+        public String queryString() {
             return "CREATE\n"
                     + "\n// --- NODES ---\n\n"
                    /*
@@ -3623,7 +3623,7 @@ public class TestGraph {
 
     public static class Query9GraphMaker implements QueryGraphMaker {
         @Override
-        public String graph() {
+        public String queryString() {
             return "CREATE\n"
                     + "\n// --- NODES ---\n\n"
                    /*
@@ -3857,7 +3857,7 @@ public class TestGraph {
 
     public static class Query10GraphMaker implements QueryGraphMaker {
         @Override
-        public String graph() {
+        public String queryString() {
             return "CREATE\n"
                     + "\n// --- NODES ---\n\n"
                    /*
@@ -3884,8 +3884,8 @@ public class TestGraph {
                    /*
                     * Cities
                     */
-                    + " (city0:" + Nodes.Place + ":" + Place.Type.City + " {city0}),\n"
-                    + " (city1:" + Nodes.Place + ":" + Place.Type.City + " {city1}),\n"
+                    + " (city0:" + Place.Type.City + " {city0}),\n"
+                    + " (city1:" + Place.Type.City + " {city1}),\n"
                    /*
                     * Tags
                     */
@@ -4173,7 +4173,7 @@ public class TestGraph {
     public static class Query11GraphMaker implements QueryGraphMaker {
 
         @Override
-        public String graph() {
+        public String queryString() {
             return "CREATE\n"
                     + "\n// --- NODES ---\n\n"
                    /*
@@ -4187,14 +4187,14 @@ public class TestGraph {
                    /*
                     * Companies
                     */
-                    + " (company0:" + Nodes.Organisation + ":" + Organisation.Type.Company + " {company0}),\n"
-                    + " (company1:" + Nodes.Organisation + ":" + Organisation.Type.Company + " {company1}),\n"
-                    + " (company2:" + Nodes.Organisation + ":" + Organisation.Type.Company + " {company2}),\n"
+                    + " (company0:" + Organisation.Type.Company + " {company0}),\n"
+                    + " (company1:" + Organisation.Type.Company + " {company1}),\n"
+                    + " (company2:" + Organisation.Type.Company + " {company2}),\n"
                    /*
                     * Countries
                     */
-                    + " (country0:" + Nodes.Place + ":" + Place.Type.Country + " {country0}),\n"
-                    + " (country1:" + Nodes.Place + ":" + Place.Type.Country + " {country1}),\n"
+                    + " (country0:" + Place.Type.Country + " {country0}),\n"
+                    + " (country1:" + Place.Type.Country + " {country1}),\n"
 
                     + "\n// --- RELATIONSHIPS ---\n\n"
                    /*
@@ -4356,7 +4356,7 @@ public class TestGraph {
     public static class Query12GraphMaker implements QueryGraphMaker {
 
         @Override
-        public String graph() {
+        public String queryString() {
             return "CREATE\n"
                     + "\n// --- NODES ---\n\n"
                    /*
@@ -4668,7 +4668,7 @@ public class TestGraph {
     public static class Query13GraphMaker implements QueryGraphMaker {
 
         @Override
-        public String graph() {
+        public String queryString() {
             return "CREATE\n"
                     + "\n// --- NODES ---\n\n"
                    /*
@@ -4706,7 +4706,7 @@ public class TestGraph {
     public static class Query14GraphMaker implements QueryGraphMaker {
 
         @Override
-        public String graph() {
+        public String queryString() {
             return "CREATE\n"
                     + "\n// --- NODES ---\n\n"
                    /*
@@ -4900,7 +4900,7 @@ public class TestGraph {
 
     public static class All implements QueryGraphMaker {
         @Override
-        public String graph() {
+        public String queryString() {
             return "CREATE\n"
                     + "\n// --- NODES ---\n\n"
                    /*
@@ -4931,29 +4931,29 @@ public class TestGraph {
                    /*
                     * Cities
                     */
-                    + " (auckland:" + Nodes.Place + ":" + Place.Type.City + " {auckland}), (stockholm:" + Nodes.Place + ":" + Place.Type.City + " {stockholm}),"
-                    + " (munich:" + Nodes.Place + ":" + Place.Type.City + " {munich}),\n"
-                    + " (london:" + Nodes.Place + ":" + Place.Type.City + " {london}),"
-                    + " (melbourne:" + Nodes.Place + ":" + Place.Type.City + " {melbourne}),\n"
+                    + " (auckland:" + Place.Type.City + " {auckland}), (stockholm:" + Place.Type.City + " {stockholm}),"
+                    + " (munich:" + Place.Type.City + " {munich}),\n"
+                    + " (london:" + Place.Type.City + " {london}),"
+                    + " (melbourne:" + Place.Type.City + " {melbourne}),\n"
                    /*
                     * Countries
                     */
-                    + " (se:" + Nodes.Place + ":" + Place.Type.Country + " {sweden}),"
-                    + " (nz:" + Nodes.Place + ":" + Place.Type.Country + " {new_zealand}),\n"
-                    + " (de:" + Nodes.Place + ":" + Place.Type.Country + " {germany}),"
-                    + " (au:" + Nodes.Place + ":" + Place.Type.Country + " {australia}),\n"
-                    + " (uk:" + Nodes.Place + ":" + Place.Type.Country + " {england}),\n"
+                    + " (se:" + Place.Type.Country + " {sweden}),"
+                    + " (nz:" + Place.Type.Country + " {new_zealand}),\n"
+                    + " (de:" + Place.Type.Country + " {germany}),"
+                    + " (au:" + Place.Type.Country + " {australia}),\n"
+                    + " (uk:" + Place.Type.Country + " {england}),\n"
                    /*
                     * Universities
                     */
-                    + " (aut:" + Nodes.Organisation + ":" + Organisation.Type.University + " {aut}),"
-                    + " (kth:" + Nodes.Organisation + ":" + Organisation.Type.University + " {kth}),\n"
+                    + " (aut:" + Organisation.Type.University + " {aut}),"
+                    + " (kth:" + Organisation.Type.University + " {kth}),\n"
                    /*
                     * Companies
                     */
-                    + " (sics:" + Nodes.Organisation + ":" + Organisation.Type.Company + " {sics}),"
-                    + " (neo:" + Nodes.Organisation + ":" + Organisation.Type.Company + " {neo}),"
-                    + " (hot:" + Nodes.Organisation + ":" + Organisation.Type.Company + " {hot}),\n"
+                    + " (sics:" + Organisation.Type.Company + " {sics}),"
+                    + " (neo:" + Organisation.Type.Company + " {neo}),"
+                    + " (hot:" + Organisation.Type.Company + " {hot}),\n"
                    /*
                     * Posts
                     */

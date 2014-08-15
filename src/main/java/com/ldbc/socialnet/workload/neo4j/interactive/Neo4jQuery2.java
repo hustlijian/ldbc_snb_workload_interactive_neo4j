@@ -15,15 +15,15 @@ public abstract class Neo4jQuery2<CONNECTION> implements Neo4jQuery<LdbcQuery2, 
     Sort results descending by creation date, and then ascending by Post identifier.
      */
     protected static final String QUERY_STRING = ""
-            + "MATCH (:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID + "}})-[:" + Domain.Rels.KNOWS + "]-(friend:" + Domain.Nodes.Person + ")<-[:" + Domain.Rels.HAS_CREATOR + "]-(post:" + Domain.Nodes.Post + ")\n"
-            + "WHERE post." + Domain.Post.CREATION_DATE + " <= {" + MAX_DATE + "}\n"
+            + "MATCH (:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID + "}})-[:" + Domain.Rels.KNOWS + "]-(friend:" + Domain.Nodes.Person + ")<-[:" + Domain.Rels.HAS_CREATOR + "]-(message)\n"
+            + "WHERE message." + Domain.Post.CREATION_DATE + " <= {" + MAX_DATE + "} AND (message:" + Domain.Nodes.Post + " OR message:" + Domain.Nodes.Comment + ")\n"
             + "RETURN"
             + " friend." + Domain.Person.ID + " AS personId,"
             + " friend." + Domain.Person.FIRST_NAME + " AS personFirstName,"
             + " friend." + Domain.Person.LAST_NAME + " AS personLastName,"
-            + " post." + Domain.Post.ID + " AS postId,"
-            + " post." + Domain.Post.CONTENT + " AS postContent,"
-            + " post." + Domain.Post.CREATION_DATE + " AS postDate\n"
-            + "ORDER BY postDate DESC\n"
+            + " message." + Domain.Post.ID + " AS messageId,"
+            + " message." + Domain.Post.CONTENT + " AS messageContent,"
+            + " message." + Domain.Post.CREATION_DATE + " AS messageDate\n"
+            + "ORDER BY messageDate DESC\n"
             + "LIMIT {" + LIMIT + "}";
 }

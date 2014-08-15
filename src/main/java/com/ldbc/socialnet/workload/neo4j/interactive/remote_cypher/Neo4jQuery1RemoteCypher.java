@@ -14,8 +14,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 public class Neo4jQuery1RemoteCypher extends Neo4jQuery1<Connection> {
-
-
     @Override
     public String description() {
         return QUERY_STRING;
@@ -46,8 +44,7 @@ public class Neo4jQuery1RemoteCypher extends Neo4jQuery1<Connection> {
             try {
                 return resultSet.next();
             } catch (SQLException e) {
-                e.printStackTrace();
-                return false;
+                throw new RuntimeException("Exception thrown while getting next result from result set", e);
             }
         }
 

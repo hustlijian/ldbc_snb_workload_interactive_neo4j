@@ -54,7 +54,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query1ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        FileUtils.deleteRecursively(new File(dbDir));
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
@@ -228,10 +227,13 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query2ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        FileUtils.deleteRecursively(new File(dbDir));
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
+            LdbcQuery2 operation;
+            Iterator<LdbcQuery2Result> result;
+            LdbcQuery2Result row;
+
             long personId = 1;
             String personUri = null;
             Calendar c = Calendar.getInstance();
@@ -240,11 +242,13 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             Date maxDate = c.getTime();
             int limit = 4;
 
-            LdbcQuery2 operation = new LdbcQuery2(personId, personUri, maxDate, limit);
+            // TODO comment out to hide
+            System.out.println(String.format("Params: id:%s, date:%s, limit:%s", personId, maxDate.getTime(), limit));
 
-            Iterator<LdbcQuery2Result> result = neo4jQuery2Impl(connection, operation);
+            operation = new LdbcQuery2(personId, personUri, maxDate, limit);
+            result = neo4jQuery2Impl(connection, operation);
 
-            LdbcQuery2Result row;
+            assertThat(result.hasNext(), is(true));
 
             // 3 jacob hansson 3 [jake3] tjena 1378504800000
             row = result.next();
@@ -292,7 +296,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query3ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        FileUtils.deleteRecursively(new File(dbDir));
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
@@ -345,7 +348,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query4ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        FileUtils.deleteRecursively(new File(dbDir));
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
@@ -388,7 +390,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query5ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        FileUtils.deleteRecursively(new File(dbDir));
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
@@ -420,7 +421,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query6ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        FileUtils.deleteRecursively(new File(dbDir));
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
@@ -458,7 +458,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query7ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        FileUtils.deleteRecursively(new File(dbDir));
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
@@ -536,7 +535,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query8ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        FileUtils.deleteRecursively(new File(dbDir));
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
@@ -614,7 +612,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query9ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        FileUtils.deleteRecursively(new File(dbDir));
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
@@ -674,7 +671,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query10ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        FileUtils.deleteRecursively(new File(dbDir));
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
@@ -731,7 +727,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query11ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        FileUtils.deleteRecursively(new File(dbDir));
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
@@ -770,7 +765,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query12ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        FileUtils.deleteRecursively(new File(dbDir));
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
@@ -827,7 +821,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query13ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        FileUtils.deleteRecursively(new File(dbDir));
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
@@ -854,7 +847,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query14ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        FileUtils.deleteRecursively(new File(dbDir));
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
