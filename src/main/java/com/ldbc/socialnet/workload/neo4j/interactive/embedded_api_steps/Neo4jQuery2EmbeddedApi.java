@@ -10,6 +10,7 @@ import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery2Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.Domain.Person;
 import com.ldbc.socialnet.workload.neo4j.Domain.Post;
+import com.ldbc.socialnet.workload.neo4j.Domain.Message;
 import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery2;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -59,8 +60,8 @@ public class Neo4jQuery2EmbeddedApi extends Neo4jQuery2<GraphDatabaseService> {
                         Node post = friendAndPostPathList.get(2);
                         return new LdbcQuery2Result((long) friend.getProperty(Person.ID),
                                 (String) friend.getProperty(Person.FIRST_NAME),
-                                (String) friend.getProperty(Person.LAST_NAME), (long) post.getProperty(Post.ID),
-                                (String) post.getProperty(Post.CONTENT), (long) post.getProperty(Post.CREATION_DATE));
+                                (String) friend.getProperty(Person.LAST_NAME), (long) post.getProperty(Message.ID),
+                                (String) post.getProperty(Message.CONTENT), (long) post.getProperty(Message.CREATION_DATE));
                     }
                 });
         List<LdbcQuery2Result> friendsPostsResults = Lists.newArrayList(friendsPostsResultsIterator);

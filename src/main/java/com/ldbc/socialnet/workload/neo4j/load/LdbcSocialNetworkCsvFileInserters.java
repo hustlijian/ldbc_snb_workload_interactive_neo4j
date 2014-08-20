@@ -301,16 +301,16 @@ public class LdbcSocialNetworkCsvFileInserters {
                 try {
                     // 2010-12-28T07:16:25Z
                     Date creationDate = DATE_TIME_FORMAT.parse(creationDateString);
-                    properties.put(Domain.Comment.CREATION_DATE, creationDate.getTime());
+                    properties.put(Domain.Message.CREATION_DATE, creationDate.getTime());
                 } catch (ParseException e) {
                     long now = System.currentTimeMillis();
-                    properties.put(Domain.Comment.CREATION_DATE, now);
+                    properties.put(Domain.Message.CREATION_DATE, now);
                     logger.error(String.format("Invalid DateTime string: %s\nSet creationDate to now instead\n%s",
                             creationDateString, e));
                 }
-                properties.put(Domain.Comment.LOCATION_IP, columnValues[2]);
-                properties.put(Domain.Comment.BROWSER_USED, columnValues[3]);
-                properties.put(Domain.Comment.CONTENT, columnValues[4]);
+                properties.put(Domain.Message.LOCATION_IP, columnValues[2]);
+                properties.put(Domain.Message.BROWSER_USED, columnValues[3]);
+                properties.put(Domain.Message.CONTENT, columnValues[4]);
                 long commentNodeId = batchInserter.createNode(properties, Domain.Nodes.Comment);
                 commentsIndex.put(id, commentNodeId);
             }
@@ -328,23 +328,23 @@ public class LdbcSocialNetworkCsvFileInserters {
             public void insert(Object[] columnValues) {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 long id = Long.parseLong((String) columnValues[0]);
-                properties.put(Domain.Post.ID, id);
+                properties.put(Domain.Message.ID, id);
                 properties.put(Domain.Post.IMAGE_FILE, columnValues[1]);
                 String creationDateString = (String) columnValues[2];
                 try {
                     // 2010-12-28T07:16:25Z
                     Date creationDate = DATE_TIME_FORMAT.parse(creationDateString);
-                    properties.put(Domain.Post.CREATION_DATE, creationDate.getTime());
+                    properties.put(Domain.Message.CREATION_DATE, creationDate.getTime());
                 } catch (ParseException e) {
                     long now = System.currentTimeMillis();
-                    properties.put(Domain.Post.CREATION_DATE, now);
+                    properties.put(Domain.Message.CREATION_DATE, now);
                     logger.error(String.format("Invalid DateTime string: %s\nSet creationDate to now instead\n%s",
                             creationDateString, e));
                 }
-                properties.put(Domain.Post.LOCATION_IP, columnValues[3]);
-                properties.put(Domain.Post.BROWSER_USED, columnValues[4]);
+                properties.put(Domain.Message.LOCATION_IP, columnValues[3]);
+                properties.put(Domain.Message.BROWSER_USED, columnValues[4]);
                 properties.put(Domain.Post.LANGUAGE, columnValues[5]);
-                properties.put(Domain.Post.CONTENT, columnValues[6]);
+                properties.put(Domain.Message.CONTENT, columnValues[6]);
                 long postNodeId = batchInserter.createNode(properties, Domain.Nodes.Post);
                 postsIndex.put(id, postNodeId);
             }

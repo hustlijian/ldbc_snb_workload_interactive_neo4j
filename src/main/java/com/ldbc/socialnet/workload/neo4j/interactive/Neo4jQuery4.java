@@ -13,7 +13,7 @@ public abstract class Neo4jQuery4<CONNECTION> implements Neo4jQuery<LdbcQuery4, 
     protected static final String QUERY_STRING = ""
             + "MATCH (person:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID + "}})-[:" + Domain.Rels.KNOWS + "]-(friend:" + Domain.Nodes.Person + ")<-[:" + Domain.Rels.HAS_CREATOR + "]-(post:" + Domain.Nodes.Post + ")"
             + "-[" + Domain.Rels.HAS_TAG + "]->(tag:" + Domain.Nodes.Tag + ")\n"
-            + "WHERE post." + Domain.Post.CREATION_DATE + " >= {" + MIN_DATE + "} AND post." + Domain.Post.CREATION_DATE + " <= {" + MAX_DATE + "}\n"
+            + "WHERE post." + Domain.Message.CREATION_DATE + " >= {" + MIN_DATE + "} AND post." + Domain.Message.CREATION_DATE + " <= {" + MAX_DATE + "}\n"
             + "WITH DISTINCT tag, collect(tag) AS tags\n"
             + "RETURN tag." + Domain.Tag.NAME + " AS tagName, length(tags) AS tagCount\n"
             + "ORDER BY tagCount DESC\n"

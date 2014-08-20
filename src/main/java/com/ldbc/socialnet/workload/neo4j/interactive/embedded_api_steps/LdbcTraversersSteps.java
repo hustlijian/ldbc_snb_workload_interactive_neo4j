@@ -73,7 +73,7 @@ public class LdbcTraversersSteps implements LdbcTraversers {
         PropertyContainerPredicate creationDateCheck = new PropertyContainerPredicate() {
             @Override
             public boolean apply(PropertyContainer container) {
-                long creationDate = (long) container.getProperty(Post.CREATION_DATE);
+                long creationDate = (long) container.getProperty(Message.CREATION_DATE);
                 return (creationDate >= minDate && maxDate >= creationDate);
             }
         };
@@ -102,7 +102,7 @@ public class LdbcTraversersSteps implements LdbcTraversers {
         PropertyContainerPredicate creationDateCheck = new PropertyContainerPredicate() {
             @Override
             public boolean apply(PropertyContainer container) {
-                long creationDate = (long) container.getProperty(Post.CREATION_DATE);
+                long creationDate = (long) container.getProperty(Message.CREATION_DATE);
                 return (creationDate <= maxPostCreationDate);
             }
         };
@@ -164,7 +164,7 @@ public class LdbcTraversersSteps implements LdbcTraversers {
         PropertyContainerPredicate creationDateCheck = new PropertyContainerPredicate() {
             @Override
             public boolean apply(PropertyContainer container) {
-                long creationDate = (long) container.getProperty(Post.CREATION_DATE);
+                long creationDate = (long) container.getProperty(Message.CREATION_DATE);
                 return (creationDate >= minDate && maxDate >= creationDate);
             }
         };

@@ -15,9 +15,9 @@ public abstract class Neo4jQuery8<CONNECTION> implements Neo4jQuery<LdbcQuery8, 
             + " person." + Domain.Person.ID + " AS personId,"
             + " person." + Domain.Person.FIRST_NAME + " AS personFirstName,"
             + " person." + Domain.Person.LAST_NAME + " AS personLastName,"
-            + " comment." + Domain.Comment.ID + " AS commentId,"
-            + " comment." + Domain.Comment.CREATION_DATE + " AS commentCreationDate,"
-            + " comment." + Domain.Comment.CONTENT + " AS commentContent\n"
+            + " comment." + Domain.Message.ID + " AS commentId,"
+            + " comment." + Domain.Message.CREATION_DATE + " AS commentCreationDate,"
+            + " comment." + Domain.Message.CONTENT + " AS commentContent\n"
             + "ORDER BY commentCreationDate DESC, commentId ASC\n"
             + "LIMIT {" + LIMIT + "}";
 }

@@ -226,6 +226,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
     @Test
     public void query2ShouldReturnExpectedResult() throws Exception {
+
         String dbDir = testFolder.newFolder().getAbsolutePath();
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
@@ -234,13 +235,21 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             Iterator<LdbcQuery2Result> result;
             LdbcQuery2Result row;
 
-            long personId = 1;
-            String personUri = null;
-            Calendar c = Calendar.getInstance();
-            c.clear();
-            c.set(2013, Calendar.SEPTEMBER, 7, 0, 0, 0);
-            Date maxDate = c.getTime();
-            int limit = 4;
+    /*
+    Given a start Person, find (most recent) Posts and Comments from all of that Person's friends, that were created before (and including) a given date.
+    Return the top 20 Posts/Comments, and the Person that created each of them.
+    Sort results descending by creation date, and then ascending by Post identifier.
+     */
+
+            long personId;
+            String personUri;
+            Date maxDate;
+            int limit;
+
+            personId = 1;
+            personUri = null;
+            maxDate = new Date(3);
+            limit = 10;
 
             // TODO comment out to hide
             System.out.println(String.format("Params: id:%s, date:%s, limit:%s", personId, maxDate.getTime(), limit));

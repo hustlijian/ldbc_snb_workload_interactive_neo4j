@@ -60,22 +60,18 @@ public class Domain {
      * Nodes
      */
 
-    public static class Comment {
+    public static class Message {
         public static final String ID = "id";
         public static final String CREATION_DATE = "creationDate";
         public static final String LOCATION_IP = "locationIP";
         public static final String BROWSER_USED = "browserUsed";
         public static final String CONTENT = "content";
+        public static final String LENGTH = "length";
     }
 
     public static class Post {
-        public static final String ID = "id";
         public static final String IMAGE_FILE = "imageFile";
-        public static final String CREATION_DATE = "creationDate";
-        public static final String LOCATION_IP = "locationIP";
-        public static final String BROWSER_USED = "browserUsed";
         public static final String LANGUAGE = "language";
-        public static final String CONTENT = "content";
     }
 
     public static class Person {
