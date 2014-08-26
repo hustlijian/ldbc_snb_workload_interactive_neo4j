@@ -24,6 +24,6 @@ public abstract class Neo4jQuery2<CONNECTION> implements Neo4jQuery<LdbcQuery2, 
             + " message." + Domain.Message.ID + " AS messageId,"
             + " message." + Domain.Message.CONTENT + " AS messageContent,"
             + " message." + Domain.Message.CREATION_DATE + " AS messageDate\n"
-            + "ORDER BY messageDate DESC\n"
+            + "ORDER BY messageDate DESC, messageId ASC\n"
             + "LIMIT {" + LIMIT + "}";
 }

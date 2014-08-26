@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
 import com.ldbc.driver.temporal.Duration;
 import com.ldbc.driver.temporal.Time;
+import com.ldbc.driver.util.MapUtils;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery3;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery3Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery3;

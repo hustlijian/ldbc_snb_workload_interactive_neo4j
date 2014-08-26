@@ -2,6 +2,7 @@ package com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
+import com.ldbc.driver.util.MapUtils;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery2;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery2Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery2;
@@ -31,9 +32,9 @@ public class Neo4jQuery2EmbeddedCypher extends Neo4jQuery2<ExecutionEngine> {
                                 (long) input.get("personId"),
                                 (String) input.get("personFirstName"),
                                 (String) input.get("personLastName"),
-                                (long) input.get("postId"),
-                                (String) input.get("postContent"),
-                                (long) input.get("postDate"));
+                                (long) input.get("messageId"),
+                                (String) input.get("messageContent"),
+                                (long) input.get("messageDate"));
                     }
                 });
     }

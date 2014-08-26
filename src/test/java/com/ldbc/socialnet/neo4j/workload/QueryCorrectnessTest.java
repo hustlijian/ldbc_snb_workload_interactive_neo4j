@@ -3,6 +3,7 @@ package com.ldbc.socialnet.neo4j.workload;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.*;
+import com.ldbc.socialnet.workload.neo4j.Domain;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -228,18 +229,13 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     public void query2ShouldReturnExpectedResult() throws Exception {
 
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
+        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query2GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
             LdbcQuery2 operation;
-            Iterator<LdbcQuery2Result> result;
-            LdbcQuery2Result row;
-
-    /*
-    Given a start Person, find (most recent) Posts and Comments from all of that Person's friends, that were created before (and including) a given date.
-    Return the top 20 Posts/Comments, and the Person that created each of them.
-    Sort results descending by creation date, and then ascending by Post identifier.
-     */
+            Iterator<LdbcQuery2Result> results;
+            LdbcQuery2Result actualRow;
+            LdbcQuery2Result expectedRow;
 
             long personId;
             String personUri;
@@ -250,52 +246,135 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             personUri = null;
             maxDate = new Date(3);
             limit = 10;
-
             // TODO comment out to hide
             System.out.println(String.format("Params: id:%s, date:%s, limit:%s", personId, maxDate.getTime(), limit));
-
             operation = new LdbcQuery2(personId, personUri, maxDate, limit);
-            result = neo4jQuery2Impl(connection, operation);
+            results = neo4jQuery2Impl(connection, operation);
+            assertThat(results.hasNext(), is(true));
 
-            assertThat(result.hasNext(), is(true));
+            expectedRow = new LdbcQuery2Result(
+                    3,
+                    "f3",
+                    "last3",
+                    2,
+                    "[f3Post2] content",
+                    3);
+            actualRow = results.next();
+            assertThat(actualRow, equalTo(expectedRow));
 
-            // 3 jacob hansson 3 [jake3] tjena 1378504800000
-            row = result.next();
-            assertThat(row.personId(), is(3L));
-            assertThat(row.personFirstName(), is("jacob"));
-            assertThat(row.personLastName(), is("hansson"));
-            assertThat(row.postOrCommentId(), is(3L));
-            assertThat(row.postOrCommentContent(), is("[jake3] tjena"));
-            assertThat(row.postOrCommentCreationDate(), is(1378504800000L));
+            expectedRow = new LdbcQuery2Result(
+                    3,
+                    "f3",
+                    "last3",
+                    3,
+                    "[f3Post3] content",
+                    3);
+            actualRow = results.next();
+            assertThat(actualRow, equalTo(expectedRow));
 
-            // 2 aiya thorpe 5 [aiya1] kia ora 1378418400000
-            row = result.next();
-            assertThat(row.personId(), is(2L));
-            assertThat(row.personFirstName(), is("aiya"));
-            assertThat(row.personLastName(), is("thorpe"));
-            assertThat(row.postOrCommentId(), is(5L));
-            assertThat(row.postOrCommentContent(), is("[aiya1] kia ora"));
-            assertThat(row.postOrCommentCreationDate(), is(1378418400000L));
+            expectedRow = new LdbcQuery2Result(
+                    3,
+                    "f3",
+                    "last3",
+                    16,
+                    "[f3Comment1] content",
+                    3);
+            actualRow = results.next();
+            assertThat(actualRow, equalTo(expectedRow));
 
-            // 3 jacob hansson 2 [jake2] hej 1378335600000
-            row = result.next();
-            assertThat(row.personId(), is(3L));
-            assertThat(row.personFirstName(), is("jacob"));
-            assertThat(row.personLastName(), is("hansson"));
-            assertThat(row.postOrCommentId(), is(2L));
-            assertThat(row.postOrCommentContent(), is("[jake2] hej"));
-            assertThat(row.postOrCommentCreationDate(), is(1378335600000L));
+            expectedRow = new LdbcQuery2Result(
+                    2,
+                    "f2",
+                    "last2",
+                    6,
+                    "[f2Post2] content",
+                    2);
+            actualRow = results.next();
+            assertThat(actualRow, equalTo(expectedRow));
 
-            // 3 jacob hansson 1 [jake1] hello 1378332060000
-            row = result.next();
-            assertThat(row.personId(), is(3L));
-            assertThat(row.personFirstName(), is("jacob"));
-            assertThat(row.personLastName(), is("hansson"));
-            assertThat(row.postOrCommentId(), is(1L));
-            assertThat(row.postOrCommentContent(), is("[jake1] hello"));
-            assertThat(row.postOrCommentCreationDate(), is(1378332060000L));
+            expectedRow = new LdbcQuery2Result(
+                    2,
+                    "f2",
+                    "last2",
+                    7,
+                    "[f2Post3] content",
+                    2);
+            actualRow = results.next();
+            assertThat(actualRow, equalTo(expectedRow));
 
-            assertThat(result.hasNext(), is(false));
+            expectedRow = new LdbcQuery2Result(
+                    2,
+                    "f2",
+                    "last2",
+                    13,
+                    "[f2Comment1] content",
+                    2);
+            actualRow = results.next();
+            assertThat(actualRow, equalTo(expectedRow));
+
+            assertThat(results.hasNext(), is(false));
+
+            personId = 1;
+            personUri = null;
+            maxDate = new Date(4);
+            limit = 5;
+            // TODO comment out to hide
+            System.out.println(String.format("Params: id:%s, date:%s, limit:%s", personId, maxDate.getTime(), limit));
+            operation = new LdbcQuery2(personId, personUri, maxDate, limit);
+            results = neo4jQuery2Impl(connection, operation);
+            assertThat(results.hasNext(), is(true));
+
+            expectedRow = new LdbcQuery2Result(
+                    3,
+                    "f3",
+                    "last3",
+                    1,
+                    "[f3Post1] content",
+                    4);
+            actualRow = results.next();
+            assertThat(actualRow, equalTo(expectedRow));
+
+            expectedRow = new LdbcQuery2Result(
+                    4,
+                    "f4",
+                    "last4",
+                    4,
+                    "[f4Post1] content",
+                    4);
+            actualRow = results.next();
+            assertThat(actualRow, equalTo(expectedRow));
+
+            expectedRow = new LdbcQuery2Result(
+                    2,
+                    "f2",
+                    "last2",
+                    5,
+                    "[f2Post1] content",
+                    4);
+            actualRow = results.next();
+            assertThat(actualRow, equalTo(expectedRow));
+
+            expectedRow = new LdbcQuery2Result(
+                    2,
+                    "f2",
+                    "last2",
+                    14,
+                    "[f2Comment2] content",
+                    4);
+            actualRow = results.next();
+            assertThat(actualRow, equalTo(expectedRow));
+
+            expectedRow = new LdbcQuery2Result(
+                    3,
+                    "f3",
+                    "last3",
+                    2,
+                    "[f3Post2] content",
+                    3);
+            actualRow = results.next();
+            assertThat(actualRow, equalTo(expectedRow));
+
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
             FileUtils.deleteRecursively(new File(dbDir));
@@ -305,49 +384,66 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query3ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
+        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query3GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
-            long personId = 1;
-            String personUri = null;
-            String countryXName = "new zealand";
-            String countryYName = "sweden";
+            LdbcQuery3 operation;
+            Iterator<LdbcQuery3Result> results;
+            LdbcQuery3Result actualResult;
+            long expectedPersonId;
+            String expectedPersonFirstName;
+            String expectedPersonLastName;
+            int expectedXCount;
+            int expectedYCount;
+            int expectedCount;
+
+            long personId;
+            String personUri;
+            String countryXName;
+            String countryYName;
+            Date startDate;
+            int durationDays;
+            int limit;
+
+            personId = 1;
+            personUri = null;
+            countryXName = "country1";
+            countryYName = "country2";
             Calendar c = Calendar.getInstance();
             c.clear();
-            c.set(2013, Calendar.SEPTEMBER, 4);
-            Date startDate = c.getTime();
-            int durationDays = 4;
-            int limit = 2;
+            c.set(2000, Calendar.JANUARY, 3, 0, 0, 0);
+            startDate = c.getTime();
+            durationDays = 2;
+            limit = 10;
+            operation = new LdbcQuery3(personId, personUri, countryXName, countryYName, startDate, durationDays, limit);
 
-            LdbcQuery3 operation = new LdbcQuery3(personId, personUri, countryXName, countryYName, startDate, durationDays, limit);
-            Iterator<LdbcQuery3Result> result = neo4jQuery3Impl(connection, operation);
+            results = neo4jQuery3Impl(connection, operation);
 
-            // Has at least 1 result
-            assertThat(result.hasNext(), is(true));
+            assertThat(results.hasNext(), is(true));
 
-            LdbcQuery3Result firstRow = result.next();
+            actualResult = results.next();
+            expectedPersonId = 2l;
+            expectedPersonFirstName = "f2";
+            expectedPersonLastName = "last2";
+            expectedXCount = 1;
+            expectedYCount = 1;
+            expectedCount = 2;
+            assertThat(
+                    actualResult,
+                    equalTo(new LdbcQuery3Result(expectedPersonId, expectedPersonFirstName, expectedPersonLastName, expectedXCount, expectedYCount, expectedCount)));
 
-            assertThat(firstRow.personId(), is(3L));
-            assertThat(firstRow.personFirstName(), is("jacob"));
-            assertThat(firstRow.personLastName(), is("hansson"));
-            assertThat(firstRow.xCount(), is(1L));
-            assertThat(firstRow.yCount(), is(2L));
-            assertThat(firstRow.count(), is(3L));
+            actualResult = results.next();
+            expectedPersonId = 6l;
+            expectedPersonFirstName = "ff6";
+            expectedPersonLastName = "last6";
+            expectedXCount = 1;
+            expectedYCount = 1;
+            expectedCount = 2;
+            assertThat(
+                    actualResult,
+                    equalTo(new LdbcQuery3Result(expectedPersonId, expectedPersonFirstName, expectedPersonLastName, expectedXCount, expectedYCount, expectedCount)));
 
-            // Has at least 2 results
-            assertThat(result.hasNext(), is(true));
-
-            LdbcQuery3Result secondRow = result.next();
-
-            assertThat(secondRow.personId(), is(2L));
-            assertThat(secondRow.personFirstName(), is("aiya"));
-            assertThat(secondRow.personLastName(), is("thorpe"));
-            assertThat(secondRow.xCount(), is(1L));
-            assertThat(secondRow.yCount(), is(1L));
-            assertThat(secondRow.count(), is(2L));
-
-            // Has exactly 2 results, no more
-            assertThat(result.hasNext(), is(false));
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
             FileUtils.deleteRecursively(new File(dbDir));
@@ -357,7 +453,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query4ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
+        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query4GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
             long personId = 1;
@@ -399,7 +495,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query5ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
+        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query5GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
             long personId = 1;
@@ -430,7 +526,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query6ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
+        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query6GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
             long personId = 1;
@@ -467,7 +563,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query7ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
+        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query7GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
             long personId = 1;
@@ -544,7 +640,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query8ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
+        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query8GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
             long personId = 0;
@@ -621,7 +717,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query9ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
+        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query9GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
             long personId = 0;
@@ -680,7 +776,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query10ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
+        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query10GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
             long personId = 0;
@@ -736,7 +832,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query11ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
+        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query11GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
             long personId = 0;
@@ -774,7 +870,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query12ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
+        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query12GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
             long personId = 0;
@@ -830,7 +926,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query13ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
+        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query13GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
             long personId1 = 0;
@@ -856,7 +952,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
     @Test
     public void query14ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();
-        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query1GraphMaker(), dbDir);
+        TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query14GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
             long personId1 = 0;
