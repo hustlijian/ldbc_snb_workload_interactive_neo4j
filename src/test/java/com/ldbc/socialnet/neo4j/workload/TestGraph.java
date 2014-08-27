@@ -1471,33 +1471,37 @@ public class TestGraph {
                    /*
                     * Tags
                     */
-                    + " (cake:" + Nodes.Tag + " {cake}), "
-                    + "(pie:" + Nodes.Tag + " {pie}), "
-                    + "(lol:" + Nodes.Tag + " {lol}), "
-                    + "(yolo:" + Nodes.Tag + " {yolo}), "
-                    + "(wtf:" + Nodes.Tag + " {wtf}),\n"
+                    + " (tag1:" + Nodes.Tag + " {tag1}), "
+                    + "(tag2:" + Nodes.Tag + " {tag2}), "
+                    + "(tag3:" + Nodes.Tag + " {tag3}), "
+                    + "(tag4:" + Nodes.Tag + " {tag4}), "
+                    + "(tag5:" + Nodes.Tag + " {tag5}),\n"
                    /*
                     * Persons
                     */
-                    + " (alex:" + Nodes.Person + " {alex}), "
-                    + "(aiya:" + Nodes.Person + " {aiya}), "
-                    + "(jake:" + Nodes.Person + " {jake}), "
-                    + "(peter:" + Nodes.Person + " {peter}),\n"
-                    + "(stranger:" + Nodes.Person + " {stranger}), "
-                    + "(nicky:" + Nodes.Person + " {nicky}),"
-                    + "(unknown:" + Nodes.Person + " {unknown}),\n"
+                    + " (person1:" + Nodes.Person + " {person1}), "
+                    + "(f2:" + Nodes.Person + " {f2}), "
+                    + "(f3:" + Nodes.Person + " {f3}), "
+                    + "(f4:" + Nodes.Person + " {f4}),\n"
+                    + "(s5:" + Nodes.Person + " {s5}), "
+                    + "(ff6:" + Nodes.Person + " {ff6}),"
+                    + "(s7:" + Nodes.Person + " {s7}),\n"
                    /*
                    * Posts
                    */
-                    + " (jakePost1:" + Nodes.Post + " {jakePost1}), (jakePost2:" + Nodes.Post + " {jakePost2}),"
-                    + " (jakePost3:" + Nodes.Post + " {jakePost3}),\n"
-                    + " (peterPost1:" + Nodes.Post + " {peterPost1}), (aiyaPost1:" + Nodes.Post + " {aiyaPost1}),"
-                    + " (aiyaPost2:" + Nodes.Post + " {aiyaPost2}), (aiyaPost3:" + Nodes.Post + " {aiyaPost3}),\n"
-                    + " (strangerPost1:" + Nodes.Post + " {strangerPost1}),"
-                    + " (strangerPost2:" + Nodes.Post + " {strangerPost2}),"
-                    + " (nickyPost1:" + Nodes.Post + " {nickyPost1}),\n"
-                    + " (unknownPost1:" + Nodes.Post + " {unknownPost1}),"
-                    + " (unknownPost2:" + Nodes.Post + " {unknownPost2})\n"
+                    + " (f3Post1:" + Nodes.Post + " {f3Post1}), (f3Post2:" + Nodes.Post + " {f3Post2}),"
+                    + " (f3Post3:" + Nodes.Post + " {f3Post3}),\n"
+                    + " (f4Post1:" + Nodes.Post + " {f4Post1}), (f2Post1:" + Nodes.Post + " {f2Post1}),"
+                    + " (f2Post2:" + Nodes.Post + " {f2Post2}), (f2Post3:" + Nodes.Post + " {f2Post3}),\n"
+                    + " (s5Post1:" + Nodes.Post + " {s5Post1}),"
+                    + " (s5Post2:" + Nodes.Post + " {s5Post2}),"
+                    + " (ff6Post1:" + Nodes.Post + " {ff6Post1}),\n"
+                    + " (s7Post1:" + Nodes.Post + " {s7Post1}),"
+                    + " (s7Post2:" + Nodes.Post + " {s7Post2}),\n"
+                   /*
+                   * Comments
+                   */
+                    + " (f4Comment1:" + Nodes.Comment + " {f4Comment1})\n"
                    /*
                    * RELATIONSHIP
                    */
@@ -1505,414 +1509,432 @@ public class TestGraph {
                    /*
                    * Person-Person
                    */
-                    + "FOREACH (n IN [jake, aiya, peter] | CREATE (alex)-[:" + Rels.KNOWS + "]->(n) )\n"
-                    + "FOREACH (n IN [nicky] | CREATE (aiya)-[:" + Rels.KNOWS + "]->(n) )\n"
+                    + "FOREACH (n IN [f3, f2, f4] | CREATE (person1)-[:" + Rels.KNOWS + "]->(n) )\n"
+                    + "FOREACH (n IN [ff6] | CREATE (f2)-[:" + Rels.KNOWS + "]->(n) )\n"
                    /*
                    * Post-Person
                    */
-                    + "FOREACH (n IN [jakePost1, jakePost2, jakePost3] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(jake) )\n"
-                    + "FOREACH (n IN [aiyaPost1, aiyaPost2, aiyaPost3] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(aiya) )\n"
-                    + "FOREACH (n IN [peterPost1] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(peter) )\n"
-                    + "FOREACH (n IN [strangerPost1, strangerPost2] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(stranger) )\n"
-                    + "FOREACH (n IN [unknownPost1, unknownPost2] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(unknown) )\n"
-                    + "FOREACH (n IN [nickyPost1] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(nicky) )\n"
+                    + "FOREACH (n IN [f3Post1, f3Post2, f3Post3] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(f3) )\n"
+                    + "FOREACH (n IN [f2Post1, f2Post2, f2Post3] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(f2) )\n"
+                    + "FOREACH (n IN [f4Post1] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(f4) )\n"
+                    + "FOREACH (n IN [s5Post1, s5Post2] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(s5) )\n"
+                    + "FOREACH (n IN [s7Post1, s7Post2] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(s7) )\n"
+                    + "FOREACH (n IN [ff6Post1] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(ff6) )\n"
+                   /*
+                   * Comment-Person
+                   */
+                    + "FOREACH (n IN [f4Comment1] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(f4) )\n"
+                   /*
+                   * Comment-Post
+                   */
+                    + "FOREACH (n IN [f4Comment1] | CREATE (n)-[:" + Rels.REPLY_OF + "]->(f2Post1) )\n"
                    /*
                    * Post-Tag
                    */
-                    + "FOREACH (n IN [jakePost1,jakePost2,aiyaPost1] | CREATE (n)-[:" + Rels.HAS_TAG + "]->(yolo) )\n"
-                    + "FOREACH (n IN [jakePost3,nickyPost1,unknownPost2] | CREATE (n)-[:" + Rels.HAS_TAG + "]->(wtf) )\n"
-                    + "FOREACH (n IN [jakePost3,peterPost1,aiyaPost2,strangerPost2,nickyPost1,unknownPost1] | CREATE (n)-[:" + Rels.HAS_TAG + "]->(lol) )\n"
-                    + "FOREACH (n IN [jakePost3,peterPost1,aiyaPost1,aiyaPost3,strangerPost1] | CREATE (n)-[:" + Rels.HAS_TAG + "]->(pie) )\n"
-                    + "FOREACH (n IN [jakePost1,aiyaPost1,aiyaPost3,strangerPost1,nickyPost1] | CREATE (n)-[:" + Rels.HAS_TAG + "]->(cake) )";
+                    + "FOREACH (n IN [f3Post1,f3Post2,f2Post1] | CREATE (n)-[:" + Rels.HAS_TAG + "]->(tag4) )\n"
+                    + "FOREACH (n IN [f3Post3,ff6Post1,s7Post2] | CREATE (n)-[:" + Rels.HAS_TAG + "]->(tag5) )\n"
+                    + "FOREACH (n IN [f3Post3,f4Post1,f2Post2,s5Post2,ff6Post1,s7Post1] | CREATE (n)-[:" + Rels.HAS_TAG + "]->(tag3) )\n"
+                    + "FOREACH (n IN [f3Post3,f4Post1,f2Post1,f2Post3,s5Post1] | CREATE (n)-[:" + Rels.HAS_TAG + "]->(tag2) )\n"
+                    + "FOREACH (n IN [f3Post1,f2Post1,f2Post3,s5Post1,ff6Post1] | CREATE (n)-[:" + Rels.HAS_TAG + "]->(tag1) )"
+                  /*
+                   * Post-Tag
+                   */
+                    + "FOREACH (n IN [f4Comment1] | CREATE (n)-[:" + Rels.HAS_TAG + "]->(tag1) )";
+
         }
 
         @Override
         public Map<String, Object> params() {
             return MapUtil.map(
-                    "cake", TestTags.cake(), "pie", TestTags.pie(), "lol", TestTags.lol(), "yolo", TestTags.yolo(), "wtf", TestTags.wtf(),
-                    "alex", TestPersons.alex(), "aiya", TestPersons.aiya(), "jake", TestPersons.jake(), "peter",
-                    TestPersons.peter(), "stranger", TestPersons.stranger(), "nicky", TestPersons.nicky(), "unknown",
-                    TestStudyAt.alexStudyAtKth(), "jakePost1", TestPosts.jake1(), "jakePost2", TestPosts.jake2(),
-                    "jakePost3", TestPosts.jake3(), "peterPost1", TestPosts.peter1(), "aiyaPost1", TestPosts.aiya1(),
-                    "aiyaPost2", TestPosts.aiya2(), "aiyaPost3", TestPosts.aiya3(), "strangerPost1",
-                    TestPosts.stranger1(), "strangerPost2", TestPosts.stranger2(), "unknownPost1",
-                    TestPosts.unknown1(), "unknownPost2", TestPosts.unknown2(), "nickyPost1", TestPosts.nicky1());
-        }
-
-        protected static class TestStudyAt {
-            protected static Map<String, Object> alexStudyAtKth() {
-                return MapUtil.map(StudiesAt.CLASS_YEAR, 2008);
-            }
+                    "tag1", TestTags.tag1(),
+                    "tag2", TestTags.tag2(),
+                    "tag3", TestTags.tag3(),
+                    "tag4", TestTags.tag4(),
+                    "tag5", TestTags.tag5(),
+                    "person1", TestPersons.person1(),
+                    "f2", TestPersons.f2(),
+                    "f3", TestPersons.f3(),
+                    "f4", TestPersons.f4(),
+                    "s5", TestPersons.s5(),
+                    "ff6", TestPersons.ff6(),
+                    "s7", TestPersons.s7(),
+                    "f3Post1", TestPosts.f3Post1(),
+                    "f3Post2", TestPosts.f3Post2(),
+                    "f3Post3", TestPosts.f3Post3(),
+                    "f4Post1", TestPosts.f4Post1(),
+                    "f2Post1", TestPosts.f2Post1(),
+                    "f2Post2", TestPosts.f2Post2(),
+                    "f2Post3", TestPosts.f2Post3(),
+                    "s5Post1", TestPosts.s5Post1(),
+                    "s5Post2", TestPosts.s5Post2(),
+                    "s7Post1", TestPosts.s7Post1(),
+                    "s7Post2", TestPosts.s7Post2(),
+                    "f4Comment1", TestComments.f4Comment1(),
+                    "ff6Post1", TestPosts.ff6Post1());
         }
 
         protected static class TestPersons {
-            protected static Map<String, Object> alex() {
+            protected static Map<String, Object> person1() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 1L);
-                params.put(Person.FIRST_NAME, "alex");
-                params.put(Person.LAST_NAME, "averbuch");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2012, Calendar.JUNE, 6);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1982, Calendar.JANUARY, 23);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "chrome");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"alex.averbuch@gmail.com",
-                        "alex.averbuch@neotechnology.com"});
-                params.put(Person.GENDER, "male");
-                params.put(Person.LANGUAGES, new String[]{"english", "swedish"});
-                params.put(Person.LOCATION_IP, "192.168.42.24");
+                params.put(Person.FIRST_NAME, "person1");
+                params.put(Person.LAST_NAME, "last1");
+                params.put(Person.CREATION_DATE, 1l);
+                params.put(Person.BIRTHDAY, 1l);
+                params.put(Person.BROWSER_USED, "browser1");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"person1b@email.com", "person1b@email.com"});
+                params.put(Person.GENDER, "gender1");
+                params.put(Person.LANGUAGES, new String[]{"language1a", "language1b"});
+                params.put(Person.LOCATION_IP, "ip1");
                 return params;
             }
 
-            protected static Map<String, Object> aiya() {
+            protected static Map<String, Object> f2() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 2L);
-                params.put(Person.FIRST_NAME, "aiya");
-                params.put(Person.LAST_NAME, "thorpe");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2013, Calendar.MAY, 19);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1983, Calendar.SEPTEMBER, 8);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "safari");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"aiya.thorpe@gmail.com"});
-                params.put(Person.GENDER, "female");
-                params.put(Person.LANGUAGES, new String[]{"english"});
-                params.put(Person.LOCATION_IP, "192.161.48.1");
+                params.put(Person.FIRST_NAME, "f2");
+                params.put(Person.LAST_NAME, "last2");
+                params.put(Person.CREATION_DATE, 2l);
+                params.put(Person.BIRTHDAY, 2l);
+                params.put(Person.BROWSER_USED, "browser2");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"friend2@email.com"});
+                params.put(Person.GENDER, "gender2");
+                params.put(Person.LANGUAGES, new String[]{"language2"});
+                params.put(Person.LOCATION_IP, "ip2");
                 return params;
             }
 
-            protected static Map<String, Object> jake() {
+            protected static Map<String, Object> f3() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 3L);
-                params.put(Person.FIRST_NAME, "jacob");
-                params.put(Person.LAST_NAME, "hansson");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 10);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1987, Calendar.JULY, 21);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "safari");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"jakewins@gmail.com", "jake@neotechnology.com"});
-                params.put(Person.GENDER, "male");
-                params.put(Person.LANGUAGES, new String[]{"english", "swedish"});
-                params.put(Person.LOCATION_IP, "172.124.98.31");
+                params.put(Person.FIRST_NAME, "f3");
+                params.put(Person.LAST_NAME, "last3");
+                params.put(Person.CREATION_DATE, 3l);
+                params.put(Person.BIRTHDAY, 3l);
+                params.put(Person.BROWSER_USED, "browser3");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"friend3a@email.com", "friend3b@email.com"});
+                params.put(Person.GENDER, "gender3");
+                params.put(Person.LANGUAGES, new String[]{"language3a", "language3b"});
+                params.put(Person.LOCATION_IP, "ip3");
                 return params;
             }
 
-            protected static Map<String, Object> peter() {
+            protected static Map<String, Object> f4() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 4L);
-                params.put(Person.FIRST_NAME, "peter");
-                params.put(Person.LAST_NAME, "rentschler");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2013, Calendar.JANUARY, 5);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1982, Calendar.JUNE, 5);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "firefox");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"peter.rentschler@gmx.de"});
-                params.put(Person.GENDER, "male");
-                params.put(Person.LANGUAGES, new String[]{"english", "german"});
-                params.put(Person.LOCATION_IP, "12.24.158.11");
+                params.put(Person.FIRST_NAME, "f4");
+                params.put(Person.LAST_NAME, "last4");
+                params.put(Person.CREATION_DATE, 1l);
+                params.put(Person.BIRTHDAY, 1l);
+                params.put(Person.BROWSER_USED, "browser4");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"friend4@email.com"});
+                params.put(Person.GENDER, "gender4");
+                params.put(Person.LANGUAGES, new String[]{"language4a", "language4b"});
+                params.put(Person.LOCATION_IP, "ip4");
                 return params;
             }
 
-            protected static Map<String, Object> stranger() {
+            protected static Map<String, Object> s5() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 5L);
-                params.put(Person.FIRST_NAME, "stranger");
-                params.put(Person.LAST_NAME, "dude");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2012, Calendar.OCTOBER, 15);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1985, Calendar.FEBRUARY, 11);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "internet explorer");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"dr.strange@love.com"});
-                params.put(Person.GENDER, "male");
-                params.put(Person.LANGUAGES, new String[]{"english"});
-                params.put(Person.LOCATION_IP, "12.24.158.11");
+                params.put(Person.FIRST_NAME, "s5");
+                params.put(Person.LAST_NAME, "last5");
+                params.put(Person.CREATION_DATE, 5l);
+                params.put(Person.BIRTHDAY, 5l);
+                params.put(Person.BROWSER_USED, "browser5");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"stranger5@email.com"});
+                params.put(Person.GENDER, "gender5");
+                params.put(Person.LANGUAGES, new String[]{"language5"});
+                params.put(Person.LOCATION_IP, "ip5");
                 return params;
             }
 
-            protected static Map<String, Object> nicky() {
+            protected static Map<String, Object> ff6() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 6L);
-                params.put(Person.FIRST_NAME, "nicky");
-                params.put(Person.LAST_NAME, "toothill");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2013, Calendar.JUNE, 8);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1982, Calendar.AUGUST, 11);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "safari");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"nicky@provider.com"});
-                params.put(Person.GENDER, "female");
-                params.put(Person.LANGUAGES, new String[]{"english", "spanish"});
-                params.put(Person.LOCATION_IP, "12.171.48.1");
+                params.put(Person.FIRST_NAME, "ff6");
+                params.put(Person.LAST_NAME, "last6");
+                params.put(Person.CREATION_DATE, 1l);
+                params.put(Person.BIRTHDAY, 1l);
+                params.put(Person.BROWSER_USED, "browser6");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"friend6@email.com"});
+                params.put(Person.GENDER, "gender6");
+                params.put(Person.LANGUAGES, new String[]{"language6a", "language6b"});
+                params.put(Person.LOCATION_IP, "ip6");
+                return params;
+            }
+
+            protected static Map<String, Object> s7() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 7L);
+                params.put(Person.FIRST_NAME, "s7");
+                params.put(Person.LAST_NAME, "last7");
+                params.put(Person.CREATION_DATE, 7l);
+                params.put(Person.BIRTHDAY, 7l);
+                params.put(Person.BROWSER_USED, "browser7");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"stranger7a@email.com", "stranger7b@email.com"});
+                params.put(Person.GENDER, "gender7");
+                params.put(Person.LANGUAGES, new String[]{"language7a", "language7b"});
+                params.put(Person.LOCATION_IP, "ip7");
                 return params;
             }
         }
 
         protected static class TestPosts {
-            protected static Map<String, Object> jake1() {
+            protected static Map<String, Object> f3Post1() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 5, 0, 1, 0);
+                c.set(2000, Calendar.JANUARY, 2, 0, 0, 0);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 1L);
-                params.put(Message.CONTENT, "[jake1] hello");
-                params.put(Post.LANGUAGE, new String[]{"english"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[f3Post1] content");
+                params.put(Post.LANGUAGE, new String[]{"language3"});
+                params.put(Post.IMAGE_FILE, "image3");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "safari");
-                params.put(Message.LOCATION_IP, "31.55.91.141");
+                params.put(Message.BROWSER_USED, "browser3");
+                params.put(Message.LOCATION_IP, "ip3");
                 return params;
             }
 
-            protected static Map<String, Object> jake2() {
+            protected static Map<String, Object> f3Post2() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 5, 1, 0, 0);
+                c.set(2000, Calendar.JANUARY, 3, 0, 0, 0);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 2L);
-                params.put(Message.CONTENT, "[jake2] hej");
-                params.put(Post.LANGUAGE, new String[]{"swedish"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[f3Post2] content");
+                params.put(Post.LANGUAGE, new String[]{"language3"});
+                params.put(Post.IMAGE_FILE, "image3");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "safari");
-                params.put(Message.LOCATION_IP, "31.55.91.142");
+                params.put(Message.BROWSER_USED, "browser3");
+                params.put(Message.LOCATION_IP, "ip3");
                 return params;
             }
 
-            protected static Map<String, Object> jake3() {
+            protected static Map<String, Object> f3Post3() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 7, 0, 0, 0);
+                c.set(2000, Calendar.JANUARY, 3, 0, 0, 0);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 3L);
-                params.put(Message.CONTENT, "[jake3] tjena");
-                params.put(Post.LANGUAGE, new String[]{"swedish"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[f3Post3] content");
+                params.put(Post.LANGUAGE, new String[]{"language3"});
+                params.put(Post.IMAGE_FILE, "image3");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "safari");
-                params.put(Message.LOCATION_IP, "31.55.91.143");
+                params.put(Message.BROWSER_USED, "browser3");
+                params.put(Message.LOCATION_IP, "ip3");
                 return params;
             }
 
-            protected static Map<String, Object> peter1() {
+            protected static Map<String, Object> f4Post1() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 7, 1, 0, 0);
+                c.set(2000, Calendar.JANUARY, 5, 0, 0, 0);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 4L);
-                params.put(Message.CONTENT, "[peter1] hallo");
-                params.put(Post.LANGUAGE, new String[]{"german"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[f4Post1] content");
+                params.put(Post.LANGUAGE, new String[]{"language4"});
+                params.put(Post.IMAGE_FILE, "image4");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "firefox");
-                params.put(Message.LOCATION_IP, "31.55.91.241");
+                params.put(Message.BROWSER_USED, "browser4");
+                params.put(Message.LOCATION_IP, "ip4");
                 return params;
             }
 
-            protected static Map<String, Object> aiya1() {
+            protected static Map<String, Object> f2Post1() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 6, 0, 0, 0);
+                c.set(2000, Calendar.JANUARY, 3, 0, 0, 0);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 5L);
-                params.put(Message.CONTENT, "[aiya1] kia ora");
-                params.put(Post.LANGUAGE, new String[]{"english"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[f2Post1] content");
+                params.put(Post.LANGUAGE, new String[]{"language2"});
+                params.put(Post.IMAGE_FILE, "image2");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "safari");
-                params.put(Message.LOCATION_IP, "31.55.91.341");
+                params.put(Message.BROWSER_USED, "browser2");
+                params.put(Message.LOCATION_IP, "ip2");
                 return params;
             }
 
-            protected static Map<String, Object> aiya2() {
+            protected static Map<String, Object> f2Post2() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 9, 0, 0, 0);
+                c.set(2000, Calendar.JANUARY, 3, 0, 0, 0);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 6L);
-                params.put(Message.CONTENT, "[aiya2] bro");
-                params.put(Post.LANGUAGE, new String[]{"english"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[f2Post2] content");
+                params.put(Post.LANGUAGE, new String[]{"language2"});
+                params.put(Post.IMAGE_FILE, "image2");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "safari");
-                params.put(Message.LOCATION_IP, "31.55.91.342");
+                params.put(Message.BROWSER_USED, "browser2");
+                params.put(Message.LOCATION_IP, "ip2");
                 return params;
             }
 
-            protected static Map<String, Object> aiya3() {
+            protected static Map<String, Object> f2Post3() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 5, 0, 0, 0);
+                c.set(2000, Calendar.JANUARY, 3, 0, 0, 0);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 7L);
-                params.put(Message.CONTENT, "[aiya3] chur");
-                params.put(Post.LANGUAGE, new String[]{"english"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[f2Post3] content");
+                params.put(Post.LANGUAGE, new String[]{"language2"});
+                params.put(Post.IMAGE_FILE, "image2");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "safari");
-                params.put(Message.LOCATION_IP, "31.55.91.343");
+                params.put(Message.BROWSER_USED, "browser2");
+                params.put(Message.LOCATION_IP, "ip2");
                 return params;
             }
 
-            protected static Map<String, Object> stranger1() {
+            protected static Map<String, Object> s5Post1() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 5, 4, 23, 45);
+                c.set(2000, Calendar.JANUARY, 3, 0, 0, 0);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 8L);
-                params.put(Message.CONTENT, "[stranger1] gidday");
-                params.put(Post.LANGUAGE, new String[]{"english"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[s5Post1] content");
+                params.put(Post.LANGUAGE, new String[]{"language5"});
+                params.put(Post.IMAGE_FILE, "image5");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "internet explorer");
-                params.put(Message.LOCATION_IP, "31.55.91.441");
+                params.put(Message.BROWSER_USED, "browser5");
+                params.put(Message.LOCATION_IP, "ip5");
                 return params;
             }
 
-            protected static Map<String, Object> stranger2() {
+            protected static Map<String, Object> s5Post2() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 5, 22, 34, 54);
+                c.set(2000, Calendar.JANUARY, 3, 0, 0, 0);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 9L);
-                params.put(Message.CONTENT, "[stranger2] i heart sheep");
-                params.put(Post.LANGUAGE, new String[]{"english"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[s5Post2] content");
+                params.put(Post.LANGUAGE, new String[]{"language5"});
+                params.put(Post.IMAGE_FILE, "image5");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "internet explorer");
-                params.put(Message.LOCATION_IP, "31.55.91.442");
+                params.put(Message.BROWSER_USED, "browser5");
+                params.put(Message.LOCATION_IP, "ip5");
                 return params;
             }
 
-            protected static Map<String, Object> unknown1() {
+            protected static Map<String, Object> s7Post1() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 6, 12, 5, 0);
+                c.set(2000, Calendar.JANUARY, 3, 0, 0, 0);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 10L);
-                params.put(Message.CONTENT, "[unknown1] I wish I was known");
-                params.put(Post.LANGUAGE, new String[]{"swedish", "english"});
-                params.put(Post.IMAGE_FILE, "some image file that noone cares about");
+                params.put(Message.CONTENT, "[s7Post1] content");
+                params.put(Post.LANGUAGE, new String[]{"language7a", "language7b"});
+                params.put(Post.IMAGE_FILE, "image7");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "chrome");
-                params.put(Message.LOCATION_IP, "3.62.11.1");
+                params.put(Message.BROWSER_USED, "browser7");
+                params.put(Message.LOCATION_IP, "ip7");
                 return params;
             }
 
-            protected static Map<String, Object> unknown2() {
+            protected static Map<String, Object> s7Post2() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 6, 13, 21, 3);
+                c.set(2000, Calendar.JANUARY, 3, 0, 0, 0);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 11L);
-                params.put(Message.CONTENT, "[unknown2] please know me somebody");
-                params.put(Post.LANGUAGE, new String[]{"english"});
-                params.put(Post.IMAGE_FILE, "some image file again");
+                params.put(Message.CONTENT, "[s7Post2] content");
+                params.put(Post.LANGUAGE, new String[]{"language7"});
+                params.put(Post.IMAGE_FILE, "image7");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "opera");
-                params.put(Message.LOCATION_IP, "39.75.21.42");
+                params.put(Message.BROWSER_USED, "browser7");
+                params.put(Message.LOCATION_IP, "ip7");
                 return params;
             }
 
-            protected static Map<String, Object> nicky1() {
+            protected static Map<String, Object> ff6Post1() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 5, 20, 0, 1);
+                c.set(2000, Calendar.JANUARY, 3, 0, 0, 0);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 12L);
-                params.put(Message.CONTENT, "[nicky1] i live in england");
-                params.put(Post.LANGUAGE, new String[]{"english"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[ff6Post1] content");
+                params.put(Post.LANGUAGE, new String[]{"language6"});
+                params.put(Post.IMAGE_FILE, "image6");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "safari");
-                params.put(Message.LOCATION_IP, "33.125.1.451");
+                params.put(Message.BROWSER_USED, "browser6");
+                params.put(Message.LOCATION_IP, "ip6");
+                return params;
+            }
+        }
+
+        protected static class TestComments {
+            protected static Map<String, Object> f4Comment1() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 3, 0, 0, 0);
+
+                Map<String, Object> params = new HashMap<>();
+                params.put(Message.ID, 13L);
+                params.put(Message.CONTENT, "[f4Comment1] content");
+                params.put(Message.CREATION_DATE, c.getTime().getTime());
+                params.put(Message.BROWSER_USED, "browser4");
+                params.put(Message.LOCATION_IP, "ip4");
                 return params;
             }
         }
 
         protected static class TestTags {
-            protected static Map<String, Object> cake() {
+            protected static Map<String, Object> tag1() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "cake");
-                params.put(Tag.URI, new String[]{"www.cake.good"});
+                params.put(Tag.NAME, "tag1");
+                params.put(Tag.URI, new String[]{"tag1 uri"});
                 return params;
             }
 
-            protected static Map<String, Object> pie() {
+            protected static Map<String, Object> tag2() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "pie");
-                params.put(Tag.URI, new String[]{"www.is.better"});
+                params.put(Tag.NAME, "tag2");
+                params.put(Tag.URI, new String[]{"tag2 uri"});
                 return params;
             }
 
-            protected static Map<String, Object> lol() {
+            protected static Map<String, Object> tag3() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "lol");
-                params.put(Tag.URI, new String[]{"www.lol.ol"});
+                params.put(Tag.NAME, "tag3");
+                params.put(Tag.URI, new String[]{"tag3 uri"});
                 return params;
             }
 
-            protected static Map<String, Object> yolo() {
+            protected static Map<String, Object> tag4() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "yolo");
-                params.put(Tag.URI, new String[]{"www.yolo.nu"});
+                params.put(Tag.NAME, "tag4");
+                params.put(Tag.URI, new String[]{"tag4 uri"});
                 return params;
             }
 
-            protected static Map<String, Object> wtf() {
+            protected static Map<String, Object> tag5() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "wtf");
-                params.put(Tag.URI, new String[]{"www.wtf.com"});
+                params.put(Tag.NAME, "tag5");
+                params.put(Tag.URI, new String[]{"tag5 uri"});
                 return params;
             }
         }
@@ -1929,586 +1951,542 @@ public class TestGraph {
                     /*
                      * Forums
                     */
-                    + " (cakesAndPiesForum:" + Nodes.Forum + " {cakesAndPiesForum}),"
-                    + " (redditAddictsForum:" + Nodes.Forum + " {redditAddictsForum}),\n"
-                    + " (floatingBoatsForum:" + Nodes.Forum + " {floatingBoatsForum}),"
-                    + " (kiwisSheepAndBungyJumpingForum:" + Nodes.Forum + " {kiwisSheepAndBungyJumpingForum}),\n"
+                    + " (forum1:" + Nodes.Forum + " {forum1}),"
+                    + " (forum2:" + Nodes.Forum + " {forum2}),\n"
+                    + " (forum3:" + Nodes.Forum + " {forum3}),"
+                    + " (forum4:" + Nodes.Forum + " {forum4}),\n"
                    /*
                     * Persons
                     */
-                    + " (alex:" + Nodes.Person + " {alex}), "
-                    + "(aiya:" + Nodes.Person + " {aiya}), "
-                    + "(jake:" + Nodes.Person + " {jake}), "
-                    + "(peter:" + Nodes.Person + " {peter}),\n"
-                    + " (stranger:" + Nodes.Person + " {stranger}), "
-                    + "(nicky:" + Nodes.Person + " {nicky}),"
-                    + "(unknown:" + Nodes.Person + " {unknown}),\n"
+                    + " (person1:" + Nodes.Person + " {person1}), "
+                    + "(f2:" + Nodes.Person + " {f2}), "
+                    + "(f3:" + Nodes.Person + " {f3}), "
+                    + "(f4:" + Nodes.Person + " {f4}),\n"
+                    + " (s5:" + Nodes.Person + " {s5}), "
+                    + "(ff6:" + Nodes.Person + " {ff6}),"
+                    + "(s7:" + Nodes.Person + " {s7}),\n"
                    /*
                    * Posts
                    */
-                    + " (jakePost1:" + Nodes.Post + " {jakePost1}), (jakePost2:" + Nodes.Post + " {jakePost2}),"
-                    + " (jakePost3:" + Nodes.Post + " {jakePost3}),\n"
-                    + " (peterPost1:" + Nodes.Post + " {peterPost1}), (aiyaPost1:" + Nodes.Post + " {aiyaPost1}),"
-                    + " (aiyaPost2:" + Nodes.Post + " {aiyaPost2}), (aiyaPost3:" + Nodes.Post + " {aiyaPost3}),\n"
-                    + " (strangerPost1:" + Nodes.Post + " {strangerPost1}),"
-                    + " (strangerPost2:" + Nodes.Post + " {strangerPost2}),"
-                    + " (nickyPost1:" + Nodes.Post + " {nickyPost1}),\n"
-                    + " (unknownPost1:" + Nodes.Post + " {unknownPost1}),"
-                    + " (unknownPost2:" + Nodes.Post + " {unknownPost2}),\n"
+                    + " (f3Post1:" + Nodes.Post + " {f3Post1}), (f3Post2:" + Nodes.Post + " {f3Post2}),"
+                    + " (f3Post3:" + Nodes.Post + " {f3Post3}),\n"
+                    + " (f2Post1:" + Nodes.Post + " {f2Post1}),"
+                    + " (f2Post2:" + Nodes.Post + " {f2Post2}), (f2Post3:" + Nodes.Post + " {f2Post3}),\n"
+                    + " (s5Post1:" + Nodes.Post + " {s5Post1}),"
+                    + " (s5Post2:" + Nodes.Post + " {s5Post2}),"
+                    + " (ff6Post1:" + Nodes.Post + " {ff6Post1}),\n"
+                    + " (s7Post1:" + Nodes.Post + " {s7Post1}),"
+                    + " (s7Post2:" + Nodes.Post + " {s7Post2}),\n"
                    /*
                    * RELATIONSHIP
                    */
                     + "\n// --- RELATIONSHIPS ---\n\n"
                    /*
-                    * Forum-Person (moderator)
-                    */
-                    + " (cakesAndPiesForum)-[:" + Rels.HAS_MODERATOR + "]->(alex),"
-                    + " (redditAddictsForum)-[:" + Rels.HAS_MODERATOR + "]->(jake),\n"
-                    + " (floatingBoatsForum)-[:" + Rels.HAS_MODERATOR + "]->(jake),"
-                    + " (kiwisSheepAndBungyJumpingForum)-[:" + Rels.HAS_MODERATOR + "]->(aiya),\n"
-                   /*
                     * Forum-Person (member)
                     */
-                    + " (cakesAndPiesForum)-[:" + Rels.HAS_MEMBER + " {cakesAndPiesHasMemberAlex}]->(alex),"
-                    + " (cakesAndPiesForum)-[:" + Rels.HAS_MEMBER + " {cakesAndPiesHasMemberAiya}]->(aiya),\n"
-                    + " (cakesAndPiesForum)-[:" + Rels.HAS_MEMBER + " {cakesAndPiesHasMemberStranger}]->(stranger),"
-                    + " (cakesAndPiesForum)-[:" + Rels.HAS_MEMBER + " {cakesAndPiesHasMemberJake}]->(jake),\n"
-                    + " (cakesAndPiesForum)-[:" + Rels.HAS_MEMBER + " {cakesAndPiesHasMemberNicky}]->(nicky),\n"
-                    + " (redditAddictsForum)-[:" + Rels.HAS_MEMBER + " {redditAddictsHasMemberJake}]->(jake),"
-                    + " (floatingBoatsForum)-[:" + Rels.HAS_MEMBER + " {floatingBoatsHasMemberAlex}]->(alex),\n"
-                    + " (floatingBoatsForum)-[:" + Rels.HAS_MEMBER + " {floatingBoatsHasMemberJake}]->(jake),"
-                    + " (floatingBoatsForum)-[:" + Rels.HAS_MEMBER + " {floatingBoatsHasMemberPeter}]->(peter),\n"
-                    + " (kiwisSheepAndBungyJumpingForum)-[:" + Rels.HAS_MEMBER + " {kiwisSheepAndBungyJumpingHasMemberAiya}]->(aiya),\n"
-                    + " (kiwisSheepAndBungyJumpingForum)-[:" + Rels.HAS_MEMBER + " {kiwisSheepAndBungyJumpingHasMemberAlex}]->(alex)\n"
+                    + " (forum1)-[:" + Rels.HAS_MEMBER + " {forum1HasMemberPerson1}]->(person1),"
+                    + " (forum1)-[:" + Rels.HAS_MEMBER + " {forum1HasMemberF2}]->(f2),\n"
+                    + " (forum1)-[:" + Rels.HAS_MEMBER + " {forum1HasMemberS5}]->(s5),"
+                    + " (forum1)-[:" + Rels.HAS_MEMBER + " {forum1HasMemberF3}]->(f3),\n"
+                    + " (forum1)-[:" + Rels.HAS_MEMBER + " {forum1HasMemberFF6}]->(ff6),\n"
+                    + " (forum2)-[:" + Rels.HAS_MEMBER + " {forum2HasMemberF3}]->(f3),"
+                    + " (forum3)-[:" + Rels.HAS_MEMBER + " {forum3HasMemberPerson1}]->(person1),\n"
+                    + " (forum3)-[:" + Rels.HAS_MEMBER + " {forum3HasMemberF3}]->(f3),"
+                    + " (forum3)-[:" + Rels.HAS_MEMBER + " {forum3HasMemberF4}]->(f4),\n"
+                    + " (forum4)-[:" + Rels.HAS_MEMBER + " {forum4HasMemberF2}]->(f2),\n"
+                    + " (forum4)-[:" + Rels.HAS_MEMBER + " {forum4HasMemberPerson1}]->(person1),\n"
                    /*
                    * Person-Person
                    */
-                    + "FOREACH (n IN [jake, aiya, peter] | CREATE (alex)-[:" + Rels.KNOWS + "]->(n) )\n"
-                    + "FOREACH (n IN [nicky] | CREATE (aiya)-[:" + Rels.KNOWS + "]->(n) )\n"
+                    + " (person1)-[:" + Rels.KNOWS + "]->(f2), (f2)-[:" + Rels.KNOWS + "]->(ff6),\n"
+                    + " (person1)-[:" + Rels.KNOWS + "]->(f3),\n"
+                    + " (person1)-[:" + Rels.KNOWS + "]->(f4)\n"
                    /*
                    * Post-Person
                    */
-                    + "FOREACH (n IN [jakePost1, jakePost2, jakePost3] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(jake) )\n"
-                    + "FOREACH (n IN [aiyaPost1, aiyaPost2, aiyaPost3] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(aiya) )\n"
-                    + "FOREACH (n IN [peterPost1] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(peter) )\n"
-                    + "FOREACH (n IN [strangerPost1, strangerPost2] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(stranger) )\n"
-                    + "FOREACH (n IN [unknownPost1, unknownPost2] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(unknown) )\n"
-                    + "FOREACH (n IN [nickyPost1] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(nicky) )\n"
+                    + "FOREACH (n IN [f3Post1, f3Post2, f3Post3] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(f3) )\n"
+                    + "FOREACH (n IN [f2Post1, f2Post2, f2Post3] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(f2) )\n"
+                    + "FOREACH (n IN [] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(f4) )\n"
+                    + "FOREACH (n IN [s5Post1, s5Post2] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(s5) )\n"
+                    + "FOREACH (n IN [s7Post1, s7Post2] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(s7) )\n"
+                    + "FOREACH (n IN [ff6Post1] | CREATE (n)-[:" + Rels.HAS_CREATOR + "]->(ff6) )\n"
                    /*
                     * Post-Forum
                     */
-                    + "FOREACH (n IN [jakePost1, jakePost2, aiyaPost1, aiyaPost2, strangerPost1, strangerPost2, nickyPost1]| CREATE (cakesAndPiesForum)-[:" + Rels.CONTAINER_OF + "]->(n) )\n"
-                    + "FOREACH (n IN [jakePost3, peterPost1] | CREATE (floatingBoatsForum)-[:" + Rels.CONTAINER_OF + "]->(n) )\n"
-                    + "FOREACH (n IN [aiyaPost3] | CREATE (kiwisSheepAndBungyJumpingForum)-[:" + Rels.CONTAINER_OF + "]->(n) )";
+                    + "FOREACH (n IN [f3Post1, f3Post2, f2Post1, f2Post2, s5Post1, s5Post2, ff6Post1]| CREATE (forum1)-[:" + Rels.CONTAINER_OF + "]->(n) )\n"
+                    + "FOREACH (n IN [f3Post3] | CREATE (forum3)-[:" + Rels.CONTAINER_OF + "]->(n) )\n"
+                    + "FOREACH (n IN [f2Post3] | CREATE (forum4)-[:" + Rels.CONTAINER_OF + "]->(n) )";
         }
 
         @Override
         public Map<String, Object> params() {
             return MapUtil.map(
-                    "cakesAndPiesForum", TestForums.cakesAndPies(), "redditAddictsForum",
-                    TestForums.redditAddicts(), "floatingBoatsForum", TestForums.floatingBoats(),
-                    "kiwisSheepAndBungyJumpingForum", TestForums.kiwisSheepAndBungyJumping(),
-                    "alex", TestPersons.alex(), "aiya", TestPersons.aiya(), "jake", TestPersons.jake(), "peter",
-                    TestPersons.peter(), "stranger", TestPersons.stranger(), "nicky", TestPersons.nicky(), "unknown",
-                    TestStudyAt.alexStudyAtKth(), "jakePost1", TestPosts.jake1(), "jakePost2", TestPosts.jake2(),
-                    "jakePost3", TestPosts.jake3(), "peterPost1", TestPosts.peter1(), "aiyaPost1", TestPosts.aiya1(),
-                    "aiyaPost2", TestPosts.aiya2(), "aiyaPost3", TestPosts.aiya3(), "strangerPost1",
-                    TestPosts.stranger1(), "strangerPost2", TestPosts.stranger2(), "unknownPost1",
-                    TestPosts.unknown1(), "unknownPost2", TestPosts.unknown2(), "nickyPost1", TestPosts.nicky1(),
-                    "cakesAndPiesHasMemberAlex", TestHasMember.cakesAndPiesHasMemberAlex(),
-                    "cakesAndPiesHasMemberAiya", TestHasMember.cakesAndPiesHasMemberAiya(),
-                    "cakesAndPiesHasMemberStranger", TestHasMember.cakesAndPiesHasMemberStranger(),
-                    "cakesAndPiesHasMemberJake", TestHasMember.cakesAndPiesHasMemberJake(),
-                    "cakesAndPiesHasMemberNicky", TestHasMember.cakesAndPiesHasMemberNicky(),
-                    "redditAddictsHasMemberJake", TestHasMember.redditAddictsHasMemberJake(),
-                    "floatingBoatsHasMemberJake", TestHasMember.floatingBoatsHasMemberJake(),
-                    "floatingBoatsHasMemberAlex", TestHasMember.floatingBoatsHasMemberAlex(),
-                    "floatingBoatsHasMemberPeter", TestHasMember.floatingBoatsHasMemberPeter(),
-                    "kiwisSheepAndBungyJumpingHasMemberAiya", TestHasMember.kiwisSheepAndBungyJumpingHasMemberAiya(),
-                    "kiwisSheepAndBungyJumpingHasMemberAlex", TestHasMember.kiwisSheepAndBungyJumpingHasMemberAlex());
+                    "forum1", TestForums.forum1(),
+                    "forum2", TestForums.forum2(),
+                    "forum3", TestForums.forum3(),
+                    "forum4", TestForums.forum4(),
+                    "person1", TestPersons.person1(),
+                    "f2", TestPersons.f2(),
+                    "f3", TestPersons.f3(),
+                    "f4", TestPersons.f4(),
+                    "s5", TestPersons.s5(),
+                    "ff6", TestPersons.ff6(),
+                    "s7", TestPersons.s7(),
+                    "f3Post1", TestPosts.f3Post1(),
+                    "f3Post2", TestPosts.f3Post2(),
+                    "f3Post3", TestPosts.f3Post3(),
+                    "f2Post1", TestPosts.f2Post1(),
+                    "f2Post2", TestPosts.f2Post2(),
+                    "f2Post3", TestPosts.f2Post3(),
+                    "s5Post1", TestPosts.s5Post1(),
+                    "s5Post2", TestPosts.s5Post2(),
+                    "s7Post1", TestPosts.s7Post1(),
+                    "s7Post2", TestPosts.s7Post2(),
+                    "ff6Post1", TestPosts.ff6Post1(),
+                    "forum1HasMemberPerson1", TestHasMember.forum1HasMemberPerson1(),
+                    "forum1HasMemberF2", TestHasMember.forum1HasMemberF2(),
+                    "forum1HasMemberS5", TestHasMember.forum1HasMemberS5(),
+                    "forum1HasMemberF3", TestHasMember.forums1HasMemberF3(),
+                    "forum1HasMemberFF6", TestHasMember.forum1HasMemberFF6(),
+                    "forum2HasMemberF3", TestHasMember.forum2HasMemberF3(),
+                    "forum3HasMemberF3", TestHasMember.forum3HasMemberF3(),
+                    "forum3HasMemberPerson1", TestHasMember.forum3HasMemberPerson1(),
+                    "forum3HasMemberF4", TestHasMember.forum3HasMemberF4(),
+                    "forum4HasMemberF2", TestHasMember.forum4HasMemberF2(),
+                    "forum4HasMemberPerson1", TestHasMember.forum4HasMemberPerson1());
         }
 
         protected static class TestHasMember {
-
-            // cakesAndPies - 2013, Calendar.OCTOBER, 2
-            protected static Map<String, Object> cakesAndPiesHasMemberAlex() {
+            protected static Map<String, Object> forum1HasMemberPerson1() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.OCTOBER, 2);
+                c.set(2000, Calendar.JANUARY, 3);
                 long joinDate = c.getTimeInMillis();
                 return MapUtil.map(HasMember.JOIN_DATE, joinDate);
             }
 
-            protected static Map<String, Object> cakesAndPiesHasMemberAiya() {
+            protected static Map<String, Object> forum1HasMemberF2() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.OCTOBER, 3);
+                c.set(2000, Calendar.JANUARY, 1);
                 long joinDate = c.getTimeInMillis();
                 return MapUtil.map(HasMember.JOIN_DATE, joinDate);
             }
 
-            protected static Map<String, Object> cakesAndPiesHasMemberStranger() {
+            protected static Map<String, Object> forum1HasMemberS5() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.OCTOBER, 4);
+                c.set(2000, Calendar.JANUARY, 3);
                 long joinDate = c.getTimeInMillis();
                 return MapUtil.map(HasMember.JOIN_DATE, joinDate);
             }
 
-            protected static Map<String, Object> cakesAndPiesHasMemberJake() {
+            protected static Map<String, Object> forums1HasMemberF3() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.OCTOBER, 8);
+                c.set(2000, Calendar.JANUARY, 1);
                 long joinDate = c.getTimeInMillis();
                 return MapUtil.map(HasMember.JOIN_DATE, joinDate);
             }
 
-            protected static Map<String, Object> cakesAndPiesHasMemberNicky() {
+            protected static Map<String, Object> forum1HasMemberFF6() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.OCTOBER, 9);
+                c.set(2000, Calendar.JANUARY, 3);
                 long joinDate = c.getTimeInMillis();
                 return MapUtil.map(HasMember.JOIN_DATE, joinDate);
             }
 
-            // redditAddicts - 2013, Calendar.OCTOBER, 22
-            protected static Map<String, Object> redditAddictsHasMemberJake() {
+            protected static Map<String, Object> forum2HasMemberF3() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.OCTOBER, 22);
+                c.set(2000, Calendar.JANUARY, 3);
                 long joinDate = c.getTimeInMillis();
                 return MapUtil.map(HasMember.JOIN_DATE, joinDate);
             }
 
-            // floatingBoats - 2013, Calendar.NOVEMBER, 13
-            protected static Map<String, Object> floatingBoatsHasMemberJake() {
+            protected static Map<String, Object> forum3HasMemberF3() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.NOVEMBER, 13);
+                c.set(2000, Calendar.JANUARY, 3);
                 long joinDate = c.getTimeInMillis();
                 return MapUtil.map(HasMember.JOIN_DATE, joinDate);
             }
 
-            protected static Map<String, Object> floatingBoatsHasMemberAlex() {
+            protected static Map<String, Object> forum3HasMemberPerson1() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.NOVEMBER, 14);
+                c.set(2000, Calendar.JANUARY, 3);
                 long joinDate = c.getTimeInMillis();
                 return MapUtil.map(HasMember.JOIN_DATE, joinDate);
             }
 
-            protected static Map<String, Object> floatingBoatsHasMemberPeter() {
+            protected static Map<String, Object> forum3HasMemberF4() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.NOVEMBER, 16);
+                c.set(2000, Calendar.JANUARY, 3);
                 long joinDate = c.getTimeInMillis();
                 return MapUtil.map(HasMember.JOIN_DATE, joinDate);
             }
 
-            // kiwisSheepAndBungyJumping - 2013, Calendar.NOVEMBER, 1
-            protected static Map<String, Object> kiwisSheepAndBungyJumpingHasMemberAiya() {
+            protected static Map<String, Object> forum4HasMemberF2() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.NOVEMBER, 1);
+                c.set(2000, Calendar.JANUARY, 1);
                 long joinDate = c.getTimeInMillis();
                 return MapUtil.map(HasMember.JOIN_DATE, joinDate);
             }
 
-            protected static Map<String, Object> kiwisSheepAndBungyJumpingHasMemberAlex() {
+            protected static Map<String, Object> forum4HasMemberPerson1() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.NOVEMBER, 4);
+                c.set(2000, Calendar.JANUARY, 3);
                 long joinDate = c.getTimeInMillis();
                 return MapUtil.map(HasMember.JOIN_DATE, joinDate);
-            }
-        }
-
-        protected static class TestStudyAt {
-            protected static Map<String, Object> alexStudyAtKth() {
-                return MapUtil.map(StudiesAt.CLASS_YEAR, 2008);
             }
         }
 
         protected static class TestPersons {
-            protected static Map<String, Object> alex() {
+            protected static Map<String, Object> person1() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 1L);
-                params.put(Person.FIRST_NAME, "alex");
-                params.put(Person.LAST_NAME, "averbuch");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2012, Calendar.JUNE, 6);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1982, Calendar.JANUARY, 23);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "chrome");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"alex.averbuch@gmail.com",
-                        "alex.averbuch@neotechnology.com"});
-                params.put(Person.GENDER, "male");
-                params.put(Person.LANGUAGES, new String[]{"english", "swedish"});
-                params.put(Person.LOCATION_IP, "192.168.42.24");
+                params.put(Person.FIRST_NAME, "person1");
+                params.put(Person.LAST_NAME, "last1");
+                params.put(Person.CREATION_DATE, 1l);
+                params.put(Person.BIRTHDAY, 1l);
+                params.put(Person.BROWSER_USED, "browser1");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"person1a@email.com", "person1b@email.com"});
+                params.put(Person.GENDER, "gender1");
+                params.put(Person.LANGUAGES, new String[]{"language1a", "language1b"});
+                params.put(Person.LOCATION_IP, "ip1");
                 return params;
             }
 
-            protected static Map<String, Object> aiya() {
+            protected static Map<String, Object> f2() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 2L);
-                params.put(Person.FIRST_NAME, "aiya");
-                params.put(Person.LAST_NAME, "thorpe");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2013, Calendar.MAY, 19);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1983, Calendar.SEPTEMBER, 8);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "safari");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"aiya.thorpe@gmail.com"});
-                params.put(Person.GENDER, "female");
-                params.put(Person.LANGUAGES, new String[]{"english"});
-                params.put(Person.LOCATION_IP, "192.161.48.1");
+                params.put(Person.FIRST_NAME, "f2");
+                params.put(Person.LAST_NAME, "last2");
+                params.put(Person.CREATION_DATE, 2l);
+                params.put(Person.BIRTHDAY, 2l);
+                params.put(Person.BROWSER_USED, "browser2");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"f2@email.com"});
+                params.put(Person.GENDER, "gender2");
+                params.put(Person.LANGUAGES, new String[]{"language2"});
+                params.put(Person.LOCATION_IP, "ip2");
                 return params;
             }
 
-            protected static Map<String, Object> jake() {
+            protected static Map<String, Object> f3() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 3L);
-                params.put(Person.FIRST_NAME, "jacob");
-                params.put(Person.LAST_NAME, "hansson");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 10);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1987, Calendar.JULY, 21);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "safari");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"jakewins@gmail.com", "jake@neotechnology.com"});
-                params.put(Person.GENDER, "male");
-                params.put(Person.LANGUAGES, new String[]{"english", "swedish"});
-                params.put(Person.LOCATION_IP, "172.124.98.31");
+                params.put(Person.FIRST_NAME, "f3");
+                params.put(Person.LAST_NAME, "last3");
+                params.put(Person.CREATION_DATE, 3l);
+                params.put(Person.BIRTHDAY, 3l);
+                params.put(Person.BROWSER_USED, "browser3");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"f3a@email.com", "f3b@email.com"});
+                params.put(Person.GENDER, "gender3");
+                params.put(Person.LANGUAGES, new String[]{"language3a", "language3b"});
+                params.put(Person.LOCATION_IP, "ip3");
                 return params;
             }
 
-            protected static Map<String, Object> peter() {
+            protected static Map<String, Object> f4() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 4L);
-                params.put(Person.FIRST_NAME, "peter");
-                params.put(Person.LAST_NAME, "rentschler");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2013, Calendar.JANUARY, 5);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1982, Calendar.JUNE, 5);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "firefox");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"peter.rentschler@gmx.de"});
-                params.put(Person.GENDER, "male");
-                params.put(Person.LANGUAGES, new String[]{"english", "german"});
-                params.put(Person.LOCATION_IP, "12.24.158.11");
+                params.put(Person.FIRST_NAME, "f4");
+                params.put(Person.LAST_NAME, "last4");
+                params.put(Person.CREATION_DATE, 4l);
+                params.put(Person.BIRTHDAY, 4l);
+                params.put(Person.BROWSER_USED, "browser4");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"f4@email.com"});
+                params.put(Person.GENDER, "gender4");
+                params.put(Person.LANGUAGES, new String[]{"language4a", "language4b"});
+                params.put(Person.LOCATION_IP, "ip4");
                 return params;
             }
 
-            protected static Map<String, Object> stranger() {
+            protected static Map<String, Object> s5() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 5L);
-                params.put(Person.FIRST_NAME, "stranger");
-                params.put(Person.LAST_NAME, "dude");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2012, Calendar.OCTOBER, 15);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1985, Calendar.FEBRUARY, 11);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "internet explorer");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"dr.strange@love.com"});
-                params.put(Person.GENDER, "male");
-                params.put(Person.LANGUAGES, new String[]{"english"});
-                params.put(Person.LOCATION_IP, "12.24.158.11");
+                params.put(Person.FIRST_NAME, "s5");
+                params.put(Person.LAST_NAME, "last5");
+                params.put(Person.CREATION_DATE, 5l);
+                params.put(Person.BIRTHDAY, 5l);
+                params.put(Person.BROWSER_USED, "browser5");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"s5@email.com"});
+                params.put(Person.GENDER, "gender5");
+                params.put(Person.LANGUAGES, new String[]{"language5"});
+                params.put(Person.LOCATION_IP, "ip5");
                 return params;
             }
 
-            protected static Map<String, Object> nicky() {
+            protected static Map<String, Object> ff6() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 6L);
-                params.put(Person.FIRST_NAME, "nicky");
-                params.put(Person.LAST_NAME, "toothill");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2013, Calendar.JUNE, 8);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1982, Calendar.AUGUST, 11);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "safari");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"nicky@provider.com"});
-                params.put(Person.GENDER, "female");
-                params.put(Person.LANGUAGES, new String[]{"english", "spanish"});
-                params.put(Person.LOCATION_IP, "12.171.48.1");
+                params.put(Person.FIRST_NAME, "ff6");
+                params.put(Person.LAST_NAME, "last6");
+                params.put(Person.CREATION_DATE, 6l);
+                params.put(Person.BIRTHDAY, 6l);
+                params.put(Person.BROWSER_USED, "browser6");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"ff6@email.com"});
+                params.put(Person.GENDER, "gender6");
+                params.put(Person.LANGUAGES, new String[]{"language6a", "language6b"});
+                params.put(Person.LOCATION_IP, "ip6");
+                return params;
+            }
+
+            protected static Map<String, Object> s7() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 7L);
+                params.put(Person.FIRST_NAME, "s7");
+                params.put(Person.LAST_NAME, "last7");
+                params.put(Person.CREATION_DATE, 7l);
+                params.put(Person.BIRTHDAY, 7l);
+                params.put(Person.BROWSER_USED, "browser7");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"s7@email.com"});
+                params.put(Person.GENDER, "gender7");
+                params.put(Person.LANGUAGES, new String[]{"language7a", "language7b"});
+                params.put(Person.LOCATION_IP, "ip7");
                 return params;
             }
         }
 
         protected static class TestPosts {
-            protected static Map<String, Object> jake1() {
+            protected static Map<String, Object> f3Post1() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 5, 0, 1, 0);
+                c.set(2000, Calendar.JANUARY, 3);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 1L);
-                params.put(Message.CONTENT, "[jake1] hello");
-                params.put(Post.LANGUAGE, new String[]{"english"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[f3Post1] content");
+                params.put(Post.LANGUAGE, new String[]{"language3"});
+                params.put(Post.IMAGE_FILE, "image3");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "safari");
-                params.put(Message.LOCATION_IP, "31.55.91.141");
+                params.put(Message.BROWSER_USED, "browser3");
+                params.put(Message.LOCATION_IP, "ip3");
                 return params;
             }
 
-            protected static Map<String, Object> jake2() {
+            protected static Map<String, Object> f3Post2() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 5, 1, 0, 0);
+                c.set(2000, Calendar.JANUARY, 3);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 2L);
-                params.put(Message.CONTENT, "[jake2] hej");
-                params.put(Post.LANGUAGE, new String[]{"swedish"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[f3Post2] content");
+                params.put(Post.LANGUAGE, new String[]{"language3"});
+                params.put(Post.IMAGE_FILE, "image3");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "safari");
-                params.put(Message.LOCATION_IP, "31.55.91.142");
+                params.put(Message.BROWSER_USED, "browser3");
+                params.put(Message.LOCATION_IP, "ip3");
                 return params;
             }
 
-            protected static Map<String, Object> jake3() {
+            protected static Map<String, Object> f3Post3() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 7, 0, 0, 0);
+                c.set(2000, Calendar.JANUARY, 3);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 3L);
-                params.put(Message.CONTENT, "[jake3] tjena");
-                params.put(Post.LANGUAGE, new String[]{"swedish"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[f3Post3] content");
+                params.put(Post.LANGUAGE, new String[]{"language3"});
+                params.put(Post.IMAGE_FILE, "image3");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "safari");
-                params.put(Message.LOCATION_IP, "31.55.91.143");
+                params.put(Message.BROWSER_USED, "browser3");
+                params.put(Message.LOCATION_IP, "ip3");
                 return params;
             }
 
-            protected static Map<String, Object> peter1() {
+            protected static Map<String, Object> f2Post1() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 7, 1, 0, 0);
-                long creationDate = c.getTimeInMillis();
-
-                Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 4L);
-                params.put(Message.CONTENT, "[peter1] hallo");
-                params.put(Post.LANGUAGE, new String[]{"german"});
-                params.put(Post.IMAGE_FILE, "some image file");
-                params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "firefox");
-                params.put(Message.LOCATION_IP, "31.55.91.241");
-                return params;
-            }
-
-            protected static Map<String, Object> aiya1() {
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 6, 0, 0, 0);
+                c.set(2000, Calendar.JANUARY, 3);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 5L);
-                params.put(Message.CONTENT, "[aiya1] kia ora");
-                params.put(Post.LANGUAGE, new String[]{"english"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[f2Post1] content");
+                params.put(Post.LANGUAGE, new String[]{"language2"});
+                params.put(Post.IMAGE_FILE, "image2");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "safari");
-                params.put(Message.LOCATION_IP, "31.55.91.341");
+                params.put(Message.BROWSER_USED, "browser2");
+                params.put(Message.LOCATION_IP, "ip2");
                 return params;
             }
 
-            protected static Map<String, Object> aiya2() {
+            protected static Map<String, Object> f2Post2() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 9, 0, 0, 0);
+                c.set(2000, Calendar.JANUARY, 3);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 6L);
-                params.put(Message.CONTENT, "[aiya2] bro");
-                params.put(Post.LANGUAGE, new String[]{"english"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[f2Post2] content");
+                params.put(Post.LANGUAGE, new String[]{"language2"});
+                params.put(Post.IMAGE_FILE, "image2");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "safari");
-                params.put(Message.LOCATION_IP, "31.55.91.342");
+                params.put(Message.BROWSER_USED, "browser2");
+                params.put(Message.LOCATION_IP, "ip2");
                 return params;
             }
 
-            protected static Map<String, Object> aiya3() {
+            protected static Map<String, Object> f2Post3() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 5, 0, 0, 0);
+                c.set(2000, Calendar.JANUARY, 3);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 7L);
-                params.put(Message.CONTENT, "[aiya3] chur");
-                params.put(Post.LANGUAGE, new String[]{"english"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[f2Post3] content");
+                params.put(Post.LANGUAGE, new String[]{"language2"});
+                params.put(Post.IMAGE_FILE, "image2");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "safari");
-                params.put(Message.LOCATION_IP, "31.55.91.343");
+                params.put(Message.BROWSER_USED, "browser2");
+                params.put(Message.LOCATION_IP, "ip2");
                 return params;
             }
 
-            protected static Map<String, Object> stranger1() {
+            protected static Map<String, Object> s5Post1() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 5, 4, 23, 45);
+                c.set(2000, Calendar.JANUARY, 3);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 8L);
-                params.put(Message.CONTENT, "[stranger1] gidday");
-                params.put(Post.LANGUAGE, new String[]{"english"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[s5Post1] content");
+                params.put(Post.LANGUAGE, new String[]{"language5"});
+                params.put(Post.IMAGE_FILE, "image5");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "internet explorer");
-                params.put(Message.LOCATION_IP, "31.55.91.441");
+                params.put(Message.BROWSER_USED, "browser5");
+                params.put(Message.LOCATION_IP, "ip5");
                 return params;
             }
 
-            protected static Map<String, Object> stranger2() {
+            protected static Map<String, Object> s5Post2() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 5, 22, 34, 54);
+                c.set(2000, Calendar.JANUARY, 3);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 9L);
-                params.put(Message.CONTENT, "[stranger2] i heart sheep");
-                params.put(Post.LANGUAGE, new String[]{"english"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[s5Post2] content");
+                params.put(Post.LANGUAGE, new String[]{"language5"});
+                params.put(Post.IMAGE_FILE, "image5");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "internet explorer");
-                params.put(Message.LOCATION_IP, "31.55.91.442");
+                params.put(Message.BROWSER_USED, "browser5");
+                params.put(Message.LOCATION_IP, "ip5");
                 return params;
             }
 
-            protected static Map<String, Object> unknown1() {
+            protected static Map<String, Object> s7Post1() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 6, 12, 5, 0);
+                c.set(2000, Calendar.JANUARY, 3);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 10L);
-                params.put(Message.CONTENT, "[unknown1] I wish I was known");
-                params.put(Post.LANGUAGE, new String[]{"swedish", "english"});
-                params.put(Post.IMAGE_FILE, "some image file that noone cares about");
+                params.put(Message.CONTENT, "[s7Post1] content");
+                params.put(Post.LANGUAGE, new String[]{"language7a", "language7b"});
+                params.put(Post.IMAGE_FILE, "image7");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "chrome");
-                params.put(Message.LOCATION_IP, "3.62.11.1");
+                params.put(Message.BROWSER_USED, "browser7");
+                params.put(Message.LOCATION_IP, "ip7");
                 return params;
             }
 
-            protected static Map<String, Object> unknown2() {
+            protected static Map<String, Object> s7Post2() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 6, 13, 21, 3);
+                c.set(2000, Calendar.JANUARY, 3);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 11L);
-                params.put(Message.CONTENT, "[unknown2] please know me somebody");
-                params.put(Post.LANGUAGE, new String[]{"english"});
-                params.put(Post.IMAGE_FILE, "some image file again");
+                params.put(Message.CONTENT, "[s7Post2] content");
+                params.put(Post.LANGUAGE, new String[]{"language7"});
+                params.put(Post.IMAGE_FILE, "image7");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "opera");
-                params.put(Message.LOCATION_IP, "39.75.21.42");
+                params.put(Message.BROWSER_USED, "browser7");
+                params.put(Message.LOCATION_IP, "ip7");
                 return params;
             }
 
-            protected static Map<String, Object> nicky1() {
+            protected static Map<String, Object> ff6Post1() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 5, 20, 0, 1);
+                c.set(2000, Calendar.JANUARY, 3);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 12L);
-                params.put(Message.CONTENT, "[nicky1] i live in england");
-                params.put(Post.LANGUAGE, new String[]{"english"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Message.CONTENT, "[ff6Post1] content");
+                params.put(Post.LANGUAGE, new String[]{"language6"});
+                params.put(Post.IMAGE_FILE, "image6");
                 params.put(Message.CREATION_DATE, creationDate);
-                params.put(Message.BROWSER_USED, "safari");
-                params.put(Message.LOCATION_IP, "33.125.1.451");
+                params.put(Message.BROWSER_USED, "browser6");
+                params.put(Message.LOCATION_IP, "ip6");
                 return params;
             }
         }
 
         protected static class TestForums {
-            protected static Map<String, Object> cakesAndPies() {
+            protected static Map<String, Object> forum1() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.OCTOBER, 2);
+                c.set(2000, Calendar.JANUARY, 3);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
-                params.put(Forum.TITLE, "everything cakes and pies");
+                params.put(Forum.TITLE, "forum1");
                 params.put(Forum.CREATION_DATE, creationDate);
                 return params;
             }
 
-            protected static Map<String, Object> redditAddicts() {
+            protected static Map<String, Object> forum2() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.OCTOBER, 22);
+                c.set(2000, Calendar.JANUARY, 3);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
-                params.put(Forum.TITLE, "if it's not on reddit it's not on nothing");
+                params.put(Forum.TITLE, "forum2");
                 params.put(Forum.CREATION_DATE, creationDate);
                 return params;
             }
 
-            protected static Map<String, Object> floatingBoats() {
+            protected static Map<String, Object> forum3() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.NOVEMBER, 13);
+                c.set(2000, Calendar.JANUARY, 3);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
-                params.put(Forum.TITLE, "boats are not submarines");
+                params.put(Forum.TITLE, "forum3");
                 params.put(Forum.CREATION_DATE, creationDate);
                 return params;
             }
 
-            protected static Map<String, Object> kiwisSheepAndBungyJumping() {
+            protected static Map<String, Object> forum4() {
                 Calendar c = Calendar.getInstance();
                 c.clear();
-                c.set(2013, Calendar.NOVEMBER, 1);
+                c.set(2000, Calendar.JANUARY, 3);
                 long creationDate = c.getTimeInMillis();
 
                 Map<String, Object> params = new HashMap<>();
-                params.put(Forum.TITLE, "kiwis sheep and bungy jumping");
+                params.put(Forum.TITLE, "forum4");
                 params.put(Forum.CREATION_DATE, creationDate);
                 return params;
             }

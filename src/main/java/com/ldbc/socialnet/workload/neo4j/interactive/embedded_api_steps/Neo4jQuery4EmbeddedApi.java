@@ -81,8 +81,8 @@ public class Neo4jQuery4EmbeddedApi extends Neo4jQuery4<GraphDatabaseService> {
     public static class TagCountComparator implements Comparator<LdbcQuery4Result> {
         @Override
         public int compare(LdbcQuery4Result result1, LdbcQuery4Result result2) {
-            if (result1.tagCount() == result2.tagCount()) return 0;
-            if (result1.tagCount() > result2.tagCount()) return -1;
+            if (result1.postCount() == result2.postCount()) return 0;
+            if (result1.postCount() > result2.postCount()) return -1;
             return 1;
         }
     }

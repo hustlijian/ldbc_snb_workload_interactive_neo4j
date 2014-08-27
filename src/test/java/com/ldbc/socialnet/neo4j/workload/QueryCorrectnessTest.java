@@ -3,7 +3,6 @@ package com.ldbc.socialnet.neo4j.workload;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.*;
-import com.ldbc.socialnet.workload.neo4j.Domain;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -456,36 +455,46 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query4GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
-            long personId = 1;
-            String personUri = null;
+            long personId;
+            String personUri;
             Calendar c = Calendar.getInstance();
+            Date startDate;
+            int durationDays;
+            int limit;
+            LdbcQuery4 operation;
+
+            Iterator<LdbcQuery4Result> results;
+            LdbcQuery4Result actualResult;
+            String expectedTagName;
+            int expectedTagCount;
+
+            personId = 1;
+            personUri = null;
             c.clear();
-            c.set(2013, Calendar.SEPTEMBER, 5, 23, 59, 0);
-            Date startDate = c.getTime();
-            int durationDays = 2;
-            int limit = 10;
+            c.set(2000, Calendar.JANUARY, 3, 0, 0, 0);
+            startDate = c.getTime();
+            durationDays = 2;
+            limit = 10;
+            operation = new LdbcQuery4(personId, personUri, startDate, durationDays, limit);
 
-            LdbcQuery4 operation = new LdbcQuery4(personId, personUri, startDate, durationDays, limit);
-            Iterator<LdbcQuery4Result> result = neo4jQuery4Impl(connection, operation);
+            results = neo4jQuery4Impl(connection, operation);
 
-            int expectedRowCount = 5;
-            int actualRowCount = 0;
+            expectedTagName = "tag2";
+            expectedTagCount = 3;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery4Result(expectedTagName, expectedTagCount)));
 
-            assertThat(result.next(), equalTo(new LdbcQuery4Result("pie", 3)));
-            assertThat(result.next(), equalTo(new LdbcQuery4Result("lol", 2)));
-            actualRowCount = 2;
+            expectedTagName = "tag3";
+            expectedTagCount = 2;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery4Result(expectedTagName, expectedTagCount)));
 
-            Map<String, Integer> validTags = new HashMap<>();
-            validTags.put("cake", 1);
-            validTags.put("yolo", 1);
-            validTags.put("wtf", 1);
+            expectedTagName = "tag5";
+            expectedTagCount = 1;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery4Result(expectedTagName, expectedTagCount)));
 
-            while (result.hasNext()) {
-                LdbcQuery4Result row = result.next();
-                assertThat(row.tagCount(), is(validTags.get(row.tagName())));
-                actualRowCount++;
-            }
-            assertThat(actualRowCount, is(expectedRowCount));
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
             FileUtils.deleteRecursively(new File(dbDir));
@@ -498,25 +507,58 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query5GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
-            long personId = 1;
-            String personUri = null;
+            long personId;
+            String personUri;
             Calendar c = Calendar.getInstance();
+            Date joinDate;
+            int limit;
+            LdbcQuery5 operation;
+
+            Iterator<LdbcQuery5Result> results;
+            LdbcQuery5Result actualResult;
+            String expectedForumTitle;
+            int expectedPostCount;
+
+            personId = 1;
+            personUri = null;
             c.clear();
-            c.set(2013, Calendar.JANUARY, 8);
-            Date joinDate = c.getTime();
+            c.set(2000, Calendar.JANUARY, 2);
+            joinDate = c.getTime();
+            limit = 4;
+            operation = new LdbcQuery5(personId, personUri, joinDate, limit);
 
-            int limit = 3;
+            results = neo4jQuery5Impl(connection, operation);
 
-            LdbcQuery5 operation = new LdbcQuery5(personId, personUri, joinDate, limit);
-            Iterator<LdbcQuery5Result> result = neo4jQuery5Impl(connection, operation);
+            actualResult = results.next();
+            expectedForumTitle = "forum1";
+            expectedPostCount=1;
+            assertThat(actualResult,equalTo(new LdbcQuery5Result(expectedForumTitle,expectedPostCount)));
 
-            assertThat(result.hasNext(), is(true));
-            assertThat(result.next(), equalTo(new LdbcQuery5Result("everything cakes and pies", 5)));
-            assertThat(result.hasNext(), is(true));
-            assertThat(result.next(), equalTo(new LdbcQuery5Result("boats are not submarines", 2)));
-            assertThat(result.hasNext(), is(true));
-            assertThat(result.next(), equalTo(new LdbcQuery5Result("kiwis sheep and bungy jumping", 1)));
-            assertThat(result.hasNext(), is(false));
+            actualResult = results.next();
+            expectedForumTitle = "forum3";
+            expectedPostCount=1;
+            assertThat(actualResult,equalTo(new LdbcQuery5Result(expectedForumTitle,expectedPostCount)));
+
+            actualResult = results.next();
+            expectedForumTitle = "forum2";
+            expectedPostCount=0;
+            assertThat(actualResult,equalTo(new LdbcQuery5Result(expectedForumTitle,expectedPostCount)));
+
+            /*
+            // TODO remove
+            FORUM   MEMBERS             RECENT_MEMBERS  FRIEND_POSTS
+            forum1  f2(1),f3(1),ff6(3)  1               1
+            forum2  f3(3)               1               0
+            forum3  f3(3),f4(3)         2               1
+            forum4  f2(1)               0               1
+
+            RETURN
+            forum1, 1
+            forum3, 1
+            forum2, 0
+             */
+
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
             FileUtils.deleteRecursively(new File(dbDir));

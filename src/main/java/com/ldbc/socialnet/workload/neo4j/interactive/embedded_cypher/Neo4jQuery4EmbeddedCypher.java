@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
 import com.ldbc.driver.temporal.Duration;
 import com.ldbc.driver.temporal.Time;
+import com.ldbc.driver.util.MapUtils;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery4;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery4Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery4;
@@ -32,7 +33,7 @@ public class Neo4jQuery4EmbeddedCypher extends Neo4jQuery4<ExecutionEngine> {
                     public LdbcQuery4Result apply(Map<String, Object> input) {
                         return new LdbcQuery4Result(
                                 (String) input.get("tagName"),
-                                (int) input.get("tagCount"));
+                                (int) input.get("postCount"));
                     }
                 });
     }
