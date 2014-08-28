@@ -14,11 +14,11 @@ public abstract class Neo4jQuery3<CONNECTION> implements Neo4jQuery<LdbcQuery3, 
     protected static final Integer LIMIT = 6;
 
     /*
-Given a start Person, find Persons that are their friends and friends of friends (excluding start Person),
-that have made Posts/Comments in the given Countries X and Y within a given period.
-Only Persons that are foreign to Countries X and Y are considered, that is Persons whose Location is not Country X or Country Y.
-Return top 20 Persons, and their Post/Comment counts.
-Sort results descending by total number of Posts/Comments, and then ascending by Person identifier.
+    Given a start Person, find Persons that are their friends and friends of friends (excluding start Person),
+    that have made Posts/Comments in the given Countries X and Y within a given period.
+    Only Persons that are foreign to Countries X and Y are considered, that is Persons whose Location is not Country X or Country Y.
+    Return top 20 Persons, and their Post/Comment counts.
+    Sort results descending by total number of Posts/Comments, and then ascending by Person identifier.
      */
 
     protected static final String QUERY_STRING = ""

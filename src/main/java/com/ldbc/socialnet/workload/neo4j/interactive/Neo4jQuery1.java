@@ -9,6 +9,11 @@ public abstract class Neo4jQuery1<CONNECTION> implements Neo4jQuery<LdbcQuery1, 
     protected static final Integer FRIEND_FIRST_NAME = 2;
     protected static final Integer LIMIT = 3;
 
+    /*
+    Given a start Person, find up to 20 Persons with a given first name that the start Person is connected to (excluding start Person) by at most 3 steps via Knows relationships.
+    Return Persons, including summaries of the Persons’ workplaces and places of study.
+    Sort results by their distance from the start Person, for Persons within the same distance sort by their last name, and for Persons with same last name by their identifier
+     */
     protected static final String QUERY_STRING = ""
             + "MATCH (:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID + "}})-[path:" + Domain.Rels.KNOWS + "*1..3]-(friend:" + Domain.Nodes.Person + ")\n"
             + "WHERE friend." + Domain.Person.FIRST_NAME + " = {" + FRIEND_FIRST_NAME + "}\n"

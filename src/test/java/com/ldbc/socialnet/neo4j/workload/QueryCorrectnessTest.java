@@ -9,7 +9,10 @@ import org.junit.rules.TemporaryFolder;
 import org.neo4j.kernel.impl.util.FileUtils;
 
 import java.io.File;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -531,32 +534,18 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             actualResult = results.next();
             expectedForumTitle = "forum1";
-            expectedPostCount=1;
-            assertThat(actualResult,equalTo(new LdbcQuery5Result(expectedForumTitle,expectedPostCount)));
+            expectedPostCount = 1;
+            assertThat(actualResult, equalTo(new LdbcQuery5Result(expectedForumTitle, expectedPostCount)));
 
             actualResult = results.next();
             expectedForumTitle = "forum3";
-            expectedPostCount=1;
-            assertThat(actualResult,equalTo(new LdbcQuery5Result(expectedForumTitle,expectedPostCount)));
+            expectedPostCount = 1;
+            assertThat(actualResult, equalTo(new LdbcQuery5Result(expectedForumTitle, expectedPostCount)));
 
             actualResult = results.next();
             expectedForumTitle = "forum2";
-            expectedPostCount=0;
-            assertThat(actualResult,equalTo(new LdbcQuery5Result(expectedForumTitle,expectedPostCount)));
-
-            /*
-            // TODO remove
-            FORUM   MEMBERS             RECENT_MEMBERS  FRIEND_POSTS
-            forum1  f2(1),f3(1),ff6(3)  1               1
-            forum2  f3(3)               1               0
-            forum3  f3(3),f4(3)         2               1
-            forum4  f2(1)               0               1
-
-            RETURN
-            forum1, 1
-            forum3, 1
-            forum2, 0
-             */
+            expectedPostCount = 0;
+            assertThat(actualResult, equalTo(new LdbcQuery5Result(expectedForumTitle, expectedPostCount)));
 
             assertThat(results.hasNext(), is(false));
         } finally {
@@ -571,31 +560,68 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query6GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
-            long personId = 1;
-            String personUri = null;
-            String tagName = "lol";
-            int limit = 10;
+            long personId;
+            String personUri;
+            String tagName;
+            int limit;
+            LdbcQuery6 operation;
+            Iterator<LdbcQuery6Result> results;
+            String expectedTagName;
+            int expectedPostCount;
+            LdbcQuery6Result actualResult;
 
-            LdbcQuery6 operation = new LdbcQuery6(personId, personUri, tagName, limit);
-            Iterator<LdbcQuery6Result> result = neo4jQuery6Impl(connection, operation);
+            personId = 1;
+            personUri = null;
+            tagName = "tag3";
+            limit = 4;
+            operation = new LdbcQuery6(personId, personUri, tagName, limit);
+            results = neo4jQuery6Impl(connection, operation);
 
-            int expectedRowCount = 3;
-            int actualRowCount = 0;
+            expectedTagName = "tag2";
+            expectedPostCount = 2;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery6Result(expectedTagName, expectedPostCount)));
 
-            Map<String, Long> validTagCounts = new HashMap<>();
-            validTagCounts.put("wtf", 2L);
-            validTagCounts.put("pie", 2L);
-            validTagCounts.put("cake", 1L);
+            expectedTagName = "tag5";
+            expectedPostCount = 2;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery6Result(expectedTagName, expectedPostCount)));
 
-            while (result.hasNext()) {
-                LdbcQuery6Result row = result.next();
-                String tag = row.tagName();
-                assertThat(validTagCounts.containsKey(tag), is(true));
-                long tagCount = row.tagCount();
-                assertThat(validTagCounts.get(tag), equalTo(tagCount));
-                actualRowCount++;
-            }
-            assertThat(expectedRowCount, equalTo(actualRowCount));
+            expectedTagName = "tag1";
+            expectedPostCount = 1;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery6Result(expectedTagName, expectedPostCount)));
+
+            assertThat(results.hasNext(), is(false));
+
+            personId = 1;
+            personUri = null;
+            tagName = "tag1";
+            limit = 10;
+            operation = new LdbcQuery6(personId, personUri, tagName, limit);
+            results = neo4jQuery6Impl(connection, operation);
+
+            expectedTagName = "tag2";
+            expectedPostCount = 2;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery6Result(expectedTagName, expectedPostCount)));
+
+            expectedTagName = "tag4";
+            expectedPostCount = 2;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery6Result(expectedTagName, expectedPostCount)));
+
+            expectedTagName = "tag3";
+            expectedPostCount = 1;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery6Result(expectedTagName, expectedPostCount)));
+
+            expectedTagName = "tag5";
+            expectedPostCount = 1;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery6Result(expectedTagName, expectedPostCount)));
+
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
             FileUtils.deleteRecursively(new File(dbDir));

@@ -2,6 +2,7 @@ package com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
+import com.ldbc.driver.util.MapUtils;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery6;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery6Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery6;
@@ -26,10 +27,10 @@ public class Neo4jQuery6EmbeddedCypher extends Neo4jQuery6<ExecutionEngine> {
         return Iterators.transform(engine.execute(QUERY_STRING, buildParams(operation)).iterator(),
                 new Function<Map<String, Object>, LdbcQuery6Result>() {
                     @Override
-                    public LdbcQuery6Result apply(Map<String, Object> next) {
+                    public LdbcQuery6Result apply(Map<String, Object> row) {
                         return new LdbcQuery6Result(
-                                (String) next.get("tagName"),
-                                (int) next.get("tagCount"));
+                                (String) row.get("tagName"),
+                                ((Long) row.get("postCount")).intValue());
                     }
                 });
     }
