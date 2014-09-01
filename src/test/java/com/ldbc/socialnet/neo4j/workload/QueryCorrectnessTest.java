@@ -802,71 +802,132 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query8GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
-            long personId = 0;
-            String personUri = null;
-            int limit = 7;
+            long personId;
+            String personUri;
+            int limit;
+            LdbcQuery8 operation;
 
-            LdbcQuery8 operation = new LdbcQuery8(personId, personUri, limit);
-            Iterator<LdbcQuery8Result> result = neo4jQuery8Impl(connection, operation);
+            Iterator<LdbcQuery8Result> results;
+            LdbcQuery8Result actualResult;
+            long expectedPersonId;
+            String expectedPersonFirstName;
+            String expectedPersonLastName;
+            long expectedCommentId;
+            long expectedCommentDate;
+            String expectedCommentContent;
 
-            LdbcQuery8Result row;
+            personId = 0;
+            personUri = null;
+            limit = 7;
+            operation = new LdbcQuery8(personId, personUri, limit);
+            results = neo4jQuery8Impl(connection, operation);
 
-            row = result.next();
-            assertThat(row.personId(), is(2L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("two"));
-            assertThat(row.commentCreationDate(), is(8L));
-            assertThat(row.commentId(), is(13L));
-            assertThat(row.commentContent(), is("C13"));
+            actualResult = results.next();
+            expectedPersonId = 2l;
+            expectedPersonFirstName = "friend";
+            expectedPersonLastName = "two";
+            expectedCommentDate = 9l;
+            expectedCommentId = 131l;
+            expectedCommentContent = "C131";
+            assertThat(actualResult, equalTo(new LdbcQuery8Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedCommentDate,
+                    expectedCommentId,
+                    expectedCommentContent)));
 
-            row = result.next();
-            assertThat(row.personId(), is(3L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("three"));
-            assertThat(row.commentCreationDate(), is(6L));
-            assertThat(row.commentId(), is(12L));
-            assertThat(row.commentContent(), is("C12"));
+            actualResult = results.next();
+            expectedPersonId = 3l;
+            expectedPersonFirstName = "friend";
+            expectedPersonLastName = "three";
+            expectedCommentDate = 6l;
+            expectedCommentId = 12l;
+            expectedCommentContent = "C12";
+            assertThat(actualResult, equalTo(new LdbcQuery8Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedCommentDate,
+                    expectedCommentId,
+                    expectedCommentContent)));
 
-            row = result.next();
-            assertThat(row.personId(), is(1L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("one"));
-            assertThat(row.commentCreationDate(), is(5L));
-            assertThat(row.commentId(), is(2111L));
-            assertThat(row.commentContent(), is("C2111"));
+            actualResult = results.next();
+            expectedPersonId = 1l;
+            expectedPersonFirstName = "friend";
+            expectedPersonLastName = "one";
+            expectedCommentDate = 5l;
+            expectedCommentId = 2111l;
+            expectedCommentContent = "C2111";
+            assertThat(actualResult, equalTo(new LdbcQuery8Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedCommentDate,
+                    expectedCommentId,
+                    expectedCommentContent)));
 
-            row = result.next();
-            assertThat(row.personId(), is(1L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("one"));
-            assertThat(row.commentCreationDate(), is(4L));
-            assertThat(row.commentId(), is(111L));
-            assertThat(row.commentContent(), is("C111"));
+            actualResult = results.next();
+            expectedPersonId = 1l;
+            expectedPersonFirstName = "friend";
+            expectedPersonLastName = "one";
+            expectedCommentDate = 4l;
+            expectedCommentId = 111l;
+            expectedCommentContent = "C111";
+            assertThat(actualResult, equalTo(new LdbcQuery8Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedCommentDate,
+                    expectedCommentId,
+                    expectedCommentContent)));
 
-            row = result.next();
-            assertThat(row.personId(), is(2L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("two"));
-            assertThat(row.commentCreationDate(), is(4L));
-            assertThat(row.commentId(), is(112L));
-            assertThat(row.commentContent(), is("C112"));
+            actualResult = results.next();
+            expectedPersonId = 2l;
+            expectedPersonFirstName = "friend";
+            expectedPersonLastName = "two";
+            expectedCommentDate = 4l;
+            expectedCommentId = 112l;
+            expectedCommentContent = "C112";
+            assertThat(actualResult, equalTo(new LdbcQuery8Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedCommentDate,
+                    expectedCommentId,
+                    expectedCommentContent)));
 
-            row = result.next();
-            assertThat(row.personId(), is(3L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("three"));
-            assertThat(row.commentCreationDate(), is(3L));
-            assertThat(row.commentId(), is(11L));
-            assertThat(row.commentContent(), is("C11"));
-            row = result.next();
-            assertThat(row.personId(), is(2L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("two"));
-            assertThat(row.commentCreationDate(), is(2L));
-            assertThat(row.commentId(), is(211L));
-            assertThat(row.commentContent(), is("C211"));
+            actualResult = results.next();
+            expectedPersonId = 3l;
+            expectedPersonFirstName = "friend";
+            expectedPersonLastName = "three";
+            expectedCommentDate = 3l;
+            expectedCommentId = 11l;
+            expectedCommentContent = "C11";
+            assertThat(actualResult, equalTo(new LdbcQuery8Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedCommentDate,
+                    expectedCommentId,
+                    expectedCommentContent)));
 
-            assertThat(result.hasNext(), is(false));
+            actualResult = results.next();
+            expectedPersonId = 2l;
+            expectedPersonFirstName = "friend";
+            expectedPersonLastName = "two";
+            expectedCommentDate = 2l;
+            expectedCommentId = 211l;
+            expectedCommentContent = "C211";
+            assertThat(actualResult, equalTo(new LdbcQuery8Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedCommentDate,
+                    expectedCommentId,
+                    expectedCommentContent)));
+
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
             FileUtils.deleteRecursively(new File(dbDir));
