@@ -1196,32 +1196,56 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query11GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
-            long personId = 0;
-            String personUri = null;
-            String countryName = "country0";
-            int maxWorkFromYear = 4;
-            int limit = 3;
+            long personId;
+            String personUri;
+            String countryName;
+            int startedBeforeWorkFromYear;
+            int limit;
+            LdbcQuery11 operation;
 
-            LdbcQuery11 operation = new LdbcQuery11(personId, personUri, countryName, maxWorkFromYear, limit);
-            Iterator<LdbcQuery11Result> result = neo4jQuery11Impl(connection, operation);
+            Iterator<LdbcQuery11Result> results;
+            LdbcQuery11Result actualResult;
+            long expectedPersonId;
+            String expectedPersonFirstName;
+            String expectedPersonLastName;
+            String expectedOrganizationName;
+            int expectedWorkFromYear;
 
-            LdbcQuery11Result row;
+            personId = 0;
+            personUri = null;
+            countryName = "country0";
+            startedBeforeWorkFromYear = 5;
+            limit = 4;
+            operation = new LdbcQuery11(personId, personUri, countryName, startedBeforeWorkFromYear, limit);
+            results = neo4jQuery11Impl(connection, operation);
 
-            row = result.next();
-            assertThat(row.personId(), equalTo(1L));
-            assertThat(row.personFirstName(), equalTo("friend"));
-            assertThat(row.personLastName(), equalTo("one"));
-            assertThat(row.organizationName(), equalTo("company zero"));
-            assertThat(row.organizationWorkFromYear(), equalTo(2));
+            actualResult = results.next();
+            expectedPersonId = 1l;
+            expectedPersonFirstName = "friend";
+            expectedPersonLastName = "one";
+            expectedOrganizationName = "company zero";
+            expectedWorkFromYear = 2;
+            assertThat(actualResult, equalTo(new LdbcQuery11Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedOrganizationName,
+                    expectedWorkFromYear)));
 
-            row = result.next();
-            assertThat(row.personId(), equalTo(11L));
-            assertThat(row.personFirstName(), equalTo("friend friend"));
-            assertThat(row.personLastName(), equalTo("one one"));
-            assertThat(row.organizationName(), equalTo("company zero"));
-            assertThat(row.organizationWorkFromYear(), equalTo(3));
+            actualResult = results.next();
+            expectedPersonId = 11l;
+            expectedPersonFirstName = "friend friend";
+            expectedPersonLastName = "one one";
+            expectedOrganizationName = "company zero";
+            expectedWorkFromYear = 3;
+            assertThat(actualResult, equalTo(new LdbcQuery11Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedOrganizationName,
+                    expectedWorkFromYear)));
 
-            assertThat(result.hasNext(), is(false));
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
             FileUtils.deleteRecursively(new File(dbDir));

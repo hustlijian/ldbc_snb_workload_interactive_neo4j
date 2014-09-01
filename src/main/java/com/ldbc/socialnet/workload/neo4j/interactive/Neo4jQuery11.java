@@ -10,12 +10,17 @@ public abstract class Neo4jQuery11<CONNECTION> implements Neo4jQuery<LdbcQuery11
     protected static final Integer COUNTRY_NAME = 3;
     protected static final Integer LIMIT = 4;
 
+    /*
+    Given a start Person, find that Person's friends and friends of friends (excluding start Person) who started Working in some Company in a given Country, before a given date (year).
+    Return top 10 Persons, the Company they worked at, and the year they started working at that Company.
+    Sort results ascending by the start date, then ascending by Person identifier, and lastly by Organization name
+     */
     protected static final String QUERY_STRING = ""
-            + "MATCH (:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID + "}})-[:" + Domain.Rels.KNOWS + "*1..2]-(friend:" + Domain.Nodes.Person + ")\n"
+            + "MATCH (person:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID + "}})-[:" + Domain.Rels.KNOWS + "*1..2]-(friend:" + Domain.Nodes.Person + ")\n"
+            + "WHERE not(person=friend)\n"
             + "WITH DISTINCT friend\n"
-            + "MATCH (friend)-[worksAt:" + Domain.Rels.WORKS_AT + "]->(company:" + Domain.Organisation.Type.Company + ")\n"
-            + "WHERE worksAt." + Domain.WorksAt.WORK_FROM + " <= {" + WORK_FROM_YEAR + "} AND "
-            + " (company)-[:" + Domain.Rels.IS_LOCATED_IN + "]->(:" + Domain.Place.Type.Country + " {" + Domain.Place.NAME + ":{" + COUNTRY_NAME + "}})\n"
+            + "MATCH (friend)-[worksAt:" + Domain.Rels.WORKS_AT + "]->(company:" + Domain.Organisation.Type.Company + ")-[:" + Domain.Rels.IS_LOCATED_IN + "]->(:" + Domain.Place.Type.Country + " {" + Domain.Place.NAME + ":{" + COUNTRY_NAME + "}})\n"
+            + "WHERE worksAt." + Domain.WorksAt.WORK_FROM + " < {" + WORK_FROM_YEAR + "}\n"
             + "RETURN"
             + " friend." + Domain.Person.ID + " AS friendId,"
             + " friend." + Domain.Person.FIRST_NAME + " AS friendFirstName,"
