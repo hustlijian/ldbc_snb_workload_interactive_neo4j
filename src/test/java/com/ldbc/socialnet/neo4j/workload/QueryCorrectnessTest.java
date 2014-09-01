@@ -1357,20 +1357,54 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query13GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
-            long personId1 = 0;
-            String person1Uri = null;
-            long personId2 = 5;
-            String person2Uri = null;
+            long personId1;
+            String person1Uri;
+            long personId2;
+            String person2Uri;
+            LdbcQuery13 operation;
 
-            LdbcQuery13 operation = new LdbcQuery13(personId1, person1Uri, personId2, person2Uri);
-            Iterator<LdbcQuery13Result> result = neo4jQuery13Impl(connection, operation);
+            Iterator<LdbcQuery13Result> results;
+            LdbcQuery13Result actualResult;
+            int expectedShortestPathLength;
 
-            LdbcQuery13Result row;
+            personId1 = 0;
+            person1Uri = null;
+            personId2 = 5;
+            person2Uri = null;
+            operation = new LdbcQuery13(personId1, person1Uri, personId2, person2Uri);
+            results = neo4jQuery13Impl(connection, operation);
 
-            row = result.next();
-            assertThat(row.shortestPathLength(), equalTo(5));
+            actualResult = results.next();
+            expectedShortestPathLength = 5;
+            assertThat(actualResult,equalTo(new LdbcQuery13Result(expectedShortestPathLength)));
 
-            assertThat(result.hasNext(), is(false));
+            assertThat(results.hasNext(), is(false));
+
+            personId1 = 7;
+            person1Uri = null;
+            personId2 = 3;
+            person2Uri = null;
+            operation = new LdbcQuery13(personId1, person1Uri, personId2, person2Uri);
+            results = neo4jQuery13Impl(connection, operation);
+
+            actualResult = results.next();
+            expectedShortestPathLength = 3;
+            assertThat(actualResult,equalTo(new LdbcQuery13Result(expectedShortestPathLength)));
+
+            assertThat(results.hasNext(), is(false));
+
+            personId1 = 1;
+            person1Uri = null;
+            personId2 = 2;
+            person2Uri = null;
+            operation = new LdbcQuery13(personId1, person1Uri, personId2, person2Uri);
+            results = neo4jQuery13Impl(connection, operation);
+
+            actualResult = results.next();
+            expectedShortestPathLength = 1;
+            assertThat(actualResult,equalTo(new LdbcQuery13Result(expectedShortestPathLength)));
+
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
             FileUtils.deleteRecursively(new File(dbDir));
