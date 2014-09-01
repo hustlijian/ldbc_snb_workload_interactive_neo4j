@@ -2,6 +2,7 @@ package com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
+import com.ldbc.driver.util.MapUtils;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery7;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery7Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery7;
@@ -26,14 +27,16 @@ public class Neo4jQuery7EmbeddedCypher extends Neo4jQuery7<ExecutionEngine> {
                 new Function<Map<String, Object>, LdbcQuery7Result>() {
                     @Override
                     public LdbcQuery7Result apply(Map<String, Object> row) {
+                        long latencyAsMilli = (long) row.get("latencyAsMilli");
+                        Long latencyAsMinutes = (latencyAsMilli / 1000) / 60;
                         return new LdbcQuery7Result(
                                 (long) row.get("personId"),
                                 (String) row.get("personFirstName"),
                                 (String) row.get("personLastName"),
-                                (long) row.get("likeDate"),
-                                (long) row.get("postId"),
-                                (String) row.get("postContent"),
-                                (int) row.get("latency"),
+                                (long) row.get("likeTime"),
+                                (long) row.get("messageId"),
+                                (String) row.get("messageContent"),
+                                latencyAsMinutes.intValue(),
                                 (boolean) row.get("isNew"));
                     }
                 });

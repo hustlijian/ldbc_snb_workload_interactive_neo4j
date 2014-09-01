@@ -2945,249 +2945,466 @@ public class TestGraph {
                    /*
                     * Persons
                     */
-                    + " (me:" + Nodes.Person + " {me}), "
-                    + "(f1:" + Nodes.Person + " {f1}), "
-                    + "(f2:" + Nodes.Person + " {f2}), "
+                    + "(person1:" + Nodes.Person + " {person1}),\n"
+                    + "(f2:" + Nodes.Person + " {f2}),\n"
                     + "(f3:" + Nodes.Person + " {f3}),\n"
-                    + " (ff1:" + Nodes.Person + " {ff1}), "
-                    + "(ff2:" + Nodes.Person + " {ff2}),\n"
+                    + "(f4:" + Nodes.Person + " {f4}),\n"
+                    + "(ff5:" + Nodes.Person + " {ff5}),\n"
+                    + "(ff6:" + Nodes.Person + " {ff6}),\n"
+                    + "(s7:" + Nodes.Person + " {s7}),\n"
+                    + "(s8:" + Nodes.Person + " {s8}),\n"
                    /*
                     * Posts
                     */
-                    + " (post1:" + Nodes.Post + " {post1}),\n"
-                    + " (post2:" + Nodes.Post + " {post2}),\n"
-                    + " (post3:" + Nodes.Post + " {post3}),\n"
+                    + "(person1Post1:" + Nodes.Post + " {person1Post1}),\n"
+                    + "(person1Post2:" + Nodes.Post + " {person1Post2}),\n"
+                    + "(person1Post3:" + Nodes.Post + " {person1Post3}),\n"
+                    + "(s7Post1:" + Nodes.Post + " {s7Post1}),\n"
+
+                   /*
+                    * Comments
+                    */
+                    + "(person1Comment1:" + Nodes.Comment + " {person1Comment1}),\n"
+                    + "(f4Comment1:" + Nodes.Comment + " {f4Comment1}),\n"
 
                     + "\n// --- RELATIONSHIPS ---\n\n"
                    /*
                     * Person-Person
                     */
-                    + "(me)-[:" + Rels.KNOWS + "]->(f1),\n"
-                    + "(me)-[:" + Rels.KNOWS + "]->(f2),\n"
-                    + "(me)-[:" + Rels.KNOWS + "]->(f3),\n"
-                    + "(f1)-[:" + Rels.KNOWS + "]->(ff1),\n"
-                    + "(f2)-[:" + Rels.KNOWS + "]->(ff2),\n"
+                    + "(person1)-[:" + Rels.KNOWS + "]->(f2),\n"
+                    + "(person1)-[:" + Rels.KNOWS + "]->(f3),\n"
+                    + "(person1)-[:" + Rels.KNOWS + "]->(f4),\n"
+                    + "(f2)-[:" + Rels.KNOWS + "]->(ff5),\n"
+                    + "(f3)-[:" + Rels.KNOWS + "]->(ff6),\n"
                    /*
-                    * Person-Post (like)
+                    * Comment-Post
                     */
-                    + "(f1)-[:" + Rels.LIKES + " {f1LikesPost1}]->(post1),\n"
-                    + "(f3)-[:" + Rels.LIKES + " {f3LikesPost1}]->(post1),\n"
-                    + "(f3)-[:" + Rels.LIKES + " {f3LikesPost2}]->(post2),\n"
-                    + "(f3)-[:" + Rels.LIKES + " {f3LikesPost3}]->(post3),\n"
-                    + "(ff2)-[:" + Rels.LIKES + " {ff2LikesPost1}]->(post1),\n"
-                    + "(ff2)-[:" + Rels.LIKES + " {ff2LikesPost2}]->(post2),\n"
+                    + "(person1Comment1)-[:" + Rels.REPLY_OF + "]->(s7Post1),\n"
+                    + "(f4Comment1)-[:" + Rels.REPLY_OF + "]->(person1Post3),\n"
                    /*
-                    * Post-Person (post)
+                    * Person-Like->Post
                     */
-                    + "(me)<-[:" + Rels.HAS_CREATOR + "]-(post1),\n"
-                    + "(me)<-[:" + Rels.HAS_CREATOR + "]-(post2),\n"
-                    + "(me)<-[:" + Rels.HAS_CREATOR + "]-(post3)\n";
+                    + "(person1)-[:" + Rels.LIKES + " {person1LikesPerson1Post1}]->(person1Post1),\n"
+                    + "(person1)-[:" + Rels.LIKES + " {person1LikesS7Post1}]->(s7Post1),\n"
+                    + "(f2)-[:" + Rels.LIKES + " {f2LikesPerson1Post1}]->(person1Post1),\n"
+                    + "(f4)-[:" + Rels.LIKES + " {f4LikesPerson1Post1}]->(person1Post1),\n"
+                    + "(f4)-[:" + Rels.LIKES + " {f4LikesPerson1Post2}]->(person1Post2),\n"
+                    + "(f4)-[:" + Rels.LIKES + " {f4LikesPerson1Post3}]->(person1Post3),\n"
+                    + "(ff6)-[:" + Rels.LIKES + " {ff6OldLikesPerson1Post1}]->(person1Post1),\n"
+                    + "(ff6)-[:" + Rels.LIKES + " {ff6NewLikesPerson1Post1}]->(person1Post1),\n"
+                    + "(ff6)-[:" + Rels.LIKES + " {ff6LikesPerson1Post2}]->(person1Post2),\n"
+                    + "(s7)-[:" + Rels.LIKES + " {s7LikesPerson1Post1}]->(person1Post1),\n"
+                    + "(s8)-[:" + Rels.LIKES + " {s8LikesPerson1Post2}]->(person1Post2),\n"
+                   /*
+                    * Person-Like->Comment
+                    */
+                    + "(person1)-[:" + Rels.LIKES + " {person1LikesF4Comment1}]->(f4Comment1),\n"
+                    + "(s7)-[:" + Rels.LIKES + " {s7LikesPerson1Comment1}]->(person1Comment1),\n"
+                    + "(s8)-[:" + Rels.LIKES + " {s8LikesF4Comment1}]->(f4Comment1),\n"
+                   /*
+                    * Post-Create->Person
+                    */
+                    + "(person1)<-[:" + Rels.HAS_CREATOR + "]-(person1Post1),\n"
+                    + "(person1)<-[:" + Rels.HAS_CREATOR + "]-(person1Post2),\n"
+                    + "(person1)<-[:" + Rels.HAS_CREATOR + "]-(person1Post3),\n"
+                    + "(s7)<-[:" + Rels.HAS_CREATOR + "]-(s7Post1),\n"
+                   /*
+                    * Comment-Person
+                    */
+                    + "(person1)<-[:" + Rels.HAS_CREATOR + "]-(person1Comment1),\n"
+                    + "(f4)<-[:" + Rels.HAS_CREATOR + "]-(f4Comment1)\n";
         }
 
         @Override
         public Map<String, Object> params() {
             return MapUtil.map(
                     // Persons
-                    "me", TestPersons.me(), "f1", TestPersons.f1(), "f2", TestPersons.f2(), "f3", TestPersons.f3(),
-                    "ff1", TestPersons.ff1(), "ff2", TestPersons.ff2(),
+                    "person1", TestPersons.person1(),
+                    "f2", TestPersons.f2(),
+                    "f3", TestPersons.f3(),
+                    "f4", TestPersons.f4(),
+                    "ff5", TestPersons.ff5(),
+                    "ff6", TestPersons.ff6(),
+                    "s7", TestPersons.s7(),
+                    "s8", TestPersons.s8(),
                     // Person-Post (like)
-                    "f1LikesPost1", TestLikes.f1LikesPost1(), "f3LikesPost1", TestLikes.f3LikesPost1(),
-                    "f3LikesPost2", TestLikes.f3LikesPost2(), "f3LikesPost3", TestLikes.f3LikesPost3(),
-                    "ff2LikesPost1", TestLikes.ff2LikesPost1(), "ff2LikesPost2", TestLikes.ff2LikesPost2(),
-                    // Person-Post (post)
-                    "post1", TestPosts.post1(), "post2", TestPosts.post2(), "post3", TestPosts.post3());
+                    "person1LikesPerson1Post1", TestPostLikes.person1LikesPerson1Post1(),
+                    "person1LikesS7Post1", TestPostLikes.person1LikesS7Post1(),
+                    "f2LikesPerson1Post1", TestPostLikes.f2LikesPerson1Post1(),
+                    "f4LikesPerson1Post1", TestPostLikes.f4LikesPerson1Post1(),
+                    "f4LikesPerson1Post2", TestPostLikes.f4LikesPerson1Post2(),
+                    "f4LikesPerson1Post3", TestPostLikes.f4LikesPerson1Post3(),
+                    "ff6OldLikesPerson1Post1", TestPostLikes.ff6OldLikesPerson1Post1(),
+                    "ff6NewLikesPerson1Post1", TestPostLikes.ff6NewLikesPerson1Post1(),
+                    "ff6LikesPerson1Post2", TestPostLikes.ff6LikesPerson1Post2(),
+                    "s7LikesPerson1Post1", TestPostLikes.s7LikesPerson1Post1(),
+                    "s8LikesPerson1Post2", TestPostLikes.s8LikesPerson1Post2(),
+                    //Person-Comment (like)
+                    "person1LikesF4Comment1", TestCommentLikes.person1LikesF4Comment1(),
+                    "s7LikesPerson1Comment1", TestCommentLikes.s7LikesPerson1Comment1(),
+                    "s8LikesF4Comment1", TestCommentLikes.s8LikesF4Comment1(),
+                    // Posts
+                    "person1Post1", TestPosts.person1Post1(),
+                    "person1Post2", TestPosts.person1Post2(),
+                    "person1Post3", TestPosts.person1Post3(),
+                    "s7Post1", TestPosts.s7Post1(),
+                    // Comments
+                    "person1Comment1", TestComments.person1Comment1(),
+                    "f4Comment1", TestComments.f4Comment1()
+            );
         }
 
         protected static class TestPersons {
-            protected static Map<String, Object> me() {
+            protected static Map<String, Object> person1() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 1L);
-                params.put(Person.FIRST_NAME, "me");
-                params.put(Person.LAST_NAME, "zero");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2012, Calendar.JUNE, 6);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1982, Calendar.JANUARY, 23);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "chrome");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"alex.averbuch@gmail.com",
-                        "alex.averbuch@neotechnology.com"});
-                params.put(Person.GENDER, "male");
-                params.put(Person.LANGUAGES, new String[]{"english", "swedish"});
-                params.put(Person.LOCATION_IP, "192.168.42.24");
-                return params;
-            }
-
-            protected static Map<String, Object> f1() {
-                Map<String, Object> params = new HashMap<>();
-                params.put(Person.ID, 2L);
-                params.put(Person.FIRST_NAME, "friend");
-                params.put(Person.LAST_NAME, "one");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2013, Calendar.MAY, 19);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1983, Calendar.SEPTEMBER, 8);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "safari");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"aiya.thorpe@gmail.com"});
-                params.put(Person.GENDER, "female");
-                params.put(Person.LANGUAGES, new String[]{"english"});
-                params.put(Person.LOCATION_IP, "192.161.48.1");
+                params.put(Person.FIRST_NAME, "person1");
+                params.put(Person.LAST_NAME, "last1");
+                params.put(Person.CREATION_DATE, 1l);
+                params.put(Person.BIRTHDAY, 2l);
+                params.put(Person.BROWSER_USED, "browser1");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"person1@email.com"});
+                params.put(Person.GENDER, "gender1");
+                params.put(Person.LANGUAGES, new String[]{"language1"});
+                params.put(Person.LOCATION_IP, "ip1");
                 return params;
             }
 
             protected static Map<String, Object> f2() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Person.ID, 3L);
-                params.put(Person.FIRST_NAME, "friend");
-                params.put(Person.LAST_NAME, "two");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2013, Calendar.SEPTEMBER, 10);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1987, Calendar.JULY, 21);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "safari");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"jakewins@gmail.com", "jake@neotechnology.com"});
-                params.put(Person.GENDER, "male");
-                params.put(Person.LANGUAGES, new String[]{"english", "swedish"});
-                params.put(Person.LOCATION_IP, "172.124.98.31");
+                params.put(Person.ID, 2L);
+                params.put(Person.FIRST_NAME, "f2");
+                params.put(Person.LAST_NAME, "last2");
+                params.put(Person.CREATION_DATE, 2l);
+                params.put(Person.BIRTHDAY, 2l);
+                params.put(Person.BROWSER_USED, "browser2");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"f2@email.com"});
+                params.put(Person.GENDER, "gender2");
+                params.put(Person.LANGUAGES, new String[]{"language2"});
+                params.put(Person.LOCATION_IP, "ip2");
                 return params;
             }
 
             protected static Map<String, Object> f3() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Person.ID, 4L);
-                params.put(Person.FIRST_NAME, "friend");
-                params.put(Person.LAST_NAME, "three");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2013, Calendar.JANUARY, 5);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1982, Calendar.JUNE, 5);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "firefox");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"peter.rentschler@gmx.de"});
-                params.put(Person.GENDER, "male");
-                params.put(Person.LANGUAGES, new String[]{"english", "german"});
-                params.put(Person.LOCATION_IP, "12.24.158.11");
+                params.put(Person.ID, 3L);
+                params.put(Person.FIRST_NAME, "f3");
+                params.put(Person.LAST_NAME, "last3");
+                params.put(Person.CREATION_DATE, 3l);
+                params.put(Person.BIRTHDAY, 3l);
+                params.put(Person.BROWSER_USED, "browser3");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"f3@email.com"});
+                params.put(Person.GENDER, "gender3");
+                params.put(Person.LANGUAGES, new String[]{"language3"});
+                params.put(Person.LOCATION_IP, "ip3");
                 return params;
             }
 
-            protected static Map<String, Object> ff1() {
+            protected static Map<String, Object> f4() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 4L);
+                params.put(Person.FIRST_NAME, "f4");
+                params.put(Person.LAST_NAME, "last4");
+                params.put(Person.CREATION_DATE, 4l);
+                params.put(Person.BIRTHDAY, 4l);
+                params.put(Person.BROWSER_USED, "browser4");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"f4@email.com"});
+                params.put(Person.GENDER, "gender4");
+                params.put(Person.LANGUAGES, new String[]{"language4"});
+                params.put(Person.LOCATION_IP, "ip4");
+                return params;
+            }
+
+            protected static Map<String, Object> ff5() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 5L);
-                params.put(Person.FIRST_NAME, "friendfriend");
-                params.put(Person.LAST_NAME, "one");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2012, Calendar.OCTOBER, 15);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1985, Calendar.FEBRUARY, 11);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "internet explorer");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"dr.strange@love.com"});
-                params.put(Person.GENDER, "male");
-                params.put(Person.LANGUAGES, new String[]{"english"});
-                params.put(Person.LOCATION_IP, "12.24.158.11");
+                params.put(Person.FIRST_NAME, "ff5");
+                params.put(Person.LAST_NAME, "last5");
+                params.put(Person.CREATION_DATE, 5l);
+                params.put(Person.BIRTHDAY, 5l);
+                params.put(Person.BROWSER_USED, "browser5");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"ff5@email.com"});
+                params.put(Person.GENDER, "gender5");
+                params.put(Person.LANGUAGES, new String[]{"language5"});
+                params.put(Person.LOCATION_IP, "ip5");
                 return params;
             }
 
-            protected static Map<String, Object> ff2() {
+            protected static Map<String, Object> ff6() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 6L);
-                params.put(Person.FIRST_NAME, "friendfriend");
-                params.put(Person.LAST_NAME, "two");
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2013, Calendar.JUNE, 8);
-                long creationDate = c.getTimeInMillis();
-                params.put(Person.CREATION_DATE, creationDate);
-                c.set(1982, Calendar.AUGUST, 11);
-                long birthday = c.getTimeInMillis();
-                params.put(Person.BIRTHDAY, birthday);
-                params.put(Person.BROWSER_USED, "safari");
-                params.put(Person.EMAIL_ADDRESSES, new String[]{"nicky@provider.com"});
-                params.put(Person.GENDER, "female");
-                params.put(Person.LANGUAGES, new String[]{"english", "spanish"});
-                params.put(Person.LOCATION_IP, "12.171.48.1");
+                params.put(Person.FIRST_NAME, "ff6");
+                params.put(Person.LAST_NAME, "last6");
+                params.put(Person.CREATION_DATE, 6l);
+                params.put(Person.BIRTHDAY, 6l);
+                params.put(Person.BROWSER_USED, "browser6");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"ff6@email.com"});
+                params.put(Person.GENDER, "gender6");
+                params.put(Person.LANGUAGES, new String[]{"language6"});
+                params.put(Person.LOCATION_IP, "ip6");
+                return params;
+            }
+
+            protected static Map<String, Object> s7() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 7L);
+                params.put(Person.FIRST_NAME, "s7");
+                params.put(Person.LAST_NAME, "last7");
+                params.put(Person.CREATION_DATE, 7l);
+                params.put(Person.BIRTHDAY, 7l);
+                params.put(Person.BROWSER_USED, "browser7");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"s7@email.com"});
+                params.put(Person.GENDER, "gender7");
+                params.put(Person.LANGUAGES, new String[]{"language7"});
+                params.put(Person.LOCATION_IP, "ip7");
+                return params;
+            }
+
+            protected static Map<String, Object> s8() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Person.ID, 8L);
+                params.put(Person.FIRST_NAME, "s8");
+                params.put(Person.LAST_NAME, "last8");
+                params.put(Person.CREATION_DATE, 8l);
+                params.put(Person.BIRTHDAY, 8l);
+                params.put(Person.BROWSER_USED, "browser8");
+                params.put(Person.EMAIL_ADDRESSES, new String[]{"s8@email.com"});
+                params.put(Person.GENDER, "gender8");
+                params.put(Person.LANGUAGES, new String[]{"language8"});
+                params.put(Person.LOCATION_IP, "ip8");
                 return params;
             }
         }
 
         protected static class TestPosts {
-            protected static Map<String, Object> post1() {
+            protected static Map<String, Object> person1Post1() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 1, 0);
+                long creationDate = c.getTimeInMillis();
+
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 1L);
-                params.put(Message.CONTENT, "p1");
+                params.put(Message.CONTENT, "person1post1");
                 params.put(Post.LANGUAGE, new String[]{"language1"});
                 params.put(Post.IMAGE_FILE, "imageFile1");
-                params.put(Message.CREATION_DATE, 0L);
+                params.put(Message.CREATION_DATE, creationDate);
                 params.put(Message.BROWSER_USED, "browser1");
                 params.put(Message.LOCATION_IP, "ip1");
                 return params;
             }
 
-            protected static Map<String, Object> post2() {
+            protected static Map<String, Object> person1Post2() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 2, 0);
+                long creationDate = c.getTimeInMillis();
+
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 2L);
-                params.put(Message.CONTENT, "p2");
+                params.put(Message.CONTENT, "person1post2");
                 params.put(Post.LANGUAGE, new String[]{"language2"});
                 params.put(Post.IMAGE_FILE, "imageFile2");
-                params.put(Message.CREATION_DATE, 0L);
+                params.put(Message.CREATION_DATE, creationDate);
                 params.put(Message.BROWSER_USED, "browser2");
                 params.put(Message.LOCATION_IP, "ip2");
                 return params;
             }
 
-            protected static Map<String, Object> post3() {
+            protected static Map<String, Object> person1Post3() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 3, 0);
+                long creationDate = c.getTimeInMillis();
+
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 3L);
-                params.put(Message.CONTENT, "p3");
+                params.put(Message.CONTENT, "person1post3");
                 params.put(Post.LANGUAGE, new String[]{"language3"});
                 params.put(Post.IMAGE_FILE, "imageFile3");
-                params.put(Message.CREATION_DATE, 0L);
+                params.put(Message.CREATION_DATE, creationDate);
+                params.put(Message.BROWSER_USED, "browser3");
+                params.put(Message.LOCATION_IP, "ip3");
+                return params;
+            }
+
+            protected static Map<String, Object> s7Post1() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 4, 0);
+                long creationDate = c.getTimeInMillis();
+
+                Map<String, Object> params = new HashMap<>();
+                params.put(Message.ID, 4L);
+                params.put(Message.CONTENT, "s7post1");
+                params.put(Post.LANGUAGE, new String[]{"language4"});
+                params.put(Post.IMAGE_FILE, "imageFile4");
+                params.put(Message.CREATION_DATE, creationDate);
                 params.put(Message.BROWSER_USED, "browser3");
                 params.put(Message.LOCATION_IP, "ip3");
                 return params;
             }
         }
 
-        protected static class TestLikes {
-            protected static Map<String, Object> f1LikesPost1() {
-                return MapUtil.map(Likes.CREATION_DATE, 5L);
+        protected static class TestComments {
+            protected static Map<String, Object> person1Comment1() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 5, 0);
+                long creationDate = c.getTimeInMillis();
+
+                Map<String, Object> params = new HashMap<>();
+                params.put(Message.ID, 5L);
+                params.put(Message.CONTENT, "person1comment1");
+                params.put(Message.CREATION_DATE, creationDate);
+                params.put(Message.BROWSER_USED, "browser5");
+                params.put(Message.LOCATION_IP, "ip5");
+                return params;
             }
 
-            protected static Map<String, Object> f3LikesPost1() {
-                return MapUtil.map(Likes.CREATION_DATE, 5L);
+            protected static Map<String, Object> f4Comment1() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 6, 0);
+                long creationDate = c.getTimeInMillis();
+
+                Map<String, Object> params = new HashMap<>();
+                params.put(Message.ID, 6L);
+                params.put(Message.CONTENT, "f4comment1");
+                params.put(Message.CREATION_DATE, creationDate);
+                params.put(Message.BROWSER_USED, "browser6");
+                params.put(Message.LOCATION_IP, "ip6");
+                return params;
+            }
+        }
+
+        protected static class TestPostLikes {
+            protected static Map<String, Object> person1LikesPerson1Post1() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 1, 0);
+                long creationDate = c.getTimeInMillis();
+
+                return MapUtil.map(Likes.CREATION_DATE, creationDate);
             }
 
-            protected static Map<String, Object> f3LikesPost2() {
-                return MapUtil.map(Likes.CREATION_DATE, 4L);
+            protected static Map<String, Object> person1LikesS7Post1() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 20, 0);
+                long creationDate = c.getTimeInMillis();
+
+                return MapUtil.map(Likes.CREATION_DATE, creationDate);
             }
 
-            protected static Map<String, Object> f3LikesPost3() {
-                return MapUtil.map(Likes.CREATION_DATE, 1L);
+            protected static Map<String, Object> f2LikesPerson1Post1() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 5, 0);
+                long creationDate = c.getTimeInMillis();
+
+                return MapUtil.map(Likes.CREATION_DATE, creationDate);
             }
 
-            protected static Map<String, Object> ff2LikesPost1() {
-                return MapUtil.map(Likes.CREATION_DATE, 3L);
+            protected static Map<String, Object> f4LikesPerson1Post1() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 3, 0);
+                long creationDate = c.getTimeInMillis();
+
+                return MapUtil.map(Likes.CREATION_DATE, creationDate);
             }
 
-            protected static Map<String, Object> ff2LikesPost2() {
-                return MapUtil.map(Likes.CREATION_DATE, 2L);
+            protected static Map<String, Object> f4LikesPerson1Post2() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 4, 0);
+                long creationDate = c.getTimeInMillis();
+
+                return MapUtil.map(Likes.CREATION_DATE, creationDate);
+            }
+
+            protected static Map<String, Object> f4LikesPerson1Post3() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 5, 0);
+                long creationDate = c.getTimeInMillis();
+
+                return MapUtil.map(Likes.CREATION_DATE, creationDate);
+            }
+
+            protected static Map<String, Object> ff6OldLikesPerson1Post1() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 2, 0);
+                long creationDate = c.getTimeInMillis();
+
+                return MapUtil.map(Likes.CREATION_DATE, creationDate);
+            }
+
+            protected static Map<String, Object> ff6NewLikesPerson1Post1() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 4, 0);
+                long creationDate = c.getTimeInMillis();
+
+                return MapUtil.map(Likes.CREATION_DATE, creationDate);
+            }
+
+            protected static Map<String, Object> ff6LikesPerson1Post2() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 3, 0);
+                long creationDate = c.getTimeInMillis();
+
+                return MapUtil.map(Likes.CREATION_DATE, creationDate);
+            }
+
+            protected static Map<String, Object> s7LikesPerson1Post1() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 2, 0);
+                long creationDate = c.getTimeInMillis();
+
+                return MapUtil.map(Likes.CREATION_DATE, creationDate);
+            }
+
+            protected static Map<String, Object> s8LikesPerson1Post2() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 10, 0);
+                long creationDate = c.getTimeInMillis();
+
+                return MapUtil.map(Likes.CREATION_DATE, creationDate);
+            }
+        }
+
+        protected static class TestCommentLikes {
+            protected static Map<String, Object> person1LikesF4Comment1() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 20, 0);
+                long creationDate = c.getTimeInMillis();
+
+                return MapUtil.map(Likes.CREATION_DATE, creationDate);
+            }
+
+            protected static Map<String, Object> s7LikesPerson1Comment1() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 6, 0);
+                long creationDate = c.getTimeInMillis();
+
+                return MapUtil.map(Likes.CREATION_DATE, creationDate);
+            }
+
+            protected static Map<String, Object> s8LikesF4Comment1() {
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2000, Calendar.JANUARY, 1, 0, 20, 0);
+                long creationDate = c.getTimeInMillis();
+
+                return MapUtil.map(Likes.CREATION_DATE, creationDate);
             }
         }
     }

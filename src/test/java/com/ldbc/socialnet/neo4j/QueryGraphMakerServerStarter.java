@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class QueryGraphMakerServerStarter {
     public static void main(String[] args) throws IOException {
-        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query6GraphMaker();
+        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query7GraphMaker();
 
         Map dbImportConfig = Utils.loadConfig(TestUtils.getResource("/neo4j_import_dev.properties").getAbsolutePath());
         String dbDirPath = "/tmp/neodb";

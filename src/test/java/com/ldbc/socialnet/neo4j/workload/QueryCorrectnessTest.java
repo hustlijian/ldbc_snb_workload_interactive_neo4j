@@ -634,71 +634,162 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query7GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
-            long personId = 1;
-            String personUri = null;
-            int limit = 5;
+            long personId;
+            String personUri;
+            int limit;
+            LdbcQuery7 operation;
+            Calendar c = Calendar.getInstance();
 
-            LdbcQuery7 operation = new LdbcQuery7(personId, personUri, limit);
-            Iterator<LdbcQuery7Result> result = neo4jQuery7Impl(connection, operation);
+            Iterator<LdbcQuery7Result> results;
+            LdbcQuery7Result actualResult;
+            long expectedPersonId;
+            String expectedPersonFirstName;
+            String expectedPersonLastName;
+            long expectedLikeCreationDate;
+            long expectedCommentOrPostId;
+            String expectedCommentOrPostContent;
+            int expectedMinutesLatency;
+            boolean expectedIsNew;
 
-            LdbcQuery7Result row;
+            personId = 1;
+            personUri = null;
+            limit = 7;
+            operation = new LdbcQuery7(personId, personUri, limit);
+            results = neo4jQuery7Impl(connection, operation);
 
-            row = result.next();
-            assertThat(row.personId(), is(2L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("one"));
-            assertThat(row.likeCreationDate(), is(5L));
-            assertThat(row.isNew(), is(false));
-            assertThat(row.commentOrPostId(), is(1L));
-            assertThat(row.commentOrPostContent(), equalTo("p1"));
-            // TODO this will fail because the current test creates a seconds delay, rather than minutes, graph or expected result need to change
-            assertThat(row.minutesLatency(), equalTo(5));
+            expectedPersonId = 8l;
+            expectedPersonFirstName = "s8";
+            expectedPersonLastName = "last8";
+            c.clear();
+            c.set(2000, Calendar.JANUARY, 1, 0, 10, 0);
+            expectedLikeCreationDate = c.getTimeInMillis();
+            expectedCommentOrPostId = 2l;
+            expectedCommentOrPostContent = "person1post2";
+            expectedMinutesLatency = 8;
+            expectedIsNew = true;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery7Result(
+                            expectedPersonId,
+                            expectedPersonFirstName,
+                            expectedPersonLastName,
+                            expectedLikeCreationDate,
+                            expectedCommentOrPostId,
+                            expectedCommentOrPostContent,
+                            expectedMinutesLatency,
+                            expectedIsNew))
+            );
 
-            row = result.next();
-            assertThat(row.personId(), is(4L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("three"));
-            assertThat(row.likeCreationDate(), is(5L));
-            assertThat(row.isNew(), is(false));
-            assertThat(row.commentOrPostId(), is(1L));
-            assertThat(row.commentOrPostContent(), equalTo("p1"));
-            // TODO this will fail because the current test creates a seconds delay, rather than minutes, graph or expected result need to change
-            assertThat(row.minutesLatency(), equalTo(5));
+            expectedPersonId = 7l;
+            expectedPersonFirstName = "s7";
+            expectedPersonLastName = "last7";
+            c.clear();
+            c.set(2000, Calendar.JANUARY, 1, 0, 6, 0);
+            expectedLikeCreationDate = c.getTimeInMillis();
+            expectedCommentOrPostId = 5l;
+            expectedCommentOrPostContent = "person1comment1";
+            expectedMinutesLatency = 1;
+            expectedIsNew = true;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery7Result(
+                            expectedPersonId,
+                            expectedPersonFirstName,
+                            expectedPersonLastName,
+                            expectedLikeCreationDate,
+                            expectedCommentOrPostId,
+                            expectedCommentOrPostContent,
+                            expectedMinutesLatency,
+                            expectedIsNew))
+            );
 
-            row = result.next();
-            assertThat(row.personId(), is(4L));
-            assertThat(row.personFirstName(), is("friend"));
-            assertThat(row.personLastName(), is("three"));
-            assertThat(row.likeCreationDate(), is(4L));
-            assertThat(row.isNew(), is(false));
-            assertThat(row.commentOrPostId(), is(2L));
-            assertThat(row.commentOrPostContent(), equalTo("p2"));
-            // TODO this will fail because the current test creates a seconds delay, rather than minutes, graph or expected result need to change
-            assertThat(row.minutesLatency(), equalTo(4));
+            expectedPersonId = 2l;
+            expectedPersonFirstName = "f2";
+            expectedPersonLastName = "last2";
+            c.clear();
+            c.set(2000, Calendar.JANUARY, 1, 0, 5, 0);
+            expectedLikeCreationDate = c.getTimeInMillis();
+            expectedCommentOrPostId = 1l;
+            expectedCommentOrPostContent = "person1post1";
+            expectedMinutesLatency = 4;
+            expectedIsNew = false;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery7Result(
+                            expectedPersonId,
+                            expectedPersonFirstName,
+                            expectedPersonLastName,
+                            expectedLikeCreationDate,
+                            expectedCommentOrPostId,
+                            expectedCommentOrPostContent,
+                            expectedMinutesLatency,
+                            expectedIsNew))
+            );
 
-            row = result.next();
-            assertThat(row.personId(), is(6L));
-            assertThat(row.personFirstName(), is("friendfriend"));
-            assertThat(row.personLastName(), is("two"));
-            assertThat(row.likeCreationDate(), is(3L));
-            assertThat(row.isNew(), is(true));
-            assertThat(row.commentOrPostId(), is(1L));
-            assertThat(row.commentOrPostContent(), equalTo("p1"));
-            // TODO this will fail because the current test creates a seconds delay, rather than minutes, graph or expected result need to change
-            assertThat(row.minutesLatency(), equalTo(3));
+            expectedPersonId = 4l;
+            expectedPersonFirstName = "f4";
+            expectedPersonLastName = "last4";
+            c.clear();
+            c.set(2000, Calendar.JANUARY, 1, 0, 5, 0);
+            expectedLikeCreationDate = c.getTimeInMillis();
+            expectedCommentOrPostId = 3l;
+            expectedCommentOrPostContent = "person1post3";
+            expectedMinutesLatency = 2;
+            expectedIsNew = false;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery7Result(
+                            expectedPersonId,
+                            expectedPersonFirstName,
+                            expectedPersonLastName,
+                            expectedLikeCreationDate,
+                            expectedCommentOrPostId,
+                            expectedCommentOrPostContent,
+                            expectedMinutesLatency,
+                            expectedIsNew))
+            );
 
-            row = result.next();
-            assertThat(row.personId(), is(6L));
-            assertThat(row.personFirstName(), is("friendfriend"));
-            assertThat(row.personLastName(), is("two"));
-            assertThat(row.likeCreationDate(), is(2L));
-            assertThat(row.isNew(), is(true));
-            assertThat(row.commentOrPostId(), is(2L));
-            assertThat(row.commentOrPostContent(), equalTo("p2"));
-            // TODO this will fail because the current test creates a seconds delay, rather than minutes, graph or expected result need to change
-            assertThat(row.minutesLatency(), equalTo(2));
+            expectedPersonId = 6l;
+            expectedPersonFirstName = "ff6";
+            expectedPersonLastName = "last6";
+            c.clear();
+            c.set(2000, Calendar.JANUARY, 1, 0, 4, 0);
+            expectedLikeCreationDate = c.getTimeInMillis();
+            expectedCommentOrPostId = 1l;
+            expectedCommentOrPostContent = "person1post1";
+            expectedMinutesLatency = 3;
+            expectedIsNew = true;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery7Result(
+                            expectedPersonId,
+                            expectedPersonFirstName,
+                            expectedPersonLastName,
+                            expectedLikeCreationDate,
+                            expectedCommentOrPostId,
+                            expectedCommentOrPostContent,
+                            expectedMinutesLatency,
+                            expectedIsNew))
+            );
 
-            assertThat(result.hasNext(), is(false));
+            expectedPersonId = 1l;
+            expectedPersonFirstName = "person1";
+            expectedPersonLastName = "last1";
+            c.clear();
+            c.set(2000, Calendar.JANUARY, 1, 0, 1, 0);
+            expectedLikeCreationDate = c.getTimeInMillis();
+            expectedCommentOrPostId = 1l;
+            expectedCommentOrPostContent = "person1post1";
+            expectedMinutesLatency = 0;
+            expectedIsNew = true;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery7Result(
+                            expectedPersonId,
+                            expectedPersonFirstName,
+                            expectedPersonLastName,
+                            expectedLikeCreationDate,
+                            expectedCommentOrPostId,
+                            expectedCommentOrPostContent,
+                            expectedMinutesLatency,
+                            expectedIsNew))
+            );
+
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
             FileUtils.deleteRecursively(new File(dbDir));
