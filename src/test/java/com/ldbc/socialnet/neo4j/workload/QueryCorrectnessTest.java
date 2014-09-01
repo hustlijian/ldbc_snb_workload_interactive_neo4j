@@ -1097,50 +1097,93 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query10GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
-            long personId = 0;
-            String personUri = null;
-            int month1 = 2;
-            int month2 = 3;
-            int limit = 7;
+            long personId;
+            String personUri;
+            int month;
+            int limit;
+            LdbcQuery10 operation;
 
-            LdbcQuery10 operation = new LdbcQuery10(personId, personUri, month1, month2, limit);
-            Iterator<LdbcQuery10Result> result = neo4jQuery10Impl(connection, operation);
+            Iterator<LdbcQuery10Result> results;
+            LdbcQuery10Result actualResult;
+            long expectedPersonId;
+            String expectedPersonFirstName;
+            String expectedPersonLastName;
+            int expectedCommonInterestScore;
+            String expectedPersonGender;
+            String expectedPersonCityName;
 
-            LdbcQuery10Result row;
+            personId = 0;
+            personUri = null;
+            month = 1;
+            limit = 7;
+            operation = new LdbcQuery10(personId, personUri, month, limit);
+            results = neo4jQuery10Impl(connection, operation);
 
-            row = result.next();
-            assertThat(row.personId(), equalTo(11L));
-            assertThat(row.personFirstName(), equalTo("friendfriend"));
-            assertThat(row.personLastName(), equalTo("one one"));
-            assertThat(row.commonInterestScore(), equalTo(1 / 3D));
-            assertThat(row.personGender(), equalTo("female"));
-            assertThat(row.personCityName(), equalTo("city1"));
+            actualResult = results.next();
+            expectedPersonId = 22l;
+            expectedPersonFirstName = "friendfriend";
+            expectedPersonLastName = "two two";
+            expectedCommonInterestScore = 0;
+            expectedPersonGender = "male";
+            expectedPersonCityName = "city0";
+            assertThat(actualResult, equalTo(new LdbcQuery10Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedCommonInterestScore,
+                    expectedPersonGender,
+                    expectedPersonCityName
+            )));
 
-            row = result.next();
-            assertThat(row.personId(), equalTo(21L));
-            assertThat(row.personFirstName(), equalTo("friendfriend"));
-            assertThat(row.personLastName(), equalTo("two one"));
-            assertThat(row.commonInterestScore(), equalTo(1 / 3D));
-            assertThat(row.personGender(), equalTo("male"));
-            assertThat(row.personCityName(), equalTo("city0"));
+            actualResult = results.next();
+            expectedPersonId = 11l;
+            expectedPersonFirstName = "friendfriend";
+            expectedPersonLastName = "one one";
+            expectedCommonInterestScore = -1;
+            expectedPersonGender = "female";
+            expectedPersonCityName = "city1";
+            assertThat(actualResult, equalTo(new LdbcQuery10Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedCommonInterestScore,
+                    expectedPersonGender,
+                    expectedPersonCityName
+            )));
 
-            row = result.next();
-            assertThat(row.personId(), equalTo(12L));
-            assertThat(row.personFirstName(), equalTo("friendfriend"));
-            assertThat(row.personLastName(), equalTo("one two"));
-            assertThat(row.commonInterestScore(), equalTo(0D));
-            assertThat(row.personGender(), equalTo("male"));
-            assertThat(row.personCityName(), equalTo("city0"));
+            actualResult = results.next();
+            expectedPersonId = 12l;
+            expectedPersonFirstName = "friendfriend";
+            expectedPersonLastName = "one two";
+            expectedCommonInterestScore = -1;
+            expectedPersonGender = "male";
+            expectedPersonCityName = "city0";
+            assertThat(actualResult, equalTo(new LdbcQuery10Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedCommonInterestScore,
+                    expectedPersonGender,
+                    expectedPersonCityName
+            )));
 
-            row = result.next();
-            assertThat(row.personId(), equalTo(22L));
-            assertThat(row.personFirstName(), equalTo("friendfriend"));
-            assertThat(row.personLastName(), equalTo("two two"));
-            assertThat(row.commonInterestScore(), equalTo(0D));
-            assertThat(row.personGender(), equalTo("male"));
-            assertThat(row.personCityName(), equalTo("city0"));
+            actualResult = results.next();
+            expectedPersonId = 21l;
+            expectedPersonFirstName = "friendfriend";
+            expectedPersonLastName = "two one";
+            expectedCommonInterestScore = -1;
+            expectedPersonGender = "male";
+            expectedPersonCityName = "city0";
+            assertThat(actualResult, equalTo(new LdbcQuery10Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedCommonInterestScore,
+                    expectedPersonGender,
+                    expectedPersonCityName
+            )));
 
-            assertThat(result.hasNext(), is(false));
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
             FileUtils.deleteRecursively(new File(dbDir));

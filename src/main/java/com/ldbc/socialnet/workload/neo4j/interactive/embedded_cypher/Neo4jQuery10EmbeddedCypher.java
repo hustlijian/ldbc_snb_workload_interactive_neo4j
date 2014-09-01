@@ -13,8 +13,7 @@ import java.util.Map;
 
 public class Neo4jQuery10EmbeddedCypher extends Neo4jQuery10<ExecutionEngine> {
     protected static final String PERSON_ID_STRING = PERSON_ID.toString();
-    protected static final String HOROSCOPE_MONTH_MIN_STRING = HOROSCOPE_MONTH_MIN.toString();
-    protected static final String HOROSCOPE_MONTH_MAX_STRING = HOROSCOPE_MONTH_MAX.toString();
+    protected static final String MONTH_STRING = MONTH.toString();
     protected static final String LIMIT_STRING = LIMIT.toString();
 
 
@@ -33,7 +32,7 @@ public class Neo4jQuery10EmbeddedCypher extends Neo4jQuery10<ExecutionEngine> {
                                 (long) row.get("personId"),
                                 (String) row.get("personFirstName"),
                                 (String) row.get("personLastName"),
-                                (double) row.get("commonInterestScore"),
+                                (int) row.get("commonInterestScore"),
                                 (String) row.get("personGender"),
                                 (String) row.get("personCityName"));
                     }
@@ -43,8 +42,7 @@ public class Neo4jQuery10EmbeddedCypher extends Neo4jQuery10<ExecutionEngine> {
     private Map<String, Object> buildParams(LdbcQuery10 operation) {
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.put(PERSON_ID_STRING, operation.personId());
-        queryParams.put(HOROSCOPE_MONTH_MIN_STRING, operation.month1());
-        queryParams.put(HOROSCOPE_MONTH_MAX_STRING, operation.month2());
+        queryParams.put(MONTH_STRING, operation.month());
         queryParams.put(LIMIT_STRING, operation.limit());
         return queryParams;
     }

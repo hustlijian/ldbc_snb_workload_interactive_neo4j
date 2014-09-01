@@ -3915,7 +3915,7 @@ public class TestGraph {
                     * Person-Person
                     */
                     + "(person0)-[:" + Rels.KNOWS + "]->(f1)-[:" + Rels.KNOWS + "]->(ff11),\n"
-                    + "(f1)-[:" + Rels.KNOWS + "]->(ff12),\n"
+                    + "(f2)<-[:" + Rels.KNOWS + "]-(f1)-[:" + Rels.KNOWS + "]->(ff12),\n"
                     + "(person0)-[:" + Rels.KNOWS + "]->(f2)-[:" + Rels.KNOWS + "]->(ff21),\n"
                     + "(f2)-[:" + Rels.KNOWS + "]->(ff22),\n"
                     + "(f2)-[:" + Rels.KNOWS + "]->(ff23),\n"
@@ -4013,7 +4013,13 @@ public class TestGraph {
                 params.put(Person.FIRST_NAME, "person");
                 params.put(Person.LAST_NAME, "zero");
                 params.put(Person.GENDER, "male");
-                params.put(Person.BIRTHDAY_MONTH, 1);
+                int birthdayMonth = 6;
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2010, birthdayMonth, 1);
+                params.put(Person.BIRTHDAY, c.getTime().getTime());
+                params.put(Person.BIRTHDAY_MONTH, c.get(Calendar.MONTH));
+                params.put(Person.BIRTHDAY_DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
                 return params;
             }
 
@@ -4023,7 +4029,13 @@ public class TestGraph {
                 params.put(Person.FIRST_NAME, "friend");
                 params.put(Person.LAST_NAME, "one");
                 params.put(Person.GENDER, "male");
-                params.put(Person.BIRTHDAY_MONTH, 2);
+                int birthdayMonth = 2;
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2010, birthdayMonth, 1);
+                params.put(Person.BIRTHDAY, c.getTime().getTime());
+                params.put(Person.BIRTHDAY_MONTH, c.get(Calendar.MONTH));
+                params.put(Person.BIRTHDAY_DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
                 return params;
             }
 
@@ -4033,7 +4045,13 @@ public class TestGraph {
                 params.put(Person.FIRST_NAME, "friend");
                 params.put(Person.LAST_NAME, "two");
                 params.put(Person.GENDER, "male");
-                params.put(Person.BIRTHDAY_MONTH, 2);
+                int birthdayMonth = 2;
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2010, birthdayMonth, 1);
+                params.put(Person.BIRTHDAY, c.getTime().getTime());
+                params.put(Person.BIRTHDAY_MONTH, c.get(Calendar.MONTH));
+                params.put(Person.BIRTHDAY_DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
                 return params;
             }
 
@@ -4043,7 +4061,13 @@ public class TestGraph {
                 params.put(Person.FIRST_NAME, "friendfriend");
                 params.put(Person.LAST_NAME, "one one");
                 params.put(Person.GENDER, "female");
-                params.put(Person.BIRTHDAY_MONTH, 2);
+                int birthdayMonth = 2;
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2010, birthdayMonth, 1);
+                params.put(Person.BIRTHDAY, c.getTime().getTime());
+                params.put(Person.BIRTHDAY_MONTH, c.get(Calendar.MONTH));
+                params.put(Person.BIRTHDAY_DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
                 return params;
             }
 
@@ -4053,7 +4077,13 @@ public class TestGraph {
                 params.put(Person.FIRST_NAME, "friendfriend");
                 params.put(Person.LAST_NAME, "one two");
                 params.put(Person.GENDER, "male");
-                params.put(Person.BIRTHDAY_MONTH, 2);
+                int birthdayMonth = 2;
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2010, birthdayMonth, 1);
+                params.put(Person.BIRTHDAY, c.getTime().getTime());
+                params.put(Person.BIRTHDAY_MONTH, c.get(Calendar.MONTH));
+                params.put(Person.BIRTHDAY_DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
                 return params;
             }
 
@@ -4063,7 +4093,13 @@ public class TestGraph {
                 params.put(Person.FIRST_NAME, "friendfriend");
                 params.put(Person.LAST_NAME, "two one");
                 params.put(Person.GENDER, "male");
-                params.put(Person.BIRTHDAY_MONTH, 2);
+                int birthdayMonth = 2;
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2010, birthdayMonth, 1);
+                params.put(Person.BIRTHDAY, c.getTime().getTime());
+                params.put(Person.BIRTHDAY_MONTH, c.get(Calendar.MONTH));
+                params.put(Person.BIRTHDAY_DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
                 return params;
             }
 
@@ -4073,7 +4109,13 @@ public class TestGraph {
                 params.put(Person.FIRST_NAME, "friendfriend");
                 params.put(Person.LAST_NAME, "two two");
                 params.put(Person.GENDER, "male");
-                params.put(Person.BIRTHDAY_MONTH, 2);
+                int birthdayMonth = 2;
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2010, birthdayMonth, 1);
+                params.put(Person.BIRTHDAY, c.getTime().getTime());
+                params.put(Person.BIRTHDAY_MONTH, c.get(Calendar.MONTH));
+                params.put(Person.BIRTHDAY_DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
                 return params;
             }
 
@@ -4083,7 +4125,13 @@ public class TestGraph {
                 params.put(Person.FIRST_NAME, "friendfriend");
                 params.put(Person.LAST_NAME, "two three");
                 params.put(Person.GENDER, "male");
-                params.put(Person.BIRTHDAY_MONTH, 3);
+                int birthdayMonth = 3;
+                Calendar c = Calendar.getInstance();
+                c.clear();
+                c.set(2010, birthdayMonth, 1);
+                params.put(Person.BIRTHDAY, c.getTime().getTime());
+                params.put(Person.BIRTHDAY_MONTH, c.get(Calendar.MONTH));
+                params.put(Person.BIRTHDAY_DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
                 return params;
             }
         }

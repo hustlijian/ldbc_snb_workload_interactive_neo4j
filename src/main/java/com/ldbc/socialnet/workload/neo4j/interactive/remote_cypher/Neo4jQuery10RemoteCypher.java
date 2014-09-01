@@ -21,8 +21,7 @@ public class Neo4jQuery10RemoteCypher extends Neo4jQuery10<Connection> {
     public Iterator<LdbcQuery10Result> execute(Connection connection, LdbcQuery10 operation) throws DbException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_STRING)) {
             preparedStatement.setLong(PERSON_ID, operation.personId());
-            preparedStatement.setInt(HOROSCOPE_MONTH_MIN, operation.month1());
-            preparedStatement.setInt(HOROSCOPE_MONTH_MAX, operation.month2());
+            preparedStatement.setInt(MONTH, operation.month());
             preparedStatement.setInt(LIMIT, operation.limit());
             ResultSet resultSet = preparedStatement.executeQuery();
             return new ResultSetIterator(resultSet);
@@ -55,7 +54,7 @@ public class Neo4jQuery10RemoteCypher extends Neo4jQuery10<Connection> {
                         resultSet.getLong("personId"),
                         resultSet.getString("personFirstName"),
                         resultSet.getString("personLastName"),
-                        resultSet.getDouble("commonInterestScore"),
+                        resultSet.getInt("commonInterestScore"),
                         resultSet.getString("personGender"),
                         resultSet.getString("personCityName"));
             } catch (SQLException e) {

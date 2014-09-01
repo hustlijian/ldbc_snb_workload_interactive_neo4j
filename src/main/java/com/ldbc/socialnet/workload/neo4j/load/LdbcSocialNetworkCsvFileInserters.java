@@ -20,6 +20,7 @@ public class LdbcSocialNetworkCsvFileInserters {
     private final static SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat(DATE_TIME_FORMAT_STRING);
     private final static String DATE_FORMAT_STRING = "yyyy-MM-dd";
     private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT_STRING);
+    private final static Calendar calendar = Calendar.getInstance();
 
     private final CommentsTempIndex commentsIndex;
     private final PostsTempIndex postsIndex;
@@ -373,8 +374,12 @@ public class LdbcSocialNetworkCsvFileInserters {
                 properties.put(Domain.Person.GENDER, columnValues[3]);
                 String birthdayString = (String) columnValues[4];
                 try {
-                    Date birthday = DATE_FORMAT.parse(birthdayString);
-                    properties.put(Domain.Person.BIRTHDAY, birthday.getTime());
+                    calendar.clear();
+                    calendar.setTime(DATE_FORMAT.parse(birthdayString));
+                    properties.put(Domain.Person.BIRTHDAY, calendar.getTime().getTime());
+                    // Calendar.get(Calendar.MONTH) returns 0-11, add 1 so months are in range 1-12
+                    properties.put(Domain.Person.BIRTHDAY_MONTH, calendar.get(Calendar.MONTH) + 1);
+                    properties.put(Domain.Person.BIRTHDAY_DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH));
                 } catch (ParseException e) {
                     long now = System.currentTimeMillis();
                     properties.put(Domain.Person.BIRTHDAY, now);

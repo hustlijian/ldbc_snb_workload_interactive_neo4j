@@ -81,6 +81,7 @@ public class Domain {
         public static final String GENDER = "gender";
         public static final String BIRTHDAY = "birthday";
         public static final String BIRTHDAY_MONTH = "birthday_month";
+        public static final String BIRTHDAY_DAY_OF_MONTH = "birthday_day";
         public static final String CREATION_DATE = "creationDate";
         public static final String LOCATION_IP = "locationIP";
         public static final String BROWSER_USED = "browserUsed";
