@@ -3686,6 +3686,7 @@ public class TestGraph {
                     + "(person0)<-[:" + Rels.HAS_CREATOR + "]-(comment111),\n"
                     + "(person0)<-[:" + Rels.HAS_CREATOR + "]-(comment121),\n"
                     + "(friend1)<-[:" + Rels.HAS_CREATOR + "]-(comment211),\n"
+                    + "(friend1)<-[:" + Rels.HAS_CREATOR + "]-(comment21111),\n"
                     + "(friend2)<-[:" + Rels.HAS_CREATOR + "]-(comment2111),\n"
                     + "(friend2)<-[:" + Rels.HAS_CREATOR + "]-(comment311),\n"
                     + "(stranger3)<-[:" + Rels.HAS_CREATOR + "]-(comment2111),\n"

@@ -31,9 +31,9 @@ public class Neo4jQuery9EmbeddedCypher extends Neo4jQuery9<ExecutionEngine> {
                                 (long) row.get("personId"),
                                 (String) row.get("personFirstName"),
                                 (String) row.get("personLastName"),
-                                (long) row.get("activityId"),
-                                (String) row.get("activityContent"),
-                                (long) row.get("activityCreationDate"));
+                                (long) row.get("messageId"),
+                                (String) row.get("messageContent"),
+                                (long) row.get("messageCreationDate"));
                     }
                 });
     }
