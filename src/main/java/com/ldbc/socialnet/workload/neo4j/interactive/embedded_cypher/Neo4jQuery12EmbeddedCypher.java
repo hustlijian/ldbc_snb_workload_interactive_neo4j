@@ -33,7 +33,7 @@ public class Neo4jQuery12EmbeddedCypher extends Neo4jQuery12<ExecutionEngine> {
                                 (String) row.get("friendFirstName"),
                                 (String) row.get("friendLastName"),
                                 (Collection<String>) row.get("tagNames"),
-                                (int) row.get("count"));
+                                ((Long) row.get("count")).intValue());
                     }
                 });
     }

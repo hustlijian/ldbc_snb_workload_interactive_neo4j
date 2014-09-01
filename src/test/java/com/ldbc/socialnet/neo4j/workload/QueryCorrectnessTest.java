@@ -1258,50 +1258,93 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query12GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
-            long personId = 0;
-            String personUri = null;
-            String tagClassName = "1";
-            int limit = 4;
+            long personId;
+            String personUri;
+            String tagClassName;
+            int limit;
+            LdbcQuery12 operation;
 
-            // long personId, String personUri, String tagClassName, int limit
-            LdbcQuery12 operation = new LdbcQuery12(personId, personUri, tagClassName, limit);
-            Iterator<LdbcQuery12Result> result = neo4jQuery12Impl(connection, operation);
+            Iterator<LdbcQuery12Result> results;
+            LdbcQuery12Result actualResult;
+            long expectedPersonId;
+            String expectedPersonFirstName;
+            String expectedPersonLastName;
+            Iterable<String> expectedTagNames;
+            int expectedReplyCount;
 
-            LdbcQuery12Result row;
+            personId = 0;
+            personUri = null;
+            tagClassName = "1";
+            limit = 6;
+            operation = new LdbcQuery12(personId, personUri, tagClassName, limit);
+            results = neo4jQuery12Impl(connection, operation);
 
-            row = result.next();
-            assertThat(row.personId(), equalTo(1L));
-            assertThat(row.personFirstName(), equalTo("f"));
-            assertThat(row.personLastName(), equalTo("1"));
-            assertThat(Lists.newArrayList(row.tagNames()).size(), equalTo(3));
-            assertThat(Sets.newHashSet(row.tagNames()), equalTo(Sets.newHashSet("tag111", "tag112", "tag12111")));
-            assertThat(row.replyCount(), equalTo(4));
+            actualResult = results.next();
+            expectedPersonId = 1l;
+            expectedPersonFirstName = "f";
+            expectedPersonLastName = "1";
+            expectedTagNames = Sets.newHashSet("tag111", "tag112", "tag12111");
+            expectedReplyCount = 4;
+            assertThat(actualResult, equalTo(new LdbcQuery12Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedTagNames,
+                    expectedReplyCount)));
 
-            row = result.next();
-            assertThat(row.personId(), equalTo(2L));
-            assertThat(row.personFirstName(), equalTo("f"));
-            assertThat(row.personLastName(), equalTo("2"));
-            assertThat(Lists.newArrayList(row.tagNames()).size(), equalTo(2));
-            assertThat(Sets.newHashSet(row.tagNames()), equalTo(Sets.newHashSet("tag111", "tag112")));
-            assertThat(row.replyCount(), equalTo(2));
+            actualResult = results.next();
+            expectedPersonId = 2l;
+            expectedPersonFirstName = "f";
+            expectedPersonLastName = "2";
+            expectedTagNames = Sets.newHashSet("tag111", "tag112");
+            expectedReplyCount = 2;
+            assertThat(actualResult, equalTo(new LdbcQuery12Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedTagNames,
+                    expectedReplyCount)));
 
-            row = result.next();
-            assertThat(row.personId(), equalTo(3L));
-            assertThat(row.personFirstName(), equalTo("f"));
-            assertThat(row.personLastName(), equalTo("3"));
-            assertThat(Lists.newArrayList(row.tagNames()).size(), equalTo(2));
-            assertThat(Sets.newHashSet(row.tagNames()), equalTo(Sets.newHashSet("tag112", "tag11")));
-            assertThat(row.replyCount(), equalTo(2));
+            actualResult = results.next();
+            expectedPersonId = 3l;
+            expectedPersonFirstName = "f";
+            expectedPersonLastName = "3";
+            expectedTagNames = Sets.newHashSet("tag112", "tag11");
+            expectedReplyCount = 2;
+            assertThat(actualResult, equalTo(new LdbcQuery12Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedTagNames,
+                    expectedReplyCount)));
 
-            row = result.next();
-            assertThat(row.personId(), equalTo(4L));
-            assertThat(row.personFirstName(), equalTo("f"));
-            assertThat(row.personLastName(), equalTo("4"));
-            assertThat(Lists.newArrayList(row.tagNames()).size(), equalTo(0));
-            assertThat(Sets.newHashSet(row.tagNames()), equalTo(Sets.<String>newHashSet()));
-            assertThat(row.replyCount(), equalTo(0));
+            actualResult = results.next();
+            expectedPersonId = 4l;
+            expectedPersonFirstName = "f";
+            expectedPersonLastName = "4";
+            expectedTagNames = Sets.newHashSet();
+            expectedReplyCount = 0;
+            assertThat(actualResult, equalTo(new LdbcQuery12Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedTagNames,
+                    expectedReplyCount)));
 
-            assertThat(result.hasNext(), is(false));
+            actualResult = results.next();
+            expectedPersonId = 5l;
+            expectedPersonFirstName = "f";
+            expectedPersonLastName = "5";
+            expectedTagNames = Sets.newHashSet();
+            expectedReplyCount = 0;
+            assertThat(actualResult, equalTo(new LdbcQuery12Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedTagNames,
+                    expectedReplyCount)));
+
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
             FileUtils.deleteRecursively(new File(dbDir));

@@ -27,6 +27,6 @@ public abstract class Neo4jQuery11<CONNECTION> implements Neo4jQuery<LdbcQuery11
             + " friend." + Domain.Person.LAST_NAME + " AS friendLastName,"
             + " worksAt." + Domain.WorksAt.WORK_FROM + " AS workFromYear,"
             + " company." + Domain.Organisation.NAME + " AS companyName\n"
-            + "ORDER BY workFromYear ASC, friendId ASC\n"
+            + "ORDER BY workFromYear ASC, friendId ASC, companyName DESC\n"
             + "LIMIT {" + LIMIT + "}";
 }
