@@ -9,10 +9,7 @@ import org.junit.rules.TemporaryFolder;
 import org.neo4j.kernel.impl.util.FileUtils;
 
 import java.io.File;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -1376,7 +1373,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             actualResult = results.next();
             expectedShortestPathLength = 5;
-            assertThat(actualResult,equalTo(new LdbcQuery13Result(expectedShortestPathLength)));
+            assertThat(actualResult, equalTo(new LdbcQuery13Result(expectedShortestPathLength)));
 
             assertThat(results.hasNext(), is(false));
 
@@ -1389,7 +1386,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             actualResult = results.next();
             expectedShortestPathLength = 3;
-            assertThat(actualResult,equalTo(new LdbcQuery13Result(expectedShortestPathLength)));
+            assertThat(actualResult, equalTo(new LdbcQuery13Result(expectedShortestPathLength)));
 
             assertThat(results.hasNext(), is(false));
 
@@ -1402,7 +1399,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             actualResult = results.next();
             expectedShortestPathLength = 1;
-            assertThat(actualResult,equalTo(new LdbcQuery13Result(expectedShortestPathLength)));
+            assertThat(actualResult, equalTo(new LdbcQuery13Result(expectedShortestPathLength)));
 
             assertThat(results.hasNext(), is(false));
         } finally {
@@ -1417,40 +1414,64 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query14GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
-            long personId1 = 0;
-            String person1Uri = null;
-            long personId2 = 1;
-            String person2Uri = null;
+            long personId1;
+            String person1Uri;
+            long personId2;
+            String person2Uri;
+            LdbcQuery14 operation;
 
-            LdbcQuery14 operation = new LdbcQuery14(personId1, person1Uri, personId2, person2Uri);
-            Iterator<LdbcQuery14Result> result = neo4jQuery14Impl(connection, operation);
+            Iterator<LdbcQuery14Result> results;
+            LdbcQuery14Result actualResult;
+            Collection<Long> expectedPathNodeIds;
+            double expectedWeight;
 
-            LdbcQuery14Result row;
+            personId1 = 0;
+            person1Uri = null;
+            personId2 = 5;
+            person2Uri = null;
+            operation = new LdbcQuery14(personId1, person1Uri, personId2, person2Uri);
+            results = neo4jQuery14Impl(connection, operation);
 
-            // TODO this test will totally fail, needs to be remade from scratch
+    /*
+    PATHS           WEIGHT
+    [0,1,7,4,8,5]   5.5 <= [0,1](1+1+1)+[1,7]()+[7,4](1+0.5)+[4,8](0.5)+[8,5](0.5)
+    [0,1,7,4,6,5]   4.5 <= [0,1](1+1+1)+[1,7]()+[7,4](1+0.5)+[4,6]()+[6,5]()
+    [0,1,2,4,8,5]   4.0 <= [0,1](1+1+1)+[1,2]()+[2,4]()+[4,8](0.5)+[8,5](0.5)
+    [0,1,2,4,6,5]   3.0 <= [0,1](1+1+1)+[1,2]()+[2,4]()+[4,6]()+[6,5]()
+     */
+            actualResult = results.next();
+            expectedPathNodeIds = Lists.newArrayList(0l, 1l, 7l, 4l, 8l, 5l);
+            expectedWeight = 5.5;
+            assertThat(actualResult, equalTo(new LdbcQuery14Result(
+                    expectedPathNodeIds,
+                    expectedWeight
+            )));
 
-            row = result.next();
-            assertThat(row.pathWeight(), equalTo(1.0));
-//        assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Post", 0L), new PathNode("Comment", 0L), new PathNode("Person", 1L))));
+            actualResult = results.next();
+            expectedPathNodeIds = Lists.newArrayList(0l, 1l, 7l, 4l, 6l, 5l);
+            expectedWeight = 4.5;
+            assertThat(actualResult, equalTo(new LdbcQuery14Result(
+                    expectedPathNodeIds,
+                    expectedWeight
+            )));
 
-            row = result.next();
-            assertThat(row.pathWeight(), equalTo(0.5));
-//        assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Comment", 5L), new PathNode("Comment", 6L), new PathNode("Person", 1L))));
+            actualResult = results.next();
+            expectedPathNodeIds = Lists.newArrayList(0l, 1l, 2l, 4l, 8l, 5l);
+            expectedWeight = 4.0;
+            assertThat(actualResult, equalTo(new LdbcQuery14Result(
+                    expectedPathNodeIds,
+                    expectedWeight
+            )));
 
-            row = result.next();
-            assertThat(row.pathWeight(), equalTo(0.5));
-//        assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Comment", 1L), new PathNode("Comment", 0L), new PathNode("Person", 1L))));
+            actualResult = results.next();
+            expectedPathNodeIds = Lists.newArrayList(0l, 1l, 2l, 4l, 6l, 5l);
+            expectedWeight = 3.0;
+            assertThat(actualResult, equalTo(new LdbcQuery14Result(
+                    expectedPathNodeIds,
+                    expectedWeight
+            )));
 
-
-            row = result.next();
-            assertThat(row.pathWeight(), equalTo(0.5));
-//        assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Comment", 1L), new PathNode("Comment", 2L), new PathNode("Person", 1L))));
-
-            row = result.next();
-            assertThat(row.pathWeight(), equalTo(2.0));
-//        assertThat(Lists.newArrayList(row.pathNodes()), equalTo(Lists.newArrayList(new PathNode("Person", 0L), new PathNode("Post", 0L), new PathNode("Comment", 0L), new PathNode("Comment", 1L), new PathNode("Comment", 2L), new PathNode("Person", 1L))));
-
-            assertThat(result.hasNext(), is(false));
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
             FileUtils.deleteRecursively(new File(dbDir));

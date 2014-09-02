@@ -8,6 +8,10 @@ public abstract class Neo4jQuery13<CONNECTION> implements Neo4jQuery<LdbcQuery13
     protected static final Integer PERSON_ID_1 = 1;
     protected static final Integer PERSON_ID_2 = 2;
 
+    /*
+    Given two Persons, find the shortest path between these two Persons in the sub-graph induced by the Knows relationships.
+    Return the length of this path.
+     */
     protected static final String QUERY_STRING = ""
             + "MATCH path = shortestPath((person1:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID_1 + "}})-[:" + Domain.Rels.KNOWS + "]-(person2:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID_2 + "}}))\n"
             + "RETURN length(path) AS pathLength";

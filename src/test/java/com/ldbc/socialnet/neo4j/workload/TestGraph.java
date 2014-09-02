@@ -4774,189 +4774,97 @@ public class TestGraph {
                    /*
                     * Persons
                     */
-                    + " (person0:" + Nodes.Person + " {person0}),\n"
-                    + " (person1:" + Nodes.Person + " {person1}),\n"
-                    + " (person2:" + Nodes.Person + " {person2}),\n"
-                    + " (person3:" + Nodes.Person + " {person3}),\n"
+                    + "(p0:" + Nodes.Person + " {" + Person.ID + ":0}),\n"
+                    + "(p1:" + Nodes.Person + " {" + Person.ID + ":1}),\n"
+                    + "(p2:" + Nodes.Person + " {" + Person.ID + ":2}),\n"
+                    + "(p3:" + Nodes.Person + " {" + Person.ID + ":3}),\n"
+                    + "(p4:" + Nodes.Person + " {" + Person.ID + ":4}),\n"
+                    + "(p5:" + Nodes.Person + " {" + Person.ID + ":5}),\n"
+                    + "(p6:" + Nodes.Person + " {" + Person.ID + ":6}),\n"
+                    + "(p7:" + Nodes.Person + " {" + Person.ID + ":7}),\n"
+                    + "(p8:" + Nodes.Person + " {" + Person.ID + ":8}),\n"
                    /*
-                    * Post
+                    * Posts
                     */
-                    + " (post0:" + Nodes.Post + " {post0}),\n"
-                    + " (post1:" + Nodes.Post + " {post1}),\n"
+                    + "(p0Post1:" + Nodes.Post + " {" + Message.ID + ":0}),\n"
+                    + "(p1Post1:" + Nodes.Post + " {" + Message.ID + ":1}),\n"
+                    + "(p3Post1:" + Nodes.Post + " {" + Message.ID + ":2}),\n"
+                    + "(p5Post1:" + Nodes.Post + " {" + Message.ID + ":3}),\n"
+                    + "(p6Post1:" + Nodes.Post + " {" + Message.ID + ":4}),\n"
+                    + "(p7Post1:" + Nodes.Post + " {" + Message.ID + ":5}),\n"
                    /*
-                    * Comment
+                    * Comments
                     */
-                    + " (comment0:" + Nodes.Comment + " {comment0}),\n"
-                    + " (comment1:" + Nodes.Comment + " {comment1}),\n"
-                    + " (comment2:" + Nodes.Comment + " {comment2}),\n"
-                    + " (comment3:" + Nodes.Comment + " {comment3}),\n"
-                    + " (comment4:" + Nodes.Comment + " {comment4}),\n"
-                    + " (comment5:" + Nodes.Comment + " {comment5}),\n"
-                    + " (comment6:" + Nodes.Comment + " {comment6}),\n"
-                    + " (comment7:" + Nodes.Comment + " {comment7}),\n"
-                    + " (comment8:" + Nodes.Comment + " {comment8}),\n"
+                    + "(p0Comment1:" + Nodes.Comment + " {" + Message.ID + ":6}),\n"
+                    + "(p1Comment1:" + Nodes.Comment + " {" + Message.ID + ":7}),\n"
+                    + "(p1Comment2:" + Nodes.Comment + " {" + Message.ID + ":8}),\n"
+                    + "(p4Comment1:" + Nodes.Comment + " {" + Message.ID + ":9}),\n"
+                    + "(p4Comment2:" + Nodes.Comment + " {" + Message.ID + ":10}),\n"
+                    + "(p5Comment1:" + Nodes.Comment + " {" + Message.ID + ":11}),\n"
+                    + "(p5Comment2:" + Nodes.Comment + " {" + Message.ID + ":12}),\n"
+                    + "(p7Comment1:" + Nodes.Comment + " {" + Message.ID + ":13}),\n"
+                    + "(p8Comment1:" + Nodes.Comment + " {" + Message.ID + ":14}),\n"
+                    + "(p8Comment2:" + Nodes.Comment + " {" + Message.ID + ":15}),\n"
 
                     + "\n// --- RELATIONSHIPS ---\n\n"
                    /*
-                    * Person-Comment
+                    * Person-Person
                     */
-                    + "(person0)<-[:" + Rels.HAS_CREATOR + "]-(comment1),\n"
-                    + "(person0)<-[:" + Rels.HAS_CREATOR + "]-(comment5),\n"
-                    + "(person0)<-[:" + Rels.HAS_CREATOR + "]-(comment8),\n"
-                    + "(person1)<-[:" + Rels.HAS_CREATOR + "]-(comment0),\n"
-                    + "(person1)<-[:" + Rels.HAS_CREATOR + "]-(comment2),\n"
-                    + "(person1)<-[:" + Rels.HAS_CREATOR + "]-(comment4),\n"
-                    + "(person1)<-[:" + Rels.HAS_CREATOR + "]-(comment6),\n"
-                    + "(person2)<-[:" + Rels.HAS_CREATOR + "]-(comment3),\n"
-                    + "(person3)<-[:" + Rels.HAS_CREATOR + "]-(comment7),\n"
+                    + "(p0)-[:" + Rels.KNOWS + "]->(p1),\n"
+                    + "(p1)-[:" + Rels.KNOWS + "]->(p3),\n"
+                    + "(p1)<-[:" + Rels.KNOWS + "]-(p2),\n"
+                    + "(p1)<-[:" + Rels.KNOWS + "]-(p7),\n"
+                    + "(p3)-[:" + Rels.KNOWS + "]->(p2),\n"
+                    + "(p2)<-[:" + Rels.KNOWS + "]-(p4),\n"
+                    + "(p4)-[:" + Rels.KNOWS + "]->(p7),\n"
+                    + "(p4)-[:" + Rels.KNOWS + "]->(p8),\n"
+                    + "(p4)-[:" + Rels.KNOWS + "]->(p6),\n"
+                    + "(p6)<-[:" + Rels.KNOWS + "]-(p5),\n"
+                    + "(p8)<-[:" + Rels.KNOWS + "]-(p5),\n"
                    /*
                     * Person-Post
                     */
-                    + "(person0)<-[:" + Rels.HAS_CREATOR + "]-(post0),\n"
-                    + "(person3)<-[:" + Rels.HAS_CREATOR + "]-(post1),\n"
+                    + "(p0)<-[:" + Rels.HAS_CREATOR + "]-(p0Post1),\n"
+                    + "(p1)<-[:" + Rels.HAS_CREATOR + "]-(p1Post1),\n"
+                    + "(p3)<-[:" + Rels.HAS_CREATOR + "]-(p3Post1),\n"
+                    + "(p5)<-[:" + Rels.HAS_CREATOR + "]-(p5Post1),\n"
+                    + "(p6)<-[:" + Rels.HAS_CREATOR + "]-(p6Post1),\n"
+                    + "(p7)<-[:" + Rels.HAS_CREATOR + "]-(p7Post1),\n"
+                   /*
+                    * Person-Comment
+                    */
+                    + "(p0)<-[:" + Rels.HAS_CREATOR + "]-(p0Comment1),\n"
+                    + "(p1)<-[:" + Rels.HAS_CREATOR + "]-(p1Comment1),\n"
+                    + "(p1)<-[:" + Rels.HAS_CREATOR + "]-(p1Comment2),\n"
+                    + "(p4)<-[:" + Rels.HAS_CREATOR + "]-(p4Comment1),\n"
+                    + "(p4)<-[:" + Rels.HAS_CREATOR + "]-(p4Comment2),\n"
+                    + "(p5)<-[:" + Rels.HAS_CREATOR + "]-(p5Comment1),\n"
+                    + "(p5)<-[:" + Rels.HAS_CREATOR + "]-(p5Comment2),\n"
+                    + "(p7)<-[:" + Rels.HAS_CREATOR + "]-(p7Comment1),\n"
+                    + "(p8)<-[:" + Rels.HAS_CREATOR + "]-(p8Comment1),\n"
+                    + "(p8)<-[:" + Rels.HAS_CREATOR + "]-(p8Comment2),\n"
                    /*
                     * Comment-Post
                     */
-                    + "(post0)<-[:" + Rels.REPLY_OF + "]-(comment0),\n"
-                    + "(post1)<-[:" + Rels.REPLY_OF + "]-(comment5),\n"
+                    + "(p1Post1)<-[:" + Rels.REPLY_OF + "]-(p0Comment1),\n"
+                    + "(p0Post1)<-[:" + Rels.REPLY_OF + "]-(p1Comment1),\n"
+                    + "(p0Post1)<-[:" + Rels.REPLY_OF + "]-(p1Comment2),\n"
+                    + "(p3Post1)<-[:" + Rels.REPLY_OF + "]-(p4Comment1),\n"
+                    + "(p7Post1)<-[:" + Rels.REPLY_OF + "]-(p4Comment2),\n"
+                    + "(p5Post1)<-[:" + Rels.REPLY_OF + "]-(p5Comment1),\n"
+                    + "(p6Post1)<-[:" + Rels.REPLY_OF + "]-(p8Comment1),\n"
                    /*
                     * Comment-Comment
                     */
-                    + "(comment0)<-[:" + Rels.REPLY_OF + "]-(comment1),\n"
-                    + "(comment0)<-[:" + Rels.REPLY_OF + "]-(comment3),\n"
-                    + "(comment1)<-[:" + Rels.REPLY_OF + "]-(comment2),\n"
-                    + "(comment3)<-[:" + Rels.REPLY_OF + "]-(comment4),\n"
-                    + "(comment5)<-[:" + Rels.REPLY_OF + "]-(comment6),\n"
-                    + "(comment6)<-[:" + Rels.REPLY_OF + "]-(comment7),\n"
-                    + "(comment7)<-[:" + Rels.REPLY_OF + "]-(comment8)";
+                    + "(p7Comment1)-[:" + Rels.REPLY_OF + "]->(p4Comment2),\n"
+                    + "(p8Comment2)-[:" + Rels.REPLY_OF + "]->(p4Comment1),\n"
+                    + "(p5Comment2)-[:" + Rels.REPLY_OF + "]->(p8Comment2)\n"
+                    ;
         }
 
         @Override
         public Map<String, Object> params() {
-            return MapUtil.map(
-                    // Persons
-                    "person0", TestPersons.person0(),
-                    "person1", TestPersons.person1(),
-                    "person2", TestPersons.person2(),
-                    "person3", TestPersons.person3(),
-                    // Posts
-                    "post0", TestPosts.post0(),
-                    "post1", TestPosts.post1(),
-                    // Comments
-                    "comment0", TestComments.comment0(),
-                    "comment1", TestComments.comment1(),
-                    "comment2", TestComments.comment2(),
-                    "comment3", TestComments.comment3(),
-                    "comment4", TestComments.comment4(),
-                    "comment5", TestComments.comment5(),
-                    "comment6", TestComments.comment6(),
-                    "comment7", TestComments.comment7(),
-                    "comment8", TestComments.comment8()
-            );
-        }
-
-        protected static class TestPersons {
-            protected static Map<String, Object> person0() {
-                Map<String, Object> params = new HashMap<>();
-                params.put(Person.ID, 0L);
-                params.put(Person.FIRST_NAME, "person");
-                params.put(Person.LAST_NAME, "0");
-                return params;
-            }
-
-            protected static Map<String, Object> person1() {
-                Map<String, Object> params = new HashMap<>();
-                params.put(Person.ID, 1L);
-                params.put(Person.FIRST_NAME, "person");
-                params.put(Person.LAST_NAME, "1");
-                return params;
-            }
-
-            protected static Map<String, Object> person2() {
-                Map<String, Object> params = new HashMap<>();
-                params.put(Person.ID, 2L);
-                params.put(Person.FIRST_NAME, "person");
-                params.put(Person.LAST_NAME, "2");
-                return params;
-            }
-
-            protected static Map<String, Object> person3() {
-                Map<String, Object> params = new HashMap<>();
-                params.put(Person.ID, 3L);
-                params.put(Person.FIRST_NAME, "person");
-                params.put(Person.LAST_NAME, "3");
-                return params;
-            }
-        }
-
-        protected static class TestPosts {
-            protected static Map<String, Object> post0() {
-                Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 0L);
-                return params;
-            }
-
-            protected static Map<String, Object> post1() {
-                Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 1L);
-                return params;
-            }
-        }
-
-        protected static class TestComments {
-            protected static Map<String, Object> comment0() {
-                Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 0L);
-                return params;
-            }
-
-            protected static Map<String, Object> comment1() {
-                Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 1L);
-                return params;
-            }
-
-            protected static Map<String, Object> comment2() {
-                Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 2L);
-                return params;
-            }
-
-            protected static Map<String, Object> comment3() {
-                Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 3L);
-                return params;
-            }
-
-            protected static Map<String, Object> comment4() {
-                Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 4L);
-                return params;
-            }
-
-            protected static Map<String, Object> comment5() {
-                Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 5L);
-                return params;
-            }
-
-            protected static Map<String, Object> comment6() {
-                Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 6L);
-                return params;
-            }
-
-            protected static Map<String, Object> comment7() {
-                Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 7L);
-                return params;
-            }
-
-            protected static Map<String, Object> comment8() {
-                Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 8L);
-                return params;
-            }
+            return MapUtil.map();
         }
     }
 }
