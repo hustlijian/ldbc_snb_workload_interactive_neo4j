@@ -47,8 +47,8 @@ public class QueryCorrectnessRemoteCypherTest extends QueryCorrectnessTest<JdbcC
 
     @Override
     public void closeConnection(JdbcConnectionState connection) throws Exception {
-        connection.db().shutdown();
         connection.connection().close();
+        connection.db().shutdown();
     }
 
     @Override

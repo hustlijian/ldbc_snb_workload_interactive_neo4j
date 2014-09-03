@@ -27,6 +27,7 @@ public class LdbcTraversersSteps implements LdbcTraversers {
         this.baseTraversalDescription = db.traversalDescription().uniqueness(Uniqueness.NONE).breadthFirst();
     }
 
+    // TODO possibly remove? is this used? steps does not support this type of variable path as far as I know.
     @Override
     public TraversalDescription friendsUpToThreeHopsWithGivenFirstName(String firstName) {
         return stepsBuilder.build(baseTraversalDescription,
@@ -34,7 +35,6 @@ public class LdbcTraversersSteps implements LdbcTraversers {
                 Step.one(node().hasLabel(Nodes.Person).propertyEquals(Person.FIRST_NAME, firstName))
         );
     }
-
 
     // (uniCity:CITY)<-[:IS_LOCATED_IN]-(uni:UNIVERSITY)<-[studyAt:STUDY_AT]-(person)
     // uni.name, uniCity.name(studyAt.classYear)
@@ -91,13 +91,8 @@ public class LdbcTraversersSteps implements LdbcTraversers {
                 Step.one(node().hasLabel(Nodes.Tag)));
     }
 
-    /*
-    MATCH (:Person {id:{person_id}})-[:KNOWS]-(friend:Person)<-[:HAS_CREATOR]-(post:Post)
-    WHERE post.creationDate<={max_date}
-    LIMIT 20
-     */
     @Override
-    public TraversalDescription friendsPostsBeforeDate(final long maxPostCreationDate) {
+    public TraversalDescription friendsPostsAndCommentsBeforeDate(final long maxPostCreationDate) {
         // TODO number range
         PropertyContainerPredicate creationDateCheck = new PropertyContainerPredicate() {
             @Override
@@ -112,7 +107,7 @@ public class LdbcTraversersSteps implements LdbcTraversers {
 
                 Step.one(node(), relationship().hasType(Rels.HAS_CREATOR)),
 
-                Step.one(node().hasLabel(Nodes.Post).conformsTo(creationDateCheck)));
+                Step.one(node().conformsTo(creationDateCheck)));
     }
 
     /*
