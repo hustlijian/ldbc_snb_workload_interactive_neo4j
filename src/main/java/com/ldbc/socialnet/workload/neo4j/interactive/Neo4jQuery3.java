@@ -20,7 +20,6 @@ public abstract class Neo4jQuery3<CONNECTION> implements Neo4jQuery<LdbcQuery3, 
     Return top 20 Persons, and their Post/Comment counts.
     Sort results descending by total number of Posts/Comments, and then ascending by Person identifier.
      */
-
     protected static final String QUERY_STRING = ""
             + "MATCH (person:" + Nodes.Person + " {" + Person.ID + ":{" + PERSON_ID + "}})-[:" + Rels.KNOWS + "*1..2]-(friend:" + Nodes.Person + ")"
             + "<-[:" + Rels.HAS_CREATOR + "]-(messageX)-[:" + Rels.IS_LOCATED_IN + "]->(countryX:" + Place.Type.Country + ")\n"

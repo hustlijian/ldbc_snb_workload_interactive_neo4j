@@ -12,9 +12,12 @@ import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery3Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery3;
+import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.traversal.TraversalDescription;
+import org.neo4j.traversal.steps.execution.StepsUtils;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,54 +36,50 @@ public class Neo4jQuery3EmbeddedApi extends Neo4jQuery3<GraphDatabaseService> {
         return "LDBC Query3 Java API Implementation";
     }
 
+    /*
+    Given a start Person, find Persons that are their friends and friends of friends (excluding start Person),
+    that have made Posts/Comments in the given Countries X and Y within a given period.
+    Only Persons that are foreign to Countries X and Y are considered, that is Persons whose Location is not Country X or Country Y.
+    Return top 20 Persons, and their Post/Comment counts.
+    Sort results descending by total number of Posts/Comments, and then ascending by Person identifier.
+     */
     @Override
     public Iterator<LdbcQuery3Result> execute(final GraphDatabaseService db, final LdbcQuery3 operation) {
-        /*
-        Find friends and friends-of-friends of some user, such that those friends have been to (have made posts in) 
-        the countries countryX and countryY within a specified period.
-
-        MATCH (person:PERSON)-[:KNOWS*1..2]-(f:PERSON)
-        USING INDEX person:PERSON(id)
-        WHERE person.id={person_id}
-        WITH DISTINCT f AS friend
-        MATCH (friend)<-[:HAS_CREATOR]-(postX:POST)-[:IS_LOCATED_IN]->(countryX:COUNTRY)
-        USING INDEX countryX:COUNTRY(name)
-        WHERE countryX.name={country_x} AND postX.creationDate>={min_date} AND postX.creationDate<={max_date}
-        WITH friend, count(DISTINCT postX) AS xCount
-        MATCH (friend)<-[:HAS_CREATOR]-(postY:POST)-[:IS_LOCATED_IN]->(countryY:COUNTRY)
-        USING INDEX countryY:COUNTRY(name)
-        WHERE countryY.name={country_y} AND postY.creationDate>={min_date} AND postY.creationDate<={max_date}
-        WITH friend.firstName + ' ' + friend.lastName  AS friendName , xCount, count(DISTINCT postY) AS yCount
-        RETURN friendName, xCount, yCount, xCount + yCount AS xyCount
-        ORDER BY xyCount DESC
-         */
         Iterator<Node> personIterator = db.findNodesByLabelAndProperty(Domain.Nodes.Person, Domain.Person.ID,
                 operation.personId()).iterator();
         if (false == personIterator.hasNext()) return Iterators.emptyIterator();
         final Node person = personIterator.next();
 
-        // TODO uncomment
-//        Iterator<Node> friendsWithPerson = StepsUtils.distinct(traversers.friendsAndFriendsOfFriends().traverse(
-//                person).nodes().iterator());
-        Iterator<Node> friendsWithPerson = null;
+        Iterator<Node> friends = StepsUtils.excluding(
+                StepsUtils.distinct(
+                        traversers.friendsAndFriendsOfFriends().traverse(person).nodes()
+                ),
+                person
+        );
 
-        // TODO uncomment
-//        Iterator<Node> friends = Iterators.filter(StepsUtils.distinct(friendsWithPerson), new Predicate<Node>() {
-//            @Override
-//            public boolean apply(Node input) {
-//                return !input.equals(person);
-//            }
-//        });
-        Iterator<Node> friends = null;
+        Iterator<Node> friendsNotFromCountryXOrCountryY = Iterators.filter(friends, new Predicate<Node>() {
+            @Override
+            public boolean apply(Node friend) {
+                Relationship personLocatedInCity = friend.getRelationships(Direction.OUTGOING, Domain.Rels.IS_LOCATED_IN).iterator().next();
+                Node city = personLocatedInCity.getOtherNode(friend);
+                Relationship cityLocatedInCountry = city.getRelationships(Direction.OUTGOING, Domain.Rels.IS_LOCATED_IN).iterator().next();
+                Node country = cityLocatedInCountry.getOtherNode(city);
+                boolean isNotCountry = false == country.hasLabel(Domain.Place.Type.Country);
+                boolean isCountryX = operation.countryXName().equals(country.getProperty(Domain.Place.NAME));
+                boolean isCountryY = operation.countryYName().equals(country.getProperty(Domain.Place.NAME));
+                if (isNotCountry || isCountryX || isCountryY) return false;
+                return true;
+            }
+        });
 
         long startDateAsMilli = operation.startDate().getTime();
         int durationHours = operation.durationDays() * 24;
         long endDateAsMilli = Time.fromMilli(startDateAsMilli).plus(Duration.fromHours(durationHours)).asMilli();
 
-        TraversalDescription postsInCountryX = traversers.postsInCountry(operation.countryXName(), startDateAsMilli, endDateAsMilli);
-        TraversalDescription postsInCountryY = traversers.postsInCountry(operation.countryYName(), startDateAsMilli, endDateAsMilli);
+        TraversalDescription postsInCountryX = traversers.postsAndCommentsInCountryInDateRange(operation.countryXName(), startDateAsMilli, endDateAsMilli);
+        TraversalDescription postsInCountryY = traversers.postsAndCommentsInCountryInDateRange(operation.countryYName(), startDateAsMilli, endDateAsMilli);
         Function<Node, LdbcQuery3Result> nodeToLdbcQuery3ResultFun = new NodeToLdbcQuery3ResultFun(postsInCountryX, postsInCountryY);
-        Iterator<LdbcQuery3Result> resultWithZeroCounts = Iterators.transform(friends, nodeToLdbcQuery3ResultFun);
+        Iterator<LdbcQuery3Result> resultWithZeroCounts = Iterators.transform(friendsNotFromCountryXOrCountryY, nodeToLdbcQuery3ResultFun);
 
         List<LdbcQuery3Result> result = Lists.newArrayList(Iterators.filter(resultWithZeroCounts,
                 new Predicate<LdbcQuery3Result>() {
@@ -117,9 +116,13 @@ public class Neo4jQuery3EmbeddedApi extends Neo4jQuery3<GraphDatabaseService> {
     class CountComparator implements Comparator<LdbcQuery3Result> {
         @Override
         public int compare(LdbcQuery3Result result1, LdbcQuery3Result result2) {
-            if (result1.count() == result2.count()) return 0;
             if (result1.count() > result2.count()) return -1;
-            return 1;
+            else if (result1.count() < result2.count()) return 1;
+            else {
+                if (result1.personId() < result2.count()) return -1;
+                else if (result1.personId() > result2.count()) return 1;
+                else return 0;
+            }
         }
     }
 

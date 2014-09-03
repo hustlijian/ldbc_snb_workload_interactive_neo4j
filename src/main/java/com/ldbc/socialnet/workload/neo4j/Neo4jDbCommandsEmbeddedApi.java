@@ -42,7 +42,7 @@ public class Neo4jDbCommandsEmbeddedApi extends Neo4jDbCommands {
         db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbPath).setConfig(dbConfig).newGraphDatabase();
         switch (traversersType) {
             case STEPS:
-                traversers = new LdbcTraversersSteps(db);
+                traversers = new LdbcTraversers(db);
                 break;
             default:
                 throw new RuntimeException("Unrecognized LdbcTraversersType: " + traversersType.name());

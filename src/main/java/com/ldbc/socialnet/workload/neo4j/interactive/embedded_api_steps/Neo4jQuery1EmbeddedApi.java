@@ -29,11 +29,6 @@ public class Neo4jQuery1EmbeddedApi extends Neo4jQuery1<GraphDatabaseService> {
 
     @Override
     public Iterator<LdbcQuery1Result> execute(GraphDatabaseService db, LdbcQuery1 params) {
-        /*
-        Given a start Person, find up to 20 Persons with a given first name that the start Person is connected to (excluding start Person) by at most 3 steps via Knows relationships.
-        Return Persons, including summaries of the Persons’ workplaces and places of study.
-        Sort results by their distance from the start Person, for Persons within the same distance sort by their last name, and for Persons with same last name by their identifier
-         */
         List<Node> persons = Lists.newArrayList(
                 db.findNodesByLabelAndProperty(
                         Domain.Nodes.Person,
