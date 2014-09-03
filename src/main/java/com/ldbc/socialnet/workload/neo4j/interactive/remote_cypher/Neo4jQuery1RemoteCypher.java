@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class Neo4jQuery1RemoteCypher extends Neo4jQuery1<Connection> {
     @Override
@@ -34,24 +35,23 @@ public class Neo4jQuery1RemoteCypher extends Neo4jQuery1<Connection> {
 
     private class ResultSetIterator implements Iterator<LdbcQuery1Result> {
         private final ResultSet resultSet;
+        private boolean hasNext;
 
-        private ResultSetIterator(ResultSet resultSet) {
+        private ResultSetIterator(ResultSet resultSet) throws SQLException {
             this.resultSet = resultSet;
+            this.hasNext = resultSet.next();
         }
 
         @Override
         public boolean hasNext() {
-            try {
-                return resultSet.next();
-            } catch (SQLException e) {
-                throw new RuntimeException("Exception thrown while getting next result from result set", e);
-            }
+            return hasNext;
         }
 
         @Override
         public LdbcQuery1Result next() {
             try {
-                return new LdbcQuery1Result(
+                if (false == hasNext) throw new NoSuchElementException();
+                LdbcQuery1Result result = new LdbcQuery1Result(
                         resultSet.getLong("id"),
                         resultSet.getString("lastName"),
                         resultSet.getInt("distance"),
@@ -65,6 +65,8 @@ public class Neo4jQuery1RemoteCypher extends Neo4jQuery1<Connection> {
                         resultSet.getString("cityName"),
                         (Collection) resultSet.getObject("unis"),
                         (Collection) resultSet.getObject("companies"));
+                hasNext = resultSet.next();
+                return result;
             } catch (SQLException e) {
                 throw new RuntimeException("Error while retrieving next row", e);
             }

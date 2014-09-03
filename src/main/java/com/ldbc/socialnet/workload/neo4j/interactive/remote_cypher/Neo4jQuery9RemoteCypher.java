@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class Neo4jQuery9RemoteCypher extends Neo4jQuery9<Connection> {
     @Override
@@ -32,31 +33,31 @@ public class Neo4jQuery9RemoteCypher extends Neo4jQuery9<Connection> {
 
     private class ResultSetIterator implements Iterator<LdbcQuery9Result> {
         private final ResultSet resultSet;
+        private boolean hasNext;
 
-        private ResultSetIterator(ResultSet resultSet) {
+        private ResultSetIterator(ResultSet resultSet) throws SQLException {
             this.resultSet = resultSet;
+            this.hasNext = resultSet.next();
         }
 
         @Override
         public boolean hasNext() {
-            try {
-                return resultSet.next();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return false;
-            }
+            return hasNext;
         }
 
         @Override
         public LdbcQuery9Result next() {
             try {
-                return new LdbcQuery9Result(
+                if (false == hasNext) throw new NoSuchElementException();
+                LdbcQuery9Result result = new LdbcQuery9Result(
                         resultSet.getLong("personId"),
                         resultSet.getString("personFirstName"),
                         resultSet.getString("personLastName"),
-                        resultSet.getLong("activityId"),
-                        resultSet.getString("activityContent"),
-                        resultSet.getLong("activityCreationDate"));
+                        resultSet.getLong("messageId"),
+                        resultSet.getString("messageContent"),
+                        resultSet.getLong("messageCreationDate"));
+                hasNext = resultSet.next();
+                return result;
             } catch (SQLException e) {
                 throw new RuntimeException("Error while retrieving next row", e);
             }

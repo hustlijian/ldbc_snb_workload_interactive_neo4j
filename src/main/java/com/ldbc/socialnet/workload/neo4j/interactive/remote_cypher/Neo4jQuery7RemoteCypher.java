@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class Neo4jQuery7RemoteCypher extends Neo4jQuery7<Connection> {
     @Override
@@ -31,33 +32,35 @@ public class Neo4jQuery7RemoteCypher extends Neo4jQuery7<Connection> {
 
     private class ResultSetIterator implements Iterator<LdbcQuery7Result> {
         private final ResultSet resultSet;
+        private boolean hasNext;
 
-        private ResultSetIterator(ResultSet resultSet) {
+        private ResultSetIterator(ResultSet resultSet) throws SQLException {
             this.resultSet = resultSet;
+            this.hasNext = resultSet.next();
         }
 
         @Override
         public boolean hasNext() {
-            try {
-                return resultSet.next();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return false;
-            }
+            return hasNext;
         }
 
         @Override
         public LdbcQuery7Result next() {
             try {
-                return new LdbcQuery7Result(
+                if (false == hasNext) throw new NoSuchElementException();
+                long latencyAsMilli = resultSet.getLong("latencyAsMilli");
+                Long latencyAsMinutes = (latencyAsMilli / 1000) / 60;
+                LdbcQuery7Result result = new LdbcQuery7Result(
                         resultSet.getLong("personId"),
                         resultSet.getString("personFirstName"),
                         resultSet.getString("personLastName"),
-                        resultSet.getLong("likeDate"),
-                        resultSet.getLong("postId"),
-                        resultSet.getString("postContent"),
-                        resultSet.getInt("latency"),
+                        resultSet.getLong("likeTime"),
+                        resultSet.getLong("messageId"),
+                        resultSet.getString("messageContent"),
+                        latencyAsMinutes.intValue(),
                         resultSet.getBoolean("isNew"));
+                hasNext = resultSet.next();
+                return result;
             } catch (SQLException e) {
                 throw new RuntimeException("Error while retrieving next row", e);
             }

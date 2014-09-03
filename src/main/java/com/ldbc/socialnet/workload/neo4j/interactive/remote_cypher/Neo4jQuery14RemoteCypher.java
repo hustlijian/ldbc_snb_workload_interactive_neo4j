@@ -9,7 +9,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class Neo4jQuery14RemoteCypher extends Neo4jQuery14<Connection> {
     @Override
@@ -31,43 +33,31 @@ public class Neo4jQuery14RemoteCypher extends Neo4jQuery14<Connection> {
 
     private class ResultSetIterator implements Iterator<LdbcQuery14Result> {
         private final ResultSet resultSet;
+        private boolean hasNext;
 
-        private ResultSetIterator(ResultSet resultSet) {
+        private ResultSetIterator(ResultSet resultSet) throws SQLException {
             this.resultSet = resultSet;
+            this.hasNext = resultSet.next();
         }
 
         @Override
         public boolean hasNext() {
-            try {
-                return resultSet.next();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return false;
-            }
+            return hasNext;
         }
 
-        // TODO implement
         @Override
         public LdbcQuery14Result next() {
-            // TODO old, remove
-//            try {
-//                Collection<LdbcQuery14Result.PathNode> pathNodes = Collections2.transform((Collection<Collection<Object>>) resultSet.getObject("pathNodes"), new Function<Collection<Object>, LdbcQuery14Result.PathNode>() {
-//                    @Override
-//                    public LdbcQuery14Result.PathNode apply(Collection<Object> pathNode) {
-//                        List<Object> pathNodeList = Lists.newArrayList(pathNode);
-//                        return new LdbcQuery14Result.PathNode((String) pathNodeList.get(0), (long) pathNodeList.get(1));
-//                    }
-//                });
-//                return new LdbcQuery14Result(
-//                        pathNodes,
-//                        resultSet.getDouble("weight"));
-//            } catch (SQLException e) {
-//                throw new RuntimeException("Error while retrieving next row", e);
-//            }
-            // TODO temp, remove
-            Iterable<Long> personIdsInPath = null;
-            double pathWeight = 0;
-            return new LdbcQuery14Result(personIdsInPath, pathWeight);
+            try {
+                if (false == hasNext) throw new NoSuchElementException();
+                LdbcQuery14Result result = new LdbcQuery14Result(
+                        (Collection<Long>) resultSet.getObject("pathNodeIds"),
+                        resultSet.getDouble("weight"));
+                hasNext = resultSet.next();
+                return result;
+            } catch (SQLException e) {
+                throw new RuntimeException("Error while retrieving next row", e);
+            }
+
         }
 
         @Override

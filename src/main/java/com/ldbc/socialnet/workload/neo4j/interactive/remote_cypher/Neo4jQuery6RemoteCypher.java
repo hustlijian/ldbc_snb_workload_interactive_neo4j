@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class Neo4jQuery6RemoteCypher extends Neo4jQuery6<Connection> {
     @Override
@@ -32,27 +33,27 @@ public class Neo4jQuery6RemoteCypher extends Neo4jQuery6<Connection> {
 
     private class ResultSetIterator implements Iterator<LdbcQuery6Result> {
         private final ResultSet resultSet;
+        private boolean hasNext;
 
-        private ResultSetIterator(ResultSet resultSet) {
+        private ResultSetIterator(ResultSet resultSet) throws SQLException {
             this.resultSet = resultSet;
+            this.hasNext = resultSet.next();
         }
 
         @Override
         public boolean hasNext() {
-            try {
-                return resultSet.next();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return false;
-            }
+            return hasNext;
         }
 
         @Override
         public LdbcQuery6Result next() {
             try {
-                return new LdbcQuery6Result(
+                if (false == hasNext) throw new NoSuchElementException();
+                LdbcQuery6Result result = new LdbcQuery6Result(
                         resultSet.getString("tagName"),
-                        resultSet.getInt("tagCount"));
+                        ((Long) resultSet.getLong("postCount")).intValue());
+                hasNext = resultSet.next();
+                return result;
             } catch (SQLException e) {
                 throw new RuntimeException("Error while retrieving next row", e);
             }

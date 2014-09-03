@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class Neo4jQuery4RemoteCypher extends Neo4jQuery4<Connection> {
 
@@ -39,27 +40,27 @@ public class Neo4jQuery4RemoteCypher extends Neo4jQuery4<Connection> {
 
     private class ResultSetIterator implements Iterator<LdbcQuery4Result> {
         private final ResultSet resultSet;
+        private boolean hasNext;
 
-        private ResultSetIterator(ResultSet resultSet) {
+        private ResultSetIterator(ResultSet resultSet) throws SQLException {
             this.resultSet = resultSet;
+            this.hasNext = resultSet.next();
         }
 
         @Override
         public boolean hasNext() {
-            try {
-                return resultSet.next();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return false;
-            }
+            return hasNext;
         }
 
         @Override
         public LdbcQuery4Result next() {
             try {
-                return new LdbcQuery4Result(
+                if (false == hasNext) throw new NoSuchElementException();
+                LdbcQuery4Result result = new LdbcQuery4Result(
                         resultSet.getString("tagName"),
-                        resultSet.getInt("tagCount"));
+                        resultSet.getInt("postCount"));
+                hasNext = resultSet.next();
+                return result;
             } catch (SQLException e) {
                 throw new RuntimeException("Error while retrieving next row", e);
             }

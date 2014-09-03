@@ -220,7 +220,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             assertThat(result.hasNext(), is(false));
         } finally {
             closeConnection(connection);
-            FileUtils.deleteRecursively(new File(dbDir));
+            //FileUtils.deleteRecursively(new File(dbDir));
         }
     }
 
@@ -376,7 +376,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
-            FileUtils.deleteRecursively(new File(dbDir));
+            //FileUtils.deleteRecursively(new File(dbDir));
         }
     }
 
@@ -445,7 +445,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
-            FileUtils.deleteRecursively(new File(dbDir));
+            //FileUtils.deleteRecursively(new File(dbDir));
         }
     }
 
@@ -497,7 +497,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
-            FileUtils.deleteRecursively(new File(dbDir));
+            //FileUtils.deleteRecursively(new File(dbDir));
         }
     }
 
@@ -547,7 +547,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
-            FileUtils.deleteRecursively(new File(dbDir));
+            //FileUtils.deleteRecursively(new File(dbDir));
         }
     }
 
@@ -621,7 +621,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
-            FileUtils.deleteRecursively(new File(dbDir));
+            //FileUtils.deleteRecursively(new File(dbDir));
         }
     }
 
@@ -789,7 +789,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
-            FileUtils.deleteRecursively(new File(dbDir));
+            //FileUtils.deleteRecursively(new File(dbDir));
         }
     }
 
@@ -927,7 +927,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
-            FileUtils.deleteRecursively(new File(dbDir));
+            //FileUtils.deleteRecursively(new File(dbDir));
         }
     }
 
@@ -1084,7 +1084,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
-            FileUtils.deleteRecursively(new File(dbDir));
+            //FileUtils.deleteRecursively(new File(dbDir));
         }
     }
 
@@ -1183,7 +1183,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
-            FileUtils.deleteRecursively(new File(dbDir));
+            //FileUtils.deleteRecursively(new File(dbDir));
         }
     }
 
@@ -1245,7 +1245,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
-            FileUtils.deleteRecursively(new File(dbDir));
+            //FileUtils.deleteRecursively(new File(dbDir));
         }
     }
 
@@ -1344,7 +1344,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
-            FileUtils.deleteRecursively(new File(dbDir));
+            //FileUtils.deleteRecursively(new File(dbDir));
         }
     }
 
@@ -1404,7 +1404,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
-            FileUtils.deleteRecursively(new File(dbDir));
+            //FileUtils.deleteRecursively(new File(dbDir));
         }
     }
 
@@ -1432,13 +1432,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             operation = new LdbcQuery14(personId1, person1Uri, personId2, person2Uri);
             results = neo4jQuery14Impl(connection, operation);
 
-    /*
-    PATHS           WEIGHT
-    [0,1,7,4,8,5]   5.5 <= [0,1](1+1+1)+[1,7]()+[7,4](1+0.5)+[4,8](0.5)+[8,5](0.5)
-    [0,1,7,4,6,5]   4.5 <= [0,1](1+1+1)+[1,7]()+[7,4](1+0.5)+[4,6]()+[6,5]()
-    [0,1,2,4,8,5]   4.0 <= [0,1](1+1+1)+[1,2]()+[2,4]()+[4,8](0.5)+[8,5](0.5)
-    [0,1,2,4,6,5]   3.0 <= [0,1](1+1+1)+[1,2]()+[2,4]()+[4,6]()+[6,5]()
-     */
             actualResult = results.next();
             expectedPathNodeIds = Lists.newArrayList(0l, 1l, 7l, 4l, 8l, 5l);
             expectedWeight = 5.5;
@@ -1474,7 +1467,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
-            FileUtils.deleteRecursively(new File(dbDir));
+            //FileUtils.deleteRecursively(new File(dbDir));
         }
     }
 }

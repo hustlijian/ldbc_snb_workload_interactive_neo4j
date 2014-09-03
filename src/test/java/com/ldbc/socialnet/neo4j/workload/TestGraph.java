@@ -3,20 +3,23 @@ package com.ldbc.socialnet.neo4j.workload;
 import com.ldbc.driver.util.MapUtils;
 import com.ldbc.driver.util.Tuple.Tuple2;
 import com.ldbc.socialnet.neo4j.TestUtils;
-import com.ldbc.socialnet.workload.neo4j.utils.Utils;
+import org.neo4j.backup.OnlineBackupSettings;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.helpers.Settings;
 import org.neo4j.helpers.collection.MapUtil;
 
-import java.io.IOException;
 import java.util.*;
 
 import static com.ldbc.socialnet.workload.neo4j.Domain.*;
 
 public class TestGraph {
+    //    static int port = 6362;
+    static int port = 6366;
+
     private static Iterable<String> createIndexQueries() {
         List<String> createIndexQueries = new ArrayList<>();
         for (Tuple2<Label, String> labelAndProperty : labelPropertyPairsToIndex()) {
@@ -25,14 +28,16 @@ public class TestGraph {
         return createIndexQueries;
     }
 
-    public static void createDbFromQueryGraphMaker(TestGraph.QueryGraphMaker queryGraphMaker, String path) throws IOException {
+    public static void createDbFromQueryGraphMaker(TestGraph.QueryGraphMaker queryGraphMaker, String path) throws Exception {
         // TODO uncomment to print CREATE
         System.out.println();
         System.out.println(MapUtils.prettyPrint(queryGraphMaker.params()));
         System.out.println(queryGraphMaker.queryString());
-
-        Map dbImportConfig = Utils.loadConfig(TestUtils.getResource("/neo4j_import_dev.properties").getAbsolutePath());
-        GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(path).setConfig(dbImportConfig).newGraphDatabase();
+        GraphDatabaseService db = new GraphDatabaseFactory()
+                .newEmbeddedDatabaseBuilder(path)
+                .loadPropertiesFromFile(TestUtils.getResource("/neo4j_import_dev.properties").getAbsolutePath())
+                .setConfig(Settings.setting("online_backup_enabled", Settings.BOOLEAN, Settings.FALSE), "false")
+                .newGraphDatabase();
         ExecutionEngine engine = new ExecutionEngine(db);
         createDbFromCypherQuery(engine, db, queryGraphMaker.queryString(), queryGraphMaker.params());
         db.shutdown();

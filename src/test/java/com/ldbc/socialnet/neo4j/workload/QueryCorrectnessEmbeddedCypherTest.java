@@ -7,16 +7,13 @@ import com.ldbc.driver.workloads.ldbc.snb.interactive.*;
 import com.ldbc.socialnet.neo4j.TestUtils;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery;
 import com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher.*;
-import com.ldbc.socialnet.workload.neo4j.utils.Utils;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class QueryCorrectnessEmbeddedCypherTest extends QueryCorrectnessTest<GraphDatabaseService> {
 
@@ -30,7 +27,7 @@ public class QueryCorrectnessEmbeddedCypherTest extends QueryCorrectnessTest<Gra
         List<OPERATION_RESULT> results;
         try (Transaction tx = graphDatabaseService.beginTx()) {
             results = ImmutableList.copyOf(query.execute(engine, operation));
-            // make sure list is not lazy
+            // try to make sure list is not lazy
             results.size();
             tx.success();
         } catch (Exception e) {
@@ -41,13 +38,10 @@ public class QueryCorrectnessEmbeddedCypherTest extends QueryCorrectnessTest<Gra
 
     @Override
     public GraphDatabaseService openConnection(String path) throws Exception {
-        Map dbRunConfig;
-        try {
-            dbRunConfig = Utils.loadConfig(TestUtils.getResource("/neo4j_run_dev.properties").getAbsolutePath());
-        } catch (IOException e) {
-            throw new DbException("Unable to load database properties", e);
-        }
-        return new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(path).setConfig(dbRunConfig).newGraphDatabase();
+        return new GraphDatabaseFactory()
+                .newEmbeddedDatabaseBuilder(path)
+                .loadPropertiesFromFile(TestUtils.getResource("/neo4j_run_dev.properties").getAbsolutePath())
+                .newGraphDatabase();
     }
 
     @Override
