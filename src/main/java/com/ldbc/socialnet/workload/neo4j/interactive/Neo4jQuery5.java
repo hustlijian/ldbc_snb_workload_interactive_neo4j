@@ -22,4 +22,13 @@ public abstract class Neo4jQuery5<CONNECTION> implements Neo4jQuery<LdbcQuery5, 
             + "RETURN forum." + Forum.TITLE + " AS forumName, count(post) AS postCount\n"
             + "ORDER BY postCount DESC, forumName ASC\n"
             + "LIMIT {" + LIMIT + "}";
+/*
+MATCH (person:Person {id:1})-[:KNOWS*1..2]-(friend:Person)<-[membership:HAS_MEMBER]-()
+WHERE membership.joinDate>946767600000 AND not(person=friend)
+WITH friend, person
+MATCH (person)-[:KNOWS*1..2]-(other:Person)<-[membership:HAS_MEMBER]-(forum:Forum)
+WHERE membership.joinDate>946767600000 AND not(person=other)
+OPTIONAL MATCH (friend)<-[:HAS_CREATOR]-(post:Post)<-[:CONTAINER_OF]-(forum)
+RETURN forum.title AS forumName, collect(DISTINCT post.content)
+ */
 }

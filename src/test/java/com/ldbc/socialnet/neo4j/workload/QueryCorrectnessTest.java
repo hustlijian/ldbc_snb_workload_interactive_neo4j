@@ -527,6 +527,9 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             limit = 4;
             operation = new LdbcQuery5(personId, personUri, joinDate, limit);
 
+            // TODO remove
+            System.out.println(joinDate.getTime());
+
             results = neo4jQuery5Impl(connection, operation);
 
             actualResult = results.next();

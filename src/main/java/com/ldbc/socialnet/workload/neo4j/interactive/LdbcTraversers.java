@@ -110,11 +110,7 @@ public class LdbcTraversers {
                 Step.one(node().hasLabel(Domain.Place.Type.Country).propertyEquals(Domain.Place.NAME, countryX)));
     }
 
-    /*
-    MATCH (friend)<-[membership:HAS_MEMBER]-(forum:Forum)
-    WHERE membership.joinDate>{join_date}
-     */
-    public TraversalDescription personsMembershipForums(final long minDate) {
+    public TraversalDescription forumsPersonJoinedAfterDate(final long minDate) {
         // TODO number range
         PropertyContainerFilterDescriptor.PropertyContainerPredicate joinDateCheck = new PropertyContainerFilterDescriptor.PropertyContainerPredicate() {
             @Override
@@ -123,42 +119,39 @@ public class LdbcTraversers {
                 return joinDate > minDate;
             }
         };
-        return stepsBuilder.build(baseTraversalDescription,
-
-                Step.one(
-                        node(),
-                        relationship().hasType(Domain.Rels.HAS_MEMBER).hasDirection(Direction.INCOMING).conformsTo(
-                                joinDateCheck)),
-
-                Step.one(node().hasLabel(Domain.Nodes.Forum)));
+        return stepsBuilder.build(
+                baseTraversalDescription,
+                Step.one(node(), relationship().hasType(Domain.Rels.HAS_MEMBER).hasDirection(Direction.INCOMING).conformsTo(joinDateCheck)),
+                Step.one(node().hasLabel(Domain.Nodes.Forum))
+        );
     }
 
-    /*
-    MATCH (friend)<-[:HAS_CREATOR]-(comment:Comment)
-     */
-    public TraversalDescription personsComments() {
-        return stepsBuilder.build(baseTraversalDescription,
-
+    public TraversalDescription commentsByPerson() {
+        return stepsBuilder.build(
+                baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Domain.Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
-
                 Step.one(node().hasLabel(Domain.Nodes.Comment)));
     }
 
-    /*
-    (forum)-[:CONTAINER_OF]->(:Post)<-[:REPLY_OF]-(:Comment)<-[:REPLY_OF*]-(comment)
-    traverse from forum, find all comments that are also in knownComments
-     */
     public TraversalDescription commentsOnPostsInForum(final Set<Node> knownComments) {
         // TODO notHasLabel(Label)
         // TODO notHasProperty(String key)
         // TODO numberPropertyValueInRange(T extends Number in, T extends Number max)
-
         return stepsBuilder.build(
                 baseTraversalDescription,
                 Step.one(node().hasLabel(Domain.Nodes.Forum), relationship().hasType(Domain.Rels.CONTAINER_OF).hasDirection(Direction.OUTGOING)),
                 Step.one(node().hasLabel(Domain.Nodes.Post), relationship().hasType(Domain.Rels.REPLY_OF).hasDirection(Direction.INCOMING)),
                 Step.manyRange(node().hasLabel(Domain.Nodes.Comment).notInSet(knownComments), relationship().hasType(Domain.Rels.REPLY_OF).hasDirection(Direction.INCOMING), 0, Step.UNLIMITED),
                 Step.one(node().hasLabel(Domain.Nodes.Comment)));
+    }
+
+    public TraversalDescription postsInForumsByPersons(final Set<Node> forums) {
+        return stepsBuilder.build(
+                baseTraversalDescription,
+                Step.one(node(), relationship().hasType(Domain.Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
+                Step.one(node().hasLabel(Domain.Nodes.Post), relationship().hasType(Domain.Rels.CONTAINER_OF).hasDirection(Direction.INCOMING)),
+                Step.one(node().inSet(forums))
+        );
     }
 
     /*
@@ -191,32 +184,26 @@ public class LdbcTraversers {
 //                return minDate < creationDate && creationDate < maxDate;
 //            }
 //        };
-        return stepsBuilder.build(baseTraversalDescription,
-
+        return stepsBuilder.build(
+                baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Domain.Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
-
-                Step.one(node().hasLabel(Domain.Place.Type.City),
-                        relationship().hasType(Domain.Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
-
-                Step.one(node().hasLabel(Domain.Place.Type.Country),
-                        relationship().hasType(Domain.Rels.IS_LOCATED_IN).hasDirection(Direction.INCOMING)),
-
+                Step.one(node().hasLabel(Domain.Place.Type.City), relationship().hasType(Domain.Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
+                Step.one(node().hasLabel(Domain.Place.Type.Country), relationship().hasType(Domain.Rels.IS_LOCATED_IN).hasDirection(Direction.INCOMING)),
                 // TODO remove completely
-//                Step.one(node().hasLabel(Nodes.Post).conformsTo(creationDateRangeCheck),
-//                        relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.OUTGOING)),
-
-                Step.one(node().hasLabel(Domain.Nodes.Person).notInSet(Sets.newHashSet(otherPerson))));
+//                Step.one(node().hasLabel(Nodes.Post).conformsTo(creationDateRangeCheck), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.OUTGOING)),
+                Step.one(node().hasLabel(Domain.Nodes.Person).notInSet(Sets.newHashSet(otherPerson)))
+        );
     }
 
     /*
     MATCH (post)-[:HAS_TAG]->(tag:Tag)
      */
     public TraversalDescription postsTags() {
-        return stepsBuilder.build(baseTraversalDescription,
-
+        return stepsBuilder.build(
+                baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Domain.Rels.HAS_TAG).hasDirection(Direction.OUTGOING)),
-
-                Step.one(node().hasLabel(Domain.Nodes.Tag)));
+                Step.one(node().hasLabel(Domain.Nodes.Tag))
+        );
     }
 
 }
