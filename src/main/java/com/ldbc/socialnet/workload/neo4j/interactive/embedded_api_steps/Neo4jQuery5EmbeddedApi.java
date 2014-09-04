@@ -99,51 +99,6 @@ public class Neo4jQuery5EmbeddedApi extends Neo4jQuery5<GraphDatabaseService> {
                         }
                 )
         );
-
-//        /*
-//        MATCH (friend)<-[:HAS_CREATOR]-(comment:Comment)
-//        WHERE (comment)-[:REPLY_OF*0..]->(:Comment)-[:REPLY_OF]->(:Post)<-[:CONTAINER_OF]-(forum)
-//         */
-//        Set<Node> friendsComments = ImmutableSet.copyOf(traversers.commentsByPerson().traverse(friends).nodes());
-//        TraversalDescription commentsOnPostsInForumTraverser = traversers.commentsOnPostsInForum(friendsComments);
-//
-//        Map<Node, LdbcQuery5Result> forumCommentsMap = new HashMap<>();
-//        for (Node forum : forums) {
-//            String forumTitle = (String) forum.getProperty(Domain.Forum.TITLE);
-//            int postCount = 0;
-//            int commentCount = Iterables.size(commentsOnPostsInForumTraverser.traverse(forum));
-//            if (commentCount > 0)
-//                forumCommentsMap.put(forum, new LdbcQuery5Result(forumTitle, postCount));
-//        }
-//
-//        /*
-//        MATCH (friend)<-[:HAS_CREATOR]-(post:Post)<-[:CONTAINER_OF]-(forum)
-//         */
-//        TraversalDescription postsInForumByFriendsTraverser = traversers.postsInForumByFriends(friendsSet);
-//        Map<Node, LdbcQuery5Result> forumPostsMap = new HashMap<>();
-//        for (final Node forum : forums) {
-//            String forumTitle = (String) forum.getProperty(Domain.Forum.TITLE);
-//            int postCount = Iterables.size(postsInForumByFriendsTraverser.traverse(forum));
-//            int commentCount = 0;
-//            if (postCount > 0)
-//                forumPostsMap.put(forum, new LdbcQuery5Result(forumTitle, postCount));
-//        }
-//
-//        /*
-//         * Join
-//         */
-//        Function2<LdbcQuery5Result, LdbcQuery5Result, LdbcQuery5Result> joinFun = new Function2<LdbcQuery5Result, LdbcQuery5Result, LdbcQuery5Result>() {
-//            @Override
-//            public LdbcQuery5Result apply(LdbcQuery5Result from1, LdbcQuery5Result from2) {
-//                return new LdbcQuery5Result(from1.forumTitle(), from1.postCount() + from2.postCount());
-//            }
-//        };
-//        Map<Node, LdbcQuery5Result> postsAndCommentsMap = MapUtils.mergeMaps(forumPostsMap, forumCommentsMap, joinFun);
-
-        /*
-        ORDER BY commentCount + postCount DESC
-         */
-//        List<LdbcQuery5Result> results = Lists.newArrayList(postsAndCommentsMap.values());
         Collections.sort(results, new CommentAndPostCountComparator());
 
         return results.iterator();
