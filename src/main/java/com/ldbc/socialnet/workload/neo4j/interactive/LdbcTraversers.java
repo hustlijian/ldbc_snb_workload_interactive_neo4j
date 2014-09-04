@@ -44,27 +44,19 @@ public class LdbcTraversers {
                 Step.one(node().hasLabel(Domain.Place.Type.Country)));
     }
 
-    /*
-        MATCH (person:PERSON)-[:KNOWS]-(friend:PERSON)
-        MATCH (friend)<-[:HAS_CREATOR]-(post:POST)
-        WHERE post.creationDate>={min_date} AND post.creationDate<={max_date}
-        MATCH (post)-[HAS_TAG]->(tag:TAG)
-     */
-    public TraversalDescription friendPostTags(final long minDate, final long maxDate) {
+    public TraversalDescription tagsOnPostsCreatedByPersonBetweenDates(final long minDate, final long maxDate) {
         PropertyContainerFilterDescriptor.PropertyContainerPredicate creationDateCheck = new PropertyContainerFilterDescriptor.PropertyContainerPredicate() {
             @Override
             public boolean apply(PropertyContainer container) {
                 long creationDate = (long) container.getProperty(Domain.Message.CREATION_DATE);
-                return (creationDate >= minDate && maxDate >= creationDate);
+                return (creationDate >= minDate && maxDate > creationDate);
             }
         };
         return stepsBuilder.build(
                 baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Domain.Rels.KNOWS)),
-                Step.one(node().hasLabel(Domain.Nodes.Person),
-                        relationship().hasType(Domain.Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
-                Step.one(node().hasLabel(Domain.Nodes.Post).conformsTo(creationDateCheck),
-                        relationship().hasType(Domain.Rels.HAS_TAG).hasDirection(Direction.OUTGOING)),
+                Step.one(node().hasLabel(Domain.Nodes.Person), relationship().hasType(Domain.Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
+                Step.one(node().hasLabel(Domain.Nodes.Post).conformsTo(creationDateCheck), relationship().hasType(Domain.Rels.HAS_TAG).hasDirection(Direction.OUTGOING)),
                 Step.one(node().hasLabel(Domain.Nodes.Tag)));
     }
 

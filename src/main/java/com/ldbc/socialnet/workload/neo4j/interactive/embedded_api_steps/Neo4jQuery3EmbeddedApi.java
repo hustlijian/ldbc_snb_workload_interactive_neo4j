@@ -36,13 +36,6 @@ public class Neo4jQuery3EmbeddedApi extends Neo4jQuery3<GraphDatabaseService> {
         return "LDBC Query3 Java API Implementation";
     }
 
-    /*
-    Given a start Person, find Persons that are their friends and friends of friends (excluding start Person),
-    that have made Posts/Comments in the given Countries X and Y within a given period.
-    Only Persons that are foreign to Countries X and Y are considered, that is Persons whose Location is not Country X or Country Y.
-    Return top 20 Persons, and their Post/Comment counts.
-    Sort results descending by total number of Posts/Comments, and then ascending by Person identifier.
-     */
     @Override
     public Iterator<LdbcQuery3Result> execute(final GraphDatabaseService db, final LdbcQuery3 operation) {
         Iterator<Node> personIterator = db.findNodesByLabelAndProperty(Domain.Nodes.Person, Domain.Person.ID,
@@ -67,8 +60,7 @@ public class Neo4jQuery3EmbeddedApi extends Neo4jQuery3<GraphDatabaseService> {
                 boolean isNotCountry = false == country.hasLabel(Domain.Place.Type.Country);
                 boolean isCountryX = operation.countryXName().equals(country.getProperty(Domain.Place.NAME));
                 boolean isCountryY = operation.countryYName().equals(country.getProperty(Domain.Place.NAME));
-                if (isNotCountry || isCountryX || isCountryY) return false;
-                return true;
+                return false == (isNotCountry || isCountryX || isCountryY);
             }
         });
 
@@ -81,13 +73,20 @@ public class Neo4jQuery3EmbeddedApi extends Neo4jQuery3<GraphDatabaseService> {
         Function<Node, LdbcQuery3Result> nodeToLdbcQuery3ResultFun = new NodeToLdbcQuery3ResultFun(postsInCountryX, postsInCountryY);
         Iterator<LdbcQuery3Result> resultWithZeroCounts = Iterators.transform(friendsNotFromCountryXOrCountryY, nodeToLdbcQuery3ResultFun);
 
-        List<LdbcQuery3Result> result = Lists.newArrayList(Iterators.filter(resultWithZeroCounts,
-                new Predicate<LdbcQuery3Result>() {
-                    @Override
-                    public boolean apply(LdbcQuery3Result input) {
-                        return input.xCount() > 0 && input.yCount() > 0;
-                    }
-                }));
+        List<LdbcQuery3Result> result =
+                Lists.newArrayList(
+                        Iterators.limit(
+                                Iterators.filter(
+                                        resultWithZeroCounts,
+                                        new Predicate<LdbcQuery3Result>() {
+                                            @Override
+                                            public boolean apply(LdbcQuery3Result input) {
+                                                return input.xCount() > 0 && input.yCount() > 0;
+                                            }
+                                        }),
+                                operation.limit()
+                        )
+                );
 
         Collections.sort(result, new CountComparator());
         return result.iterator();

@@ -1402,6 +1402,32 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             assertThat(actualResult, equalTo(new LdbcQuery13Result(expectedShortestPathLength)));
 
             assertThat(results.hasNext(), is(false));
+
+            personId1 = 1;
+            person1Uri = null;
+            personId2 = 1;
+            person2Uri = null;
+            operation = new LdbcQuery13(personId1, person1Uri, personId2, person2Uri);
+            results = neo4jQuery13Impl(connection, operation);
+
+            actualResult = results.next();
+            expectedShortestPathLength = 0;
+            assertThat(actualResult, equalTo(new LdbcQuery13Result(expectedShortestPathLength)));
+
+            assertThat(results.hasNext(), is(false));
+
+            personId1 = 1;
+            person1Uri = null;
+            personId2 = 8;
+            person2Uri = null;
+            operation = new LdbcQuery13(personId1, person1Uri, personId2, person2Uri);
+            results = neo4jQuery13Impl(connection, operation);
+
+            actualResult = results.next();
+            expectedShortestPathLength = -1;
+            assertThat(actualResult, equalTo(new LdbcQuery13Result(expectedShortestPathLength)));
+
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
             //FileUtils.deleteRecursively(new File(dbDir));

@@ -13,6 +13,7 @@ public abstract class Neo4jQuery13<CONNECTION> implements Neo4jQuery<LdbcQuery13
     Return the length of this path.
      */
     protected static final String QUERY_STRING = ""
-            + "MATCH path = shortestPath((person1:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID_1 + "}})-[:" + Domain.Rels.KNOWS + "]-(person2:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID_2 + "}}))\n"
-            + "RETURN length(path) AS pathLength";
+            + "MATCH (person1:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID_1 + "}}), (person2:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID_2 + "}})\n"
+            + "OPTIONAL MATCH path = shortestPath((person1)-[:" + Domain.Rels.KNOWS + "]-(person2))\n"
+            + "RETURN CASE path IS NULL WHEN true THEN -1 ELSE length(path) END AS pathLength ";
 }

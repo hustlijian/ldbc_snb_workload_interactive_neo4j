@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class QueryGraphMakerServerStarter {
     public static void main(String[] args) throws IOException {
-        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query3GraphMaker();
+        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query4GraphMaker();
 
         Map dbImportConfig = Utils.loadConfig(TestUtils.getResource("/neo4j_import_dev.properties").getAbsolutePath());
         String dbDirPath = "/tmp/neodb";
@@ -39,6 +39,8 @@ public class QueryGraphMakerServerStarter {
         db.shutdown();
 
         db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(path).setConfig(config).newGraphDatabase();
+
+        registerShutdownHook(db);
 
         WrappingNeoServerBootstrapper server = new WrappingNeoServerBootstrapper((GraphDatabaseAPI) db);
 

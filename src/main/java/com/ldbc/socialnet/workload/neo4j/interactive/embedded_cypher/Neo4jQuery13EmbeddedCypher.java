@@ -27,7 +27,7 @@ public class Neo4jQuery13EmbeddedCypher extends Neo4jQuery13<ExecutionEngine> {
                     @Override
                     public LdbcQuery13Result apply(Map<String, Object> row) {
                         return new LdbcQuery13Result(
-                                (int) row.get("pathLength"));
+                                ((Number) row.get("pathLength")).intValue());
                     }
                 });
     }

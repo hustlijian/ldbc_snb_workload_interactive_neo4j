@@ -28,12 +28,12 @@ public class Neo4jQuery1EmbeddedApi extends Neo4jQuery1<GraphDatabaseService> {
     }
 
     @Override
-    public Iterator<LdbcQuery1Result> execute(GraphDatabaseService db, LdbcQuery1 params) {
+    public Iterator<LdbcQuery1Result> execute(GraphDatabaseService db, LdbcQuery1 operation) {
         List<Node> persons = Lists.newArrayList(
                 db.findNodesByLabelAndProperty(
                         Domain.Nodes.Person,
                         Domain.Person.ID,
-                        params.personId()
+                        operation.personId()
                 )
         );
         if (persons.isEmpty()) return Iterators.emptyIterator();
@@ -45,7 +45,7 @@ public class Neo4jQuery1EmbeddedApi extends Neo4jQuery1<GraphDatabaseService> {
         for (Relationship rel : startPerson.getRelationships(Domain.Rels.KNOWS)) {
             Node person = rel.getOtherNode(startPerson);
             if (person.hasLabel(Domain.Nodes.Person)
-                    && params.firstName().equals(person.getProperty(Domain.Person.FIRST_NAME))
+                    && operation.firstName().equals(person.getProperty(Domain.Person.FIRST_NAME))
                     && false == personsAtDistance1.contains(person))
                 friends.add(new NodeAndDistance(person, 1));
             personsAtDistance1.add(person);
@@ -53,14 +53,14 @@ public class Neo4jQuery1EmbeddedApi extends Neo4jQuery1<GraphDatabaseService> {
         Collections.sort(friends, personLastNameAndIdComparator);
 
         // friends of friends
-        if (params.limit() > friends.size()) {
+        if (operation.limit() > friends.size()) {
             Set<Node> personsAtDistance2 = Sets.newHashSet();
             List<NodeAndDistance> friendsOfFriends = Lists.newArrayList();
             for (Node personAtDistance1 : personsAtDistance1) {
                 for (Relationship rel : personAtDistance1.getRelationships(Domain.Rels.KNOWS)) {
                     Node friendOfFriend = rel.getOtherNode(personAtDistance1);
                     if (friendOfFriend.hasLabel(Domain.Nodes.Person)
-                            && params.firstName().equals(friendOfFriend.getProperty(Domain.Person.FIRST_NAME))
+                            && operation.firstName().equals(friendOfFriend.getProperty(Domain.Person.FIRST_NAME))
                             && false == personsAtDistance1.contains(friendOfFriend)
                             && false == personsAtDistance2.contains(friendOfFriend))
                         friendsOfFriends.add(new NodeAndDistance(friendOfFriend, 2));
@@ -71,14 +71,14 @@ public class Neo4jQuery1EmbeddedApi extends Neo4jQuery1<GraphDatabaseService> {
             friends.addAll(friendsOfFriends);
 
             // friends of friends of friends
-            if (params.limit() > friends.size()) {
+            if (operation.limit() > friends.size()) {
                 Set<Node> personsAtDistance3 = Sets.newHashSet();
                 List<NodeAndDistance> friendsOfFriendsOfFriends = Lists.newArrayList();
                 for (Node personAtDistance2 : personsAtDistance2) {
                     for (Relationship rel : personAtDistance2.getRelationships(Domain.Rels.KNOWS)) {
                         Node friendOfFriendOfFriend = rel.getOtherNode(personAtDistance2);
                         if (friendOfFriendOfFriend.hasLabel(Domain.Nodes.Person)
-                                && params.firstName().equals(friendOfFriendOfFriend.getProperty(Domain.Person.FIRST_NAME))
+                                && operation.firstName().equals(friendOfFriendOfFriend.getProperty(Domain.Person.FIRST_NAME))
                                 && false == personsAtDistance1.contains(friendOfFriendOfFriend)
                                 && false == personsAtDistance2.contains(friendOfFriendOfFriend)
                                 && false == personsAtDistance3.contains(friendOfFriendOfFriend))
@@ -91,7 +91,7 @@ public class Neo4jQuery1EmbeddedApi extends Neo4jQuery1<GraphDatabaseService> {
             }
         }
 
-        Iterator<NodeAndDistance> allFriends = Iterators.limit(friends.iterator(), params.limit());
+        Iterator<NodeAndDistance> allFriends = Iterators.limit(friends.iterator(), operation.limit());
         return Iterators.transform(allFriends, query1ResultProjectionFunction);
     }
 

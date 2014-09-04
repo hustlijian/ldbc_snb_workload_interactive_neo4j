@@ -4749,6 +4749,7 @@ public class TestGraph {
                     + " (p5:" + Nodes.Person + " {" + Person.ID + ":5}),\n"
                     + " (p6:" + Nodes.Person + " {" + Person.ID + ":6}),\n"
                     + " (p7:" + Nodes.Person + " {" + Person.ID + ":7}),\n"
+                    + " (p8:" + Nodes.Person + " {" + Person.ID + ":8}),\n"
 
                     + "\n// --- RELATIONSHIPS ---\n\n"
                    /*
