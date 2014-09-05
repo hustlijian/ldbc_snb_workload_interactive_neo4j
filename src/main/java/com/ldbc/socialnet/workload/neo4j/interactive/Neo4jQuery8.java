@@ -14,7 +14,7 @@ public abstract class Neo4jQuery8<CONNECTION> implements Neo4jQuery<LdbcQuery8, 
     Sort results descending by creation date of reply Comment, and then ascending by identifier of reply Comment.
      */
     protected static final String QUERY_STRING = ""
-            + "MATCH (start:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID + "}})<-[:" + Domain.Rels.HAS_CREATOR + "]-(message)"
+            + "MATCH (start:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID + "}})<-[:" + Domain.Rels.HAS_CREATOR + "]-()"
             + "<-[:" + Domain.Rels.REPLY_OF + "*]-(comment:" + Domain.Nodes.Comment + ")-[:" + Domain.Rels.HAS_CREATOR + "]->(person:" + Domain.Nodes.Person + ")\n"
             + "WHERE not(start=person)\n"
             // Note, DISTINCT is needed in case a person has Commented on their own Post and then others Commented on their Comment.

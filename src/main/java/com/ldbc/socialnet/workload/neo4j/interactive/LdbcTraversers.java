@@ -133,8 +133,50 @@ public class LdbcTraversers {
         return stepsBuilder.build(
                 baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Domain.Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
-                Step.one(node().hasLabel(Domain.Nodes.Comment)));
+                Step.one(node().hasLabel(Domain.Nodes.Comment))
+        );
     }
+
+    public TraversalDescription commentsAndPostsByPerson() {
+        return stepsBuilder.build(
+                baseTraversalDescription,
+                Step.one(node(), relationship().hasType(Domain.Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
+                Step.one(node())
+        );
+    }
+
+    public TraversalDescription commentsRepliedToPostOrCommentExcludingThoseByGivenPerson() {
+        return stepsBuilder.build(
+                baseTraversalDescription,
+                Step.manyRange(node(), relationship().hasType(Domain.Rels.REPLY_OF).hasDirection(Direction.INCOMING), 1, Step.UNLIMITED)
+        );
+    }
+
+    /*
+MATCH (start:Person {id:{1}})<-[:HAS_CREATOR]-(message)<-[:REPLY_OF*]-(comment:Comment)-[:HAS_CREATOR]->(person:Person)
+WHERE not(start=person)
+RETURN DISTINCT person.id AS personId, person.firstName AS personFirstName, person.lastName AS personLastName, comment.id AS commentId, comment.creationDate AS commentCreationDate, comment.content AS commentContent
+ORDER BY commentCreationDate DESC, commentId ASC
+LIMIT {2}
+ */
+    public TraversalDescription commentsByOtherPersonsThatWereRepliesToStartPersonsCommentsOrPosts(final Node startPerson) {
+        return stepsBuilder.build(
+                baseTraversalDescription,
+                // (:Person)<-[:HAS_CREATOR]-
+                Step.one(node(), relationship().hasType(Domain.Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
+                // (message)<-[:REPLY_OF]-
+                Step.one(node(), relationship().hasType(Domain.Rels.REPLY_OF).hasDirection(Direction.INCOMING)),
+//                // (:Comment)<-[:REPLY_OF]-
+//                Step.one(node().hasLabel(Domain.Nodes.Comment), relationship().hasType(Domain.Rels.REPLY_OF).hasDirection(Direction.INCOMING)),
+                // (:Comment)<-[:REPLY_OF*0..]-
+                Step.manyRange(node().hasLabel(Domain.Nodes.Comment), relationship().hasType(Domain.Rels.REPLY_OF).hasDirection(Direction.INCOMING), 0, 3),
+                // (:Comment)-[:HAS_CREATOR]->
+                Step.one(node().hasLabel(Domain.Nodes.Comment), relationship().hasType(Domain.Rels.HAS_CREATOR).hasDirection(Direction.OUTGOING)),
+                // (:Person)
+                Step.one(node().notInSet(Sets.newHashSet(startPerson)))
+        );
+    }
+
 
     public TraversalDescription commentsOnPostsInForum(final Set<Node> knownComments) {
         // TODO notHasLabel(Label)
@@ -160,8 +202,8 @@ public class LdbcTraversers {
     public TraversalDescription postsInForumByFriends(final Set<Node> knownPersons) {
         return stepsBuilder.build(
                 baseTraversalDescription,
-                Step.one(node().hasLabel(Domain.Nodes.Forum),relationship().hasType(Domain.Rels.CONTAINER_OF).hasDirection(Direction.OUTGOING)),
-                Step.one(node().hasLabel(Domain.Nodes.Post),relationship().hasType(Domain.Rels.HAS_CREATOR).hasDirection(Direction.OUTGOING)),
+                Step.one(node().hasLabel(Domain.Nodes.Forum), relationship().hasType(Domain.Rels.CONTAINER_OF).hasDirection(Direction.OUTGOING)),
+                Step.one(node().hasLabel(Domain.Nodes.Post), relationship().hasType(Domain.Rels.HAS_CREATOR).hasDirection(Direction.OUTGOING)),
                 Step.one(node().inSet(knownPersons)));
     }
 
