@@ -80,7 +80,8 @@ public class LdbcTraversers {
 
     public TraversalDescription friendsAndFriendsOfFriends() {
         return stepsBuilder.build(baseTraversalDescription,
-                Step.manyRange(node(), relationship().hasType(Domain.Rels.KNOWS), 1, 2));
+                Step.manyRange(node(), relationship().hasType(Domain.Rels.KNOWS), 1, 2)
+        );
     }
 
     public TraversalDescription personsPostsWithGivenTag(final String tagName) {
@@ -142,6 +143,21 @@ public class LdbcTraversers {
                 baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Domain.Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
                 Step.one(node())
+        );
+    }
+
+    public TraversalDescription commentsAndPostsByPersonCreatedBeforeDate(final long date) {
+        PropertyContainerFilterDescriptor.PropertyContainerPredicate createdBeforeDate = new PropertyContainerFilterDescriptor.PropertyContainerPredicate() {
+            @Override
+            public boolean apply(PropertyContainer container) {
+                long creationDate = (long) container.getProperty(Domain.Message.CREATION_DATE);
+                return creationDate < date;
+            }
+        };
+        return stepsBuilder.build(
+                baseTraversalDescription,
+                Step.one(node(), relationship().hasType(Domain.Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
+                Step.one(node().conformsTo(createdBeforeDate))
         );
     }
 
