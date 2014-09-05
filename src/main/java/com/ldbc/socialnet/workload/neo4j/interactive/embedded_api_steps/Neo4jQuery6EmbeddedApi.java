@@ -29,6 +29,11 @@ public class Neo4jQuery6EmbeddedApi extends Neo4jQuery6<GraphDatabaseService> {
         return "LDBC Query6 Java API Implementation";
     }
 
+    /*
+    Given a start Person and some Tag, find the other Tags that occur together with this Tag on Posts that were created by start Person's friends and friends of friends (excluding start Person).
+    Return top 10 Tags, and the count of Posts that were created by these Persons, which contain this Tag.
+    Sort results descending by count, and then ascending by Tag name.
+     */
     @Override
     public Iterator<LdbcQuery6Result> execute(GraphDatabaseService db, LdbcQuery6 operation) {
         Iterator<Node> personIterator = db.findNodesByLabelAndProperty(Domain.Nodes.Person, Domain.Person.ID, operation.personId()).iterator();
@@ -45,19 +50,19 @@ public class Neo4jQuery6EmbeddedApi extends Neo4jQuery6<GraphDatabaseService> {
         );
         Node[] friends = friendsList.toArray(new Node[friendsList.size()]);
 
-        List<Node> friendsPosts = ImmutableList.copyOf(
+        List<Node> friendsPostsWithGivenTagList = ImmutableList.copyOf(
                 StepsUtils.projectNodesFromPath(
                         traversers.personsPostsWithGivenTag(operation.tagName()).traverse(friends),
                         1
                 )
         );
+        Node[] friendsPostsWithGivenTag = friendsPostsWithGivenTagList.toArray(new Node[friendsPostsWithGivenTagList.size()]);
 
-        Node[] friendsPostsArray = friendsPosts.toArray(new Node[friendsPosts.size()]);
-        Iterator<Node> tagNodes = traversers.tagsOnPosts(operation.tagName()).traverse(friendsPostsArray).nodes().iterator();
+        Iterator<Node> otherTagsOnFriendsPostsWithGivenTag = traversers.tagsOnPostsExcludingGivenTag(operation.tagName()).traverse(friendsPostsWithGivenTag).nodes().iterator();
 
-        Map<String, Integer> tagNameCounts = StepsUtils.count(
+        Map<String, Integer> postCountsPerTagName = StepsUtils.count(
                 Iterators.transform(
-                        tagNodes,
+                        otherTagsOnFriendsPostsWithGivenTag,
                         new Function<Node, String>() {
                             @Override
                             public String apply(Node tagNode) {
@@ -67,23 +72,25 @@ public class Neo4jQuery6EmbeddedApi extends Neo4jQuery6<GraphDatabaseService> {
                 )
         );
 
-        List<LdbcQuery6Result> result = Lists.newArrayList(
+        List<LdbcQuery6Result> results = Lists.newArrayList(
                 Iterables.transform(
-                        tagNameCounts.entrySet(),
+                        postCountsPerTagName.entrySet(),
                         new Function<Entry<String, Integer>, LdbcQuery6Result>() {
                             @Override
-                            public LdbcQuery6Result apply(Entry<String, Integer> tagCount) {
-                                return new LdbcQuery6Result(tagCount.getKey(), tagCount.getValue());
+                            public LdbcQuery6Result apply(Entry<String, Integer> postCountForTagName) {
+                                String tagName = postCountForTagName.getKey();
+                                int postCount = postCountForTagName.getValue();
+                                return new LdbcQuery6Result(tagName, postCount);
                             }
                         }
                 )
         );
 
-        Collections.sort(result, new TagCountComparator());
-        return Iterators.limit(result.iterator(), operation.limit());
+        Collections.sort(results, new DescendingPostCountThenAscendingTagNameComparator());
+        return Iterators.limit(results.iterator(), operation.limit());
     }
 
-    public static class TagCountComparator implements Comparator<LdbcQuery6Result> {
+    public static class DescendingPostCountThenAscendingTagNameComparator implements Comparator<LdbcQuery6Result> {
         @Override
         public int compare(LdbcQuery6Result result1, LdbcQuery6Result result2) {
             if (result1.postCount() > result2.postCount()) return -1;

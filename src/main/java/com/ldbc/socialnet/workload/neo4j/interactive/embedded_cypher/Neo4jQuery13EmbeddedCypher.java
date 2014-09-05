@@ -2,6 +2,7 @@ package com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
+import com.ldbc.driver.util.MapUtils;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery13;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery13Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery13;
@@ -26,6 +27,8 @@ public class Neo4jQuery13EmbeddedCypher extends Neo4jQuery13<ExecutionEngine> {
                 new Function<Map<String, Object>, LdbcQuery13Result>() {
                     @Override
                     public LdbcQuery13Result apply(Map<String, Object> row) {
+                        // TODO remove
+                        System.out.println(MapUtils.prettyPrint(row));
                         return new LdbcQuery13Result(
                                 ((Number) row.get("pathLength")).intValue());
                     }

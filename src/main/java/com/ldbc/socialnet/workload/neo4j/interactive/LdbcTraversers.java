@@ -26,8 +26,13 @@ public class LdbcTraversers {
         this.baseTraversalDescription = db.traversalDescription().uniqueness(Uniqueness.NONE).breadthFirst();
     }
 
-    // (uniCity:CITY)<-[:IS_LOCATED_IN]-(uni:UNIVERSITY)<-[studyAt:STUDY_AT]-(person)
-    // uni.name, uniCity.name(studyAt.classYear)
+    public TraversalDescription personsThatLikedMessageCreatedByPerson() {
+        return stepsBuilder.build(baseTraversalDescription,
+                Step.one(node(), relationship().hasType(Domain.Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
+                Step.one(node(), relationship().hasType(Domain.Rels.LIKES).hasDirection(Direction.INCOMING)),
+                Step.one(node()));
+    }
+
     public TraversalDescription personUniversities() {
         return stepsBuilder.build(baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Domain.Rels.STUDY_AT).hasDirection(Direction.OUTGOING)),
@@ -35,8 +40,6 @@ public class LdbcTraversers {
                 Step.one(node().hasLabel(Domain.Place.Type.City)));
     }
 
-    // (companyCountry:PLACE:COUNTRY)<-[:IS_LOCATED_IN]-(company:COMPANY)<-[worksAt:WORKS_AT]-(person)
-    // company.name, companyCountry.name(worksAt.workFrom)
     public TraversalDescription personCompanies() {
         return stepsBuilder.build(baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Domain.Rels.WORKS_AT).hasDirection(Direction.OUTGOING)),
@@ -88,7 +91,7 @@ public class LdbcTraversers {
                 Step.one(node().propertyEquals(Domain.Tag.NAME, tagName)));
     }
 
-    public TraversalDescription tagsOnPosts(final String tagName) {
+    public TraversalDescription tagsOnPostsExcludingGivenTag(final String tagName) {
         return stepsBuilder.build(baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Domain.Rels.HAS_TAG).hasDirection(Direction.OUTGOING)),
                 Step.one(node().propertyNotEquals(Domain.Tag.NAME, tagName)));
@@ -154,26 +157,14 @@ public class LdbcTraversers {
         );
     }
 
-    /*
-    (forum)-[:CONTAINER_OF]->(:Post)-[:HAS_CREATOR]->(friend)
-     */
     public TraversalDescription postsInForumByFriends(final Set<Node> knownPersons) {
         return stepsBuilder.build(
                 baseTraversalDescription,
-
-                Step.one(node().hasLabel(Domain.Nodes.Forum),
-                        relationship().hasType(Domain.Rels.CONTAINER_OF).hasDirection(Direction.OUTGOING)),
-
-                Step.one(node().hasLabel(Domain.Nodes.Post),
-                        relationship().hasType(Domain.Rels.HAS_CREATOR).hasDirection(Direction.OUTGOING)),
-
+                Step.one(node().hasLabel(Domain.Nodes.Forum),relationship().hasType(Domain.Rels.CONTAINER_OF).hasDirection(Direction.OUTGOING)),
+                Step.one(node().hasLabel(Domain.Nodes.Post),relationship().hasType(Domain.Rels.HAS_CREATOR).hasDirection(Direction.OUTGOING)),
                 Step.one(node().inSet(knownPersons)));
     }
 
-    /*
-    MATCH (person)-[:IS_LOCATED_IN]->(:City)-[:IS_LOCATED_IN]->(:Country)<-[:IS_LOCATED_IN]-(post:Post)-[:HAS_CREATOR]->(creator:Person),
-    WHERE NOT((person)-[:KNOWS]-(creator)) AND post.creationDate>{min_date} AND post.creationDate<{max_date}
-     */
     public TraversalDescription postsInPersonsCountryInDateRangeNotCreatedByOtherPerson(final Node otherPerson) {
         // TODO number range
         // TODO remove completely
@@ -195,9 +186,6 @@ public class LdbcTraversers {
         );
     }
 
-    /*
-    MATCH (post)-[:HAS_TAG]->(tag:Tag)
-     */
     public TraversalDescription postsTags() {
         return stepsBuilder.build(
                 baseTraversalDescription,
