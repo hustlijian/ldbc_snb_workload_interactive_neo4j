@@ -54,7 +54,6 @@ public class Neo4jQuery9EmbeddedApi extends Neo4jQuery9<GraphDatabaseService> {
                         new Function<Path, LdbcQuery9Result>() {
                             @Override
                             public LdbcQuery9Result apply(Path path) {
-                                // TODO
                                 Node friend = path.startNode();
                                 Node message = path.endNode();
                                 long personId = (long) friend.getProperty(Domain.Person.ID);

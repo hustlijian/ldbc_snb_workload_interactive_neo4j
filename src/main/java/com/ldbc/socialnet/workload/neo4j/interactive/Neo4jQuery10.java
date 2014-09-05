@@ -20,7 +20,6 @@ public abstract class Neo4jQuery10<CONNECTION> implements Neo4jQuery<LdbcQuery10
     Return top 10 Persons, their Location, and their similarity score.
     Sort results descending by similarity score, and then ascending by Person identifier
      */
-
     protected static final String QUERY_STRING = ""
             + "MATCH (person:" + Nodes.Person + " {" + Person.ID + ":{" + PERSON_ID + "}})-[:" + Rels.KNOWS + "*2..2]-(friend:" + Nodes.Person + ")-[:" + Rels.IS_LOCATED_IN + "]->(city:" + Place.Type.City + ")\n"
             + "WHERE"

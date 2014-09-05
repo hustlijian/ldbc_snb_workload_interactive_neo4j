@@ -84,6 +84,12 @@ public class LdbcTraversers {
         );
     }
 
+    public TraversalDescription friendsOfFriends() {
+        return stepsBuilder.build(baseTraversalDescription,
+                Step.manyRange(node(), relationship().hasType(Domain.Rels.KNOWS), 2, 2)
+        );
+    }
+
     public TraversalDescription personsPostsWithGivenTag(final String tagName) {
         return stepsBuilder.build(
                 baseTraversalDescription,
@@ -135,6 +141,14 @@ public class LdbcTraversers {
                 baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Domain.Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
                 Step.one(node().hasLabel(Domain.Nodes.Comment))
+        );
+    }
+
+    public TraversalDescription postsByPerson() {
+        return stepsBuilder.build(
+                baseTraversalDescription,
+                Step.one(node(), relationship().hasType(Domain.Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
+                Step.one(node().hasLabel(Domain.Nodes.Post))
         );
     }
 
