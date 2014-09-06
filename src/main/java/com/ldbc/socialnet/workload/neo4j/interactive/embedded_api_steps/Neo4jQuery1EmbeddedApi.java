@@ -187,7 +187,7 @@ public class Neo4jQuery1EmbeddedApi extends Neo4jQuery1<GraphDatabaseService> {
 
             // (companyCountry:PLACE:COUNTRY)<-[:IS_LOCATED_IN]-(company:COMPANY)<-[worksAt:WORKS_AT]-(person)
             List<List<Object>> companies = Lists.newArrayList(Iterables.transform(
-                    traversers.personCompanies().traverse(person), new Function<Path, List<Object>>() {
+                    traversers.companiesPersonWorkedAtAndTheCountryEachCompanyIsIn().traverse(person), new Function<Path, List<Object>>() {
                         @Override
                         public List<Object> apply(Path input) {
                             List<Node> nodes = Lists.newArrayList(input.nodes());

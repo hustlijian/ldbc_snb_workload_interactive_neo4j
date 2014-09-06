@@ -39,8 +39,21 @@ public class LdbcTraversers {
                 Step.one(node().hasLabel(Domain.Organisation.Type.University), relationship().hasType(Domain.Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
                 Step.one(node().hasLabel(Domain.Place.Type.City)));
     }
+    public TraversalDescription companiesPersonWorkedAtInGivenCountryBeforeGivenDate(String countryName, final int maxWorkFromYear) {
+        PropertyContainerFilterDescriptor.PropertyContainerPredicate workFromYearCheck = new PropertyContainerFilterDescriptor.PropertyContainerPredicate() {
+            @Override
+            public boolean apply(PropertyContainer container) {
+                int workFromYear = (int) container.getProperty(Domain.WorksAt.WORK_FROM);
+                return (workFromYear < maxWorkFromYear);
+            }
+        };
+        return stepsBuilder.build(baseTraversalDescription,
+                Step.one(node(), relationship().hasType(Domain.Rels.WORKS_AT).hasDirection(Direction.OUTGOING).conformsTo(workFromYearCheck)),
+                Step.one(node().hasLabel(Domain.Organisation.Type.Company), relationship().hasType(Domain.Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
+                Step.one(node().hasLabel(Domain.Place.Type.Country).propertyEquals(Domain.Place.NAME, countryName)));
+    }
 
-    public TraversalDescription personCompanies() {
+    public TraversalDescription companiesPersonWorkedAtAndTheCountryEachCompanyIsIn() {
         return stepsBuilder.build(baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Domain.Rels.WORKS_AT).hasDirection(Direction.OUTGOING)),
                 Step.one(node().hasLabel(Domain.Organisation.Type.Company), relationship().hasType(Domain.Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
