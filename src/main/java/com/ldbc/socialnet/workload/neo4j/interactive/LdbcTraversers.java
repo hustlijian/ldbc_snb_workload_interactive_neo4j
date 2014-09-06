@@ -26,6 +26,31 @@ public class LdbcTraversers {
         this.baseTraversalDescription = db.traversalDescription().uniqueness(Uniqueness.NONE).breadthFirst();
     }
 
+    // (prev)-[:HAS_CREATOR]-(:Comment)-[:REPLY_OF]-(:Comment)-[:HAS_CREATOR]-(curr)
+    public TraversalDescription commentsMadeByEitherPersonInReplyToCommentsOfOtherPerson(Node otherPerson) {
+        Set<Node> otherPersonAsSet = Sets.newHashSet(otherPerson);
+        return stepsBuilder.build(
+                baseTraversalDescription,
+                Step.one(node(), relationship().hasType(Rels.HAS_CREATOR)),
+                Step.one(node().hasLabel(Nodes.Comment), relationship().hasType(Rels.REPLY_OF)),
+                Step.one(node().hasLabel(Nodes.Comment), relationship().hasType(Rels.HAS_CREATOR)),
+                Step.one(node().inSet(otherPersonAsSet))
+        );
+    }
+
+    // (curr)<-[:HAS_CREATOR]-(:Comment)-[:REPLY_OF]->(:Post)-[:HAS_CREATOR]->(prev)
+    public TraversalDescription commentsMadeInReplyToPostsOfOtherPerson(Node otherPerson) {
+        Set<Node> otherPersonAsSet = Sets.newHashSet(otherPerson);
+        return stepsBuilder.build(
+                baseTraversalDescription,
+                Step.one(node(), relationship().hasDirection(Direction.INCOMING).hasType(Rels.HAS_CREATOR)),
+                Step.one(node().hasLabel(Nodes.Comment), relationship().hasDirection(Direction.OUTGOING).hasType(Rels.REPLY_OF)),
+                Step.one(node().hasLabel(Nodes.Post), relationship().hasDirection(Direction.OUTGOING).hasType(Rels.HAS_CREATOR)),
+                Step.one(node().inSet(otherPersonAsSet))
+        );
+    }
+
+
     // (friend)<-[:HAS_CREATOR]-(comment:Comment)-[:REPLY_OF*]->()-[:HAS_TAG]->(tag:Tag)-[:HAS_TYPE]->(tagClass:TagClass)-[:IS_SUBCLASS_OF*0..]->(baseTagClass:TagClass)
     public TraversalDescription commentsInReplyToPostsTaggedWithTagInGivenTagClassOrDescendentOfThatTagClass(Node tagClass) {
         Set<Node> tagClasses = Sets.newHashSet(tagClass);

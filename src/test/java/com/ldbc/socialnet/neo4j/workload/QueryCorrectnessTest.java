@@ -1430,6 +1430,11 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query14GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
+
+            // TODO test when start person equals end person
+            // TODO test when there is no path
+            assertThat(true, is(false));
+
             long personId1;
             String person1Uri;
             long personId2;
