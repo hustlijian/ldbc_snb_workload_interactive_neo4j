@@ -793,6 +793,8 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query8GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
+            // TODO rewrite queries and tests
+            assertThat(true, is(false));
             long personId;
             String personUri;
             int limit;
