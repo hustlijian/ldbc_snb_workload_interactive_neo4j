@@ -1414,11 +1414,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query14GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
-
-            // TODO test when start person equals end person
-            // TODO test when there is no path
-            assertThat(true, is(false));
-
             long personId1;
             String person1Uri;
             long personId2;
@@ -1468,6 +1463,32 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
                     expectedPathNodeIds,
                     expectedWeight
             )));
+
+            assertThat(results.hasNext(), is(false));
+
+            personId1 = 5;
+            person1Uri = null;
+            personId2 = 5;
+            person2Uri = null;
+            operation = new LdbcQuery14(personId1, person1Uri, personId2, person2Uri);
+            results = neo4jQuery14Impl(connection, operation);
+
+            actualResult = results.next();
+            expectedPathNodeIds = Lists.newArrayList(5l);
+            expectedWeight = 0;
+            assertThat(actualResult, equalTo(new LdbcQuery14Result(
+                    expectedPathNodeIds,
+                    expectedWeight
+            )));
+
+            assertThat(results.hasNext(), is(false));
+
+            personId1 = 0;
+            person1Uri = null;
+            personId2 = 9;
+            person2Uri = null;
+            operation = new LdbcQuery14(personId1, person1Uri, personId2, person2Uri);
+            results = neo4jQuery14Impl(connection, operation);
 
             assertThat(results.hasNext(), is(false));
         } finally {
