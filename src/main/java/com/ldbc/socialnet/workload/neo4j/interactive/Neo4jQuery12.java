@@ -18,7 +18,7 @@ public abstract class Neo4jQuery12<CONNECTION> implements Neo4jQuery<LdbcQuery12
      */
     protected static final String QUERY_STRING = ""
             + "MATCH (:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID + "}})-[:" + Domain.Rels.KNOWS + "]-(friend:" + Domain.Nodes.Person + ")\n"
-            + "OPTIONAL MATCH (friend)<-[:" + Domain.Rels.HAS_CREATOR + "]-(comment:" + Domain.Nodes.Comment + ")-[:" + Domain.Rels.REPLY_OF + "*]->()-[:" + Domain.Rels.HAS_TAG + "]->(tag:" + Domain.Nodes.Tag + ")"
+            + "OPTIONAL MATCH (friend)<-[:" + Domain.Rels.HAS_CREATOR + "]-(comment:" + Domain.Nodes.Comment + ")-[:" + Domain.Rels.REPLY_OF + "]->(:" + Domain.Nodes.Post + ")-[:" + Domain.Rels.HAS_TAG + "]->(tag:" + Domain.Nodes.Tag + ")"
             + "-[:" + Domain.Rels.HAS_TYPE + "]->(tagClass:" + Domain.Nodes.TagClass + ")-[:" + Domain.Rels.IS_SUBCLASS_OF + "*0..]->(baseTagClass:" + Domain.Nodes.TagClass + ")\n"
             + "WHERE tagClass." + Domain.TagClass.NAME + " = {" + TAG_CLASS_NAME + "} OR baseTagClass." + Domain.TagClass.NAME + " = {" + TAG_CLASS_NAME + "}\n"
             + "RETURN"

@@ -3,7 +3,6 @@ package com.ldbc.socialnet.neo4j.workload;
 import com.ldbc.driver.util.MapUtils;
 import com.ldbc.driver.util.Tuple.Tuple2;
 import com.ldbc.socialnet.neo4j.TestUtils;
-import org.neo4j.backup.OnlineBackupSettings;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
@@ -4434,7 +4433,6 @@ public class TestGraph {
                     + " (f2:" + Nodes.Person + " {f2}),\n"
                     + " (f3:" + Nodes.Person + " {f3}),\n"
                     + " (f4:" + Nodes.Person + " {f4}),\n"
-                    + " (f5:" + Nodes.Person + " {f5}),\n"
                     + " (ff11:" + Nodes.Person + " {ff11}),\n"
                    /*
                     * TagClass
@@ -4458,28 +4456,28 @@ public class TestGraph {
                    /*
                     * Post
                     */
-                    + " (p11:" + Nodes.Post + "),\n"
-                    + " (p111:" + Nodes.Post + "),\n"
-                    + " (p112:" + Nodes.Post + "),\n"
-                    + " (p12111:" + Nodes.Post + "),\n"
-                    + " (p21:" + Nodes.Post + "),\n"
-                    + " (p211:" + Nodes.Post + "),\n"
+                    + " (p11:" + Nodes.Post + " {" + Message.CONTENT + ":'p11'}),\n"
+                    + " (p111:" + Nodes.Post + " {" + Message.CONTENT + ":'p111'}),\n"
+                    + " (p112:" + Nodes.Post + " {" + Message.CONTENT + ":'p112'}),\n"
+                    + " (p12111:" + Nodes.Post + " {" + Message.CONTENT + ":'p12111'}),\n"
+                    + " (p21:" + Nodes.Post + " {" + Message.CONTENT + ":'p21'}),\n"
+                    + " (p211:" + Nodes.Post + " {" + Message.CONTENT + ":'p211'}),\n"
                    /*
                     * Comment
                     */
-                    + " (c111:" + Nodes.Comment + "),\n"
-                    + " (c1111:" + Nodes.Comment + "),\n"
-                    + " (c11111:" + Nodes.Comment + "),\n"
-                    + " (c111111:" + Nodes.Comment + "),\n"
-                    + " (c11112:" + Nodes.Comment + "),\n"
-                    + " (c1112:" + Nodes.Comment + "),\n"
-                    + " (c1121:" + Nodes.Comment + "),\n"
-                    + " (c11211:" + Nodes.Comment + "),\n"
-                    + " (c112111:" + Nodes.Comment + "),\n"
-                    + " (c112112:" + Nodes.Comment + "),\n"
-                    + " (c121111:" + Nodes.Comment + "),\n"
-                    + " (c211:" + Nodes.Comment + "),\n"
-                    + " (c2111:" + Nodes.Comment + "),\n"
+                    + " (c111:" + Nodes.Comment + " {" + Message.CONTENT + ":'c111'}),\n"
+                    + " (c1111:" + Nodes.Comment + " {" + Message.CONTENT + ":'c1111'}),\n"
+                    + " (c11111:" + Nodes.Comment + " {" + Message.CONTENT + ":'c11111'}),\n"
+                    + " (c111111:" + Nodes.Comment + " {" + Message.CONTENT + ":'c111111'}),\n"
+                    + " (c11112:" + Nodes.Comment + " {" + Message.CONTENT + ":'c11112'}),\n"
+                    + " (c1112:" + Nodes.Comment + " {" + Message.CONTENT + ":'c1112'}),\n"
+                    + " (c1121:" + Nodes.Comment + " {" + Message.CONTENT + ":'c1121'}),\n"
+                    + " (c11211:" + Nodes.Comment + " {" + Message.CONTENT + ":'c11211'}),\n"
+                    + " (c112111:" + Nodes.Comment + " {" + Message.CONTENT + ":'c112111'}),\n"
+                    + " (c112112:" + Nodes.Comment + " {" + Message.CONTENT + ":'c112112'}),\n"
+                    + " (c121111:" + Nodes.Comment + " {" + Message.CONTENT + ":'c121111'}),\n"
+                    + " (c211:" + Nodes.Comment + " {" + Message.CONTENT + ":'c211'}),\n"
+                    + " (c2111:" + Nodes.Comment + " {" + Message.CONTENT + ":'c2111'}),\n"
 
                     + "\n// --- RELATIONSHIPS ---\n\n"
                    /*
@@ -4489,7 +4487,6 @@ public class TestGraph {
                     + "(person0)-[:" + Rels.KNOWS + "]->(f2),\n"
                     + "(person0)-[:" + Rels.KNOWS + "]->(f3),\n"
                     + "(person0)-[:" + Rels.KNOWS + "]->(f4),\n"
-                    + "(person0)-[:" + Rels.KNOWS + "]->(f5),\n"
                     + "(f1)-[:" + Rels.KNOWS + "]->(ff11),\n"
                    /*
                     * Person-Comment
@@ -4530,12 +4527,19 @@ public class TestGraph {
                     * Post-Tag
                     */
                     + "(p11)-[:" + Rels.HAS_TAG + "]->(t11),\n"
+                    + "(p11)-[:" + Rels.HAS_TAG + "]->(t12111),\n"
                     + "(p111)-[:" + Rels.HAS_TAG + "]->(t111),\n"
                     + "(p112)-[:" + Rels.HAS_TAG + "]->(t112),\n"
                     + "(p12111)-[:" + Rels.HAS_TAG + "]->(t12111),\n"
                     + "(p12111)-[:" + Rels.HAS_TAG + "]->(t21),\n"
                     + "(p21)-[:" + Rels.HAS_TAG + "]->(t21),\n"
                     + "(p211)-[:" + Rels.HAS_TAG + "]->(t211),\n"
+                   /*
+                    * Comment-Tag
+                    */
+                    + "(c1111)-[:" + Rels.HAS_TAG + "]->(t112),\n"
+                    + "(c1121)-[:" + Rels.HAS_TAG + "]->(t11),\n"
+                    + "(c11211)-[:" + Rels.HAS_TAG + "]->(t12111),\n"
                    /*
                     * Tag-TagClass
                     */
@@ -4564,7 +4568,6 @@ public class TestGraph {
                     "f2", TestPersons.f2(),
                     "f3", TestPersons.f3(),
                     "f4", TestPersons.f4(),
-                    "f5", TestPersons.f5(),
                     "ff11", TestPersons.ff11(),
                     // Tags
                     "t11", TestTags.t11(),
@@ -4622,14 +4625,6 @@ public class TestGraph {
                 params.put(Person.ID, 4L);
                 params.put(Person.FIRST_NAME, "f");
                 params.put(Person.LAST_NAME, "4");
-                return params;
-            }
-
-            protected static Map<String, Object> f5() {
-                Map<String, Object> params = new HashMap<>();
-                params.put(Person.ID, 5L);
-                params.put(Person.FIRST_NAME, "f");
-                params.put(Person.LAST_NAME, "5");
                 return params;
             }
 

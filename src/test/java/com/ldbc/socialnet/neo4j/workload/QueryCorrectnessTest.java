@@ -521,9 +521,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             limit = 4;
             operation = new LdbcQuery5(personId, personUri, joinDate, limit);
 
-            // TODO remove
-            System.out.println(joinDate.getTime());
-
             results = neo4jQuery5Impl(connection, operation);
 
             actualResult = results.next();
@@ -1264,7 +1261,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             personId = 0;
             personUri = null;
             tagClassName = "1";
-            limit = 6;
+            limit = 10;
             operation = new LdbcQuery12(personId, personUri, tagClassName, limit);
             results = neo4jQuery12Impl(connection, operation);
 
@@ -1272,8 +1269,8 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedPersonId = 1l;
             expectedPersonFirstName = "f";
             expectedPersonLastName = "1";
-            expectedTagNames = Sets.newHashSet("tag111", "tag112", "tag12111");
-            expectedReplyCount = 4;
+            expectedTagNames = Sets.newHashSet("tag111", "tag12111");
+            expectedReplyCount = 2;
             assertThat(actualResult, equalTo(new LdbcQuery12Result(
                     expectedPersonId,
                     expectedPersonFirstName,
@@ -1285,8 +1282,8 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedPersonId = 2l;
             expectedPersonFirstName = "f";
             expectedPersonLastName = "2";
-            expectedTagNames = Sets.newHashSet("tag111", "tag112");
-            expectedReplyCount = 2;
+            expectedTagNames = Sets.newHashSet("tag111");
+            expectedReplyCount = 1;
             assertThat(actualResult, equalTo(new LdbcQuery12Result(
                     expectedPersonId,
                     expectedPersonFirstName,
@@ -1298,8 +1295,8 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedPersonId = 3l;
             expectedPersonFirstName = "f";
             expectedPersonLastName = "3";
-            expectedTagNames = Sets.newHashSet("tag112", "tag11");
-            expectedReplyCount = 2;
+            expectedTagNames = Sets.newHashSet("tag11", "tag12111");
+            expectedReplyCount = 1;
             assertThat(actualResult, equalTo(new LdbcQuery12Result(
                     expectedPersonId,
                     expectedPersonFirstName,
@@ -1311,19 +1308,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedPersonId = 4l;
             expectedPersonFirstName = "f";
             expectedPersonLastName = "4";
-            expectedTagNames = Sets.newHashSet();
-            expectedReplyCount = 0;
-            assertThat(actualResult, equalTo(new LdbcQuery12Result(
-                    expectedPersonId,
-                    expectedPersonFirstName,
-                    expectedPersonLastName,
-                    expectedTagNames,
-                    expectedReplyCount)));
-
-            actualResult = results.next();
-            expectedPersonId = 5l;
-            expectedPersonFirstName = "f";
-            expectedPersonLastName = "5";
             expectedTagNames = Sets.newHashSet();
             expectedReplyCount = 0;
             assertThat(actualResult, equalTo(new LdbcQuery12Result(

@@ -4,7 +4,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.ldbc.driver.util.Tuple;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery12;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery12Result;
@@ -45,34 +44,34 @@ public class Neo4jQuery12EmbeddedApi extends Neo4jQuery12<GraphDatabaseService> 
         if (false == tagClassIterator.hasNext()) return Iterators.emptyIterator();
         final Node tagClass = tagClassIterator.next();
 
-        // <person,([tagNames],replyCount)>
-        Map<Node, Tuple.Tuple2<Set<String>, Integer>> preResults = new HashMap<>();
+        // <person,([tagNames],[comment])>
+        Map<Node, Tuple.Tuple2<Set<String>, Set<Node>>> preResults = new HashMap<>();
+        for (Node friend : friends) {
+            preResults.put(friend, Tuple.tuple2((Set<String>) new HashSet<String>(), (Set<Node>) new HashSet<Node>()));
+        }
         for (Path path : traversers.commentsInReplyToPostsTaggedWithTagInGivenTagClassOrDescendentOfThatTagClass(tagClass).traverse(friends.toArray(new Node[friends.size()]))) {
             List<Node> pathNodes = Lists.newArrayList(path.nodes());
             Node friend = pathNodes.get(0);
+            Node comment = pathNodes.get(1);
             Node tag = pathNodes.get(3);
             String tagName = (String) tag.getProperty(Domain.Tag.NAME);
-            Tuple.Tuple2<Set<String>, Integer> preResult = preResults.get(friend);
-            if (null == preResult) {
-                Set<String> tagNames = Sets.newHashSet(tagName);
-                int replyCount = 1;
-                preResults.put(friend, Tuple.tuple2(tagNames, replyCount));
-            } else {
-                Set<String> tagNames = preResult._1();
-                tagNames.add(tagName);
-                int replyCount = preResult._2() + 1;
-                preResults.put(friend, Tuple.tuple2(tagNames, replyCount));
-            }
+            Tuple.Tuple2<Set<String>, Set<Node>> preResult = preResults.get(friend);
+            Set<String> tagNames = preResult._1();
+            tagNames.add(tagName);
+            Set<Node> replies = preResult._2();
+            replies.add(comment);
+            preResults.put(friend, Tuple.tuple2(tagNames, replies));
         }
+
         List<LdbcQuery12Result> results = Lists.newArrayList(
                 Iterables.transform(
                         preResults.entrySet(),
-                        new Function<Map.Entry<Node, Tuple.Tuple2<Set<String>, Integer>>, LdbcQuery12Result>() {
+                        new Function<Map.Entry<Node, Tuple.Tuple2<Set<String>, Set<Node>>>, LdbcQuery12Result>() {
                             @Override
-                            public LdbcQuery12Result apply(Map.Entry<Node, Tuple.Tuple2<Set<String>, Integer>> preResult) {
+                            public LdbcQuery12Result apply(Map.Entry<Node, Tuple.Tuple2<Set<String>, Set<Node>>> preResult) {
                                 Node friend = preResult.getKey();
                                 Set<String> tagNames = preResult.getValue()._1();
-                                int replyCount = preResult.getValue()._2();
+                                int replyCount = preResult.getValue()._2().size();
                                 long personId = (long) friend.getProperty(Domain.Person.ID);
                                 String personFirstName = (String) friend.getProperty(Domain.Person.FIRST_NAME);
                                 String personLastName = (String) friend.getProperty(Domain.Person.LAST_NAME);
