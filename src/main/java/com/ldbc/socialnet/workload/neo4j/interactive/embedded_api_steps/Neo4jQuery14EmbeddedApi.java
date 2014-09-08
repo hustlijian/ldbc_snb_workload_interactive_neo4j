@@ -30,15 +30,6 @@ public class Neo4jQuery14EmbeddedApi extends Neo4jQuery14<GraphDatabaseService> 
         return "LDBC Query14 Java API Implementation";
     }
 
-    /*
-    Given two Persons, find all weighted paths of the shortest length between these two Persons in the sub-graph induced by the Knows relationship.
-    The nodes in the path are Persons.
-    Weight of a path is sum of weights between every pair of consecutive Person nodes in the path.
-    The weight for a pair of Persons is calculated such that every reply (by one of the Persons) to a Post (by the other Person) contributes 1.0,
-    and every reply (by one of the Persons) to a Comment (by the other Person) contributes 0.5.
-    Return all the paths with shortest length, and their weights.
-    Sort results descending by path weight.
-     */
     @Override
     public Iterator<LdbcQuery14Result> execute(GraphDatabaseService db, LdbcQuery14 operation) {
         Iterator<Node> person1Iterator = db.findNodesByLabelAndProperty(Domain.Nodes.Person, Domain.Person.ID, operation.person1Id()).iterator();

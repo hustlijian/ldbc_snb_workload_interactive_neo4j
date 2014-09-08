@@ -16,9 +16,6 @@ import java.util.*;
 import static com.ldbc.socialnet.workload.neo4j.Domain.*;
 
 public class TestGraph {
-    //    static int port = 6362;
-    static int port = 6366;
-
     private static Iterable<String> createIndexQueries() {
         List<String> createIndexQueries = new ArrayList<>();
         for (Tuple2<Label, String> labelAndProperty : labelPropertyPairsToIndex()) {
@@ -3432,9 +3429,11 @@ public class TestGraph {
                     + " (post0:" + Nodes.Post + " {post0}),\n"
                     + " (post1:" + Nodes.Post + " {post1}),\n"
                     + " (post2:" + Nodes.Post + " {post2}),\n"
+                    + " (post3:" + Nodes.Post + " {post3}),\n"
                    /*
                     * Comments
                     */
+                    + " (comment01:" + Nodes.Comment + " {comment01}),\n"
                     + " (comment11:" + Nodes.Comment + " {comment11}),\n"
                     + " (comment12:" + Nodes.Comment + " {comment12}),\n"
                     + " (comment13:" + Nodes.Comment + " {comment13}),\n"
@@ -3444,6 +3443,8 @@ public class TestGraph {
                     + " (comment21:" + Nodes.Comment + " {comment21}),\n"
                     + " (comment211:" + Nodes.Comment + " {comment211}),\n"
                     + " (comment2111:" + Nodes.Comment + " {comment2111}),\n"
+                    + " (comment31:" + Nodes.Comment + " {comment31}),\n"
+                    + " (comment32:" + Nodes.Comment + " {comment32}),\n"
 
                     + "\n// --- RELATIONSHIPS ---\n\n"
                    /*
@@ -3452,25 +3453,31 @@ public class TestGraph {
                     + "(person)<-[:" + Rels.HAS_CREATOR + "]-(post0),\n"
                     + "(person)<-[:" + Rels.HAS_CREATOR + "]-(post1),\n"
                     + "(person)<-[:" + Rels.HAS_CREATOR + "]-(post2),\n"
+                    + "(friend3)<-[:" + Rels.HAS_CREATOR + "]-(post3),\n"
                    /*
                     * Person-Comment
                     */
                     + "(person)<-[:" + Rels.HAS_CREATOR + "]-(comment13),\n"
+                    + "(person)<-[:" + Rels.HAS_CREATOR + "]-(comment31),\n"
                     + "(friend1)<-[:" + Rels.HAS_CREATOR + "]-(comment111),\n"
                     + "(friend1)<-[:" + Rels.HAS_CREATOR + "]-(comment21),\n"
                     + "(friend1)<-[:" + Rels.HAS_CREATOR + "]-(comment2111),\n"
                     + "(friend2)<-[:" + Rels.HAS_CREATOR + "]-(comment211),\n"
                     + "(friend2)<-[:" + Rels.HAS_CREATOR + "]-(comment131),\n"
                     + "(friend2)<-[:" + Rels.HAS_CREATOR + "]-(comment112),\n"
+                    + "(friend2)<-[:" + Rels.HAS_CREATOR + "]-(comment32),\n"
                     + "(friend3)<-[:" + Rels.HAS_CREATOR + "]-(comment11),\n"
                     + "(friend3)<-[:" + Rels.HAS_CREATOR + "]-(comment12),\n"
+                    + "(friend3)<-[:" + Rels.HAS_CREATOR + "]-(comment01),\n"
                    /*
                     * Comment-Post/Comment
                     */
+                    + "(post0)<-[:" + Rels.REPLY_OF + "]-(comment01),\n"
                     + "(post1)<-[:" + Rels.REPLY_OF + "]-(comment11)<-[:" + Rels.REPLY_OF + "]-(comment111), (comment11)<-[:" + Rels.REPLY_OF + "]-(comment112),\n"
                     + "(post1)<-[:" + Rels.REPLY_OF + "]-(comment12),\n"
                     + "(post1)<-[:" + Rels.REPLY_OF + "]-(comment13)<-[:" + Rels.REPLY_OF + "]-(comment131),\n"
-                    + "(post2)<-[:" + Rels.REPLY_OF + "]-(comment21)<-[:" + Rels.REPLY_OF + "]-(comment211)<-[:" + Rels.REPLY_OF + "]-(comment2111)";
+                    + "(post2)<-[:" + Rels.REPLY_OF + "]-(comment21)<-[:" + Rels.REPLY_OF + "]-(comment211)<-[:" + Rels.REPLY_OF + "]-(comment2111),\n"
+                    + "(post3)<-[:" + Rels.REPLY_OF + "]-(comment31), (post3)<-[:" + Rels.REPLY_OF + "]-(comment32)";
         }
 
         @Override
@@ -3487,6 +3494,7 @@ public class TestGraph {
                     "post2", TestPosts.post2(),
                     "post3", TestPosts.post3(),
                     // Comments
+                    "comment01", TestComments.comment01(),
                     "comment11", TestComments.comment11(),
                     "comment12", TestComments.comment12(),
                     "comment13", TestComments.comment13(),
@@ -3495,7 +3503,9 @@ public class TestGraph {
                     "comment112", TestComments.comment112(),
                     "comment21", TestComments.comment21(),
                     "comment211", TestComments.comment211(),
-                    "comment2111", TestComments.comment2111()
+                    "comment2111", TestComments.comment2111(),
+                    "comment31", TestComments.comment31(),
+                    "comment32", TestComments.comment32()
             );
         }
 
@@ -3564,10 +3574,18 @@ public class TestGraph {
         }
 
         protected static class TestComments {
+            protected static Map<String, Object> comment01() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Message.ID, 10L);
+                params.put(Message.CREATION_DATE, 1L);
+                params.put(Message.CONTENT, "C01");
+                return params;
+            }
+
             protected static Map<String, Object> comment11() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 11L);
-                params.put(Message.CREATION_DATE, 3L);
+                params.put(Message.CREATION_DATE, 1L);
                 params.put(Message.CONTENT, "C11");
                 return params;
             }
@@ -3575,7 +3593,7 @@ public class TestGraph {
             protected static Map<String, Object> comment12() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 12L);
-                params.put(Message.CREATION_DATE, 6L);
+                params.put(Message.CREATION_DATE, 2L);
                 params.put(Message.CONTENT, "C12");
                 return params;
             }
@@ -3583,56 +3601,72 @@ public class TestGraph {
             protected static Map<String, Object> comment13() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 13L);
-                params.put(Message.CREATION_DATE, 8L);
+                params.put(Message.CREATION_DATE, 3L);
                 params.put(Message.CONTENT, "C13");
                 return params;
             }
 
             protected static Map<String, Object> comment131() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 131L);
-                params.put(Message.CREATION_DATE, 9L);
+                params.put(Message.ID, 14L);
+                params.put(Message.CREATION_DATE, 4L);
                 params.put(Message.CONTENT, "C131");
                 return params;
             }
 
             protected static Map<String, Object> comment111() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 111L);
-                params.put(Message.CREATION_DATE, 4L);
+                params.put(Message.ID, 15L);
+                params.put(Message.CREATION_DATE, 5L);
                 params.put(Message.CONTENT, "C111");
                 return params;
             }
 
             protected static Map<String, Object> comment112() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 112L);
-                params.put(Message.CREATION_DATE, 4L);
+                params.put(Message.ID, 16L);
+                params.put(Message.CREATION_DATE, 6L);
                 params.put(Message.CONTENT, "C112");
                 return params;
             }
 
             protected static Map<String, Object> comment21() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 21L);
-                params.put(Message.CREATION_DATE, 1L);
+                params.put(Message.ID, 17L);
+                params.put(Message.CREATION_DATE, 7L);
                 params.put(Message.CONTENT, "C21");
                 return params;
             }
 
             protected static Map<String, Object> comment211() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 211L);
-                params.put(Message.CREATION_DATE, 2L);
+                params.put(Message.ID, 18L);
+                params.put(Message.CREATION_DATE, 8L);
                 params.put(Message.CONTENT, "C211");
                 return params;
             }
 
             protected static Map<String, Object> comment2111() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Message.ID, 2111L);
-                params.put(Message.CREATION_DATE, 5L);
+                params.put(Message.ID, 19L);
+                params.put(Message.CREATION_DATE, 9L);
                 params.put(Message.CONTENT, "C2111");
+                return params;
+            }
+
+            protected static Map<String, Object> comment31() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Message.ID, 20L);
+                params.put(Message.CREATION_DATE, 10L);
+                params.put(Message.CONTENT, "C31");
+                return params;
+            }
+
+            protected static Map<String, Object> comment32() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Message.ID, 21L);
+                params.put(Message.CREATION_DATE, 2L);
+                params.put(Message.CONTENT, "C32");
                 return params;
             }
         }

@@ -9,17 +9,15 @@ public abstract class Neo4jQuery8<CONNECTION> implements Neo4jQuery<LdbcQuery8, 
     protected static final Integer LIMIT = 2;
 
     /*
-    Given a start Person, find (most recent) Comments that are Replies to Posts/Comments of the start Person.
+    Given a start Person, find (most recent) Comments that are replies to Posts/Comments of the start Person.
+    Only consider immediate (1-hop) replies, not the transitive (multi-hop) case.
     Return the top 20 reply Comments, and the Person that created each reply Comment.
     Sort results descending by creation date of reply Comment, and then ascending by identifier of reply Comment.
      */
     protected static final String QUERY_STRING = ""
             + "MATCH (start:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID + "}})<-[:" + Domain.Rels.HAS_CREATOR + "]-()"
-            + "<-[:" + Domain.Rels.REPLY_OF + "*]-(comment:" + Domain.Nodes.Comment + ")-[:" + Domain.Rels.HAS_CREATOR + "]->(person:" + Domain.Nodes.Person + ")\n"
-            + "WHERE not(start=person)\n"
-            // Note, DISTINCT is needed in case a person has Commented on their own Post and then others Commented on their Comment.
-            // Multiple paths would then exist between the other person's Comment and the start person (via their Comment, and via their Comment and Post).
-            + "RETURN DISTINCT"
+            + "<-[:" + Domain.Rels.REPLY_OF + "]-(comment:" + Domain.Nodes.Comment + ")-[:" + Domain.Rels.HAS_CREATOR + "]->(person:" + Domain.Nodes.Person + ")\n"
+            + "RETURN"
             + " person." + Domain.Person.ID + " AS personId,"
             + " person." + Domain.Person.FIRST_NAME + " AS personFirstName,"
             + " person." + Domain.Person.LAST_NAME + " AS personLastName,"

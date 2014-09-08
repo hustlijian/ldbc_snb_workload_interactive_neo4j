@@ -33,45 +33,34 @@ public class Neo4jQuery8EmbeddedApi extends Neo4jQuery8<GraphDatabaseService> {
         return "LDBC Query8 Java API Implementation";
     }
 
+    /*
+    Given a start Person, find (most recent) Comments that are replies to Posts/Comments of the start Person.
+    Only consider immediate (1-hop) replies, not the transitive (multi-hop) case.
+    Return the top 20 reply Comments, and the Person that created each reply Comment.
+    Sort results descending by creation date of reply Comment, and then ascending by identifier of reply Comment.
+     */
     @Override
     public Iterator<LdbcQuery8Result> execute(GraphDatabaseService db, LdbcQuery8 operation) {
         Iterator<Node> personIterator = db.findNodesByLabelAndProperty(Domain.Nodes.Person, Domain.Person.ID, operation.personId()).iterator();
         if (false == personIterator.hasNext()) return Iterators.emptyIterator();
         final Node person = personIterator.next();
 
-        List<Node> personsCommentsAndPosts = Lists.newArrayList(
-                traversers.commentsAndPostsByPerson().traverse(person).nodes()
-        );
-
-        //(commenterPerson,comment)
         Iterator<Tuple.Tuple2<Node, Node>> commenterPersonsAndTheirComments = Iterators.transform(
-                traversers.commentsRepliedToPostOrCommentExcludingThoseByGivenPerson().traverse(personsCommentsAndPosts.toArray(new Node[personsCommentsAndPosts.size()])).iterator(),
+                traversers.commentsThatAreRepliesToPostOrCommentFromStartPerson().traverse(person).iterator(),
                 new Function<Path, Tuple.Tuple2<Node, Node>>() {
                     @Override
                     public Tuple.Tuple2<Node, Node> apply(Path path) {
-                        Node comment = path.endNode();
-                        Node commenterPerson = comment.getRelationships(Domain.Rels.HAS_CREATOR, Direction.OUTGOING).iterator().next().getOtherNode(comment);
+                        List<Node> pathNodes = Lists.newArrayList(path.nodes());
+                        Node comment = pathNodes.get(2);
+                        Node commenterPerson = pathNodes.get(3);
                         return Tuple.tuple2(commenterPerson, comment);
                     }
                 }
         );
 
-        Iterator<Tuple.Tuple2<Node, Node>> commenterPersonsAndTheirCommentsExcludingStartPerson = StepsUtils.distinct(
-                Iterators.filter(
-                        commenterPersonsAndTheirComments,
-                        new Predicate<Tuple.Tuple2<Node, Node>>() {
-                            @Override
-                            public boolean apply(Tuple.Tuple2<Node, Node> commenterPersonAndComment) {
-                                Node commenterPerson = commenterPersonAndComment._1();
-                                return false == commenterPerson.equals(person);
-                            }
-                        }
-                )
-        );
-
         List<LdbcQuery8Result> results = Lists.newArrayList(
                 Iterators.transform(
-                        commenterPersonsAndTheirCommentsExcludingStartPerson,
+                        commenterPersonsAndTheirComments,
                         new Function<Tuple.Tuple2<Node, Node>, LdbcQuery8Result>() {
                             @Override
                             public LdbcQuery8Result apply(Tuple.Tuple2<Node, Node> commenterPersonAndComment) {

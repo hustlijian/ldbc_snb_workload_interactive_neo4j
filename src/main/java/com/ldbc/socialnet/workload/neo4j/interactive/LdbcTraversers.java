@@ -217,10 +217,13 @@ public class LdbcTraversers {
     }
 
     // TODO cypher description
-    public TraversalDescription commentsAndPostsByPerson() {
+    // MATCH (:Person)<-[HAS_CREATOR]-(message)<-[:REPLY_OF]-(:Comment)-[:HAS_CREATOR]->(:Person)
+    public TraversalDescription commentsThatAreRepliesToPostOrCommentFromStartPerson() {
         return stepsBuilder.build(
                 baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
+                Step.one(node(), relationship().hasType(Rels.REPLY_OF).hasDirection(Direction.INCOMING)),
+                Step.one(node().hasLabel(Nodes.Comment), relationship().hasDirection(Direction.OUTGOING).hasType(Rels.HAS_CREATOR)),
                 Step.one(node())
         );
     }
@@ -238,14 +241,6 @@ public class LdbcTraversers {
                 baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
                 Step.one(node().conformsTo(createdBeforeDate))
-        );
-    }
-
-    // TODO cypher description
-    public TraversalDescription commentsRepliedToPostOrCommentExcludingThoseByGivenPerson() {
-        return stepsBuilder.build(
-                baseTraversalDescription,
-                Step.manyRange(node(), relationship().hasType(Rels.REPLY_OF).hasDirection(Direction.INCOMING), 1, Step.UNLIMITED)
         );
     }
 

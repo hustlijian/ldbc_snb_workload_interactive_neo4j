@@ -790,8 +790,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
         TestGraph.createDbFromQueryGraphMaker(new TestGraph.Query8GraphMaker(), dbDir);
         CONNECTION connection = openConnection(dbDir);
         try {
-            // TODO rewrite queries and tests
-            assertThat(true, is(false));
             long personId;
             String personUri;
             int limit;
@@ -808,17 +806,47 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             personId = 0;
             personUri = null;
-            limit = 7;
+            limit = 10;
             operation = new LdbcQuery8(personId, personUri, limit);
             results = neo4jQuery8Impl(connection, operation);
+
+            actualResult = results.next();
+            expectedPersonId = 1l;
+            expectedPersonFirstName = "friend";
+            expectedPersonLastName = "one";
+            expectedCommentDate = 7l;
+            expectedCommentId = 17l;
+            expectedCommentContent = "C21";
+            assertThat(actualResult, equalTo(new LdbcQuery8Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedCommentDate,
+                    expectedCommentId,
+                    expectedCommentContent)));
 
             actualResult = results.next();
             expectedPersonId = 2l;
             expectedPersonFirstName = "friend";
             expectedPersonLastName = "two";
-            expectedCommentDate = 9l;
-            expectedCommentId = 131l;
+            expectedCommentDate = 4l;
+            expectedCommentId = 14l;
             expectedCommentContent = "C131";
+            assertThat(actualResult, equalTo(new LdbcQuery8Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedCommentDate,
+                    expectedCommentId,
+                    expectedCommentContent)));
+
+            actualResult = results.next();
+            expectedPersonId = 0l;
+            expectedPersonFirstName = "person";
+            expectedPersonLastName = "zero";
+            expectedCommentDate = 3l;
+            expectedCommentId = 13l;
+            expectedCommentContent = "C13";
             assertThat(actualResult, equalTo(new LdbcQuery8Result(
                     expectedPersonId,
                     expectedPersonFirstName,
@@ -831,7 +859,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedPersonId = 3l;
             expectedPersonFirstName = "friend";
             expectedPersonLastName = "three";
-            expectedCommentDate = 6l;
+            expectedCommentDate = 2l;
             expectedCommentId = 12l;
             expectedCommentContent = "C12";
             assertThat(actualResult, equalTo(new LdbcQuery8Result(
@@ -843,42 +871,12 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
                     expectedCommentContent)));
 
             actualResult = results.next();
-            expectedPersonId = 1l;
+            expectedPersonId = 3l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "one";
-            expectedCommentDate = 5l;
-            expectedCommentId = 2111l;
-            expectedCommentContent = "C2111";
-            assertThat(actualResult, equalTo(new LdbcQuery8Result(
-                    expectedPersonId,
-                    expectedPersonFirstName,
-                    expectedPersonLastName,
-                    expectedCommentDate,
-                    expectedCommentId,
-                    expectedCommentContent)));
-
-            actualResult = results.next();
-            expectedPersonId = 1l;
-            expectedPersonFirstName = "friend";
-            expectedPersonLastName = "one";
-            expectedCommentDate = 4l;
-            expectedCommentId = 111l;
-            expectedCommentContent = "C111";
-            assertThat(actualResult, equalTo(new LdbcQuery8Result(
-                    expectedPersonId,
-                    expectedPersonFirstName,
-                    expectedPersonLastName,
-                    expectedCommentDate,
-                    expectedCommentId,
-                    expectedCommentContent)));
-
-            actualResult = results.next();
-            expectedPersonId = 2l;
-            expectedPersonFirstName = "friend";
-            expectedPersonLastName = "two";
-            expectedCommentDate = 4l;
-            expectedCommentId = 112l;
-            expectedCommentContent = "C112";
+            expectedPersonLastName = "three";
+            expectedCommentDate = 1l;
+            expectedCommentId = 10l;
+            expectedCommentContent = "C01";
             assertThat(actualResult, equalTo(new LdbcQuery8Result(
                     expectedPersonId,
                     expectedPersonFirstName,
@@ -891,7 +889,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedPersonId = 3l;
             expectedPersonFirstName = "friend";
             expectedPersonLastName = "three";
-            expectedCommentDate = 3l;
+            expectedCommentDate = 1l;
             expectedCommentId = 11l;
             expectedCommentContent = "C11";
             assertThat(actualResult, equalTo(new LdbcQuery8Result(
@@ -902,13 +900,21 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
                     expectedCommentId,
                     expectedCommentContent)));
 
+            assertThat(results.hasNext(), is(false));
+
+            personId = 0;
+            personUri = null;
+            limit = 1;
+            operation = new LdbcQuery8(personId, personUri, limit);
+            results = neo4jQuery8Impl(connection, operation);
+
             actualResult = results.next();
-            expectedPersonId = 2l;
+            expectedPersonId = 1l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "two";
-            expectedCommentDate = 2l;
-            expectedCommentId = 211l;
-            expectedCommentContent = "C211";
+            expectedPersonLastName = "one";
+            expectedCommentDate = 7l;
+            expectedCommentId = 17l;
+            expectedCommentContent = "C21";
             assertThat(actualResult, equalTo(new LdbcQuery8Result(
                     expectedPersonId,
                     expectedPersonFirstName,
