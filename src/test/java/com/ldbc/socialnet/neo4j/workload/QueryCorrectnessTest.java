@@ -61,17 +61,13 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             int limit = 6;
             LdbcQuery1 operation = new LdbcQuery1(personId, personUri, friendName, limit);
 
-            Iterator<LdbcQuery1Result> result;
+            Iterator<LdbcQuery1Result> results;
             LdbcQuery1Result actualRow;
             LdbcQuery1Result expectedRow;
 
-            result = neo4jQuery1Impl(connection, operation);
+            results = neo4jQuery1Impl(connection, operation);
 
-            actualRow = result.next();
-
-            // TODO remove
-            System.out.println(actualRow.toString());
-
+            actualRow = results.next();
             expectedRow = new LdbcQuery1Result(
                     2L,
                     "last0",
@@ -87,14 +83,9 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
                     Sets.<List<Object>>newHashSet(Lists.<Object>newArrayList("uni2", 3, "city0")),
                     Sets.<List<Object>>newHashSet()
             );
-
             assertThat(actualRow, equalTo(expectedRow));
 
-            actualRow = result.next();
-
-            // TODO remove
-            System.out.println(actualRow.toString());
-
+            actualRow = results.next();
             expectedRow = new LdbcQuery1Result(
                     3L,
                     "last0",
@@ -110,14 +101,9 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
                     Lists.<List<Object>>newArrayList(),
                     Lists.<List<Object>>newArrayList(Lists.<Object>newArrayList("company0", 1, "country0"))
             );
-
             assertThat(actualRow, equalTo(expectedRow));
 
-            actualRow = result.next();
-
-            // TODO remove
-            System.out.println(actualRow.toString());
-
+            actualRow = results.next();
             expectedRow = new LdbcQuery1Result(
                     1L,
                     "last1",
@@ -133,14 +119,9 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
                     Lists.<List<Object>>newArrayList(Lists.<Object>newArrayList("uni0", 0, "city1")),
                     Lists.<List<Object>>newArrayList(Lists.<Object>newArrayList("company0", 0, "country0"))
             );
-
             assertThat(actualRow, equalTo(expectedRow));
 
-            actualRow = result.next();
-
-            // TODO remove
-            System.out.println(actualRow.toString());
-
+            actualRow = results.next();
             expectedRow = new LdbcQuery1Result(
                     11L,
                     "last11",
@@ -156,14 +137,9 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
                     Lists.<List<Object>>newArrayList(Lists.<Object>newArrayList("uni1", 1, "city0"), Lists.<Object>newArrayList("uni2", 2, "city0")),
                     Lists.<List<Object>>newArrayList()
             );
-
             assertThat(actualRow, equalTo(expectedRow));
 
-            actualRow = result.next();
-
-            // TODO remove
-            System.out.println(actualRow.toString());
-
+            actualRow = results.next();
             expectedRow = new LdbcQuery1Result(
                     31L,
                     "last31",
@@ -179,10 +155,9 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
                     Lists.<List<Object>>newArrayList(),
                     Lists.<List<Object>>newArrayList()
             );
-
             assertThat(actualRow, equalTo(expectedRow));
 
-            assertThat(result.hasNext(), is(false));
+            assertThat(results.hasNext(), is(false));
 
             personId = 0;
             personUri = null;
@@ -190,13 +165,9 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             limit = 1;
             operation = new LdbcQuery1(personId, personUri, friendName, limit);
 
-            result = neo4jQuery1Impl(connection, operation);
+            results = neo4jQuery1Impl(connection, operation);
 
-            actualRow = result.next();
-
-            // TODO remove
-            System.out.println(actualRow.toString());
-
+            actualRow = results.next();
             expectedRow = new LdbcQuery1Result(
                     21L,
                     "last21",
@@ -212,10 +183,9 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
                     Lists.<List<Object>>newArrayList(),
                     Lists.<List<Object>>newArrayList(Lists.<Object>newArrayList("company1", 2, "country1"))
             );
-
             assertThat(actualRow, equalTo(expectedRow));
 
-            assertThat(result.hasNext(), is(false));
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
         }
@@ -242,11 +212,8 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             personUri = null;
             maxDate = new Date(3);
             limit = 10;
-            // TODO comment out to hide
-            System.out.println(String.format("Params: id:%s, date:%s, limit:%s", personId, maxDate.getTime(), limit));
             operation = new LdbcQuery2(personId, personUri, maxDate, limit);
             results = neo4jQuery2Impl(connection, operation);
-            assertThat(results.hasNext(), is(true));
 
             expectedRow = new LdbcQuery2Result(
                     3,
@@ -312,10 +279,27 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             personId = 1;
             personUri = null;
+            maxDate = new Date(3);
+            limit = 1;
+            operation = new LdbcQuery2(personId, personUri, maxDate, limit);
+            results = neo4jQuery2Impl(connection, operation);
+
+            expectedRow = new LdbcQuery2Result(
+                    3,
+                    "f3",
+                    "last3",
+                    2,
+                    "[f3Post2] content",
+                    3);
+            actualRow = results.next();
+            assertThat(actualRow, equalTo(expectedRow));
+
+            assertThat(results.hasNext(), is(false));
+
+            personId = 1;
+            personUri = null;
             maxDate = new Date(4);
             limit = 5;
-            // TODO comment out to hide
-            System.out.println(String.format("Params: id:%s, date:%s, limit:%s", personId, maxDate.getTime(), limit));
             operation = new LdbcQuery2(personId, personUri, maxDate, limit);
             results = neo4jQuery2Impl(connection, operation);
             assertThat(results.hasNext(), is(true));
@@ -396,6 +380,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             String personUri;
             String countryXName;
             String countryYName;
+            Calendar c;
             Date startDate;
             int durationDays;
             int limit;
@@ -404,7 +389,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             personUri = null;
             countryXName = "country1";
             countryYName = "country2";
-            Calendar c = Calendar.getInstance();
+            c = Calendar.getInstance();
             c.clear();
             c.set(2000, Calendar.JANUARY, 3, 0, 0, 0);
             startDate = c.getTime();
@@ -413,8 +398,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             operation = new LdbcQuery3(personId, personUri, countryXName, countryYName, startDate, durationDays, limit);
 
             results = neo4jQuery3Impl(connection, operation);
-
-            assertThat(results.hasNext(), is(true));
 
             actualResult = results.next();
             expectedPersonId = 2l;
@@ -425,7 +408,14 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedCount = 2;
             assertThat(
                     actualResult,
-                    equalTo(new LdbcQuery3Result(expectedPersonId, expectedPersonFirstName, expectedPersonLastName, expectedXCount, expectedYCount, expectedCount)));
+                    equalTo(new LdbcQuery3Result(
+                            expectedPersonId,
+                            expectedPersonFirstName,
+                            expectedPersonLastName,
+                            expectedXCount,
+                            expectedYCount,
+                            expectedCount))
+            );
 
             actualResult = results.next();
             expectedPersonId = 6l;
@@ -436,7 +426,48 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedCount = 2;
             assertThat(
                     actualResult,
-                    equalTo(new LdbcQuery3Result(expectedPersonId, expectedPersonFirstName, expectedPersonLastName, expectedXCount, expectedYCount, expectedCount)));
+                    equalTo(new LdbcQuery3Result(
+                            expectedPersonId,
+                            expectedPersonFirstName,
+                            expectedPersonLastName,
+                            expectedXCount,
+                            expectedYCount,
+                            expectedCount))
+            );
+
+            assertThat(results.hasNext(), is(false));
+
+            personId = 1;
+            personUri = null;
+            countryXName = "country1";
+            countryYName = "country2";
+            c = Calendar.getInstance();
+            c.clear();
+            c.set(2000, Calendar.JANUARY, 3, 0, 0, 0);
+            startDate = c.getTime();
+            durationDays = 2;
+            limit = 1;
+            operation = new LdbcQuery3(personId, personUri, countryXName, countryYName, startDate, durationDays, limit);
+
+            results = neo4jQuery3Impl(connection, operation);
+
+            actualResult = results.next();
+            expectedPersonId = 2l;
+            expectedPersonFirstName = "f2";
+            expectedPersonLastName = "last2";
+            expectedXCount = 1;
+            expectedYCount = 1;
+            expectedCount = 2;
+            assertThat(
+                    actualResult,
+                    equalTo(new LdbcQuery3Result(
+                            expectedPersonId,
+                            expectedPersonFirstName,
+                            expectedPersonLastName,
+                            expectedXCount,
+                            expectedYCount,
+                            expectedCount))
+            );
 
             assertThat(results.hasNext(), is(false));
         } finally {
@@ -490,6 +521,24 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             assertThat(actualResult, equalTo(new LdbcQuery4Result(expectedTagName, expectedTagCount)));
 
             assertThat(results.hasNext(), is(false));
+
+            personId = 1;
+            personUri = null;
+            c.clear();
+            c.set(2000, Calendar.JANUARY, 3, 0, 0, 0);
+            startDate = c.getTime();
+            durationDays = 2;
+            limit = 1;
+            operation = new LdbcQuery4(personId, personUri, startDate, durationDays, limit);
+
+            results = neo4jQuery4Impl(connection, operation);
+
+            expectedTagName = "tag2";
+            expectedTagCount = 3;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery4Result(expectedTagName, expectedTagCount)));
+
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
         }
@@ -539,6 +588,23 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             assertThat(actualResult, equalTo(new LdbcQuery5Result(expectedForumTitle, expectedPostCount)));
 
             assertThat(results.hasNext(), is(false));
+
+            personId = 1;
+            personUri = null;
+            c.clear();
+            c.set(2000, Calendar.JANUARY, 2);
+            joinDate = c.getTime();
+            limit = 1;
+            operation = new LdbcQuery5(personId, personUri, joinDate, limit);
+
+            results = neo4jQuery5Impl(connection, operation);
+
+            actualResult = results.next();
+            expectedForumTitle = "forum1";
+            expectedPostCount = 1;
+            assertThat(actualResult, equalTo(new LdbcQuery5Result(expectedForumTitle, expectedPostCount)));
+
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
         }
@@ -579,6 +645,20 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             expectedTagName = "tag1";
             expectedPostCount = 1;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery6Result(expectedTagName, expectedPostCount)));
+
+            assertThat(results.hasNext(), is(false));
+
+            personId = 1;
+            personUri = null;
+            tagName = "tag3";
+            limit = 1;
+            operation = new LdbcQuery6(personId, personUri, tagName, limit);
+            results = neo4jQuery6Impl(connection, operation);
+
+            expectedTagName = "tag2";
+            expectedPostCount = 2;
             actualResult = results.next();
             assertThat(actualResult, equalTo(new LdbcQuery6Result(expectedTagName, expectedPostCount)));
 
@@ -779,6 +859,36 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             );
 
             assertThat(results.hasNext(), is(false));
+
+            personId = 1;
+            personUri = null;
+            limit = 1;
+            operation = new LdbcQuery7(personId, personUri, limit);
+            results = neo4jQuery7Impl(connection, operation);
+
+            expectedPersonId = 8l;
+            expectedPersonFirstName = "s8";
+            expectedPersonLastName = "last8";
+            c.clear();
+            c.set(2000, Calendar.JANUARY, 1, 0, 10, 0);
+            expectedLikeCreationDate = c.getTimeInMillis();
+            expectedCommentOrPostId = 2l;
+            expectedCommentOrPostContent = "person1post2";
+            expectedMinutesLatency = 8;
+            expectedIsNew = true;
+            actualResult = results.next();
+            assertThat(actualResult, equalTo(new LdbcQuery7Result(
+                            expectedPersonId,
+                            expectedPersonFirstName,
+                            expectedPersonLastName,
+                            expectedLikeCreationDate,
+                            expectedCommentOrPostId,
+                            expectedCommentOrPostContent,
+                            expectedMinutesLatency,
+                            expectedIsNew))
+            );
+
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
         }
@@ -892,6 +1002,29 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedCommentDate = 1l;
             expectedCommentId = 11l;
             expectedCommentContent = "C11";
+            assertThat(actualResult, equalTo(new LdbcQuery8Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedCommentDate,
+                    expectedCommentId,
+                    expectedCommentContent)));
+
+            assertThat(results.hasNext(), is(false));
+
+            personId = 0;
+            personUri = null;
+            limit = 1;
+            operation = new LdbcQuery8(personId, personUri, limit);
+            results = neo4jQuery8Impl(connection, operation);
+
+            actualResult = results.next();
+            expectedPersonId = 1l;
+            expectedPersonFirstName = "friend";
+            expectedPersonLastName = "one";
+            expectedCommentDate = 7l;
+            expectedCommentId = 17l;
+            expectedCommentContent = "C21";
             assertThat(actualResult, equalTo(new LdbcQuery8Result(
                     expectedPersonId,
                     expectedPersonFirstName,
@@ -1080,6 +1213,31 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
                     expectedCommentOrPostCreationDate)));
 
             assertThat(results.hasNext(), is(false));
+
+            personId = 0;
+            personUri = null;
+            latestDateAsMilli = 12;
+            latestDate = new Date(latestDateAsMilli);
+            limit = 1;
+            operation = new LdbcQuery9(personId, personUri, latestDate, limit);
+            results = neo4jQuery9Impl(connection, operation);
+
+            actualResult = results.next();
+            expectedPersonId = 1l;
+            expectedPersonFirstName = "friend";
+            expectedPersonLastName = "one";
+            expectedCommentOrPostId = 11l;
+            expectedCommentOrPostContent = "P11";
+            expectedCommentOrPostCreationDate = 11l;
+            assertThat(actualResult, equalTo(new LdbcQuery9Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedCommentOrPostId,
+                    expectedCommentOrPostContent,
+                    expectedCommentOrPostCreationDate)));
+
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
         }
@@ -1178,6 +1336,31 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             )));
 
             assertThat(results.hasNext(), is(false));
+
+            personId = 0;
+            personUri = null;
+            month = 1;
+            limit = 1;
+            operation = new LdbcQuery10(personId, personUri, month, limit);
+            results = neo4jQuery10Impl(connection, operation);
+
+            actualResult = results.next();
+            expectedPersonId = 22l;
+            expectedPersonFirstName = "friendfriend";
+            expectedPersonLastName = "two two";
+            expectedCommonInterestScore = 0;
+            expectedPersonGender = "male";
+            expectedPersonCityName = "city0";
+            assertThat(actualResult, equalTo(new LdbcQuery10Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedCommonInterestScore,
+                    expectedPersonGender,
+                    expectedPersonCityName
+            )));
+
+            assertThat(results.hasNext(), is(false));
         } finally {
             closeConnection(connection);
         }
@@ -1231,6 +1414,29 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedPersonLastName = "one one";
             expectedOrganizationName = "company zero";
             expectedWorkFromYear = 3;
+            assertThat(actualResult, equalTo(new LdbcQuery11Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedOrganizationName,
+                    expectedWorkFromYear)));
+
+            assertThat(results.hasNext(), is(false));
+
+            personId = 0;
+            personUri = null;
+            countryName = "country0";
+            startedBeforeWorkFromYear = 5;
+            limit = 1;
+            operation = new LdbcQuery11(personId, personUri, countryName, startedBeforeWorkFromYear, limit);
+            results = neo4jQuery11Impl(connection, operation);
+
+            actualResult = results.next();
+            expectedPersonId = 1l;
+            expectedPersonFirstName = "friend";
+            expectedPersonLastName = "one";
+            expectedOrganizationName = "company zero";
+            expectedWorkFromYear = 2;
             assertThat(actualResult, equalTo(new LdbcQuery11Result(
                     expectedPersonId,
                     expectedPersonFirstName,
@@ -1316,6 +1522,28 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedPersonLastName = "4";
             expectedTagNames = Sets.newHashSet();
             expectedReplyCount = 0;
+            assertThat(actualResult, equalTo(new LdbcQuery12Result(
+                    expectedPersonId,
+                    expectedPersonFirstName,
+                    expectedPersonLastName,
+                    expectedTagNames,
+                    expectedReplyCount)));
+
+            assertThat(results.hasNext(), is(false));
+
+            personId = 0;
+            personUri = null;
+            tagClassName = "1";
+            limit = 1;
+            operation = new LdbcQuery12(personId, personUri, tagClassName, limit);
+            results = neo4jQuery12Impl(connection, operation);
+
+            actualResult = results.next();
+            expectedPersonId = 1l;
+            expectedPersonFirstName = "f";
+            expectedPersonLastName = "1";
+            expectedTagNames = Sets.newHashSet("tag111", "tag12111");
+            expectedReplyCount = 2;
             assertThat(actualResult, equalTo(new LdbcQuery12Result(
                     expectedPersonId,
                     expectedPersonFirstName,
