@@ -58,7 +58,7 @@ public class Neo4jQuery6EmbeddedApi extends Neo4jQuery6<GraphDatabaseService> {
         );
         Node[] friendsPostsWithGivenTag = friendsPostsWithGivenTagList.toArray(new Node[friendsPostsWithGivenTagList.size()]);
 
-        Iterator<Node> otherTagsOnFriendsPostsWithGivenTag = traversers.tagsOnPostsExcludingGivenTag(operation.tagName()).traverse(friendsPostsWithGivenTag).nodes().iterator();
+        Iterator<Node> otherTagsOnFriendsPostsWithGivenTag = traversers.tagsOnPostsOrCommentsExcludingGivenTag(operation.tagName()).traverse(friendsPostsWithGivenTag).nodes().iterator();
 
         Map<String, Integer> postCountsPerTagName = StepsUtils.count(
                 Iterators.transform(

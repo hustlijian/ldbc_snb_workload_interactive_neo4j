@@ -6,6 +6,7 @@ import com.ldbc.driver.workloads.ldbc.snb.interactive.*;
 import com.ldbc.socialnet.neo4j.TestUtils;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery;
 import com.ldbc.socialnet.workload.neo4j.interactive.remote_cypher.*;
+import org.junit.Ignore;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 

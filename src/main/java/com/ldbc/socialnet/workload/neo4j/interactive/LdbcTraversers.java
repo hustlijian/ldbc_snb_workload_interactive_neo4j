@@ -28,9 +28,9 @@ public class LdbcTraversers {
         this.baseTraversalDescription = db.traversalDescription().uniqueness(Uniqueness.NONE).breadthFirst();
     }
 
-    // MATCH (:Person)-[:HAS_CREATOR]-(:Comment)-[:REPLY_OF]-(:Comment)-[:HAS_CREATOR]-(otherPerson:Person)
-    // WHERE TODO
-    public TraversalDescription commentsMadeByEitherPersonInReplyToCommentsOfOtherPerson(Node otherPerson) {
+    // MATCH (:Person)-[:HAS_CREATOR]-(:Comment)-[:REPLY_OF]-(:Comment)-[:HAS_CREATOR]-(person:Person)
+    // WHERE person = otherPerson
+    public TraversalDescription commentsMadeByPersonInReplyToCommentsOfOtherPerson(Node otherPerson) {
         Set<Node> otherPersonAsSet = Sets.newHashSet(otherPerson);
         return stepsBuilder.build(
                 baseTraversalDescription,
@@ -41,21 +41,20 @@ public class LdbcTraversers {
         );
     }
 
-    // MATCH (:Person)<-[:HAS_CREATOR]-(:Comment)-[:REPLY_OF]->(:Post)-[:HAS_CREATOR]->(otherPerson:Person)
-    // WHERE TODO
+    // MATCH (:Person)<-[:HAS_CREATOR]-(:Comment)-[:REPLY_OF]->(:Post)-[:HAS_CREATOR]->(person:Person)
+    // WHERE person = otherPerson
     public TraversalDescription commentsMadeInReplyToPostsOfOtherPerson(Node otherPerson) {
-        Set<Node> otherPersonAsSet = Sets.newHashSet(otherPerson);
         return stepsBuilder.build(
                 baseTraversalDescription,
                 Step.one(node(), relationship().hasDirection(Direction.INCOMING).hasType(Rels.HAS_CREATOR)),
                 Step.one(node().hasLabel(Nodes.Comment), relationship().hasDirection(Direction.OUTGOING).hasType(Rels.REPLY_OF)),
                 Step.one(node().hasLabel(Nodes.Post), relationship().hasDirection(Direction.OUTGOING).hasType(Rels.HAS_CREATOR)),
-                Step.one(node().inSet(otherPersonAsSet))
+                Step.one(node().inSet(Sets.newHashSet(otherPerson)))
         );
     }
 
-    // MATCH (:Person)<-[:HAS_CREATOR]-(:Comment)-[:REPLY_OF]->()-[:HAS_TAG]->(:Tag)-[:HAS_TYPE]->(tagClass:TagClass)-[:IS_SUBCLASS_OF*0..]->(baseTagClass:TagClass)
-    // WHERE TODO
+    // MATCH (:Person)<-[:HAS_CREATOR]-(:Comment)-[:REPLY_OF]->(:Post)-[:HAS_TAG]->(:Tag)-[:HAS_TYPE]->(childTagClass:TagClass)-[:IS_SUBCLASS_OF*0..]->(parentTagClass:TagClass)
+    // WHERE childTagClass = tagClass OR parentTagClass = tagClass
     public TraversalDescription commentsInReplyToPostsTaggedWithTagInGivenTagClassOrDescendentOfThatTagClass(Node tagClass) {
         Set<Node> tagClasses = Sets.newHashSet(tagClass);
         return stepsBuilder.build(
@@ -65,7 +64,7 @@ public class LdbcTraversers {
                 Step.one(node().hasLabel(Nodes.Post), relationship().hasDirection(Direction.OUTGOING).hasType(Rels.HAS_TAG)),
                 Step.one(node().hasLabel(Nodes.Tag), relationship().hasDirection(Direction.OUTGOING).hasType(Rels.HAS_TYPE)),
                 Step.manyRange(node().hasLabel(Nodes.TagClass).notInSet(tagClasses), relationship().hasDirection(Direction.OUTGOING).hasType(Rels.IS_SUBCLASS_OF), 0, Step.UNLIMITED),
-                Step.one(node().hasLabel(Nodes.TagClass).inSet(tagClasses))
+                Step.one(node().inSet(tagClasses))
         );
     }
 
@@ -109,8 +108,8 @@ public class LdbcTraversers {
                 Step.one(node().hasLabel(Place.Type.Country)));
     }
 
-    // MATCH (:Person)-[:WORKS_AT]->(:Company)-[:IS_LOCATED_IN]->(:Country)
-    // WHERE TODO
+    // MATCH (:Person)-[:KNOWS]-(:Person)<-[:HAS_CREATOR]-(post:Post)-[:HAS_TAG]->(:Tag)
+    // WHERE post.creationDate >= minDate AND post.creationDate < maxDate
     public TraversalDescription tagsOnPostsCreatedByPersonBetweenDates(final long minDate, final long maxDate) {
         PropertyContainerFilterDescriptor.PropertyContainerPredicate creationDateCheck = new PropertyContainerFilterDescriptor.PropertyContainerPredicate() {
             @Override
@@ -122,18 +121,19 @@ public class LdbcTraversers {
         return stepsBuilder.build(
                 baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Rels.KNOWS)),
-                Step.one(node().hasLabel(Nodes.Person), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
+                Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
                 Step.one(node().hasLabel(Nodes.Post).conformsTo(creationDateCheck), relationship().hasType(Rels.HAS_TAG).hasDirection(Direction.OUTGOING)),
                 Step.one(node().hasLabel(Nodes.Tag)));
     }
 
-    // TODO cypher description
-    public TraversalDescription friendsPostsAndCommentsBeforeDate(final long maxPostCreationDate) {
+    // MATCH (:Person)-[:KNOWS]-(:Person)<-[:HAS_CREATOR]-(message)
+    // WHERE message.creationDate <= maxCreationDate
+    public TraversalDescription friendsPostsAndCommentsAtOrBeforeDate(final long maxCreationDate) {
         PropertyContainerFilterDescriptor.PropertyContainerPredicate creationDateCheck = new PropertyContainerFilterDescriptor.PropertyContainerPredicate() {
             @Override
             public boolean apply(PropertyContainer container) {
                 long creationDate = (long) container.getProperty(Message.CREATION_DATE);
-                return (creationDate <= maxPostCreationDate);
+                return (creationDate <= maxCreationDate);
             }
         };
         return stepsBuilder.build(
@@ -143,14 +143,14 @@ public class LdbcTraversers {
                 Step.one(node().conformsTo(creationDateCheck)));
     }
 
-    // TODO cypher description
+    // MATCH (:Person)-[:KNOWS*1..2]-(:Person)
     public TraversalDescription friendsAndFriendsOfFriends() {
         return stepsBuilder.build(baseTraversalDescription,
                 Step.manyRange(node(), relationship().hasType(Rels.KNOWS), 1, 2)
         );
     }
 
-    // TODO cypher description
+    // MATCH (:Person)-[:KNOWS*2..2]-(:Person)
     public TraversalDescription friendsOfFriends() {
         return stepsBuilder.build(
                 baseTraversalDescription,
@@ -158,8 +158,9 @@ public class LdbcTraversers {
         );
     }
 
-    // TODO cypher description
-    public TraversalDescription personsPostsWithGivenTag(final String tagName) {
+    // MATCH (:Person)<-[:HAS_CREATOR]-(:Post)-[:HAS_TAG]->(tag)
+    // WHERE tag.name = tagName
+    public TraversalDescription personsPostsWithGivenTag(String tagName) {
         return stepsBuilder.build(
                 baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
@@ -167,30 +168,89 @@ public class LdbcTraversers {
                 Step.one(node().propertyEquals(Tag.NAME, tagName)));
     }
 
-    // TODO cypher description
-    public TraversalDescription tagsOnPostsExcludingGivenTag(final String tagName) {
+    // MATCH (message)-[:HAS_TAG]->(tag)
+    // WHERE not(tag.name = tagName)
+    public TraversalDescription tagsOnPostsOrCommentsExcludingGivenTag(String tagName) {
         return stepsBuilder.build(baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Rels.HAS_TAG).hasDirection(Direction.OUTGOING)),
                 Step.one(node().propertyNotEquals(Tag.NAME, tagName)));
     }
 
-    // TODO cypher description
-    public TraversalDescription postsAndCommentsInCountryInDateRange(final String countryX, final long minDate, final long maxDate) {
+    // MATCH (:Person)<-[:HAS_CREATOR]-(message)-[:IS_LOCATED_IN]->(country:Country)
+    // WHERE message.creationDate >= minDate AND message.creationDate < maxDate AND country.name = countryName
+    public TraversalDescription postsAndCommentsInCountryInDateRange(final String countryName, final long minDate, final long maxDate) {
         PropertyContainerFilterDescriptor.PropertyContainerPredicate creationDateCheck = new PropertyContainerFilterDescriptor.PropertyContainerPredicate() {
             @Override
             public boolean apply(PropertyContainer container) {
                 long creationDate = (long) container.getProperty(Message.CREATION_DATE);
-                return (creationDate >= minDate && maxDate >= creationDate);
+                return (creationDate >= minDate && maxDate > creationDate);
             }
         };
         return stepsBuilder.build(
                 baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
                 Step.one(node().conformsTo(creationDateCheck), relationship().hasType(Rels.IS_LOCATED_IN).hasDirection(Direction.OUTGOING)),
-                Step.one(node().hasLabel(Place.Type.Country).propertyEquals(Place.NAME, countryX)));
+                Step.one(node().hasLabel(Place.Type.Country).propertyEquals(Place.NAME, countryName)));
     }
 
-    // TODO cypher description
+    // MATCH (:Person)<-[:HAS_CREATOR]-(:Post)
+    public TraversalDescription postsByPerson() {
+        return stepsBuilder.build(
+                baseTraversalDescription,
+                Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
+                Step.one(node().hasLabel(Nodes.Post))
+        );
+    }
+
+    // MATCH (:Person)<-[HAS_CREATOR]-(message)<-[:REPLY_OF]-(:Comment)-[:HAS_CREATOR]->(:Person)
+    public TraversalDescription commentsThatAreRepliesToPostOrCommentFromStartPerson() {
+        return stepsBuilder.build(
+                baseTraversalDescription,
+                Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
+                Step.one(node(), relationship().hasType(Rels.REPLY_OF).hasDirection(Direction.INCOMING)),
+                Step.one(node().hasLabel(Nodes.Comment), relationship().hasDirection(Direction.OUTGOING).hasType(Rels.HAS_CREATOR)),
+                Step.one(node())
+        );
+    }
+
+    // MATCH (:Person)<-[:HAS_CREATOR]-(message)
+    // WHERE message.creationDate < date
+    public TraversalDescription commentsAndPostsByPersonCreatedBeforeDate(final long date) {
+        PropertyContainerFilterDescriptor.PropertyContainerPredicate createdBeforeDate = new PropertyContainerFilterDescriptor.PropertyContainerPredicate() {
+            @Override
+            public boolean apply(PropertyContainer container) {
+                long creationDate = (long) container.getProperty(Message.CREATION_DATE);
+                return creationDate < date;
+            }
+        };
+        return stepsBuilder.build(
+                baseTraversalDescription,
+                Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
+                Step.one(node().conformsTo(createdBeforeDate))
+        );
+    }
+
+    // MATCH (:Person)<-[membership:HAS_MEMBER]-(:Forum)-[:CONTAINER_OF]->(:Post)-[:HAS_CREATOR]->(posterPerson:Person)
+    // WHERE membership.joinDate > minDate AND posterPerson = person
+    public TraversalDescription postsGivenPersonMadeInForumsThatStartPersonJoinedAfterGivenDate(final long minDate, Node person) {
+        PropertyContainerFilterDescriptor.PropertyContainerPredicate joinDateCheck = new PropertyContainerFilterDescriptor.PropertyContainerPredicate() {
+            @Override
+            public boolean apply(PropertyContainer container) {
+                long joinDate = (long) container.getProperty(HasMember.JOIN_DATE);
+                return joinDate > minDate;
+            }
+        };
+        return stepsBuilder.build(
+                baseTraversalDescription,
+                Step.one(node(), relationship().hasType(Rels.HAS_MEMBER).hasDirection(Direction.INCOMING).conformsTo(joinDateCheck)),
+                Step.one(node().hasLabel(Nodes.Forum), relationship().hasDirection(Direction.OUTGOING).hasType(Rels.CONTAINER_OF)),
+                Step.one(node().hasLabel(Nodes.Post), relationship().hasDirection(Direction.OUTGOING).hasType(Rels.HAS_CREATOR)),
+                Step.one(node().inSet(Sets.newHashSet(person)))
+        );
+    }
+
+    // MATCH (:Person)<-[membership:HAS_MEMBER]-(:Forum)
+    // WHERE membership.joinDate > minDate
     public TraversalDescription forumsPersonJoinedAfterDate(final long minDate) {
         // TODO add number range to Steps
         PropertyContainerFilterDescriptor.PropertyContainerPredicate joinDateCheck = new PropertyContainerFilterDescriptor.PropertyContainerPredicate() {
@@ -207,50 +267,14 @@ public class LdbcTraversers {
         );
     }
 
-    // TODO cypher description
-    public TraversalDescription postsByPerson() {
-        return stepsBuilder.build(
-                baseTraversalDescription,
-                Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
-                Step.one(node().hasLabel(Nodes.Post))
-        );
-    }
-
-    // TODO cypher description
-    // MATCH (:Person)<-[HAS_CREATOR]-(message)<-[:REPLY_OF]-(:Comment)-[:HAS_CREATOR]->(:Person)
-    public TraversalDescription commentsThatAreRepliesToPostOrCommentFromStartPerson() {
-        return stepsBuilder.build(
-                baseTraversalDescription,
-                Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
-                Step.one(node(), relationship().hasType(Rels.REPLY_OF).hasDirection(Direction.INCOMING)),
-                Step.one(node().hasLabel(Nodes.Comment), relationship().hasDirection(Direction.OUTGOING).hasType(Rels.HAS_CREATOR)),
-                Step.one(node())
-        );
-    }
-
-    // TODO cypher description
-    public TraversalDescription commentsAndPostsByPersonCreatedBeforeDate(final long date) {
-        PropertyContainerFilterDescriptor.PropertyContainerPredicate createdBeforeDate = new PropertyContainerFilterDescriptor.PropertyContainerPredicate() {
-            @Override
-            public boolean apply(PropertyContainer container) {
-                long creationDate = (long) container.getProperty(Message.CREATION_DATE);
-                return creationDate < date;
-            }
-        };
-        return stepsBuilder.build(
-                baseTraversalDescription,
-                Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
-                Step.one(node().conformsTo(createdBeforeDate))
-        );
-    }
-
-    // TODO cypher description
-    public TraversalDescription postsInForumsByPersons(final Set<Node> forums) {
+    // MATCH (:Person)<-[:HAS_CREATOR]-(:Post)<-[CONTAINER_OF]-(containingForum:Forum)
+    // WHERE containingForum = forum
+    public TraversalDescription postsInForumByPersons(Node forum) {
         return stepsBuilder.build(
                 baseTraversalDescription,
                 Step.one(node(), relationship().hasType(Rels.HAS_CREATOR).hasDirection(Direction.INCOMING)),
                 Step.one(node().hasLabel(Nodes.Post), relationship().hasType(Rels.CONTAINER_OF).hasDirection(Direction.INCOMING)),
-                Step.one(node().inSet(forums))
+                Step.one(node().inSet(Sets.newHashSet(forum)))
         );
     }
 }

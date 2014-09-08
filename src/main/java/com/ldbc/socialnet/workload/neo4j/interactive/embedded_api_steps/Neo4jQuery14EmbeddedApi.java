@@ -81,7 +81,7 @@ public class Neo4jQuery14EmbeddedApi extends Neo4jQuery14<GraphDatabaseService> 
             currPerson = personsInPathIterator.next();
             weight += Iterables.size(traversers.commentsMadeInReplyToPostsOfOtherPerson(currPerson).traverse(prevPerson)) * 1.0;
             weight += Iterables.size(traversers.commentsMadeInReplyToPostsOfOtherPerson(prevPerson).traverse(currPerson)) * 1.0;
-            weight += Iterables.size(traversers.commentsMadeByEitherPersonInReplyToCommentsOfOtherPerson(currPerson).traverse(prevPerson)) * 0.5;
+            weight += Iterables.size(traversers.commentsMadeByPersonInReplyToCommentsOfOtherPerson(currPerson).traverse(prevPerson)) * 0.5;
         }
         return weight;
     }
