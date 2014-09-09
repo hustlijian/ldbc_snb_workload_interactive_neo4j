@@ -1,0 +1,10 @@
+{"Person1URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers2199023300682", "Person2ID": 1099511662414, "Person1ID": 2199023300682, "Person2URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers1099511662414"}
+{"Person1URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers3298534993015", "Person2ID": 4398046532628, "Person1ID": 3298534993015, "Person2URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers4398046532628"}
+{"Person1URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers2199023350762", "Person2ID": 4398046532628, "Person1ID": 2199023350762, "Person2URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers4398046532628"}
+{"Person1URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers1099511700529", "Person2ID": 2199023350762, "Person1ID": 1099511700529, "Person2URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers2199023350762"}
+{"Person1URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers4398046602292", "Person2ID": 3298534993015, "Person1ID": 4398046602292, "Person2URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers3298534993015"}
+{"Person1URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers4398046551213", "Person2ID": 1099511700529, "Person1ID": 4398046551213, "Person2URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers1099511700529"}
+{"Person1URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers3298534941874", "Person2ID": 1099511700529, "Person1ID": 3298534941874, "Person2URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers1099511700529"}
+{"Person1URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers4398046532628", "Person2ID": 2199023350762, "Person1ID": 4398046532628, "Person2URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers2199023350762"}
+{"Person1URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers2199023375637", "Person2ID": 4398046532628, "Person1ID": 2199023375637, "Person2URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers4398046532628"}
+{"Person1URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers1099511662414", "Person2ID": 1099511700529, "Person1ID": 1099511662414, "Person2URI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers1099511700529"}

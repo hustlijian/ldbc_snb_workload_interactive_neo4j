@@ -10,7 +10,8 @@ public abstract class Neo4jQuery12<CONNECTION> implements Neo4jQuery<LdbcQuery12
     protected static final Integer LIMIT = 3;
 
     /*
-    Given a start Person, find the Comments that this Person's friends made in reply to Posts.
+    Given a start Person, find the Comments that this Person's friends made in reply to Posts,
+    considering only those Comments that are immediate (1-hop) replies, not the transitive (multi-hop) case.
     Only consider Posts with a Tag in a given TagClass or in a descendent of that TagClass.
     Count the number of these reply Comments, and collect the Tags that were attached to the Posts they replied to.
     Return top 20 Persons, the reply count, and the collection of Tags.

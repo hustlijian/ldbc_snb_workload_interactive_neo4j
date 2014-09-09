@@ -34,7 +34,6 @@ public class Neo4jDb extends Db {
     public static String DB_TYPE_VALUE_REMOTE_CYPHER = "remote-cypher";
     public static String DB_TYPE_VALUE_EMBEDDED_CYPHER = "embedded-cypher";
     public static String DB_TYPE_VALUE_EMBEDDED_STEPS = "embedded-api-steps";
-    public static String DB_TYPE_VALUE_EMBEDDED_API = "embedded-api-raw";
 
     private String url;
     private String dbType;
@@ -70,14 +69,6 @@ public class Neo4jDb extends Db {
             logger.info("Connecting to database: " + dbPath);
             logger.info("API type: Traversal Framework - " + LdbcTraversersType.STEPS.name());
             commands = new Neo4jDbCommandsEmbeddedApi(dbPath, configPath, LdbcTraversersType.STEPS);
-        } else if (dbType.equals(DB_TYPE_VALUE_EMBEDDED_API)) {
-            // logger.info( "Connecting to database: " + path );
-            // logger.info( "API type: Traversal Framework - " +
-            // LdbcTraversersType.RAW.name() );
-            // commands = new Neo4jDbCommandsEmbeddedApi( path,
-            // LdbcTraversersType.RAW );
-            // TODO implement
-            throw new DbException("Raw API commands not implemented yet");
         } else {
             throw new DbException(String.format("Invalid database type: %s", dbType));
         }

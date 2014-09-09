@@ -1558,6 +1558,35 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
         }
     }
 
+    /*
+#!/bin/bash
+HADOOP_HOME=/usr/local/
+LDBC_SOCIALNET_DBGEN_HOME=/Users/alexaverbuch/IdeaProjects/ldbc_snb_datagen/ldbc_socialnet_dbgen
+
+export HADOOP_HOME
+export LDBC_SOCIALNET_DBGEN_HOME
+
+mvn clean
+mvn assembly:assembly
+
+cp $LDBC_SOCIALNET_DBGEN_HOME/target/ldbc_socialnet_dbgen.jar $LDBC_SOCIALNET_DBGEN_HOME/
+rm $LDBC_SOCIALNET_DBGEN_HOME/target/ldbc_socialnet_dbgen.jar
+
+$HADOOP_HOME/bin/hadoop  jar $LDBC_SOCIALNET_DBGEN_HOME/ldbc_socialnet_dbgen.jar $LDBC_SOCIALNET_DBGEN_HOME/params.ini
+
+#parameter generation
+PARAM_GENERATION=1
+
+if [ $PARAM_GENERATION -eq 1 ]
+then
+        mkdir -p substitution_parameters
+        python paramgenerator/generateparams.py $LDBC_SOCIALNET_DBGEN_HOME substitution_parameters/
+        rm -f m0factors.txt
+        rm -f m0friendList*
+fi
+ldbc_snb_datagen/ldbc_socialnet_dbgen/run.sh (END)
+     */
+
     // TODO temporary ignore until JDBC driver fixed
     @Ignore
     @Test

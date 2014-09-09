@@ -73,16 +73,15 @@ QUERY 7
 MATCH (person:Person {id:{1}})<-[:HAS_CREATOR]-(message)<-[like:LIKES]-(liker:Person)
 WITH liker, message, like.creationDate AS likeTime, person
 ORDER BY likeTime DESC, message.id ASC
-WITH liker, head(collect({message: message, likeTime: likeTime})) AS latestLike, person
-RETURN liker.id AS personId, liker.firstName AS personFirstName, liker.lastName AS personLastName, latestLike.likeTime AS likeTime, not((liker)-[:KNOWS]-(person)) AS isNew, latestLike.message.id AS messageId, latestLike.message.content AS messageContent, latestLike.likeTime - latestLike.message.creationDate AS latencyAsMilli
+WITH liker, head(collect({msg: message, likeTime: likeTime})) AS latestLike, person
+RETURN liker.id AS personId, liker.firstName AS personFirstName, liker.lastName AS personLastName, latestLike.likeTime AS likeTime, not((liker)-[:KNOWS]-(person)) AS isNew, latestLike.msg.id AS messageId, latestLike.msg.content AS messageContent, latestLike.likeTime - latestLike.msg.creationDate AS latencyAsMilli
 ORDER BY likeTime DESC, personId ASC
 LIMIT {2}
 
 QUERY 8
 
-MATCH (start:Person {id:{1}})<-[:HAS_CREATOR]-(message)<-[:REPLY_OF*]-(comment:Comment)-[:HAS_CREATOR]->(person:Person)
-WHERE not(start=person)
-RETURN DISTINCT person.id AS personId, person.firstName AS personFirstName, person.lastName AS personLastName, comment.id AS commentId, comment.creationDate AS commentCreationDate, comment.content AS commentContent
+MATCH (start:Person {id:{1}})<-[:HAS_CREATOR]-()<-[:REPLY_OF]-(comment:Comment)-[:HAS_CREATOR]->(person:Person)
+RETURN person.id AS personId, person.firstName AS personFirstName, person.lastName AS personLastName, comment.id AS commentId, comment.creationDate AS commentCreationDate, comment.content AS commentContent
 ORDER BY commentCreationDate DESC, commentId ASC
 LIMIT {2}
 
@@ -119,7 +118,7 @@ LIMIT {4}
 QUERY 12
 
 MATCH (:Person {id:{1}})-[:KNOWS]-(friend:Person)
-OPTIONAL MATCH (friend)<-[:HAS_CREATOR]-(comment:Comment)-[:REPLY_OF*]->()-[:HAS_TAG]->(tag:Tag)-[:HAS_TYPE]->(tagClass:TagClass)-[:IS_SUBCLASS_OF*0..]->(baseTagClass:TagClass)
+OPTIONAL MATCH (friend)<-[:HAS_CREATOR]-(comment:Comment)-[:REPLY_OF]->(:Post)-[:HAS_TAG]->(tag:Tag)-[:HAS_TYPE]->(tagClass:TagClass)-[:IS_SUBCLASS_OF*0..]->(baseTagClass:TagClass)
 WHERE tagClass.name = {2} OR baseTagClass.name = {2}
 RETURN friend.id AS friendId, friend.firstName AS friendFirstName, friend.lastName AS friendLastName, collect(DISTINCT tag.name) AS tagNames, count(DISTINCT comment) AS count
 ORDER BY count DESC, friendId ASC
@@ -127,21 +126,23 @@ LIMIT {3}
 
 QUERY 13
 
-MATCH path = shortestPath((person1:Person {id:{1}})-[:KNOWS]-(person2:Person {id:{2}}))
-RETURN length(path) AS pathLength
+MATCH (person1:Person {id:{1}}), (person2:Person {id:{2}})
+OPTIONAL MATCH path = shortestPath((person1)-[:KNOWS]-(person2))
+RETURN CASE path IS NULL WHEN true THEN -1 ELSE length(path) END AS pathLength
 
 QUERY 14
 
 MATCH path = allShortestPaths((person1:Person {id:{1}})-[:KNOWS]-(person2:Person {id:{2}}))
 WITH nodes(path) AS pathNodes
-RETURN extract(n IN pathNodes | n.id) AS pathNodeIds, reduce(weight=0.0, idx IN range(1,size(pathNodes)-1) |
+RETURN
+ extract(n IN pathNodes | n.id) AS pathNodeIds,
+ reduce(weight=0.0, idx IN range(1,size(pathNodes)-1) |
     extract(prev IN [pathNodes[idx-1]] |
         extract(curr IN [pathNodes[idx]] |
             weight +
             length((curr)<-[:HAS_CREATOR]-(:Comment)-[:REPLY_OF]->(:Post)-[:HAS_CREATOR]->(prev))*1.0 +
             length((prev)<-[:HAS_CREATOR]-(:Comment)-[:REPLY_OF]->(:Post)-[:HAS_CREATOR]->(curr))*1.0 +
-            length((curr)<-[:HAS_CREATOR]-(:Comment)-[:REPLY_OF]->(:Comment)-[:HAS_CREATOR]->(prev))*0.5 +
-            length((prev)<-[:HAS_CREATOR]-(:Comment)-[:REPLY_OF]->(:Comment)-[:HAS_CREATOR]->(curr))*0.5
+            length((prev)-[:HAS_CREATOR]-(:Comment)-[:REPLY_OF]-(:Comment)-[:HAS_CREATOR]-(curr))*0.5
         )
     )[0][0]
  ) AS weight

@@ -1,0 +1,10 @@
+{"PersonID": 2199023257393, "Country": "Belgium", "CountryURI": "http://dbpedia.org/resource/Belgium", "PersonURI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers00000002199023257393", "Date0": 2006}
+{"PersonID": 3298534983816, "Country": "Libya", "CountryURI": "http://dbpedia.org/resource/Libya", "PersonURI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers00000003298534983816", "Date0": 2021}
+{"PersonID": 3298535000144, "Country": "Republic_of_Ireland", "CountryURI": "http://dbpedia.org/resource/Republic_of_Ireland", "PersonURI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers00000003298535000144", "Date0": 1971}
+{"PersonID": 2199023267989, "Country": "Ukraine", "CountryURI": "http://dbpedia.org/resource/Ukraine", "PersonURI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers00000002199023267989", "Date0": 1974}
+{"PersonID": 4398046587374, "Country": "Nepal", "CountryURI": "http://dbpedia.org/resource/Nepal", "PersonURI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers00000004398046587374", "Date0": 1972}
+{"PersonID": 1099511724570, "Country": "Nicaragua", "CountryURI": "http://dbpedia.org/resource/Nicaragua", "PersonURI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers00000001099511724570", "Date0": 1986}
+{"PersonID": 2199023329728, "Country": "Liberia", "CountryURI": "http://dbpedia.org/resource/Liberia", "PersonURI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers00000002199023329728", "Date0": 1994}
+{"PersonID": 1099511657466, "Country": "Panama", "CountryURI": "http://dbpedia.org/resource/Panama", "PersonURI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers00000001099511657466", "Date0": 1975}
+{"PersonID": 2199023358718, "Country": "Republic_of_Macedonia", "CountryURI": "http://dbpedia.org/resource/Republic_of_Macedonia", "PersonURI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers00000002199023358718", "Date0": 1992}
+{"PersonID": 3298534889906, "Country": "Niger", "CountryURI": "http://dbpedia.org/resource/Niger", "PersonURI": "http://www.ldbc.eu/ldbc_socialnet/1.0/data/pers00000003298534889906", "Date0": 2000}

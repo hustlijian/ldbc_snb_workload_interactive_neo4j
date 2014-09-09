@@ -52,7 +52,7 @@ public class Neo4jDbCommandsEmbeddedCypher extends Neo4jDbCommands {
 
     @Override
     public void registerHandlersWithDb(Db db) throws DbException {
-        db.registerOperationHandler(LdbcQuery1.class, LdbcQuery1HandlerRemoteCypher.class);
+        db.registerOperationHandler(LdbcQuery1.class, LdbcQuery1HandlerEmbeddedCypher.class);
         db.registerOperationHandler(LdbcQuery2.class, LdbcQuery2HandlerEmbeddedCypher.class);
         db.registerOperationHandler(LdbcQuery3.class, LdbcQuery3HandlerEmbeddedCypher.class);
         db.registerOperationHandler(LdbcQuery4.class, LdbcQuery4HandlerEmbeddedCypher.class);

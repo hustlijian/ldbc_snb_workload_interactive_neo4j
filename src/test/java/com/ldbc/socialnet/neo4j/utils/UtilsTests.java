@@ -42,7 +42,7 @@ public class UtilsTests {
         /*
          * Nodes
          */
-        HashSet<String> defined = new HashSet<String>();
+        HashSet<String> defined = new HashSet<>();
         defined.add(csvDir + CsvFiles.COMMENT);
         defined.add(csvDir + CsvFiles.POST);
         defined.add(csvDir + CsvFiles.PERSON);

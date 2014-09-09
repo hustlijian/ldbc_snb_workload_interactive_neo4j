@@ -2,6 +2,7 @@ package com.ldbc.socialnet.workload.neo4j.interactive.embedded_cypher;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
+import com.ldbc.driver.util.MapUtils;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery8;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery8Result;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery8;
@@ -26,6 +27,8 @@ public class Neo4jQuery8EmbeddedCypher extends Neo4jQuery8<ExecutionEngine> {
                 new Function<Map<String, Object>, LdbcQuery8Result>() {
                     @Override
                     public LdbcQuery8Result apply(Map<String, Object> row) {
+                        // TODO remove
+                        System.out.println(MapUtils.prettyPrint(row));
                         return new LdbcQuery8Result(
                                 (long) row.get("personId"),
                                 (String) row.get("personFirstName"),
