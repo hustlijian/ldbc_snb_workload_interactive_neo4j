@@ -68,10 +68,3 @@ The executed workload consists of [these queries](https://github.com/ldbc/ldbc_s
 
 	# neo4j properties file for configuring the transactional database
 	neo4j_run_config=/neo4j_run_dev.properties
-
-**Other**
-
-Using the LDBC Social Network data generator:
-
-* [Instructions on installing and running](https://github.com/ldbc/ldbc_socialnet_bm/blob/master/ldbc_socialnet_dbgen/README.md)
-* [Explanation of format, content, and distributions, and schema of generated data](todo) **TODO**
