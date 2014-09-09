@@ -27,8 +27,6 @@ public class Neo4jQuery8EmbeddedCypher extends Neo4jQuery8<ExecutionEngine> {
                 new Function<Map<String, Object>, LdbcQuery8Result>() {
                     @Override
                     public LdbcQuery8Result apply(Map<String, Object> row) {
-                        // TODO remove
-                        System.out.println(MapUtils.prettyPrint(row));
                         return new LdbcQuery8Result(
                                 (long) row.get("personId"),
                                 (String) row.get("personFirstName"),

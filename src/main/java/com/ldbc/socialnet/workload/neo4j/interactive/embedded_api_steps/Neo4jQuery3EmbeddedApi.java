@@ -55,7 +55,7 @@ public class Neo4jQuery3EmbeddedApi extends Neo4jQuery3<GraphDatabaseService> {
             public boolean apply(Node friend) {
                 Relationship personLocatedInCity = friend.getRelationships(Direction.OUTGOING, Domain.Rels.IS_LOCATED_IN).iterator().next();
                 Node city = personLocatedInCity.getOtherNode(friend);
-                Relationship cityLocatedInCountry = city.getRelationships(Direction.OUTGOING, Domain.Rels.IS_LOCATED_IN).iterator().next();
+                Relationship cityLocatedInCountry = city.getRelationships(Direction.OUTGOING, Domain.Rels.IS_PART_OF).iterator().next();
                 Node country = cityLocatedInCountry.getOtherNode(city);
                 boolean isNotCountry = false == country.hasLabel(Domain.Place.Type.Country);
                 boolean isCountryX = operation.countryXName().equals(country.getProperty(Domain.Place.NAME));

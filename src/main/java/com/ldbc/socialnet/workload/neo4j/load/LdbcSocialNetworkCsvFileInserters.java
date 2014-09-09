@@ -3,7 +3,6 @@ package com.ldbc.socialnet.workload.neo4j.load;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.load.tempindex.TempIndexFactory;
 import com.ldbc.socialnet.workload.neo4j.utils.Utils;
-import org.apache.log4j.Logger;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 
 import java.io.File;
@@ -13,9 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class LdbcSocialNetworkCsvFileInserters {
-    private static final Logger logger = Logger.getLogger(LdbcSocialNetworkCsvFileInserters.class);
-
-    private final static Map<String, Object> EMPTY_MAP = new HashMap<String, Object>();
+    private final static Map<String, Object> EMPTY_MAP = new HashMap<>();
     private final static String DATE_TIME_FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     private final static SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat(DATE_TIME_FORMAT_STRING);
     private final static String DATE_FORMAT_STRING = "yyyy-MM-dd";
@@ -52,6 +49,7 @@ public class LdbcSocialNetworkCsvFileInserters {
     private final CsvFileInserter personHasInterestTagInserter;
     private final CsvFileInserter personIsLocatedInPlaceInserter;
     private final CsvFileInserter personKnowsPersonInserter;
+    private final CsvFileInserter personLikesCommentInserter;
     private final CsvFileInserter personLikesPostInserter;
     private final CsvFileInserter personSpeaksLanguageInserter;
     private final CsvFileInserter personStudyAtOrganisationInserter;
@@ -110,6 +108,7 @@ public class LdbcSocialNetworkCsvFileInserters {
         this.personHasInterestTagInserter = personHasInterestTag(csvDataDir, batchInserter, personsIndex, tagsIndex);
         this.personIsLocatedInPlaceInserter = personIsLocatedInPlace(csvDataDir, batchInserter, personsIndex, placesIndex);
         this.personKnowsPersonInserter = personKnowsPerson(csvDataDir, batchInserter, personsIndex);
+        this.personLikesCommentInserter = personLikesComment(csvDataDir, batchInserter, personsIndex, commentsIndex);
         this.personLikesPostInserter = personLikesPost(csvDataDir, batchInserter, personsIndex, postsIndex);
         this.personStudyAtOrganisationInserter = personStudyAtOrganisation(csvDataDir, batchInserter, personsIndex, organisationsIndex);
         this.personWorksAtOrganisationInserter = personWorksAtOrganisation(csvDataDir, batchInserter, personsIndex, organisationsIndex);
@@ -120,7 +119,7 @@ public class LdbcSocialNetworkCsvFileInserters {
         this.postIsLocatedInPlaceInserter = postIsLocatedInPlace(csvDataDir, batchInserter, postsIndex, placesIndex);
         this.tagClassIsSubclassOfTagClassInserter = tagClassIsSubclassOfTagClass(csvDataDir, batchInserter, tagClassesIndex);
         this.tagHasTypeTagClassInserter = tagHasTypeTagClass(csvDataDir, batchInserter, tagsIndex, tagClassesIndex);
-        this.organisationBasedNearPlaceInserter = organisationBasedNearPlace(csvDataDir, batchInserter, organisationsIndex, placesIndex);
+        this.organisationBasedNearPlaceInserter = organisationIsLocatedInPlace(csvDataDir, batchInserter, organisationsIndex, placesIndex);
     }
 
     public CommentsTempIndex getCommentsIndex() {
@@ -239,6 +238,10 @@ public class LdbcSocialNetworkCsvFileInserters {
         return personKnowsPersonInserter;
     }
 
+    public CsvFileInserter getPersonLikesCommentInserter() {
+        return personLikesCommentInserter;
+    }
+
     public CsvFileInserter getPersonLikesPostInserter() {
         return personLikesPostInserter;
     }
@@ -279,7 +282,7 @@ public class LdbcSocialNetworkCsvFileInserters {
         return tagHasTypeTagClassInserter;
     }
 
-    public CsvFileInserter getOrganisationBasedNearPlaceInserter() {
+    public CsvFileInserter getOrganisationIsLocatedInPlaceInserter() {
         return organisationBasedNearPlaceInserter;
     }
 
@@ -301,9 +304,7 @@ public class LdbcSocialNetworkCsvFileInserters {
                     Date creationDate = DATE_TIME_FORMAT.parse(creationDateString);
                     properties.put(Domain.Message.CREATION_DATE, creationDate.getTime());
                 } catch (ParseException e) {
-                    long now = System.currentTimeMillis();
-                    properties.put(Domain.Message.CREATION_DATE, now);
-                    logger.error(String.format("Invalid DateTime string: %s\nSet creationDate to now instead\n%s", creationDateString, e));
+                    throw new RuntimeException(String.format("Invalid Date string: %s", creationDateString), e);
                 }
                 properties.put(Domain.Message.LOCATION_IP, columnValues[2]);
                 properties.put(Domain.Message.BROWSER_USED, columnValues[3]);
@@ -319,8 +320,8 @@ public class LdbcSocialNetworkCsvFileInserters {
     private static CsvFileInserter posts(final String csvDataDir, final BatchInserter batchInserter,
                                          final PostsTempIndex postsIndex) throws FileNotFoundException {
         /*
-        id      imageFile   creationDate            locationIP      browserUsed     language    content
-        100     photo9.jpg  2010-03-11T05:28:04Z    27.99.128.8     Firefox         zh          About Michael Jordan...
+        id      imageFile   creationDate            locationIP      browserUsed     language    content                 length
+        100     photo9.jpg  2010-03-11T05:28:04Z    27.99.128.8     Firefox         zh          About Michael Jordan... 20
         */
         return new CsvFileInserter(new File(csvDataDir + CsvFiles.POST), new CsvLineInserter() {
             @Override
@@ -335,25 +336,18 @@ public class LdbcSocialNetworkCsvFileInserters {
                     Date creationDate = DATE_TIME_FORMAT.parse(creationDateString);
                     properties.put(Domain.Message.CREATION_DATE, creationDate.getTime());
                 } catch (ParseException e) {
-                    long now = System.currentTimeMillis();
-                    properties.put(Domain.Message.CREATION_DATE, now);
-                    logger.error(String.format("Invalid DateTime string: %s\nSet creationDate to now instead\n%s",
-                            creationDateString, e));
+                    throw new RuntimeException(String.format("Invalid Date string: %s", creationDateString), e);
                 }
                 properties.put(Domain.Message.LOCATION_IP, columnValues[3]);
                 properties.put(Domain.Message.BROWSER_USED, columnValues[4]);
                 properties.put(Domain.Post.LANGUAGE, columnValues[5]);
                 properties.put(Domain.Message.CONTENT, columnValues[6]);
+                properties.put(Domain.Message.LENGTH, Integer.parseInt((String) columnValues[7]));
                 long postNodeId = batchInserter.createNode(properties, Domain.Nodes.Post);
                 postsIndex.put(id, postNodeId);
             }
         });
     }
-
-    private static Set<Long> allPersonIds = new HashSet<>();
-    private static Long allPersonIdsCount = 0L;
-    private static Long minPersonId = Long.MAX_VALUE;
-    private static Long maxPersonId = Long.MIN_VALUE;
 
     private static CsvFileInserter persons(final String csvDataDir, final BatchInserter batchInserter,
                                            final PersonsTempIndex personsIndex) throws FileNotFoundException {
@@ -364,7 +358,7 @@ public class LdbcSocialNetworkCsvFileInserters {
         return new CsvFileInserter(new File(csvDataDir + CsvFiles.PERSON), new CsvLineInserter() {
             @Override
             public void insert(Object[] columnValues) {
-                Map<String, Object> properties = new HashMap<String, Object>();
+                Map<String, Object> properties = new HashMap<>();
                 long id = Long.parseLong((String) columnValues[0]);
                 properties.put(Domain.Person.ID, id);
                 properties.put(Domain.Person.FIRST_NAME, columnValues[1]);
@@ -379,20 +373,14 @@ public class LdbcSocialNetworkCsvFileInserters {
                     properties.put(Domain.Person.BIRTHDAY_MONTH, calendar.get(Calendar.MONTH) + 1);
                     properties.put(Domain.Person.BIRTHDAY_DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH));
                 } catch (ParseException e) {
-                    long now = System.currentTimeMillis();
-                    properties.put(Domain.Person.BIRTHDAY, now);
-                    logger.error(String.format("Invalid Date string: %s\nSet birthday to now instead\n%s",
-                            birthdayString, e));
+                    throw new RuntimeException(String.format("Invalid Date string: %s", birthdayString), e);
                 }
                 String creationDateString = (String) columnValues[5];
                 try {
                     Date creationDate = DATE_TIME_FORMAT.parse(creationDateString);
                     properties.put(Domain.Person.CREATION_DATE, creationDate.getTime());
                 } catch (ParseException e) {
-                    long now = System.currentTimeMillis();
-                    properties.put(Domain.Person.CREATION_DATE, now);
-                    logger.error(String.format("Invalid DateTime string: %s\nSet creationDate to now instead\n%s",
-                            creationDateString, e));
+                    throw new RuntimeException(String.format("Invalid Date string: %s", creationDateString), e);
                 }
                 properties.put(Domain.Person.LOCATION_IP, columnValues[6]);
                 properties.put(Domain.Person.BROWSER_USED, columnValues[7]);
@@ -413,20 +401,15 @@ public class LdbcSocialNetworkCsvFileInserters {
         return new CsvFileInserter(new File(csvDataDir + CsvFiles.FORUM), new CsvLineInserter() {
             @Override
             public void insert(Object[] columnValues) {
-                Map<String, Object> properties = new HashMap<String, Object>();
+                Map<String, Object> properties = new HashMap<>();
                 long id = Long.parseLong((String) columnValues[0]);
-                // TODO remove?
-                // properties.put( "id", id );
                 properties.put(Domain.Forum.TITLE, columnValues[1]);
                 String creationDateString = (String) columnValues[2];
                 try {
                     Date creationDate = DATE_TIME_FORMAT.parse(creationDateString);
                     properties.put(Domain.Forum.CREATION_DATE, creationDate.getTime());
                 } catch (ParseException e) {
-                    long now = System.currentTimeMillis();
-                    properties.put(Domain.Forum.CREATION_DATE, now);
-                    logger.error(String.format("Invalid DateTime string: %s\nSet creationDate to now instead\n%s",
-                            creationDateString, e));
+                    throw new RuntimeException(String.format("Invalid Date string: %s", creationDateString), e);
                 }
                 long forumNodeId = batchInserter.createNode(properties, Domain.Nodes.Forum);
                 forumIndex.put(id, forumNodeId);
@@ -445,10 +428,8 @@ public class LdbcSocialNetworkCsvFileInserters {
             public void insert(Object[] columnValues) {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 long id = Long.parseLong((String) columnValues[0]);
-                // TODO remove?
-                // properties.put( "id", id );
                 properties.put(Domain.Tag.NAME, columnValues[1]);
-                properties.put(Domain.Tag.URI, columnValues[2]);
+//                properties.put(Domain.Tag.URI, columnValues[2]);
                 long tagNodeId = batchInserter.createNode(properties, Domain.Nodes.Tag);
                 tagIndex.put(id, tagNodeId);
             }
@@ -464,12 +445,10 @@ public class LdbcSocialNetworkCsvFileInserters {
         return new CsvFileInserter(new File(csvDataDir + CsvFiles.TAGCLASS), new CsvLineInserter() {
             @Override
             public void insert(Object[] columnValues) {
-                Map<String, Object> properties = new HashMap<String, Object>();
+                Map<String, Object> properties = new HashMap<>();
                 long id = Long.parseLong((String) columnValues[0]);
-                // TODO remove?
-                // properties.put( "id", id );
                 properties.put(Domain.TagClass.NAME, columnValues[1]);
-                properties.put(Domain.TagClass.URI, columnValues[2]);
+//                properties.put(Domain.TagClass.URI, columnValues[2]);
                 long tagClassNodeId = batchInserter.createNode(properties, Domain.Nodes.TagClass);
                 tagClassesIndex.put(id, tagClassNodeId);
             }
@@ -485,13 +464,9 @@ public class LdbcSocialNetworkCsvFileInserters {
         return new CsvFileInserter(new File(csvDataDir + CsvFiles.ORGANISATION), new CsvLineInserter() {
             @Override
             public void insert(Object[] columnValues) {
-                Map<String, Object> properties = new HashMap<String, Object>();
+                Map<String, Object> properties = new HashMap<>();
                 long id = Long.parseLong((String) columnValues[0]);
-                // TODO remove?
-                // properties.put( "id", id );
                 properties.put(Domain.Organisation.NAME, columnValues[2]);
-                // TODO only necessary if connecting to dbpedia
-                // properties.put( "url", columnValues[3] );
                 long organisationNodeId = batchInserter.createNode(properties, stringToOrganisationType((String) columnValues[1]));
                 organisationsIndex.put(id, organisationNodeId);
             }
@@ -516,12 +491,10 @@ public class LdbcSocialNetworkCsvFileInserters {
         return new CsvFileInserter(new File(csvDataDir + CsvFiles.PLACE), new CsvLineInserter() {
             @Override
             public void insert(Object[] columnValues) {
-                Map<String, Object> properties = new HashMap<String, Object>();
+                Map<String, Object> properties = new HashMap<>();
                 long id = Long.parseLong((String) columnValues[0]);
-                // TODO remove?
-                // properties.put( "id", id );
                 properties.put(Domain.Place.NAME, columnValues[1]);
-                properties.put(Domain.Place.URI, columnValues[2]);
+//                properties.put(Domain.Place.URI, columnValues[2]);
                 Domain.Place.Type placeType = stringToPlaceType((String) columnValues[3]);
                 long placeNodeId = batchInserter.createNode(properties, placeType);
                 placeIndex.put(id, placeNodeId);
@@ -552,8 +525,7 @@ public class LdbcSocialNetworkCsvFileInserters {
 
             @Override
             public void insert(Object[] columnValues) {
-                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.REPLY_OF,
-                        EMPTY_MAP);
+                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.REPLY_OF, EMPTY_MAP);
             }
         });
     }
@@ -574,8 +546,7 @@ public class LdbcSocialNetworkCsvFileInserters {
 
             @Override
             public void insert(Object[] columnValues) {
-                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.REPLY_OF,
-                        EMPTY_MAP);
+                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.REPLY_OF, EMPTY_MAP);
             }
         });
     }
@@ -596,8 +567,7 @@ public class LdbcSocialNetworkCsvFileInserters {
 
             @Override
             public void insert(Object[] columnValues) {
-                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1],
-                        Domain.Rels.IS_LOCATED_IN, EMPTY_MAP);
+                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.IS_LOCATED_IN, EMPTY_MAP);
             }
         });
     }
@@ -618,8 +588,7 @@ public class LdbcSocialNetworkCsvFileInserters {
 
             @Override
             public void insert(Object[] columnValues) {
-                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1],
-                        Domain.Rels.IS_PART_OF, EMPTY_MAP);
+                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.IS_PART_OF, EMPTY_MAP);
             }
         });
     }
@@ -627,24 +596,34 @@ public class LdbcSocialNetworkCsvFileInserters {
     private static CsvFileInserter personKnowsPerson(final String csvDataDir, final BatchInserter batchInserter,
                                                      final PersonsTempIndex personsIndex) throws FileNotFoundException {
         /*
-        Person.id   Person.id
-        75          1489
+        Person.id   Person.id   creationDate
+        75          1489        2011-01-20T11:18:41Z
          */
         return new CsvFileInserter(new File(csvDataDir + CsvFiles.PERSON_KNOWS_PERSON), new CsvLineInserter() {
             @Override
             public Object[] transform(Object[] columnValues) {
                 long fromPersonNodeId = personsIndex.get(Long.parseLong((String) columnValues[0]));
                 long toPersonNodeId = personsIndex.get(Long.parseLong((String) columnValues[1]));
-                return new Object[]{fromPersonNodeId, toPersonNodeId};
+                String creationDateString = (String) columnValues[2];
+                long creationDateAsMilli;
+                try {
+                    creationDateAsMilli = DATE_TIME_FORMAT.parse(creationDateString).getTime();
+                } catch (ParseException e) {
+                    throw new RuntimeException(String.format("Invalid Date string: %s", creationDateString), e);
+                }
+                return new Object[]{fromPersonNodeId, toPersonNodeId, creationDateAsMilli};
             }
 
             @Override
             public void insert(Object[] columnValues) {
                 long fromPerson = (long) columnValues[0];
                 long toPerson = (long) columnValues[1];
+                long creationDateAsMilli = (long) columnValues[2];
+                Map<String, Object> properties = new HashMap<>();
+                properties.put(Domain.Knows.CREATION_DATE, creationDateAsMilli);
                 // CSV contains bidirectional KNOWS rels but only 1 necessary
                 if (fromPerson < toPerson) {
-                    batchInserter.createRelationship(fromPerson, toPerson, Domain.Rels.KNOWS, EMPTY_MAP);
+                    batchInserter.createRelationship(fromPerson, toPerson, Domain.Rels.KNOWS, properties);
                 }
             }
         });
@@ -671,8 +650,7 @@ public class LdbcSocialNetworkCsvFileInserters {
                     public void insert(Object[] columnValues) {
                         Map<String, Object> properties = new HashMap<String, Object>();
                         properties.put(Domain.StudiesAt.CLASS_YEAR, columnValues[2]);
-                        batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1],
-                                Domain.Rels.STUDY_AT, properties);
+                        batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.STUDY_AT, properties);
                     }
                 });
     }
@@ -694,8 +672,8 @@ public class LdbcSocialNetworkCsvFileInserters {
                 Map<String, Object> personNodeProperties = batchInserter.getNodeProperties(personNodeId);
                 String[] languages = (String[]) personNodeProperties.get(Domain.Person.LANGUAGES);
                 String newLanguage = (String) columnValues[1];
-                String[] langaugesPlusNewLanguage = Utils.copyArrayAndAddElement(languages, newLanguage);
-                batchInserter.setNodeProperty(personNodeId, Domain.Person.LANGUAGES, langaugesPlusNewLanguage);
+                String[] languagesPlusNewLanguage = Utils.copyArrayAndAddElement(languages, newLanguage);
+                batchInserter.setNodeProperty(personNodeId, Domain.Person.LANGUAGES, languagesPlusNewLanguage);
             }
         });
     }
@@ -737,8 +715,7 @@ public class LdbcSocialNetworkCsvFileInserters {
 
             @Override
             public void insert(Object[] columnValues) {
-                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1],
-                        Domain.Rels.HAS_CREATOR, EMPTY_MAP);
+                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.HAS_CREATOR, EMPTY_MAP);
             }
         });
     }
@@ -759,8 +736,7 @@ public class LdbcSocialNetworkCsvFileInserters {
 
             @Override
             public void insert(Object[] columnValues) {
-                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1],
-                        Domain.Rels.HAS_MODERATOR, EMPTY_MAP);
+                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.HAS_MODERATOR, EMPTY_MAP);
             }
         });
     }
@@ -781,8 +757,7 @@ public class LdbcSocialNetworkCsvFileInserters {
 
             @Override
             public void insert(Object[] columnValues) {
-                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1],
-                        Domain.Rels.IS_LOCATED_IN, EMPTY_MAP);
+                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.IS_LOCATED_IN, EMPTY_MAP);
             }
         });
     }
@@ -806,10 +781,9 @@ public class LdbcSocialNetworkCsvFileInserters {
 
                     @Override
                     public void insert(Object[] columnValues) {
-                        Map<String, Object> properties = new HashMap<String, Object>();
+                        Map<String, Object> properties = new HashMap<>();
                         properties.put(Domain.WorksAt.WORK_FROM, columnValues[2]);
-                        batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1],
-                                Domain.Rels.WORKS_AT, properties);
+                        batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.WORKS_AT, properties);
                     }
                 });
     }
@@ -830,8 +804,7 @@ public class LdbcSocialNetworkCsvFileInserters {
 
             @Override
             public void insert(Object[] columnValues) {
-                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1],
-                        Domain.Rels.HAS_INTEREST, EMPTY_MAP);
+                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.HAS_INTEREST, EMPTY_MAP);
             }
         });
     }
@@ -875,13 +848,11 @@ public class LdbcSocialNetworkCsvFileInserters {
 
             @Override
             public void insert(Object[] columnValues) {
-                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.HAS_TAG,
-                        EMPTY_MAP);
+                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.HAS_TAG, EMPTY_MAP);
             }
         });
     }
 
-    // TODO
     private static CsvFileInserter commentHasTagTag(final String csvDataDir, final BatchInserter batchInserter,
                                                     final CommentsTempIndex commentsIndex, final TagsTempIndex tagsIndex) throws FileNotFoundException {
         /*
@@ -903,6 +874,35 @@ public class LdbcSocialNetworkCsvFileInserters {
         });
     }
 
+    private static CsvFileInserter personLikesComment(final String csvDataDir, final BatchInserter batchInserter,
+                                                      final PersonsTempIndex personsIndex, final CommentsTempIndex commentsIndex) throws FileNotFoundException {
+        /*
+        Person.id   Post.id     creationDate
+        1489        00          2011-01-20T11:18:41Z
+         */
+        return new CsvFileInserter(new File(csvDataDir + CsvFiles.PERSON_LIKES_POST), new CsvLineInserter() {
+            @Override
+            public Object[] transform(Object[] columnValues) {
+                long fromPersonNodeId = personsIndex.get(Long.parseLong((String) columnValues[0]));
+                long toCommentNodeId = commentsIndex.get(Long.parseLong((String) columnValues[1]));
+                String creationDateString = (String) columnValues[2];
+                long creationDateAsTime;
+                try {
+                    creationDateAsTime = DATE_TIME_FORMAT.parse(creationDateString).getTime();
+                } catch (ParseException e) {
+                    throw new RuntimeException(String.format("Invalid Date string: %s", creationDateString), e);
+                }
+                return new Object[]{fromPersonNodeId, toCommentNodeId, creationDateAsTime};
+            }
+
+            @Override
+            public void insert(Object[] columnValues) {
+                Map<String, Object> properties = new HashMap<>();
+                properties.put(Domain.Likes.CREATION_DATE, columnValues[2]);
+                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.LIKES, properties);
+            }
+        });
+    }
 
     private static CsvFileInserter personLikesPost(final String csvDataDir, final BatchInserter batchInserter,
                                                    final PersonsTempIndex personsIndex, final PostsTempIndex postsIndex) throws FileNotFoundException {
@@ -920,20 +920,16 @@ public class LdbcSocialNetworkCsvFileInserters {
                 try {
                     creationDateAsTime = DATE_TIME_FORMAT.parse(creationDateString).getTime();
                 } catch (ParseException e) {
-                    long now = System.currentTimeMillis();
-                    creationDateAsTime = now;
-                    logger.error(String.format("Invalid DateTime string: %s\nSet creationDate to now instead\n%s",
-                            creationDateString, e));
+                    throw new RuntimeException(String.format("Invalid Date string: %s", creationDateString), e);
                 }
                 return new Object[]{fromPersonNodeId, toPostNodeId, creationDateAsTime};
             }
 
             @Override
             public void insert(Object[] columnValues) {
-                Map<String, Object> properties = new HashMap<String, Object>();
+                Map<String, Object> properties = new HashMap<>();
                 properties.put(Domain.Likes.CREATION_DATE, columnValues[2]);
-                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.LIKES,
-                        properties);
+                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.LIKES, properties);
             }
         });
     }
@@ -954,8 +950,7 @@ public class LdbcSocialNetworkCsvFileInserters {
 
             @Override
             public void insert(Object[] columnValues) {
-                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1],
-                        Domain.Rels.IS_LOCATED_IN, EMPTY_MAP);
+                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.IS_LOCATED_IN, EMPTY_MAP);
             }
         });
     }
@@ -976,10 +971,7 @@ public class LdbcSocialNetworkCsvFileInserters {
                 try {
                     joinDateAsTime = DATE_TIME_FORMAT.parse(joinDateString).getTime();
                 } catch (ParseException e) {
-                    long now = System.currentTimeMillis();
-                    joinDateAsTime = now;
-                    logger.error(String.format("Invalid DateTime string: %s\nSet joinDate to now instead\n%s",
-                            joinDateString, e));
+                    throw new RuntimeException(String.format("Invalid Date string: %s", joinDateString), e);
                 }
                 return new Object[]{forumNodeId, personNodeId, joinDateAsTime};
             }
@@ -988,8 +980,7 @@ public class LdbcSocialNetworkCsvFileInserters {
             public void insert(Object[] columnValues) {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put(Domain.HasMember.JOIN_DATE, columnValues[2]);
-                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1],
-                        Domain.Rels.HAS_MEMBER, properties);
+                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.HAS_MEMBER, properties);
             }
         });
     }
@@ -1010,8 +1001,7 @@ public class LdbcSocialNetworkCsvFileInserters {
 
             @Override
             public void insert(Object[] columnValues) {
-                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1],
-                        Domain.Rels.CONTAINER_OF, EMPTY_MAP);
+                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.CONTAINER_OF, EMPTY_MAP);
             }
         });
     }
@@ -1032,8 +1022,7 @@ public class LdbcSocialNetworkCsvFileInserters {
 
             @Override
             public void insert(Object[] columnValues) {
-                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.HAS_TAG,
-                        EMPTY_MAP);
+                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.HAS_TAG, EMPTY_MAP);
             }
         });
     }
@@ -1054,8 +1043,7 @@ public class LdbcSocialNetworkCsvFileInserters {
 
             @Override
             public void insert(Object[] columnValues) {
-                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.HAS_TYPE,
-                        EMPTY_MAP);
+                batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.HAS_TYPE, EMPTY_MAP);
             }
         });
     }
@@ -1077,15 +1065,14 @@ public class LdbcSocialNetworkCsvFileInserters {
 
                     @Override
                     public void insert(Object[] columnValues) {
-                        batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1],
-                                Domain.Rels.IS_SUBCLASS_OF, EMPTY_MAP);
+                        batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.IS_SUBCLASS_OF, EMPTY_MAP);
                     }
                 });
     }
 
-    private static CsvFileInserter organisationBasedNearPlace(final String csvDataDir,
-                                                              final BatchInserter batchInserter, final OrganisationsTempIndex organisationsIndex,
-                                                              final PlacesTempIndex placesIndex) throws FileNotFoundException {
+    private static CsvFileInserter organisationIsLocatedInPlace(final String csvDataDir,
+                                                                final BatchInserter batchInserter, final OrganisationsTempIndex organisationsIndex,
+                                                                final PlacesTempIndex placesIndex) throws FileNotFoundException {
         /*
         Organisation.id     Place.id
         00                  301
@@ -1101,8 +1088,7 @@ public class LdbcSocialNetworkCsvFileInserters {
 
                     @Override
                     public void insert(Object[] columnValues) {
-                        batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1],
-                                Domain.Rels.IS_LOCATED_IN, EMPTY_MAP);
+                        batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.IS_LOCATED_IN, EMPTY_MAP);
                     }
                 });
     }

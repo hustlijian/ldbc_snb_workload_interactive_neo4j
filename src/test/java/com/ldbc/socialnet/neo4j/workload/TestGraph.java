@@ -944,11 +944,11 @@ public class TestGraph {
                    /*
                     * City-Country
                     */
-                    + " (city2)-[:" + Rels.IS_LOCATED_IN + "]->(country1),"
-                    + " (city1)-[:" + Rels.IS_LOCATED_IN + "]->(country2),\n"
-                    + " (city3)-[:" + Rels.IS_LOCATED_IN + "]->(country3),"
-                    + " (city4)-[:" + Rels.IS_LOCATED_IN + "]->(country5),"
-                    + " (city5)-[:" + Rels.IS_LOCATED_IN + "]->(country4),\n"
+                    + " (city2)-[:" + Rels.IS_PART_OF + "]->(country1),"
+                    + " (city1)-[:" + Rels.IS_PART_OF + "]->(country2),\n"
+                    + " (city3)-[:" + Rels.IS_PART_OF + "]->(country3),"
+                    + " (city4)-[:" + Rels.IS_PART_OF + "]->(country5),"
+                    + " (city5)-[:" + Rels.IS_PART_OF + "]->(country4),\n"
                    /*
                     * Person-City
                     */
@@ -1907,35 +1907,35 @@ public class TestGraph {
             protected static Map<String, Object> tag1() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Tag.NAME, "tag1");
-                params.put(Tag.URI, new String[]{"tag1 uri"});
+//                params.put(Tag.URI, new String[]{"tag1 uri"});
                 return params;
             }
 
             protected static Map<String, Object> tag2() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Tag.NAME, "tag2");
-                params.put(Tag.URI, new String[]{"tag2 uri"});
+//                params.put(Tag.URI, new String[]{"tag2 uri"});
                 return params;
             }
 
             protected static Map<String, Object> tag3() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Tag.NAME, "tag3");
-                params.put(Tag.URI, new String[]{"tag3 uri"});
+//                params.put(Tag.URI, new String[]{"tag3 uri"});
                 return params;
             }
 
             protected static Map<String, Object> tag4() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Tag.NAME, "tag4");
-                params.put(Tag.URI, new String[]{"tag4 uri"});
+//                params.put(Tag.URI, new String[]{"tag4 uri"});
                 return params;
             }
 
             protected static Map<String, Object> tag5() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Tag.NAME, "tag5");
-                params.put(Tag.URI, new String[]{"tag5 uri"});
+//                params.put(Tag.URI, new String[]{"tag5 uri"});
                 return params;
             }
         }
@@ -2904,35 +2904,35 @@ public class TestGraph {
             protected static Map<String, Object> tag1() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Tag.NAME, "tag1");
-                params.put(Tag.URI, new String[]{"tag1 uri"});
+//                params.put(Tag.URI, new String[]{"tag1 uri"});
                 return params;
             }
 
             protected static Map<String, Object> tag2() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Tag.NAME, "tag2");
-                params.put(Tag.URI, new String[]{"tag2 uri"});
+//                params.put(Tag.URI, new String[]{"tag2 uri"});
                 return params;
             }
 
             protected static Map<String, Object> tag3() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Tag.NAME, "tag3");
-                params.put(Tag.URI, new String[]{"tag3 uri"});
+//                params.put(Tag.URI, new String[]{"tag3 uri"});
                 return params;
             }
 
             protected static Map<String, Object> tag4() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Tag.NAME, "tag4");
-                params.put(Tag.URI, new String[]{"tag4 uri"});
+//                params.put(Tag.URI, new String[]{"tag4 uri"});
                 return params;
             }
 
             protected static Map<String, Object> tag5() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Tag.NAME, "tag5");
-                params.put(Tag.URI, new String[]{"tag5 uri"});
+//                params.put(Tag.URI, new String[]{"tag5 uri"});
                 return params;
             }
         }
@@ -4228,42 +4228,42 @@ public class TestGraph {
         protected static class TestTags {
             protected static Map<String, Object> uncommonTag1() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.URI, 1L);
+//                params.put(Tag.URI, 1L);
                 params.put(Tag.NAME, "uncommon tag 1");
                 return params;
             }
 
             protected static Map<String, Object> uncommonTag2() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.URI, 2L);
+//                params.put(Tag.URI, 2L);
                 params.put(Tag.NAME, "uncommon tag 2");
                 return params;
             }
 
             protected static Map<String, Object> uncommonTag3() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.URI, 3L);
+//                params.put(Tag.URI, 3L);
                 params.put(Tag.NAME, "common tag 3");
                 return params;
             }
 
             protected static Map<String, Object> commonTag4() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.URI, 4L);
+//                params.put(Tag.URI, 4L);
                 params.put(Tag.NAME, "common tag 4");
                 return params;
             }
 
             protected static Map<String, Object> commonTag5() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.URI, 5L);
+//                params.put(Tag.URI, 5L);
                 params.put(Tag.NAME, "common tag 5");
                 return params;
             }
 
             protected static Map<String, Object> commonTag6() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.URI, 6L);
+//                params.put(Tag.URI, 6L);
                 params.put(Tag.NAME, "common tag 6");
                 return params;
             }
@@ -4712,49 +4712,49 @@ public class TestGraph {
         protected static class TestTagClasses {
             protected static Map<String, Object> tc1() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(TagClass.URI, 1L);
+//                params.put(TagClass.URI, 1L);
                 params.put(TagClass.NAME, "1");
                 return params;
             }
 
             protected static Map<String, Object> tc11() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(TagClass.URI, 11L);
+//                params.put(TagClass.URI, 11L);
                 params.put(TagClass.NAME, "11");
                 return params;
             }
 
             protected static Map<String, Object> tc12() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(TagClass.URI, 12L);
+//                params.put(TagClass.URI, 12L);
                 params.put(TagClass.NAME, "12");
                 return params;
             }
 
             protected static Map<String, Object> tc121() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(TagClass.URI, 121L);
+//                params.put(TagClass.URI, 121L);
                 params.put(TagClass.NAME, "121");
                 return params;
             }
 
             protected static Map<String, Object> tc1211() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(TagClass.URI, 1211L);
+//                params.put(TagClass.URI, 1211L);
                 params.put(TagClass.NAME, "1211");
                 return params;
             }
 
             protected static Map<String, Object> tc2() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(TagClass.URI, 2L);
+//                params.put(TagClass.URI, 2L);
                 params.put(TagClass.NAME, "2");
                 return params;
             }
 
             protected static Map<String, Object> tc21() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(TagClass.URI, 21L);
+//                params.put(TagClass.URI, 21L);
                 params.put(TagClass.NAME, "21");
                 return params;
             }

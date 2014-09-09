@@ -96,12 +96,12 @@ public class Domain {
 
     public static class Tag {
         public static final String NAME = "name";
-        public static final String URI = "uri";
+//        public static final String URI = "uri";
     }
 
     public static class TagClass {
         public static final String NAME = "name";
-        public static final String URI = "uri";
+//        public static final String URI = "uri";
     }
 
     public static class Organisation {
@@ -121,12 +121,16 @@ public class Domain {
         }
 
         public static final String NAME = "name";
-        public static final String URI = "uri";
+//        public static final String URI = "uri";
     }
 
     /*
      * Relationships
      */
+
+    public static class Knows {
+        public static final String CREATION_DATE = "creationDate";
+    }
 
     public static class StudiesAt {
         public static final String CLASS_YEAR = "classYear";

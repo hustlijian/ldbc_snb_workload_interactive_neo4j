@@ -23,94 +23,6 @@ import java.util.concurrent.TimeUnit;
 MAVEN_OPTS="-server -XX:+UseConcMarkSweepGC -Xmx512m" mvn exec:java -Dexec.mainClass=com.ldbc.socialnet.workload.importer.LdbcSocialNetworkNeo4jImporter -Dexec.arguments="db/,/Users/alexaverbuch/IdeaProjects/ldbc_socialnet_bm/ldbc_socialnet_dbgen/outputDir/,/Users/alexaverbuch/IdeaProjects/ldbc_socialnet_importer/src/main/resources/neo4j_import_dev.properties"
  */
 
-/*
-TODO (Comment)-[IS_LOCATED]-(Place)
-Comment.id|Place.id|
-
-TODO (Comment)-[REPLY_OF]-(Comment)
-Comment.id|Comment.id|
-
-TODO (Comment)-[REPLY_OF]-(Post)
-Comment.id|Post.id|
-
-TODO (Forum)
-id|title|creationDate|
-
-TODO (Forum)-[CONTAINER_OF]-(Post)
-Forum.id|Post.id|
-
-TODO (Forum)-[HAS_MEMBER]-(Person)
-Forum.id|Person.id|joinDate|
-
-TODO (Forum)-[HAS_MODERATOR]-(Person)
-Forum.id|Person.id|
-
-TODO (Organization)
-id|type|name|url|
-
-TODO (Organization)-[LOCATED_IN]-(Place)
-Organisation.id|Place.id|
-
-TODO (Person)
-id|firstName|lastName|gender|birthday|creationDate|locationIP|browserUsed|
-
-TODO (Person).email
-Person.id|email|
-
-TODO (Person)-[HAS_INTEREST]-(Tag)
-Person.id|Tag.id|
-
-TODO (Person)-[LOCATED_IN]-(Place)
-Person.id|Place.id|
-
-TODO (Person)-[KNOWS]-(Person)
-Person.id|Person.id|creationDate|
-
-TODO (Person)-[LIKES]-(Comment)
-Person.id|Comment.id|creationDate|
-
-TODO (Person)-[LIKES]-(Post)
-Person.id|Post.id|creationDate|
-
-TODO (Person).language
-Person.id|language|
-
-TODO (Person)-[STUDY_AT]-(Organization)
-Person.id|Organisation.id|classYear|
-
-TODO (Person)-[WORK_AT]-(Organization)
-Person.id|Organisation.id|workFrom|
-
-TODO (Place)
-id|name|url|type|
-
-TODO (Place)-[IS_PART_OF]-(Place)
-Place.id|Place.id|
-
-TODO (Post)
-id|imageFile|creationDate|locationIP|browserUsed|language|content|length|
-
-TODO (Post)-[HAS_CREATOR]-(Person)
-Post.id|Person.id|
-
-TODO (Post)-[HAS_TAG]-(Tag)
-Post.id|Tag.id|
-
-TODO (Post)-[LOCATED_IN]-(Place)
-Post.id|Place.id|
-
-TODO (Tag)
-id|name|url|
-
-TODO (Tag)-[HAS_TYPE]-(TagClass)
-Tag.id|TagClass.id|
-
-TODO (TagClass)
-id|name|url|
-
-TODO (TagClass)-[IS_SUBCLASS_OF]-(TagClass)
-TagClass.id|TagClass.id|
- */
 public class LdbcSnbNeo4jImporter {
     private final static Logger logger = Logger.getLogger(LdbcSnbNeo4jImporter.class);
 
@@ -177,6 +89,8 @@ public class LdbcSnbNeo4jImporter {
         insertFile(fileInserters.getCommentReplyOfCommentInserter());
         // Relationship (Comment, Post)
         insertFile(fileInserters.getCommentReplyOfPostInserter());
+        // Relationship (Person, Comment)
+        insertFile(fileInserters.getPersonLikesCommentInserter());
 
         // Free (Comment)
         logger.info("Freeing comments index");
@@ -248,7 +162,7 @@ public class LdbcSnbNeo4jImporter {
         // Relationship (Person, Organisation)
         insertFile(fileInserters.getPersonWorksAtOrganisationInserter());
         // Relationship (Organisation, Place)
-        insertFile(fileInserters.getOrganisationBasedNearPlaceInserter());
+        insertFile(fileInserters.getOrganisationIsLocatedInPlaceInserter());
 
         // Free (Person)
         logger.info("Freeing persons index");
