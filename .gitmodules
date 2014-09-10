@@ -3,4 +3,4 @@
 	url = https://github.com/alexaverbuch/ldbc_driver.git
 [submodule "steps"]
 	path = steps
-	url = git@github.com:alexaverbuch/steps.git
+	url = https://ithub.com:alexaverbuch/steps.git
