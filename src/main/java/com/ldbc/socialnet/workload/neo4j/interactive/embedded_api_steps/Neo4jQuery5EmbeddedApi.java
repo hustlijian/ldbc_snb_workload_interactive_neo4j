@@ -5,14 +5,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.ldbc.driver.util.Function1;
-import com.ldbc.driver.util.Tuple;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery5;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery5Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery5;
-import com.ldbc.socialnet.workload.neo4j.utils.StepsUtilsTemp;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
@@ -48,16 +45,16 @@ public class Neo4jQuery5EmbeddedApi extends Neo4jQuery5<GraphDatabaseService> {
         final long minDateAsMilli = operation.minDate().getTime();
 
         // path -> (forum,memberPerson)
-        Function1<Path, Tuple.Tuple2<Node, Node>> extractFun = new Function1<Path, Tuple.Tuple2<Node, Node>>() {
+        Function<Path, StepsUtils.Pair<Node, Node>> extractFun = new Function<Path, StepsUtils.Pair<Node, Node>>() {
             @Override
-            public Tuple.Tuple2<Node, Node> apply(Path path) {
+            public StepsUtils.Pair<Node, Node> apply(Path path) {
                 Node memberPerson = path.startNode();
                 Node forum = path.endNode();
-                return Tuple.tuple2(forum, memberPerson);
+                return new StepsUtils.Pair(forum, memberPerson);
             }
         };
         // (forum,[memberPerson])
-        Map<Node, Collection<Node>> friendsByForums = StepsUtilsTemp.groupBy(
+        Map<Node, Collection<Node>> friendsByForums = StepsUtils.groupBy(
                 traversers.forumsPersonJoinedAfterDate(minDateAsMilli).traverse(friends.toArray(new Node[friends.size()])).iterator(),
                 extractFun,
                 false

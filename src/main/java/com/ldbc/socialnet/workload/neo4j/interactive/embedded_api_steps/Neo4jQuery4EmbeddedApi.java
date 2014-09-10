@@ -7,15 +7,13 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.ldbc.driver.temporal.Duration;
 import com.ldbc.driver.temporal.Time;
-import com.ldbc.driver.util.Function1;
-import com.ldbc.driver.util.Tuple;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery4;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery4Result;
 import com.ldbc.socialnet.workload.neo4j.Domain;
 import com.ldbc.socialnet.workload.neo4j.interactive.LdbcTraversers;
 import com.ldbc.socialnet.workload.neo4j.interactive.Neo4jQuery4;
-import com.ldbc.socialnet.workload.neo4j.utils.StepsUtilsTemp;
 import org.neo4j.graphdb.*;
+import org.neo4j.traversal.steps.execution.StepsUtils;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -58,17 +56,17 @@ public class Neo4jQuery4EmbeddedApi extends Neo4jQuery4<GraphDatabaseService> {
         };
         Iterator<Path> recentTagAndPostPaths = Iterators.filter(tagAndPostPaths, tagWasTaggedByOldPost);
 
-        Function1<Path, Tuple.Tuple2<String, Node>> extractFun = new Function1<Path, Tuple.Tuple2<String, Node>>() {
+        Function<Path, StepsUtils.Pair<String, Node>> extractFun = new Function<Path, StepsUtils.Pair<String, Node>>() {
             @Override
-            public Tuple.Tuple2<String, Node> apply(Path path) {
+            public StepsUtils.Pair<String, Node> apply(Path path) {
                 List<Node> pathNodes = Lists.newArrayList(path.nodes());
                 Node tagNode = pathNodes.get(3);
                 String tagName = (String) tagNode.getProperty(Domain.Tag.NAME);
                 Node postNode = pathNodes.get(2);
-                return Tuple.tuple2(tagName, postNode);
+                return new StepsUtils.Pair(tagName, postNode);
             }
         };
-        Map<String, Collection<Node>> postsGroupedByTagName = StepsUtilsTemp.groupBy(recentTagAndPostPaths, extractFun, false);
+        Map<String, Collection<Node>> postsGroupedByTagName = StepsUtils.groupBy(recentTagAndPostPaths, extractFun, false);
 
         Map<String, Integer> tagNamesWithPostCountsMap = new HashMap<>();
         for (String tagName : postsGroupedByTagName.keySet()) {
