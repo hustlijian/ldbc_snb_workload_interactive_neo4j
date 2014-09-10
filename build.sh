@@ -5,7 +5,7 @@ LDBC_CORE_VER="0.2-SNAPSHOT"
 LDBC_CORE_JAR="ldbc_driver/target/core-"${LDBC_CORE_VER}".jar"
 
 STEPS="steps"
-STEPS_VER="0.1-SNAPSHOT"
+STEPS_VER="0.2-SNAPSHOT"
 STEPS_JAR="steps/target/steps-"${STEPS_VER}".jar"
 
 IN_PROJECT_MVN_REPO="lib"
