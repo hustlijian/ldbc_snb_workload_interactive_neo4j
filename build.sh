@@ -2,7 +2,7 @@
 
 LDBC_CORE="ldbc_driver"
 LDBC_CORE_VER="0.2-SNAPSHOT"
-LDBC_CORE_JAR="ldbc_driver/target/core-"${LDBC_CORE_VER}".jar"
+LDBC_CORE_JAR="ldbc_driver/target/jeeves-"${LDBC_CORE_VER}".jar"
 
 STEPS="steps"
 STEPS_VER="0.2-SNAPSHOT"
@@ -33,4 +33,4 @@ mvn install:install-file -DlocalRepositoryPath=$IN_PROJECT_MVN_REPO -DcreateChec
 mvn install:install-file -DlocalRepositoryPath=$IN_PROJECT_MVN_REPO -DcreateChecksum=true -Dpackaging=jar -Dfile=$STEPS_JAR -DgroupId=org.neo4j.traversal -DartifactId=steps -Dversion=$STEPS_VER
 mvn install:install-file -DlocalRepositoryPath=$IN_PROJECT_MVN_REPO -DcreateChecksum=true -Dpackaging=jar -Dfile=$JDBC_JAR -DgroupId=org.neo4j.jdbc -DartifactId=neo4j-jdbc -Dversion=$JDBC_VER
 
-mvn clean compile -Dmaven.compiler.source=1.7 -Dmaven.compiler.target=1.7 -X
+mvn clean compile -Dmaven.compiler.source=1.7 -Dmaven.compiler.target=1.7
