@@ -11,8 +11,8 @@ STEPS_JAR=${STEPS_DIR}"/target/"${STEPS_ARTIFACT}"-"${STEPS_VER}".jar"
 
 JDBC_DIR="neo4j-jdbc"
 JDBC_ARTIFACT="neo4j-jdbc"
-JDBC_VER="2.1.4-SNAPSHOT"
-JDBC_JAR=${JDBC_DIR}"/target/"${JDBC_ARTIFACT}"-"${JDBC_VER}"-jar-with-dependencies.jar"
+JDBC_VER="2.1.5-SNAPSHOT"
+JDBC_JAR=${JDBC_DIR}"/target/"${JDBC_ARTIFACT}"-"${JDBC_VER}".jar"
 
 IN_PROJECT_MVN_REPO="lib"
 
@@ -33,6 +33,6 @@ cd ..
 
 mvn install:install-file -DlocalRepositoryPath=$IN_PROJECT_MVN_REPO -DcreateChecksum=true -Dpackaging=jar -Dfile=$LDBC_DRIVER_JAR -DgroupId=com.ldbc.driver -DartifactId=$LDBC_DRIVER_ARTIFACT -Dversion=$LDBC_DRIVER_VER
 mvn install:install-file -DlocalRepositoryPath=$IN_PROJECT_MVN_REPO -DcreateChecksum=true -Dpackaging=jar -Dfile=$STEPS_JAR -DgroupId=org.neo4j.traversal -DartifactId=$STEPS_ARTIFACT -Dversion=$STEPS_VER
-mvn install:install-file -DlocalRepositoryPath=$IN_PROJECT_MVN_REPO -DcreateChecksum=true -Dpackaging=jar -Dfile=$JDBC_JAR -DgroupId=org.neo4j.jdbc -DartifactId=$JDBC_ARTIFACT -Dversion=$JDBC_VER
+mvn install:install-file -DlocalRepositoryPath=$IN_PROJECT_MVN_REPO -DcreateChecksum=true -Dpackaging=jar -Dfile=$JDBC_JAR -DgroupId=org.neo4j -DartifactId=$JDBC_ARTIFACT -Dversion=$JDBC_VER
 
 mvn clean compile -Dmaven.compiler.source=1.7 -Dmaven.compiler.target=1.7 -X
