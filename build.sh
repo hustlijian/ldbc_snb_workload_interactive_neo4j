@@ -2,7 +2,8 @@
 LDBC_DRIVER_DIR="ldbc_driver"
 LDBC_DRIVER_ARTIFACT="jeeves"
 LDBC_DRIVER_VER="0.2-SNAPSHOT"
-LDBC_DRIVER_JAR=${LDBC_DRIVER_DIR}"/target/"${LDBC_DRIVER_ARTIFACT}"-"${LDBC_DRIVER_VER}"-jar-with-dependencies.jar"
+LDBC_DRIVER_JAR=${LDBC_DRIVER_DIR}"/target/"${LDBC_DRIVER_ARTIFACT}"-"${LDBC_DRIVER_VER}"
+.jar"
 
 STEPS_DIR="steps"
 STEPS_ARTIFACT="steps"
@@ -12,7 +13,7 @@ STEPS_JAR=${STEPS_DIR}"/target/"${STEPS_ARTIFACT}"-"${STEPS_VER}".jar"
 JDBC_DIR="neo4j-jdbc"
 JDBC_ARTIFACT="neo4j-jdbc"
 JDBC_VER="2.1.4-SNAPSHOT"
-JDBC_JAR=${JDBC_DIR}"/target/"${JDBC_ARTIFACT}"-"${JDBC_VER}"-jar-with-dependencies.jar"
+JDBC_JAR=${JDBC_DIR}"/target/"${JDBC_ARTIFACT}"-"${JDBC_VER}".jar"
 
 IN_PROJECT_MVN_REPO="lib"
 
