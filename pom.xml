@@ -19,6 +19,7 @@
         <ldbc-driver-version>0.2-SNAPSHOT</ldbc-driver-version>
         <steps-version>0.2-SNAPSHOT</steps-version>
         <neo4j-jdbc-version>2.1.4-SNAPSHOT</neo4j-jdbc-version>
+        <guava.version>18.0</guava.version>
     </properties>
 
 
@@ -40,7 +41,12 @@
             <version>${neo4j-jdbc-version}</version>
         </dependency>
 
-        
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-enterprise</artifactId>
@@ -95,7 +101,7 @@
                 <enabled>true</enabled>
             </releases>
             <snapshots>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </snapshots>
         </repository>
 
