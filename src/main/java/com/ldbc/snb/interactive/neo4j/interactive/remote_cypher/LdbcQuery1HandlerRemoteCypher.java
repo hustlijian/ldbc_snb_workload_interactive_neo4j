@@ -4,45 +4,32 @@ import com.google.common.collect.ImmutableList;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.OperationHandler;
 import com.ldbc.driver.OperationResultReport;
-import com.ldbc.driver.runtime.ConcurrentErrorReporter;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery1;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery1Result;
-import com.ldbc.snb.interactive.neo4j.Neo4jConnectionStateEmbedded;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Transaction;
+import com.ldbc.snb.interactive.neo4j.Neo4jConnectionState;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 public class LdbcQuery1HandlerRemoteCypher extends OperationHandler<LdbcQuery1> {
+    private static final Neo4jQuery1RemoteCypher query = new Neo4jQuery1RemoteCypher();
+
     @Override
     protected OperationResultReport executeOperation(LdbcQuery1 operation) throws DbException {
-
-//        // TODO this needs to be in DB
-//        // Make sure Neo4j Driver is registered
-//        try {
-//            Class.forName("org.neo4j.jdbc.Driver");
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-
-        // TODO this needs to be in DB
-        Connection connection = null;
-
-        GraphDatabaseService db = ((Neo4jConnectionStateEmbedded) dbConnectionState()).db();
-        List<LdbcQuery1Result> result;
-        int resultCode = 0;
-        try (Transaction tx = db.beginTx()) {
-            result = ImmutableList.copyOf(new Neo4jQuery1RemoteCypher().execute(connection, operation));
-            tx.success();
-        } catch (Exception e) {
-            String errMsg = String.format(
-                    "Error executing query\n%s\n%s",
-                    operation.toString(),
-                    ConcurrentErrorReporter.stackTraceToString(e));
-            throw new DbException(errMsg, e);
+        Connection connection;
+        try {
+            connection = ((Neo4jConnectionState) dbConnectionState()).connection();
+        } catch (SQLException e) {
+            throw new DbException("Error while getting connection", e);
         }
-
+        List<LdbcQuery1Result> result = null;
+        int resultCode = 0;
+        try {
+            result = ImmutableList.copyOf(query.execute(connection, operation));
+        } catch (Throwable e) {
+            resultCode = 1;
+        }
         return operation.buildResult(resultCode, result);
     }
 }

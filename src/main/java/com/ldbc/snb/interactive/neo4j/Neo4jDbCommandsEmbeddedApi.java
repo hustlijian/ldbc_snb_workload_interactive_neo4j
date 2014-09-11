@@ -47,7 +47,7 @@ public class Neo4jDbCommandsEmbeddedApi extends Neo4jDbCommands {
             default:
                 throw new RuntimeException("Unrecognized LdbcTraversersType: " + traversersType.name());
         }
-        dbConnectionState = new Neo4jConnectionStateEmbedded(db, null, traversers);
+        dbConnectionState = new Neo4jConnectionState(db, null, traversers, null);
         registerShutdownHook(db);
     }
 

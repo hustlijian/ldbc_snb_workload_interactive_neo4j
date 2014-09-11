@@ -14,15 +14,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
 public class QueryCorrectnessJdbcUrlCypherTest extends QueryCorrectnessTest<JdbcUrlConnectionState> {
-    private static int port = 7475;
-
-    private static synchronized int getAndIncrementPort() {
-        return port++;
-    }
-
     private <OPERATION_RESULT, OPERATION extends Operation<List<OPERATION_RESULT>>> Iterator<OPERATION_RESULT> executeQuery(
             OPERATION operation,
             Neo4jQuery<OPERATION, OPERATION_RESULT, Connection> query,
@@ -42,10 +35,10 @@ public class QueryCorrectnessJdbcUrlCypherTest extends QueryCorrectnessTest<Jdbc
                     .newEmbeddedDatabaseBuilder(path)
                     .loadPropertiesFromFile(TestUtils.getResource("/neo4j_run_dev.properties").getAbsolutePath())
                     .newGraphDatabase();
-            int serverPort = getAndIncrementPort();
+            int serverPort = Neo4jServerHelper.nextFreePort();
             wrappingNeoServer = Neo4jServerHelper.fromDb(db, serverPort);
             wrappingNeoServer.start();
-            connection = DriverManager.getConnection("jdbc:neo4j://localhost:" + serverPort, new Properties());
+            connection = DriverManager.getConnection("jdbc:neo4j://localhost:" + serverPort);
         } catch (Throwable e) {
             throw new DbException("Could not create database connection", e);
         }

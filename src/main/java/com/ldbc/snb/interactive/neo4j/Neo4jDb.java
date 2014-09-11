@@ -32,7 +32,7 @@ public class Neo4jDb extends Db {
     public static String DB_TYPE_KEY = "neo4j.dbtype";
     public static String DB_TYPE_VALUE_REMOTE_CYPHER = "remote-cypher";
     public static String DB_TYPE_VALUE_EMBEDDED_CYPHER = "embedded-cypher";
-    public static String DB_TYPE_VALUE_EMBEDDED_STEPS = "embedded-api-steps";
+    public static String DB_TYPE_VALUE_EMBEDDED_API = "embedded-api-steps";
 
     private String url;
     private String dbType;
@@ -57,14 +57,14 @@ public class Neo4jDb extends Db {
         logger.info("************************");
 
         if (dbType.equals(DB_TYPE_VALUE_REMOTE_CYPHER)) {
-            // logger.info( "Connecting to database: " + url );
-            // TODO implement
-            throw new DbException("Remote Cypher commands not implemented yet");
+            logger.info("Connecting to database: " + url);
+            logger.info("API type: JDBC");
+            commands = new Neo4jDbCommandsJdbcCypher(url);
         } else if (dbType.equals(DB_TYPE_VALUE_EMBEDDED_CYPHER)) {
             logger.info("Connecting to database: " + dbPath);
             logger.info("API type: Cypher");
             commands = new Neo4jDbCommandsEmbeddedCypher(dbPath, configPath);
-        } else if (dbType.equals(DB_TYPE_VALUE_EMBEDDED_STEPS)) {
+        } else if (dbType.equals(DB_TYPE_VALUE_EMBEDDED_API)) {
             logger.info("Connecting to database: " + dbPath);
             logger.info("API type: Traversal Framework - " + Neo4jDbCommandsEmbeddedApi.LdbcTraversersType.STEPS.name());
             commands = new Neo4jDbCommandsEmbeddedApi(dbPath, configPath, Neo4jDbCommandsEmbeddedApi.LdbcTraversersType.STEPS);

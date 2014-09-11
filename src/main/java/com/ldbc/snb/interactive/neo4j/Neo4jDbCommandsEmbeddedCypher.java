@@ -35,7 +35,7 @@ public class Neo4jDbCommandsEmbeddedCypher extends Neo4jDbCommands {
         }
         db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbPath).setConfig(dbConfig).newGraphDatabase();
         queryEngine = new ExecutionEngine(db);
-        dbConnectionState = new Neo4jConnectionStateEmbedded(db, queryEngine, null);
+        dbConnectionState = new Neo4jConnectionState(db, queryEngine, null, null);
         registerShutdownHook(db);
     }
 

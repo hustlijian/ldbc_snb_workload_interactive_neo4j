@@ -16,7 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class QueryCorrectnessEmbeddedApiStepsTest extends QueryCorrectnessTest<GraphDatabaseService> {
+public class QueryCorrectnessEmbeddedApiTest extends QueryCorrectnessTest<GraphDatabaseService> {
     private <OPERATION_RESULT, OPERATION extends Operation<List<OPERATION_RESULT>>> Iterator<OPERATION_RESULT> executeQuery(
             OPERATION operation,
             Neo4jQuery<OPERATION, OPERATION_RESULT, GraphDatabaseService> query,

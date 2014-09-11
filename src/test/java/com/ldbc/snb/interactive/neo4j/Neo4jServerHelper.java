@@ -15,6 +15,12 @@ import java.io.File;
 import java.io.IOException;
 
 public class Neo4jServerHelper {
+    private static int port = 7474;
+
+    public static synchronized int nextFreePort() {
+        return port++;
+    }
+
     public static void main(String[] args) throws IOException, InterruptedException {
         int port = 7474;
         String path = "/tmp/neodb";

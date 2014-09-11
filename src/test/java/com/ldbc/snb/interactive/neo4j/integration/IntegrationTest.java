@@ -12,6 +12,7 @@ import com.ldbc.driver.temporal.Time;
 import com.ldbc.driver.temporal.TimeSource;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload;
 import com.ldbc.snb.interactive.neo4j.Neo4jDb;
+import com.ldbc.snb.interactive.neo4j.Neo4jServerHelper;
 import com.ldbc.snb.interactive.neo4j.TestUtils;
 import com.ldbc.snb.interactive.neo4j.load.LdbcSnbNeo4jImporter;
 import org.junit.Ignore;
@@ -20,6 +21,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.server.WrappingNeoServer;
 
 import java.io.File;
 import java.io.IOException;
@@ -97,7 +99,7 @@ public class IntegrationTest {
         Map<String, String> neo4jDbConfiguration = new HashMap<>();
         neo4jDbConfiguration.put(Neo4jDb.CONFIG_PATH_KEY, TestUtils.getResource("/neo4j_run_dev.properties").getAbsolutePath());
         neo4jDbConfiguration.put(Neo4jDb.DB_PATH_KEY, dbDir.getAbsolutePath());
-        neo4jDbConfiguration.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_STEPS);
+        neo4jDbConfiguration.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_API);
 
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
 
@@ -180,10 +182,74 @@ public class IntegrationTest {
         assertThat(resultsFile.length() == 0, is(false));
     }
 
-    @Ignore
     @Test
     public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher() throws ClientException, IOException, DriverConfigurationException {
-        assertThat(true,is(false));
+        File dbDir = testFolder.newFile();
+        buildGraph(dbDir.getAbsolutePath());
+
+        int port = Neo4jServerHelper.nextFreePort();
+        WrappingNeoServer wrappingNeoServer = Neo4jServerHelper.fromPath(dbDir.getAbsolutePath(), port);
+        wrappingNeoServer.start();
+
+        File resultsFile = testFolder.newFile();
+        assertThat(resultsFile.length() == 0, is(true));
+
+        long operationCount = 10;
+        int threadCount = 2;
+        Duration statusDisplayInterval = Duration.fromSeconds(1);
+        TimeUnit timeUnit = TimeUnit.MILLISECONDS;
+        String resultFilePath = resultsFile.getAbsolutePath();
+        Double timeCompressionRatio = 1.0;
+        Set<String> peerIds = new HashSet<>();
+        Duration toleratedExecutionDelay = Duration.fromMinutes(60);
+        Duration windowedExecutionWindowDuration = Duration.fromSeconds(1);
+        ConsoleAndFileDriverConfiguration.ConsoleAndFileValidationParamOptions validationCreationParams = null;
+        String databaseValidationFilePath = null;
+        boolean validateWorkload = false;
+        boolean calculateWorkloadStatistics = false;
+        Duration spinnerSleepDuration = Duration.fromMilli(0);
+        boolean printHelp = false;
+        ConsoleAndFileDriverConfiguration configuration = new ConsoleAndFileDriverConfiguration(
+                new HashMap<String, String>(),
+                Neo4jDb.class.getName(),
+                LdbcSnbInteractiveWorkload.class.getName(),
+                operationCount,
+                threadCount,
+                statusDisplayInterval,
+                timeUnit,
+                resultFilePath,
+                timeCompressionRatio,
+                windowedExecutionWindowDuration,
+                peerIds,
+                toleratedExecutionDelay,
+                validationCreationParams,
+                databaseValidationFilePath,
+                validateWorkload,
+                calculateWorkloadStatistics,
+                spinnerSleepDuration,
+                printHelp);
+
+        Map<String, String> ldbcSnbInteractiveReadOnlyConfiguration = LdbcSnbInteractiveWorkload.defaultReadOnlyConfig();
+        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(ldbcSnbInteractiveReadOnlyConfiguration);
+
+        Map<String, String> neo4jDbConfiguration = new HashMap<>();
+        neo4jDbConfiguration.put(Neo4jDb.URL_KEY, "jdbc:neo4j://localhost:" + port);
+        neo4jDbConfiguration.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_REMOTE_CYPHER);
+
+        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
+
+        Map<String, String> additionalParameters = new HashMap<>();
+        additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, TestUtils.getResource("/test_csv_files/").getAbsolutePath());
+        additionalParameters.put(ConsoleAndFileDriverConfiguration.RESULT_FILE_PATH_ARG, resultsFile.getAbsolutePath());
+        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(additionalParameters);
+
+        TimeSource timeSource = new SystemTimeSource();
+        Time workloadStartTime = timeSource.now().plus(Duration.fromSeconds(1));
+        ConcurrentControlService controlService = new LocalControlService(workloadStartTime, configuration);
+        Client client = new Client(controlService, timeSource);
+        client.start();
+        assertThat(resultsFile.length() == 0, is(false));
+        wrappingNeoServer.stop();
     }
 
 

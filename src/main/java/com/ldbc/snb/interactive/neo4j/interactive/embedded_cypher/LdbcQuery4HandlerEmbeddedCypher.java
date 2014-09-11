@@ -7,7 +7,7 @@ import com.ldbc.driver.OperationResultReport;
 import com.ldbc.driver.runtime.ConcurrentErrorReporter;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery4;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery4Result;
-import com.ldbc.snb.interactive.neo4j.Neo4jConnectionStateEmbedded;
+import com.ldbc.snb.interactive.neo4j.Neo4jConnectionState;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
@@ -18,8 +18,8 @@ public class LdbcQuery4HandlerEmbeddedCypher extends OperationHandler<LdbcQuery4
 
     @Override
     protected OperationResultReport executeOperation(LdbcQuery4 operation) throws DbException {
-        ExecutionEngine engine = ((Neo4jConnectionStateEmbedded) dbConnectionState()).executionEngine();
-        GraphDatabaseService db = ((Neo4jConnectionStateEmbedded) dbConnectionState()).db();
+        ExecutionEngine engine = ((Neo4jConnectionState) dbConnectionState()).executionEngine();
+        GraphDatabaseService db = ((Neo4jConnectionState) dbConnectionState()).db();
         List<LdbcQuery4Result> result;
         int resultCode = 0;
         try (Transaction tx = db.beginTx()) {
