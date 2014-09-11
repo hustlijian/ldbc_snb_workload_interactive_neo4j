@@ -1,18 +1,21 @@
 package com.ldbc.snb.interactive.neo4j.interactive;
 
+import com.google.common.collect.Lists;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.Operation;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.*;
-import com.ldbc.snb.interactive.neo4j.Neo4jServerStarterStopper;
+import com.ldbc.snb.interactive.neo4j.Neo4jServerHelper;
 import com.ldbc.snb.interactive.neo4j.TestUtils;
 import com.ldbc.snb.interactive.neo4j.interactive.remote_cypher.*;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.server.WrappingNeoServer;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 public class QueryCorrectnessJdbcUrlCypherTest extends QueryCorrectnessTest<JdbcUrlConnectionState> {
     private static int port = 7475;
@@ -27,13 +30,16 @@ public class QueryCorrectnessJdbcUrlCypherTest extends QueryCorrectnessTest<Jdbc
             Connection connection) throws DbException {
         // TODO uncomment to print query
         System.out.println(operation.toString() + "\n" + query.description() + "\n");
-        return query.execute(connection, operation);
+        List<OPERATION_RESULT> results = Lists.newArrayList(query.execute(connection, operation));
+        // try to make sure list is not lazy
+        results.size();
+        return results.iterator();
     }
 
     @Override
     public JdbcUrlConnectionState openConnection(String path) throws Exception {
         GraphDatabaseService db;
-        Neo4jServerStarterStopper neo4jServerStarterStopper;
+        WrappingNeoServer wrappingNeoServer;
         Connection connection;
         try {
             db = new GraphDatabaseFactory()
@@ -41,19 +47,25 @@ public class QueryCorrectnessJdbcUrlCypherTest extends QueryCorrectnessTest<Jdbc
                     .loadPropertiesFromFile(TestUtils.getResource("/neo4j_run_dev.properties").getAbsolutePath())
                     .newGraphDatabase();
             int serverPort = getAndIncrementPort();
-            neo4jServerStarterStopper = Neo4jServerStarterStopper.fromDb(db, serverPort);
-            neo4jServerStarterStopper.startServer();
-            connection = DriverManager.getConnection("jdbc:neo4j://localhost:"+serverPort+"/");
+            wrappingNeoServer = Neo4jServerHelper.fromDb(db, serverPort);
+            // TODO remove
+            System.out.println("********************** before start **********************");
+            wrappingNeoServer.start();
+            // TODO remove
+            System.out.println("********************** after start & before connection **********************");
+            connection = DriverManager.getConnection("jdbc:neo4j://localhost:" + serverPort, new Properties());
+            // TODO remove
+            System.out.println("********************** after connection **********************");
         } catch (Throwable e) {
             throw new DbException("Could not create database connection", e);
         }
-        return new JdbcUrlConnectionState(connection, neo4jServerStarterStopper, db);
+        return new JdbcUrlConnectionState(connection, wrappingNeoServer, db);
     }
 
     @Override
     public void closeConnection(JdbcUrlConnectionState connection) throws Exception {
         connection.connection().close();
-        connection.neo4jServerStarter().stopServer();
+        connection.server().stop();
         connection.db().shutdown();
     }
 

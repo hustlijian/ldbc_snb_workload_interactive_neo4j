@@ -1,5 +1,6 @@
 package com.ldbc.snb.interactive.neo4j.interactive;
 
+import com.google.common.collect.Lists;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.Operation;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.*;
@@ -7,6 +8,7 @@ import com.ldbc.snb.interactive.neo4j.TestUtils;
 import com.ldbc.snb.interactive.neo4j.interactive.remote_cypher.*;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.jdbc.Neo4jConnection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,7 +23,10 @@ public class QueryCorrectnessJdbcFileCypherTest extends QueryCorrectnessTest<Jdb
             Connection connection) throws DbException {
         // TODO uncomment to print query
         System.out.println(operation.toString() + "\n" + query.description() + "\n");
-        return query.execute(connection, operation);
+        List<OPERATION_RESULT> results = Lists.newArrayList(query.execute(connection, operation));
+        // try to make sure list is not lazy
+        results.size();
+        return results.iterator();
     }
 
     @Override

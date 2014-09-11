@@ -1,18 +1,18 @@
 package com.ldbc.snb.interactive.neo4j.interactive;
 
-import com.ldbc.snb.interactive.neo4j.Neo4jServerStarterStopper;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.server.WrappingNeoServer;
 
 import java.sql.Connection;
 
 public class JdbcUrlConnectionState {
     private final Connection connection;
-    private final Neo4jServerStarterStopper neo4jServerStarterStopper;
+    private final WrappingNeoServer wrappingNeoServer;
     private final GraphDatabaseService db;
 
-    public JdbcUrlConnectionState(Connection connection, Neo4jServerStarterStopper neo4jServerStarterStopper, GraphDatabaseService db) {
+    public JdbcUrlConnectionState(Connection connection, WrappingNeoServer wrappingNeoServer, GraphDatabaseService db) {
         this.connection = connection;
-        this.neo4jServerStarterStopper = neo4jServerStarterStopper;
+        this.wrappingNeoServer = wrappingNeoServer;
         this.db = db;
     }
 
@@ -20,8 +20,8 @@ public class JdbcUrlConnectionState {
         return connection;
     }
 
-    public Neo4jServerStarterStopper neo4jServerStarter() {
-        return neo4jServerStarterStopper;
+    public WrappingNeoServer server() {
+        return wrappingNeoServer;
     }
 
     public GraphDatabaseService db() {
