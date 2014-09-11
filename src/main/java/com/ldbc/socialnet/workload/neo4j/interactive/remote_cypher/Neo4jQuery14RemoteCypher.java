@@ -50,7 +50,7 @@ public class Neo4jQuery14RemoteCypher extends Neo4jQuery14<Connection> {
             try {
                 if (false == hasNext) throw new NoSuchElementException();
                 LdbcQuery14Result result = new LdbcQuery14Result(
-                        (Collection<Long>) resultSet.getObject("pathNodeIds"),
+                        (Iterable<Long>) resultSet.getObject("pathNodeIds"),
                         resultSet.getDouble("weight"));
                 hasNext = resultSet.next();
                 return result;

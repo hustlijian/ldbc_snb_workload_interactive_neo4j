@@ -4,11 +4,11 @@ import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.sql.Connection;
 
-public class JdbcConnectionState {
+public class JdbcFileConnectionState {
     private final Connection connection;
     private final GraphDatabaseService db;
 
-    public JdbcConnectionState(Connection connection, GraphDatabaseService db) {
+    public JdbcFileConnectionState(Connection connection, GraphDatabaseService db) {
         this.connection = connection;
         this.db = db;
     }

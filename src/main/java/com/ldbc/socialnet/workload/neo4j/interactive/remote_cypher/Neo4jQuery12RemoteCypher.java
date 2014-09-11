@@ -54,7 +54,7 @@ public class Neo4jQuery12RemoteCypher extends Neo4jQuery12<Connection> {
                         resultSet.getLong("friendId"),
                         resultSet.getString("friendFirstName"),
                         resultSet.getString("friendLastName"),
-                        (Collection<String>) resultSet.getObject("tagNames"),
+                        (Iterable<String>) resultSet.getObject("tagNames"),
                         ((Long)resultSet.getLong("count")).intValue());
                 hasNext = resultSet.next();
                 return result;

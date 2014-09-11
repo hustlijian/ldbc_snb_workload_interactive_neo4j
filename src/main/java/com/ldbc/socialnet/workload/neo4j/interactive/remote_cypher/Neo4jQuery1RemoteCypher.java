@@ -51,6 +51,16 @@ public class Neo4jQuery1RemoteCypher extends Neo4jQuery1<Connection> {
         public LdbcQuery1Result next() {
             try {
                 if (false == hasNext) throw new NoSuchElementException();
+                Object emailsObject = resultSet.getObject("emails");
+                Iterable<String> emails = (Iterable.class.isAssignableFrom(emailsObject.getClass()))
+                        ? (Iterable) emailsObject
+                        : Lists.newArrayList((String[]) emailsObject);
+
+                Object languagesObject = resultSet.getObject("languages");
+                Iterable<String> languages = (Iterable.class.isAssignableFrom(languagesObject.getClass()))
+                        ? (Iterable) languagesObject
+                        : Lists.newArrayList((String[]) languagesObject);
+
                 LdbcQuery1Result result = new LdbcQuery1Result(
                         resultSet.getLong("id"),
                         resultSet.getString("lastName"),
@@ -60,8 +70,8 @@ public class Neo4jQuery1RemoteCypher extends Neo4jQuery1<Connection> {
                         resultSet.getString("gender"),
                         resultSet.getString("browser"),
                         resultSet.getString("locationIp"),
-                        Lists.newArrayList((String[]) resultSet.getObject("emails")),
-                        Lists.newArrayList((String[]) resultSet.getObject("languages")),
+                        emails,
+                        languages,
                         resultSet.getString("cityName"),
                         (Collection) resultSet.getObject("unis"),
                         (Collection) resultSet.getObject("companies"));
