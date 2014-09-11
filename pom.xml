@@ -103,7 +103,7 @@
                 <enabled>true</enabled>
             </releases>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
 
@@ -118,9 +118,14 @@
             <url>file://${project.basedir}/lib</url>
             <releases>
                 <enabled>true</enabled>
+                <!--<updatePolicy>always</updatePolicy>-->
+                <!--<checksumPolicy>warn</checksumPolicy>-->
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
                 <checksumPolicy>warn</checksumPolicy>
-            </releases>
+            </snapshots>
         </repository>
     </repositories>
 
