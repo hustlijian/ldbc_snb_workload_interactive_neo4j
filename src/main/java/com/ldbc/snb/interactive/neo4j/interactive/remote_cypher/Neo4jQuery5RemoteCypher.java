@@ -9,8 +9,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.List;
 
 public class Neo4jQuery5RemoteCypher extends Neo4jQuery5<Connection> {
     @Override
@@ -25,43 +26,19 @@ public class Neo4jQuery5RemoteCypher extends Neo4jQuery5<Connection> {
             preparedStatement.setLong(JOIN_DATE, operation.minDate().getTime());
             preparedStatement.setInt(LIMIT, operation.limit());
             ResultSet resultSet = preparedStatement.executeQuery();
-            return new ResultSetIterator(resultSet);
+            List<LdbcQuery5Result> results = new ArrayList<>();
+            while (resultSet.next()) {
+                results.add(resultSetToLdbcQuery5Result(resultSet));
+            }
+            return results.iterator();
         } catch (SQLException e) {
             throw new DbException("Error while executing query", e);
         }
     }
 
-    private class ResultSetIterator implements Iterator<LdbcQuery5Result> {
-        private final ResultSet resultSet;
-        private boolean hasNext;
-
-        private ResultSetIterator(ResultSet resultSet) throws SQLException {
-            this.resultSet = resultSet;
-            this.hasNext = resultSet.next();
-        }
-
-        @Override
-        public boolean hasNext() {
-            return hasNext;
-        }
-
-        @Override
-        public LdbcQuery5Result next() {
-            try {
-                if (false == hasNext) throw new NoSuchElementException();
-                LdbcQuery5Result result = new LdbcQuery5Result(
-                        resultSet.getString("forumName"),
-                        ((Long) resultSet.getLong("postCount")).intValue());
-                hasNext = resultSet.next();
-                return result;
-            } catch (SQLException e) {
-                throw new RuntimeException("Error while retrieving next row", e);
-            }
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("remove() not supported by " + getClass().getName());
-        }
+    private LdbcQuery5Result resultSetToLdbcQuery5Result(ResultSet resultSet) throws SQLException {
+        return new LdbcQuery5Result(
+                resultSet.getString("forumName"),
+                ((Long) resultSet.getLong("postCount")).intValue());
     }
 }

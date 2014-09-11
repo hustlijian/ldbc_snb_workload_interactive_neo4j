@@ -11,8 +11,8 @@ import com.ldbc.driver.temporal.SystemTimeSource;
 import com.ldbc.driver.temporal.Time;
 import com.ldbc.driver.temporal.TimeSource;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload;
-import com.ldbc.snb.interactive.neo4j.TestUtils;
 import com.ldbc.snb.interactive.neo4j.Neo4jDb;
+import com.ldbc.snb.interactive.neo4j.TestUtils;
 import com.ldbc.snb.interactive.neo4j.load.LdbcSnbNeo4jImporter;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -32,7 +32,6 @@ import java.util.concurrent.TimeUnit;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-@Ignore
 public class IntegrationTest {
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
@@ -44,8 +43,14 @@ public class IntegrationTest {
         importer.load();
     }
 
+    @Ignore
     @Test
-    public void shouldRunEmbeddedStepsTransactionalWorkloadWithoutThrowingException() throws ClientException, IOException, DriverConfigurationException {
+    public void importerShouldBeReusableParametersShouldBeGivenToLoadMethodNotToConstructor() {
+        assertThat(true, is(false));
+    }
+
+    @Test
+    public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedSteps() throws ClientException, IOException, DriverConfigurationException {
         File dbDir = testFolder.newFile();
         buildGraph(dbDir.getAbsolutePath());
         File resultsFile = testFolder.newFile();
@@ -111,7 +116,7 @@ public class IntegrationTest {
     }
 
     @Test
-    public void shouldRunEmbeddedCypherTransactionalWorkloadWithoutThrowingException() throws ClientException, IOException, DriverConfigurationException {
+    public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedCypher() throws ClientException, IOException, DriverConfigurationException {
         File dbDir = testFolder.newFile();
         buildGraph(dbDir.getAbsolutePath());
         File resultsFile = testFolder.newFile();
@@ -175,8 +180,15 @@ public class IntegrationTest {
         assertThat(resultsFile.length() == 0, is(false));
     }
 
+    @Ignore
     @Test
-    public void shouldRunLoadWorkloadWithMainWithoutThrowingException() throws ClientException, IOException {
+    public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher() throws ClientException, IOException, DriverConfigurationException {
+        assertThat(true,is(false));
+    }
+
+
+    @Test
+    public void shouldLoadDatasetWithMain() throws ClientException, IOException {
         File dbDir = testFolder.newFile();
         String csvFilesDir = TestUtils.getResource("/test_csv_files").getAbsolutePath() + "/";
         String configFilePath = TestUtils.getResource("/neo4j_import_dev.properties").getAbsolutePath();
@@ -186,7 +198,7 @@ public class IntegrationTest {
     }
 
     @Test
-    public void shouldRunLoadWorkloadUsingConstructorWithoutThrowingException() throws ClientException, IOException {
+    public void shouldLoadDatasetUsingConstructor() throws ClientException, IOException {
         File dbDir = testFolder.newFile();
         String csvFilesDir = TestUtils.getResource("/test_csv_files").getAbsolutePath() + "/";
         String configFilePath = TestUtils.getResource("/neo4j_import_dev.properties").getAbsolutePath();

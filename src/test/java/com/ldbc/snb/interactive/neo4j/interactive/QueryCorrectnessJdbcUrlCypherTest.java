@@ -1,6 +1,5 @@
 package com.ldbc.snb.interactive.neo4j.interactive;
 
-import com.google.common.collect.Lists;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.Operation;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.*;
@@ -30,10 +29,7 @@ public class QueryCorrectnessJdbcUrlCypherTest extends QueryCorrectnessTest<Jdbc
             Connection connection) throws DbException {
         // TODO uncomment to print query
         System.out.println(operation.toString() + "\n" + query.description() + "\n");
-        List<OPERATION_RESULT> results = Lists.newArrayList(query.execute(connection, operation));
-        // try to make sure list is not lazy
-        results.size();
-        return results.iterator();
+        return query.execute(connection, operation);
     }
 
     @Override
@@ -48,14 +44,8 @@ public class QueryCorrectnessJdbcUrlCypherTest extends QueryCorrectnessTest<Jdbc
                     .newGraphDatabase();
             int serverPort = getAndIncrementPort();
             wrappingNeoServer = Neo4jServerHelper.fromDb(db, serverPort);
-            // TODO remove
-            System.out.println("********************** before start **********************");
             wrappingNeoServer.start();
-            // TODO remove
-            System.out.println("********************** after start & before connection **********************");
             connection = DriverManager.getConnection("jdbc:neo4j://localhost:" + serverPort, new Properties());
-            // TODO remove
-            System.out.println("********************** after connection **********************");
         } catch (Throwable e) {
             throw new DbException("Could not create database connection", e);
         }

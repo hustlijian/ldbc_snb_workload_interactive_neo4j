@@ -10,14 +10,9 @@ import org.neo4j.kernel.GraphDatabaseAPI;
 import org.neo4j.server.WrappingNeoServer;
 import org.neo4j.server.configuration.Configurator;
 import org.neo4j.server.configuration.ServerConfigurator;
-import org.neo4j.server.modules.DiscoveryModule;
-import org.neo4j.server.modules.RESTApiModule;
-import org.neo4j.server.modules.ServerModule;
-import org.neo4j.server.modules.ThirdPartyJAXRSModule;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 public class Neo4jServerHelper {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -58,14 +53,15 @@ public class Neo4jServerHelper {
     public static WrappingNeoServer fromDb(GraphDatabaseService db, int port) throws IOException {
         Configurator configurator = new ServerConfigurator((GraphDatabaseAPI) db);
         configurator.configuration().addProperty(Configurator.WEBSERVER_PORT_PROPERTY_KEY, port);
-        return new WrappingNeoServer((GraphDatabaseAPI) db, configurator) {
-            @Override
-            protected Iterable<ServerModule> createServerModules() {
-                return Arrays.asList(
-                        new DiscoveryModule(webServer, getLogging()),
-                        new RESTApiModule(webServer, database, configurator.configuration(), getLogging()),
-                        new ThirdPartyJAXRSModule(webServer, configurator, getLogging(), this));
-            }
-        };
+//        return new WrappingNeoServer((GraphDatabaseAPI) db, configurator) {
+//            @Override
+//            protected Iterable<ServerModule> createServerModules() {
+//                return Arrays.asList(
+//                        new DiscoveryModule(webServer, getLogging()),
+//                        new RESTApiModule(webServer, database, configurator.configuration(), getLogging()),
+//                        new ThirdPartyJAXRSModule(webServer, configurator, getLogging(), this));
+//            }
+//        };
+        return new WrappingNeoServer((GraphDatabaseAPI) db, configurator);
     }
 }

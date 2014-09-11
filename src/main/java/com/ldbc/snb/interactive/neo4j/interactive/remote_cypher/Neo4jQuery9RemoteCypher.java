@@ -9,8 +9,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.List;
 
 public class Neo4jQuery9RemoteCypher extends Neo4jQuery9<Connection> {
     @Override
@@ -25,47 +26,23 @@ public class Neo4jQuery9RemoteCypher extends Neo4jQuery9<Connection> {
             preparedStatement.setLong(LATEST_DATE, operation.maxDate().getTime());
             preparedStatement.setInt(LIMIT, operation.limit());
             ResultSet resultSet = preparedStatement.executeQuery();
-            return new ResultSetIterator(resultSet);
+            List<LdbcQuery9Result> results = new ArrayList<>();
+            while (resultSet.next()) {
+                results.add(resultSetToLdbcQuery9Result(resultSet));
+            }
+            return results.iterator();
         } catch (SQLException e) {
             throw new DbException("Error while executing query", e);
         }
     }
 
-    private class ResultSetIterator implements Iterator<LdbcQuery9Result> {
-        private final ResultSet resultSet;
-        private boolean hasNext;
-
-        private ResultSetIterator(ResultSet resultSet) throws SQLException {
-            this.resultSet = resultSet;
-            this.hasNext = resultSet.next();
-        }
-
-        @Override
-        public boolean hasNext() {
-            return hasNext;
-        }
-
-        @Override
-        public LdbcQuery9Result next() {
-            try {
-                if (false == hasNext) throw new NoSuchElementException();
-                LdbcQuery9Result result = new LdbcQuery9Result(
-                        resultSet.getLong("personId"),
-                        resultSet.getString("personFirstName"),
-                        resultSet.getString("personLastName"),
-                        resultSet.getLong("messageId"),
-                        resultSet.getString("messageContent"),
-                        resultSet.getLong("messageCreationDate"));
-                hasNext = resultSet.next();
-                return result;
-            } catch (SQLException e) {
-                throw new RuntimeException("Error while retrieving next row", e);
-            }
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("remove() not supported by " + getClass().getName());
-        }
+    private LdbcQuery9Result resultSetToLdbcQuery9Result(ResultSet resultSet) throws SQLException {
+        return new LdbcQuery9Result(
+                resultSet.getLong("personId"),
+                resultSet.getString("personFirstName"),
+                resultSet.getString("personLastName"),
+                resultSet.getLong("messageId"),
+                resultSet.getString("messageContent"),
+                resultSet.getLong("messageCreationDate"));
     }
 }

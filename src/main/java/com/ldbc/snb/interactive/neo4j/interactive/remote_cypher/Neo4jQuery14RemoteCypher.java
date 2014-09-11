@@ -9,8 +9,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.List;
 
 public class Neo4jQuery14RemoteCypher extends Neo4jQuery14<Connection> {
     @Override
@@ -24,44 +25,19 @@ public class Neo4jQuery14RemoteCypher extends Neo4jQuery14<Connection> {
             preparedStatement.setLong(PERSON_ID_1, operation.person1Id());
             preparedStatement.setLong(PERSON_ID_2, operation.person2Id());
             ResultSet resultSet = preparedStatement.executeQuery();
-            return new ResultSetIterator(resultSet);
+            List<LdbcQuery14Result> results = new ArrayList<>();
+            while (resultSet.next()) {
+                results.add(resultSetToLdbcQuery14Result(resultSet));
+            }
+            return results.iterator();
         } catch (SQLException e) {
             throw new DbException("Error while executing query", e);
         }
     }
 
-    private class ResultSetIterator implements Iterator<LdbcQuery14Result> {
-        private final ResultSet resultSet;
-        private boolean hasNext;
-
-        private ResultSetIterator(ResultSet resultSet) throws SQLException {
-            this.resultSet = resultSet;
-            this.hasNext = resultSet.next();
-        }
-
-        @Override
-        public boolean hasNext() {
-            return hasNext;
-        }
-
-        @Override
-        public LdbcQuery14Result next() {
-            try {
-                if (false == hasNext) throw new NoSuchElementException();
-                LdbcQuery14Result result = new LdbcQuery14Result(
-                        (Iterable<Long>) resultSet.getObject("pathNodeIds"),
-                        resultSet.getDouble("weight"));
-                hasNext = resultSet.next();
-                return result;
-            } catch (SQLException e) {
-                throw new RuntimeException("Error while retrieving next row", e);
-            }
-
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("remove() not supported by " + getClass().getName());
-        }
+    private LdbcQuery14Result resultSetToLdbcQuery14Result(ResultSet resultSet) throws SQLException {
+        return new LdbcQuery14Result(
+                (Iterable<Long>) resultSet.getObject("pathNodeIds"),
+                resultSet.getDouble("weight"));
     }
 }

@@ -23,10 +23,7 @@ public class QueryCorrectnessJdbcFileCypherTest extends QueryCorrectnessTest<Jdb
             Connection connection) throws DbException {
         // TODO uncomment to print query
         System.out.println(operation.toString() + "\n" + query.description() + "\n");
-        List<OPERATION_RESULT> results = Lists.newArrayList(query.execute(connection, operation));
-        // try to make sure list is not lazy
-        results.size();
-        return results.iterator();
+        return query.execute(connection, operation);
     }
 
     @Override
