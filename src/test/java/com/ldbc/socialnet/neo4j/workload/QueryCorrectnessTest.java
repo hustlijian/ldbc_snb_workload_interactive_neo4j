@@ -14,6 +14,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+@Ignore
 public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectnessTestImplProvider<CONNECTION> {
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
@@ -1558,8 +1559,6 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
         }
     }
 
-    // TODO temporary ignore until JDBC driver fixed
-    @Ignore
     @Test
     public void query13ShouldReturnExpectedResult() throws Exception {
         String dbDir = testFolder.newFolder().getAbsolutePath();

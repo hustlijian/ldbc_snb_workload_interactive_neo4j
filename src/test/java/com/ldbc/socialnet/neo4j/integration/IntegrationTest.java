@@ -14,6 +14,7 @@ import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload
 import com.ldbc.socialnet.neo4j.TestUtils;
 import com.ldbc.socialnet.workload.neo4j.Neo4jDb;
 import com.ldbc.socialnet.workload.neo4j.load.LdbcSnbNeo4jImporter;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -31,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+@Ignore
 public class IntegrationTest {
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();

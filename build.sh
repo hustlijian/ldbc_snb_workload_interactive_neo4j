@@ -9,7 +9,7 @@ STEPS_VER="0.2-SNAPSHOT"
 STEPS_JAR="steps/target/steps-"${STEPS_VER}".jar"
 
 JDBC="neo4j-jdbc"
-JDBC_VER="2.1.4-SNAPSHOT"
+JDBC_VER="2.1.4"
 JDBC_JAR="neo4j-jdbc/target/neo4j-jdbc-"${JDBC_VER}".jar"
 
 IN_PROJECT_MVN_REPO="lib"
@@ -22,11 +22,11 @@ cd $LDBC_CORE
 cd ..
 
 cd $STEPS
-mvn clean package -Dmaven.compiler.source=1.7 -Dmaven.compiler.target=1.7
+mvn clean package -Dmaven.compiler.source=1.7 -Dmaven.compiler.target=1.7 -DskipTests
 cd ..
 
 cd $JDBC
-mvn clean package -Dmaven.compiler.source=1.7 -Dmaven.compiler.target=1.7
+mvn clean package -Dmaven.compiler.source=1.7 -Dmaven.compiler.target=1.7 -DskipTests
 cd ..
 
 mvn install:install-file -DlocalRepositoryPath=$IN_PROJECT_MVN_REPO -DcreateChecksum=true -Dpackaging=jar -Dfile=$LDBC_CORE_JAR -DgroupId=com.ldbc.driver -DartifactId=core -Dversion=$LDBC_CORE_VER
