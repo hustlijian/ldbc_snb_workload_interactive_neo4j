@@ -59,7 +59,7 @@ public class IntegrationTest {
         assertThat(resultsFile.length() == 0, is(true));
 
         long operationCount = 10;
-        int threadCount = 2;
+        int threadCount = 4;
         Duration statusDisplayInterval = Duration.fromSeconds(1);
         TimeUnit timeUnit = TimeUnit.MILLISECONDS;
         String resultFilePath = resultsFile.getAbsolutePath();
@@ -125,7 +125,7 @@ public class IntegrationTest {
         assertThat(resultsFile.length() == 0, is(true));
 
         long operationCount = 10;
-        int threadCount = 2;
+        int threadCount = 4;
         Duration statusDisplayInterval = Duration.fromSeconds(1);
         TimeUnit timeUnit = TimeUnit.MILLISECONDS;
         String resultFilePath = resultsFile.getAbsolutePath();
@@ -195,7 +195,7 @@ public class IntegrationTest {
         assertThat(resultsFile.length() == 0, is(true));
 
         long operationCount = 10;
-        int threadCount = 2;
+        int threadCount = 4;
         Duration statusDisplayInterval = Duration.fromSeconds(1);
         TimeUnit timeUnit = TimeUnit.MILLISECONDS;
         String resultFilePath = resultsFile.getAbsolutePath();
