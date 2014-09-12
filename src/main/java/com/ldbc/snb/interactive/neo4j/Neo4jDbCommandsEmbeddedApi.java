@@ -17,8 +17,7 @@ public class Neo4jDbCommandsEmbeddedApi extends Neo4jDbCommands {
     private final String dbPath;
     final private String configPath;
     private final LdbcTraversersType traversersType;
-    private GraphDatabaseService db;
-    private DbConnectionState dbConnectionState;
+    private Neo4jConnectionState dbConnectionState;
     private LdbcTraversers traversers;
 
     public enum LdbcTraversersType {
@@ -39,7 +38,7 @@ public class Neo4jDbCommandsEmbeddedApi extends Neo4jDbCommands {
         } catch (IOException e) {
             throw new DbException("Unable to load Neo4j DB config", e);
         }
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbPath).setConfig(dbConfig).newGraphDatabase();
+        GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbPath).setConfig(dbConfig).newGraphDatabase();
         switch (traversersType) {
             case STEPS:
                 traversers = new LdbcTraversers(db);
@@ -52,8 +51,8 @@ public class Neo4jDbCommandsEmbeddedApi extends Neo4jDbCommands {
     }
 
     @Override
-    public void cleanUp() {
-        db.shutdown();
+    public void cleanUp() throws DbException {
+        dbConnectionState.shutdown();
     }
 
     @Override

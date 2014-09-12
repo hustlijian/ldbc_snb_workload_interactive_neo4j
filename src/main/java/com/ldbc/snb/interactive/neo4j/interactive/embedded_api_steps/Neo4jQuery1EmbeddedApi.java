@@ -36,7 +36,7 @@ public class Neo4jQuery1EmbeddedApi extends Neo4jQuery1<GraphDatabaseService> {
                         operation.personId()
                 )
         );
-        if (persons.isEmpty()) return Iterators.emptyIterator();
+        if (persons.isEmpty()) return Collections.emptyIterator();
         final Node startPerson = persons.get(0);
 
         // friends

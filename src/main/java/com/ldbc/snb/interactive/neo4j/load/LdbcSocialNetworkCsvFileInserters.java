@@ -403,6 +403,7 @@ public class LdbcSocialNetworkCsvFileInserters {
             public void insert(Object[] columnValues) {
                 Map<String, Object> properties = new HashMap<>();
                 long id = Long.parseLong((String) columnValues[0]);
+                properties.put(Domain.Forum.ID, id);
                 properties.put(Domain.Forum.TITLE, columnValues[1]);
                 String creationDateString = (String) columnValues[2];
                 try {

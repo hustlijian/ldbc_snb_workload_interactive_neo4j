@@ -37,7 +37,7 @@ public class Neo4jQuery6EmbeddedApi extends Neo4jQuery6<GraphDatabaseService> {
     @Override
     public Iterator<LdbcQuery6Result> execute(GraphDatabaseService db, LdbcQuery6 operation) {
         Iterator<Node> personIterator = db.findNodesByLabelAndProperty(Domain.Nodes.Person, Domain.Person.ID, operation.personId()).iterator();
-        if (false == personIterator.hasNext()) return Iterators.emptyIterator();
+        if (false == personIterator.hasNext()) return Collections.emptyIterator();
         final Node person = personIterator.next();
 
         List<Node> friendsList = ImmutableList.copyOf(

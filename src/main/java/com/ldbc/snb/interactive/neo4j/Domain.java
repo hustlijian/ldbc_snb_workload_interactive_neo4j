@@ -90,6 +90,7 @@ public class Domain {
     }
 
     public static class Forum {
+        public static final String ID = "id";
         public static final String TITLE = "title";
         public static final String CREATION_DATE = "creationDate";
     }

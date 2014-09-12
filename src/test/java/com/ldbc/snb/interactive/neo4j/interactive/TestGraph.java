@@ -2001,7 +2001,8 @@ public class TestGraph {
                    */
                     + " (person1)-[:" + Rels.KNOWS + "]->(f2), (f2)-[:" + Rels.KNOWS + "]->(ff6),\n"
                     + " (person1)-[:" + Rels.KNOWS + "]->(f3),\n"
-                    + " (person1)-[:" + Rels.KNOWS + "]->(f4)\n"
+                    + " (person1)-[:" + Rels.KNOWS + "]->(f4)-[:" + Rels.KNOWS + "]->(f2),\n"
+                    + " (f4)-[:" + Rels.KNOWS + "]->(ff6)\n"
                    /*
                    * Post-Person
                    */
@@ -2445,50 +2446,30 @@ public class TestGraph {
 
         protected static class TestForums {
             protected static Map<String, Object> forum1() {
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2000, Calendar.JANUARY, 3);
-                long creationDate = c.getTimeInMillis();
-
                 Map<String, Object> params = new HashMap<>();
+                params.put(Forum.ID, 1l);
                 params.put(Forum.TITLE, "forum1");
-                params.put(Forum.CREATION_DATE, creationDate);
                 return params;
             }
 
             protected static Map<String, Object> forum2() {
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2000, Calendar.JANUARY, 3);
-                long creationDate = c.getTimeInMillis();
-
                 Map<String, Object> params = new HashMap<>();
-                params.put(Forum.TITLE, "forum2");
-                params.put(Forum.CREATION_DATE, creationDate);
+                params.put(Forum.ID, 2l);
+                params.put(Forum.TITLE, "forum1");
                 return params;
             }
 
             protected static Map<String, Object> forum3() {
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2000, Calendar.JANUARY, 3);
-                long creationDate = c.getTimeInMillis();
-
                 Map<String, Object> params = new HashMap<>();
+                params.put(Forum.ID, 3l);
                 params.put(Forum.TITLE, "forum3");
-                params.put(Forum.CREATION_DATE, creationDate);
                 return params;
             }
 
             protected static Map<String, Object> forum4() {
-                Calendar c = Calendar.getInstance();
-                c.clear();
-                c.set(2000, Calendar.JANUARY, 3);
-                long creationDate = c.getTimeInMillis();
-
                 Map<String, Object> params = new HashMap<>();
+                params.put(Forum.ID, 4l);
                 params.put(Forum.TITLE, "forum4");
-                params.put(Forum.CREATION_DATE, creationDate);
                 return params;
             }
         }
@@ -3708,8 +3689,8 @@ public class TestGraph {
                    /*
                     * Person-Person
                     */
-                    + "(person0)-[:" + Rels.KNOWS + "]->(friend1)-[:" + Rels.KNOWS + "]->(friendfriend4),\n"
-                    + "(person0)-[:" + Rels.KNOWS + "]->(friend2),\n"
+                    + "(person0)-[:" + Rels.KNOWS + "]->(friend1)-[:" + Rels.KNOWS + "]->(friendfriend4)<-[:" + Rels.KNOWS + "]-(friend2),\n"
+                    + "(person0)-[:" + Rels.KNOWS + "]->(friend2)<-[:" + Rels.KNOWS + "]-(friend1),\n"
                    /*
                     * Person-Post
                     */
@@ -3926,6 +3907,7 @@ public class TestGraph {
                    /*
                     * Posts
                     */
+                    + " (post21:" + Nodes.Post + " {post21}),\n"
                     + " (post111:" + Nodes.Post + " {post111}),\n"
                     + " (post112:" + Nodes.Post + " {post112}),\n"
                     + " (post113:" + Nodes.Post + " {post113}),\n"
@@ -3953,7 +3935,7 @@ public class TestGraph {
                     * Person-Person
                     */
                     + "(person0)-[:" + Rels.KNOWS + "]->(f1)-[:" + Rels.KNOWS + "]->(ff11),\n"
-                    + "(f2)<-[:" + Rels.KNOWS + "]-(f1)-[:" + Rels.KNOWS + "]->(ff12),\n"
+                    + "(ff11)<-[:" + Rels.KNOWS + "]-(f2)<-[:" + Rels.KNOWS + "]-(f1)-[:" + Rels.KNOWS + "]->(ff12),\n"
                     + "(person0)-[:" + Rels.KNOWS + "]->(f2)-[:" + Rels.KNOWS + "]->(ff21),\n"
                     + "(f2)-[:" + Rels.KNOWS + "]->(ff22),\n"
                     + "(f2)-[:" + Rels.KNOWS + "]->(ff23),\n"
@@ -3971,6 +3953,7 @@ public class TestGraph {
                    /*
                     * Person-Post
                     */
+                    + "(f2)<-[:" + Rels.HAS_CREATOR + "]-(post21),\n"
                     + "(ff11)<-[:" + Rels.HAS_CREATOR + "]-(post111),\n"
                     + "(ff11)<-[:" + Rels.HAS_CREATOR + "]-(post112),\n"
                     + "(ff11)<-[:" + Rels.HAS_CREATOR + "]-(post113),\n"
@@ -3987,6 +3970,7 @@ public class TestGraph {
                    /*
                     * Post-Tag
                     */
+                    + "(post21)-[:" + Rels.HAS_TAG + "]->(commonTag4),\n"
                     + "(post111)-[:" + Rels.HAS_TAG + "]->(uncommonTag2),\n"
                     + "(post112)-[:" + Rels.HAS_TAG + "]->(uncommonTag2),\n"
                     + "(post113)-[:" + Rels.HAS_TAG + "]->(commonTag5),\n"
@@ -4010,6 +3994,7 @@ public class TestGraph {
                     "ff22", TestPersons.ff22(),
                     "ff23", TestPersons.ff23(),
                     // Posts
+                    "post21", TestPosts.post21(),
                     "post111", TestPosts.post111(),
                     "post112", TestPosts.post112(),
                     "post113", TestPosts.post113(),
@@ -4175,6 +4160,13 @@ public class TestGraph {
         }
 
         protected static class TestPosts {
+            protected static Map<String, Object> post21() {
+                Map<String, Object> params = new HashMap<>();
+                params.put(Message.ID, 21L);
+                params.put(Message.CONTENT, "P21");
+                return params;
+            }
+
             protected static Map<String, Object> post111() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 111L);

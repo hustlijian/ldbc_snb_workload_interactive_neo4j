@@ -18,8 +18,10 @@ public abstract class Neo4jQuery5<CONNECTION> implements Neo4jQuery<LdbcQuery5, 
     protected static final String QUERY_STRING = ""
             + "MATCH (person:" + Nodes.Person + " {" + Person.ID + ":{" + PERSON_ID + "}})-[:" + Rels.KNOWS + "*1..2]-(friend:" + Nodes.Person + ")<-[membership:" + Rels.HAS_MEMBER + "]-(forum:" + Nodes.Forum + ")\n"
             + "WHERE membership." + HasMember.JOIN_DATE + ">{" + JOIN_DATE + "} AND not(person=friend)\n"
+            + "WITH DISTINCT friend, forum\n"
             + "OPTIONAL MATCH (friend)<-[:" + Rels.HAS_CREATOR + "]-(post:" + Nodes.Post + ")<-[:" + Rels.CONTAINER_OF + "]-(forum)\n"
-            + "RETURN forum." + Forum.TITLE + " AS forumName, count(post) AS postCount\n"
-            + "ORDER BY postCount DESC, forumName ASC\n"
+            + "WITH forum, count(post) AS postCount\n"
+            + "RETURN forum." + Forum.TITLE + " AS forumName, postCount\n"
+            + "ORDER BY postCount DESC, forum." + Forum.ID + " ASC\n"
             + "LIMIT {" + LIMIT + "}";
 }

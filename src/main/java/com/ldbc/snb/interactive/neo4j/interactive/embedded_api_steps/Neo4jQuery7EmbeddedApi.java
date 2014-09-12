@@ -31,7 +31,7 @@ public class Neo4jQuery7EmbeddedApi extends Neo4jQuery7<GraphDatabaseService> {
     @Override
     public Iterator<LdbcQuery7Result> execute(GraphDatabaseService db, LdbcQuery7 operation) {
         Iterator<Node> personIterator = db.findNodesByLabelAndProperty(Domain.Nodes.Person, Domain.Person.ID, operation.personId()).iterator();
-        if (false == personIterator.hasNext()) return Iterators.emptyIterator();
+        if (false == personIterator.hasNext()) return Collections.emptyIterator();
         final Node person = personIterator.next();
 
         //<liker,(message, likeTime)>

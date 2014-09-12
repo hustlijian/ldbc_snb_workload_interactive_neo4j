@@ -36,7 +36,7 @@ public class Neo4jQuery2EmbeddedApi extends Neo4jQuery2<GraphDatabaseService> {
     @Override
     public Iterator<LdbcQuery2Result> execute(GraphDatabaseService db, LdbcQuery2 operation) {
         Iterator<Node> personIterator = db.findNodesByLabelAndProperty(Domain.Nodes.Person, Domain.Person.ID, operation.personId()).iterator();
-        if (false == personIterator.hasNext()) return Iterators.emptyIterator();
+        if (false == personIterator.hasNext()) return Collections.emptyIterator();
         final Node person = personIterator.next();
 
         Iterator<Path> friendsAndPostsPaths = traversers.friendsPostsAndCommentsAtOrBeforeDate(operation.maxDate().getTime()).traverse(person).iterator();

@@ -16,9 +16,7 @@ import java.util.Map;
 public class Neo4jDbCommandsEmbeddedCypher extends Neo4jDbCommands {
     final private String dbPath;
     final private String configPath;
-    private ExecutionEngine queryEngine;
-    private GraphDatabaseService db;
-    private DbConnectionState dbConnectionState;
+    private Neo4jConnectionState dbConnectionState;
 
     public Neo4jDbCommandsEmbeddedCypher(String dbPath, String configPath) {
         this.dbPath = dbPath;
@@ -33,15 +31,15 @@ public class Neo4jDbCommandsEmbeddedCypher extends Neo4jDbCommands {
         } catch (IOException e) {
             throw new DbException("Unable to load Neo4j DB config", e);
         }
-        db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbPath).setConfig(dbConfig).newGraphDatabase();
-        queryEngine = new ExecutionEngine(db);
+        GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbPath).setConfig(dbConfig).newGraphDatabase();
+        ExecutionEngine queryEngine = new ExecutionEngine(db);
         dbConnectionState = new Neo4jConnectionState(db, queryEngine, null, null);
         registerShutdownHook(db);
     }
 
     @Override
-    public void cleanUp() {
-        db.shutdown();
+    public void cleanUp() throws DbException {
+        dbConnectionState.shutdown();
     }
 
     @Override

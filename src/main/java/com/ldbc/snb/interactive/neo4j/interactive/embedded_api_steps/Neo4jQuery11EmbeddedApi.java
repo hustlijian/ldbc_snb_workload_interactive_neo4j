@@ -32,7 +32,7 @@ public class Neo4jQuery11EmbeddedApi extends Neo4jQuery11<GraphDatabaseService> 
     @Override
     public Iterator<LdbcQuery11Result> execute(GraphDatabaseService db, LdbcQuery11 operation) {
         Iterator<Node> personIterator = db.findNodesByLabelAndProperty(Domain.Nodes.Person, Domain.Person.ID, operation.personId()).iterator();
-        if (false == personIterator.hasNext()) return Iterators.emptyIterator();
+        if (false == personIterator.hasNext()) return Collections.emptyIterator();
         final Node person = personIterator.next();
 
         List<Node> friendsList = ImmutableList.copyOf(
@@ -70,6 +70,7 @@ public class Neo4jQuery11EmbeddedApi extends Neo4jQuery11<GraphDatabaseService> 
         return Iterators.limit(results.iterator(), operation.limit());
     }
 
+    // Sort results ascending by the start date, then ascending by Person identifier, and lastly by Organization name
     public static class AscendingWorkFromYearAscendingPersonIdentifierDescendingOrganizationName implements Comparator<LdbcQuery11Result> {
         @Override
         public int compare(LdbcQuery11Result result1, LdbcQuery11Result result2) {
@@ -79,7 +80,7 @@ public class Neo4jQuery11EmbeddedApi extends Neo4jQuery11<GraphDatabaseService> 
                 if (result1.personId() < result2.personId()) return -1;
                 else if (result1.personId() > result2.personId()) return 1;
                 else {
-                    return result1.organizationName().compareTo(result2.organizationName());
+                    return result2.organizationName().compareTo(result1.organizationName());
                 }
             }
         }

@@ -33,11 +33,11 @@ public class Neo4jQuery14EmbeddedApi extends Neo4jQuery14<GraphDatabaseService> 
     @Override
     public Iterator<LdbcQuery14Result> execute(GraphDatabaseService db, LdbcQuery14 operation) {
         Iterator<Node> person1Iterator = db.findNodesByLabelAndProperty(Domain.Nodes.Person, Domain.Person.ID, operation.person1Id()).iterator();
-        if (false == person1Iterator.hasNext()) return Iterators.emptyIterator();
+        if (false == person1Iterator.hasNext()) return Collections.emptyIterator();
         Node person1 = person1Iterator.next();
 
         Iterator<Node> person2Iterator = db.findNodesByLabelAndProperty(Domain.Nodes.Person, Domain.Person.ID, operation.person2Id()).iterator();
-        if (false == person2Iterator.hasNext()) return Iterators.emptyIterator();
+        if (false == person2Iterator.hasNext()) return Collections.emptyIterator();
         Node person2 = person2Iterator.next();
 
         PathFinder<Path> finder = GraphAlgoFactory.shortestPath(PathExpanders.forTypeAndDirection(Domain.Rels.KNOWS, Direction.BOTH), Integer.MAX_VALUE);

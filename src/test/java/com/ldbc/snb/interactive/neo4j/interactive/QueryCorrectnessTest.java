@@ -582,8 +582,9 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedPostCount = 1;
             assertThat(actualResult, equalTo(new LdbcQuery5Result(expectedForumTitle, expectedPostCount)));
 
+            // Note, it is totally valid for different forums to have the same title. Query should handle that case
             actualResult = results.next();
-            expectedForumTitle = "forum2";
+            expectedForumTitle = "forum1";
             expectedPostCount = 0;
             assertThat(actualResult, equalTo(new LdbcQuery5Result(expectedForumTitle, expectedPostCount)));
 

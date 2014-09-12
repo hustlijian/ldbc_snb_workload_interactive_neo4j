@@ -32,7 +32,7 @@ public class Neo4jQuery12EmbeddedApi extends Neo4jQuery12<GraphDatabaseService> 
     @Override
     public Iterator<LdbcQuery12Result> execute(GraphDatabaseService db, LdbcQuery12 operation) {
         Iterator<Node> personIterator = db.findNodesByLabelAndProperty(Domain.Nodes.Person, Domain.Person.ID, operation.personId()).iterator();
-        if (false == personIterator.hasNext()) return Iterators.emptyIterator();
+        if (false == personIterator.hasNext()) return Collections.emptyIterator();
         final Node person = personIterator.next();
 
         List<Node> friends = new ArrayList<>();

@@ -37,7 +37,7 @@ public class Neo4jQuery4EmbeddedApi extends Neo4jQuery4<GraphDatabaseService> {
         long endDateAsMilli = Time.fromMilli(startDateAsMilli).plus(Duration.fromHours(durationHours)).asMilli();
 
         Iterator<Node> personIterator = db.findNodesByLabelAndProperty(Domain.Nodes.Person, Domain.Person.ID, operation.personId()).iterator();
-        if (false == personIterator.hasNext()) return Iterators.emptyIterator();
+        if (false == personIterator.hasNext()) return Collections.emptyIterator();
         Node person = personIterator.next();
 
         Iterator<Path> tagAndPostPaths = traversers.tagsOnPostsCreatedByPersonBetweenDates(startDateAsMilli, endDateAsMilli).traverse(person).iterator();

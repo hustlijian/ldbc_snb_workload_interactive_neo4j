@@ -14,7 +14,6 @@ public class Neo4jConnectionState extends DbConnectionState {
     private final GraphDatabaseService db;
     private final ExecutionEngine executionEngine;
     private final LdbcTraversers traversers;
-    private final String url;
     private final Connection connection;
 
     public Neo4jConnectionState(GraphDatabaseService db,
@@ -24,10 +23,13 @@ public class Neo4jConnectionState extends DbConnectionState {
         this.db = db;
         this.executionEngine = executionEngine;
         this.traversers = traversers;
-        this.url = url;
         try {
-            connection = (null == url) ? null : DriverManager.getConnection(url);
-            connection.setAutoCommit(false);
+            if (null == url) {
+                this.connection = null;
+            } else {
+                this.connection = DriverManager.getConnection(url);
+                this.connection.setAutoCommit(false);
+            }
         } catch (SQLException e) {
             throw new DbException("Error while creation JDBC database connection", e);
         }
@@ -47,5 +49,16 @@ public class Neo4jConnectionState extends DbConnectionState {
 
     public Connection connection() throws SQLException {
         return connection;
+    }
+
+    public void shutdown() throws DbException {
+        if (null != connection) try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new DbException("Error while closing JDBC connection", e);
+        }
+        if (null != db) {
+            db.shutdown();
+        }
     }
 }

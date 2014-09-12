@@ -35,7 +35,7 @@ public class Neo4jQuery9EmbeddedApi extends Neo4jQuery9<GraphDatabaseService> {
     @Override
     public Iterator<LdbcQuery9Result> execute(GraphDatabaseService db, LdbcQuery9 operation) {
         Iterator<Node> personIterator = db.findNodesByLabelAndProperty(Domain.Nodes.Person, Domain.Person.ID, operation.personId()).iterator();
-        if (false == personIterator.hasNext()) return Iterators.emptyIterator();
+        if (false == personIterator.hasNext()) return Collections.emptyIterator();
         final Node person = personIterator.next();
 
         List<Node> friendsList = ImmutableList.copyOf(

@@ -3,7 +3,6 @@ package com.ldbc.snb.interactive.neo4j;
 import com.ldbc.driver.Db;
 import com.ldbc.driver.DbConnectionState;
 import com.ldbc.driver.DbException;
-import com.ldbc.driver.util.MapUtils;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -44,16 +43,16 @@ public class Neo4jDb extends Db {
     @Override
     protected void onInit(Map<String, String> properties) throws DbException {
         // Initialize Neo4j driver
-        url = MapUtils.getDefault(properties, URL_KEY, "http://localhost:7474/db/data");
-        dbPath = MapUtils.getDefault(properties, DB_PATH_KEY, "/tmp/db");
-        configPath = MapUtils.getDefault(properties, CONFIG_PATH_KEY, "/tmp/config.properties");
-        dbType = MapUtils.getDefault(properties, DB_TYPE_KEY, "UNDEFINED");
+        url = properties.get(URL_KEY);
+        dbPath = properties.get(DB_PATH_KEY);
+        configPath = properties.get(CONFIG_PATH_KEY);
+        dbType = properties.get(DB_TYPE_KEY);
 
         logger.info("*** Neo4j Properties ***");
-        logger.info("database type = " + dbType);
-        logger.info("url = " + url);
-        logger.info("db path = " + new File(dbPath).getAbsolutePath());
-        logger.info("config path = " + new File(configPath).getAbsolutePath());
+        logger.info("database type = " + ((null == dbType) ? "UNKNOWN" : dbType));
+        logger.info("url = " + ((null == url) ? "UNKNOWN" : url));
+        logger.info("db path = " + ((null == dbPath) ? "UNKNOWN" : new File(dbPath).getAbsolutePath()));
+        logger.info("config path = " + ((null == configPath) ? "UNKNOWN" : new File(configPath).getAbsolutePath()));
         logger.info("************************");
 
         if (dbType.equals(DB_TYPE_VALUE_REMOTE_CYPHER)) {

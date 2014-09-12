@@ -9,7 +9,10 @@ import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery10Result;
 import com.ldbc.snb.interactive.neo4j.Domain;
 import com.ldbc.snb.interactive.neo4j.interactive.LdbcTraversers;
 import com.ldbc.snb.interactive.neo4j.interactive.Neo4jQuery10;
-import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.traversal.steps.execution.StepsUtils;
 
 import java.util.*;
@@ -29,18 +32,10 @@ public class Neo4jQuery10EmbeddedApi extends Neo4jQuery10<GraphDatabaseService> 
     @Override
     public Iterator<LdbcQuery10Result> execute(GraphDatabaseService db, final LdbcQuery10 operation) {
         Iterator<Node> personIterator = db.findNodesByLabelAndProperty(Domain.Nodes.Person, Domain.Person.ID, operation.personId()).iterator();
-        if (false == personIterator.hasNext()) return Iterators.emptyIterator();
+        if (false == personIterator.hasNext()) return Collections.emptyIterator();
         final Node person = personIterator.next();
 
-        Iterator<Node> friendsAndFriendsOfFriends = Iterators.transform(
-                traversers.friendsOfFriends().traverse(person).iterator(),
-                new Function<Path, Node>() {
-                    @Override
-                    public Node apply(Path path) {
-                        return path.endNode();
-                    }
-                }
-        );
+        Iterator<Node> friendsAndFriendsOfFriends = traversers.friendsOfFriends().traverse(person).nodes().iterator();
 
         final int nextMonth = (operation.month() + 1) % 12;
         Iterator<Node> friendsOfFriendsWithMatchingBirthdays = StepsUtils.distinct(
@@ -78,8 +73,7 @@ public class Neo4jQuery10EmbeddedApi extends Neo4jQuery10<GraphDatabaseService> 
                             @Override
                             public LdbcQuery10Result apply(Node friendOfFriend) {
                                 int commonInterestScore = 0;
-                                for (Path path : traversers.postsByPerson().traverse(friendOfFriend)) {
-                                    Node post = path.endNode();
+                                for (Node post : traversers.postsByPerson().traverse(friendOfFriend).nodes()) {
                                     if (postIsTaggedWithAnyOfGivenTags(post, tagsPersonIsInterestedIn))
                                         commonInterestScore++;
                                     else

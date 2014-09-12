@@ -15,7 +15,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Neo4jServerHelper {
-    private static int port = 7474;
+    private static int port = 7475;
 
     public static synchronized int nextFreePort() {
         return port++;
@@ -25,7 +25,7 @@ public class Neo4jServerHelper {
         int port = 7474;
         String path = "/tmp/neodb";
         FileUtils.deleteDirectory(new File(path));
-        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query5GraphMaker();
+        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query9GraphMaker();
         WrappingNeoServer wrappingNeoServer = Neo4jServerHelper.fromQueryGraphMaker(queryGraphMaker, path, port);
         wrappingNeoServer.start();
     }

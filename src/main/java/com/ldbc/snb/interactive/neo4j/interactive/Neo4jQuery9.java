@@ -19,7 +19,7 @@ public abstract class Neo4jQuery9<CONNECTION> implements Neo4jQuery<LdbcQuery9, 
             + "MATCH (:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID + "}})-[:" + Domain.Rels.KNOWS + "*1..2]-(friend:" + Domain.Nodes.Person + ")"
             + "<-[:" + Domain.Rels.HAS_CREATOR + "]-(message)\n"
             + "WHERE message." + Domain.Message.CREATION_DATE + " < {" + LATEST_DATE + "}\n"
-            + "RETURN "
+            + "RETURN DISTINCT"
             + " message." + Domain.Message.ID + " AS messageId,"
             + " message." + Domain.Message.CONTENT + " AS messageContent,"
             + " message." + Domain.Message.CREATION_DATE + " AS messageCreationDate,"

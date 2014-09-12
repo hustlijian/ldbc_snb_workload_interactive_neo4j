@@ -39,7 +39,7 @@ public class Neo4jQuery8EmbeddedApi extends Neo4jQuery8<GraphDatabaseService> {
     @Override
     public Iterator<LdbcQuery8Result> execute(GraphDatabaseService db, LdbcQuery8 operation) {
         Iterator<Node> personIterator = db.findNodesByLabelAndProperty(Domain.Nodes.Person, Domain.Person.ID, operation.personId()).iterator();
-        if (false == personIterator.hasNext()) return Iterators.emptyIterator();
+        if (false == personIterator.hasNext()) return Collections.emptyIterator();
         final Node person = personIterator.next();
 
         Iterator<Tuple.Tuple2<Node, Node>> commenterPersonsAndTheirComments = Iterators.transform(

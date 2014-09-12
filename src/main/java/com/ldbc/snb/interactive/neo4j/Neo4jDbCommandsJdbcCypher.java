@@ -8,7 +8,7 @@ import com.ldbc.snb.interactive.neo4j.interactive.remote_cypher.*;
 
 public class Neo4jDbCommandsJdbcCypher extends Neo4jDbCommands {
     private final String url;
-    private DbConnectionState dbConnectionState;
+    private Neo4jConnectionState dbConnectionState;
 
     public Neo4jDbCommandsJdbcCypher(String url) {
         this.url = url;
@@ -20,8 +20,8 @@ public class Neo4jDbCommandsJdbcCypher extends Neo4jDbCommands {
     }
 
     @Override
-    public void cleanUp() {
-        // do nothing
+    public void cleanUp() throws DbException {
+        dbConnectionState.shutdown();
     }
 
     @Override

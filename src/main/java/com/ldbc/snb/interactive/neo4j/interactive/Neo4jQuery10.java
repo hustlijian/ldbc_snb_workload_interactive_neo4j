@@ -25,6 +25,7 @@ public abstract class Neo4jQuery10<CONNECTION> implements Neo4jQuery<LdbcQuery10
             + "WHERE"
             + " ((friend." + Person.BIRTHDAY_MONTH + " = {" + MONTH + "} AND friend." + Person.BIRTHDAY_DAY_OF_MONTH + " >= 21) OR (friend." + Person.BIRTHDAY_MONTH + " = ({" + MONTH + "}+1)%12 AND friend." + Person.BIRTHDAY_DAY_OF_MONTH + " < 22))"
             + " AND not(friend=person) AND not((friend)-[:" + Rels.KNOWS + "]-(person))\n"
+            + "WITH DISTINCT friend, city, person\n"
             + "OPTIONAL MATCH (friend)<-[:" + Rels.HAS_CREATOR + "]-(post:" + Nodes.Post + ")\n"
             + "WITH friend, city, collect(post) AS posts, person\n"
             + "WITH friend, city, length(posts) AS postCount, length([p IN posts WHERE (p)-[:" + Rels.HAS_TAG + "]->(:" + Nodes.Tag + ")<-[:" + Rels.HAS_INTEREST + "]-(person)]) AS commonPostCount\n"
