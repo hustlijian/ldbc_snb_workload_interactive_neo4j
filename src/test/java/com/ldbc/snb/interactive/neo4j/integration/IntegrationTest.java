@@ -57,13 +57,18 @@ public class IntegrationTest {
     @Test
     public void shouldValidateAllImplementationUsingValidationParametersCreatedByEmbeddedCypherImplementation() throws IOException, DriverConfigurationException, ClientException {
         File dbDir = temporaryFolder.newFile();
-        buildGraph(dbDir.getAbsolutePath(), CSV_DIR);
+        // TODO uncomment
+//        String csvDir = CSV_DIR;
+        String csvDir = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/csv_and_params_files_for_validation/").getAbsolutePath();
+        buildGraph(dbDir.getAbsolutePath(), csvDir);
 
         /*
         CREATE VALIDATION PARAMETERS FOR USE IN VALIDATING OTHER IMPLEMENTATIONS
          */
 
-        File validationParametersFile = temporaryFolder.newFile();
+        // TODO uncomment
+//        File validationParametersFile = temporaryFolder.newFile();
+        File validationParametersFile = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/csv_and_params_files_for_validation/validation_params.csv");
         int validationSetSize = 100;
 
         assertThat(validationParametersFile.length() == 0, is(true));
@@ -115,7 +120,7 @@ public class IntegrationTest {
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
 
         Map<String, String> additionalParameters = new HashMap<>();
-        additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, TestUtils.getResource("/test_csv_files/").getAbsolutePath());
+        additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, csvDir);
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(additionalParameters);
 
         TimeSource timeSource = new SystemTimeSource();
@@ -179,9 +184,9 @@ public class IntegrationTest {
     @Test
     public void shouldValidateAllImplementationUsingGivenValidationParametersAndCsvDir() throws IOException, DriverConfigurationException, ClientException {
         // TODO set this
-        File validationParametersFile = TestUtils.getResource("/validation.csv");
+        File validationParametersFile = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/csv_and_params_files_for_validation/");
         // TODO set this
-        String csvDir = CSV_DIR;
+        String csvDir = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/csv_and_params_files_for_validation/").getAbsolutePath();
 
         File dbDir = temporaryFolder.newFile();
         buildGraph(dbDir.getAbsolutePath(), csvDir);
@@ -199,7 +204,7 @@ public class IntegrationTest {
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
 
         Map<String, String> additionalParameters = new HashMap<>();
-        additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, TestUtils.getResource("/test_csv_files/").getAbsolutePath());
+        additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, csvDir);
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(additionalParameters);
 
          /*
@@ -260,7 +265,8 @@ public class IntegrationTest {
     @Test
     public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedSteps() throws ClientException, IOException, DriverConfigurationException {
         File dbDir = temporaryFolder.newFile();
-        buildGraph(dbDir.getAbsolutePath(), CSV_DIR);
+        String csvDir = CSV_DIR;
+        buildGraph(dbDir.getAbsolutePath(), csvDir);
         File resultsFile = temporaryFolder.newFile();
         assertThat(resultsFile.length() == 0, is(true));
 
@@ -310,7 +316,7 @@ public class IntegrationTest {
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
 
         Map<String, String> additionalParameters = new HashMap<>();
-        additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, TestUtils.getResource("/test_csv_files/").getAbsolutePath());
+        additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, csvDir);
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(additionalParameters);
 
         TimeSource timeSource = new SystemTimeSource();
@@ -325,7 +331,8 @@ public class IntegrationTest {
     @Test
     public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedCypher() throws ClientException, IOException, DriverConfigurationException {
         File dbDir = temporaryFolder.newFile();
-        buildGraph(dbDir.getAbsolutePath(), CSV_DIR);
+        String csvDir = CSV_DIR;
+        buildGraph(dbDir.getAbsolutePath(), csvDir);
         File resultsFile = temporaryFolder.newFile();
         assertThat(resultsFile.length() == 0, is(true));
 
@@ -375,7 +382,7 @@ public class IntegrationTest {
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
 
         Map<String, String> additionalParameters = new HashMap<>();
-        additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, TestUtils.getResource("/test_csv_files/").getAbsolutePath());
+        additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, csvDir);
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(additionalParameters);
 
         TimeSource timeSource = new SystemTimeSource();
