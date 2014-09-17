@@ -1,8 +1,10 @@
 package com.ldbc.snb.interactive.neo4j.load;
 
+import com.google.common.collect.Lists;
 import com.ldbc.snb.interactive.neo4j.Domain;
 import com.ldbc.snb.interactive.neo4j.load.tempindex.TempIndexFactory;
 import com.ldbc.snb.interactive.neo4j.utils.Utils;
+import org.neo4j.graphdb.Label;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 
 import java.io.File;
@@ -25,13 +27,13 @@ public class LdbcSocialNetworkCsvFileInserters {
     private final ForumsTempIndex forumsIndex;
     private final TagsTempIndex tagsIndex;
     private final TagClassesTempIndex tagClassesIndex;
-    private final OrganisationsTempIndex organisationsIndex;
+    private final OrganizationsTempIndex organizationsIndex;
     private final PlacesTempIndex placesIndex;
 
     private final CsvFileInserter commentsInserter;
     private final CsvFileInserter commentHasTagTagInserter;
     private final CsvFileInserter forumsInserter;
-    private final CsvFileInserter organisationsInserter;
+    private final CsvFileInserter organizationsInserter;
     private final CsvFileInserter personsInserter;
     private final CsvFileInserter placesInserter;
     private final CsvFileInserter postsInserter;
@@ -73,7 +75,7 @@ public class LdbcSocialNetworkCsvFileInserters {
         this.forumsIndex = new ForumsTempIndex(tempIndexFactory.create());
         this.tagsIndex = new TagsTempIndex(tempIndexFactory.create());
         this.tagClassesIndex = new TagClassesTempIndex(tempIndexFactory.create());
-        this.organisationsIndex = new OrganisationsTempIndex(tempIndexFactory.create());
+        this.organizationsIndex = new OrganizationsTempIndex(tempIndexFactory.create());
         this.placesIndex = new PlacesTempIndex(tempIndexFactory.create());
 
         /*
@@ -81,7 +83,7 @@ public class LdbcSocialNetworkCsvFileInserters {
          */
         this.commentsInserter = comments(csvDataDir, batchInserter, commentsIndex);
         this.forumsInserter = forums(csvDataDir, batchInserter, forumsIndex);
-        this.organisationsInserter = organisations(csvDataDir, batchInserter, organisationsIndex);
+        this.organizationsInserter = organizations(csvDataDir, batchInserter, organizationsIndex);
         this.personsInserter = persons(csvDataDir, batchInserter, personsIndex);
         this.placesInserter = places(csvDataDir, batchInserter, placesIndex);
         this.postsInserter = posts(csvDataDir, batchInserter, postsIndex);
@@ -110,8 +112,8 @@ public class LdbcSocialNetworkCsvFileInserters {
         this.personKnowsPersonInserter = personKnowsPerson(csvDataDir, batchInserter, personsIndex);
         this.personLikesCommentInserter = personLikesComment(csvDataDir, batchInserter, personsIndex, commentsIndex);
         this.personLikesPostInserter = personLikesPost(csvDataDir, batchInserter, personsIndex, postsIndex);
-        this.personStudyAtOrganisationInserter = personStudyAtOrganisation(csvDataDir, batchInserter, personsIndex, organisationsIndex);
-        this.personWorksAtOrganisationInserter = personWorksAtOrganisation(csvDataDir, batchInserter, personsIndex, organisationsIndex);
+        this.personStudyAtOrganisationInserter = personStudyAtOrganisation(csvDataDir, batchInserter, personsIndex, organizationsIndex);
+        this.personWorksAtOrganisationInserter = personWorksAtOrganisation(csvDataDir, batchInserter, personsIndex, organizationsIndex);
         this.placeIsPartOfPlaceInserter = placeIsPartOfPlace(csvDataDir, batchInserter, placesIndex);
         this.postHasCreatorPersonInserter = postHasCreatorPerson(csvDataDir, batchInserter, personsIndex, postsIndex);
         this.postHasTagTagInserter = postHasTagTag(csvDataDir, batchInserter, postsIndex, tagsIndex);
@@ -119,7 +121,7 @@ public class LdbcSocialNetworkCsvFileInserters {
         this.postIsLocatedInPlaceInserter = postIsLocatedInPlace(csvDataDir, batchInserter, postsIndex, placesIndex);
         this.tagClassIsSubclassOfTagClassInserter = tagClassIsSubclassOfTagClass(csvDataDir, batchInserter, tagClassesIndex);
         this.tagHasTypeTagClassInserter = tagHasTypeTagClass(csvDataDir, batchInserter, tagsIndex, tagClassesIndex);
-        this.organisationBasedNearPlaceInserter = organisationIsLocatedInPlace(csvDataDir, batchInserter, organisationsIndex, placesIndex);
+        this.organisationBasedNearPlaceInserter = organisationIsLocatedInPlace(csvDataDir, batchInserter, organizationsIndex, placesIndex);
     }
 
     public CommentsTempIndex getCommentsIndex() {
@@ -146,8 +148,8 @@ public class LdbcSocialNetworkCsvFileInserters {
         return tagClassesIndex;
     }
 
-    public OrganisationsTempIndex getOrganisationsIndex() {
-        return organisationsIndex;
+    public OrganizationsTempIndex getOrganizationsIndex() {
+        return organizationsIndex;
     }
 
     public PlacesTempIndex getPlacesIndex() {
@@ -162,8 +164,8 @@ public class LdbcSocialNetworkCsvFileInserters {
         return forumsInserter;
     }
 
-    public CsvFileInserter getOrganisationsInserter() {
-        return organisationsInserter;
+    public CsvFileInserter getOrganizationsInserter() {
+        return organizationsInserter;
     }
 
     public CsvFileInserter getPersonsInserter() {
@@ -456,28 +458,29 @@ public class LdbcSocialNetworkCsvFileInserters {
         });
     }
 
-    private static CsvFileInserter organisations(final String csvDataDir, final BatchInserter batchInserter,
-                                                 final OrganisationsTempIndex organisationsIndex) throws FileNotFoundException {
+    private static CsvFileInserter organizations(final String csvDataDir, final BatchInserter batchInserter,
+                                                 final OrganizationsTempIndex organizationsIndex) throws FileNotFoundException {
         /*
         id  type        name                        url
         00  university  Universidade_de_Pernambuco  http://dbpedia.org/resource/Universidade_de_Pernambuco
          */
-        return new CsvFileInserter(new File(csvDataDir + CsvFiles.ORGANISATION), new CsvLineInserter() {
+        return new CsvFileInserter(new File(csvDataDir + CsvFiles.ORGANIZATION), new CsvLineInserter() {
             @Override
             public void insert(Object[] columnValues) {
                 Map<String, Object> properties = new HashMap<>();
                 long id = Long.parseLong((String) columnValues[0]);
+                Label organizationTypeLabel = stringToOrganisationType((String) columnValues[1]);
                 properties.put(Domain.Organisation.NAME, columnValues[2]);
-                long organisationNodeId = batchInserter.createNode(properties, stringToOrganisationType((String) columnValues[1]));
-                organisationsIndex.put(id, organisationNodeId);
+                long organisationNodeId = batchInserter.createNode(properties, organizationTypeLabel);
+                organizationsIndex.put(id, organisationNodeId);
             }
 
             Domain.Organisation.Type stringToOrganisationType(String organisationTypeString) {
                 if (organisationTypeString.toLowerCase().equals("university"))
                     return Domain.Organisation.Type.University;
-                if (organisationTypeString.toLowerCase().equals("company"))
+                else if (organisationTypeString.toLowerCase().equals("company"))
                     return Domain.Organisation.Type.Company;
-                throw new RuntimeException("Unknown organisation type: " + organisationTypeString);
+                else throw new RuntimeException("Unknown organisation type: " + organisationTypeString);
             }
 
         });
@@ -632,7 +635,7 @@ public class LdbcSocialNetworkCsvFileInserters {
 
     private static CsvFileInserter personStudyAtOrganisation(final String csvDataDir,
                                                              final BatchInserter batchInserter, final PersonsTempIndex personsIndex,
-                                                             final OrganisationsTempIndex organisationsIndex) throws FileNotFoundException {
+                                                             final OrganizationsTempIndex organizationsIndex) throws FileNotFoundException {
         /*
         Person.id   Organisation.id classYear
         75          00                  2004
@@ -642,14 +645,14 @@ public class LdbcSocialNetworkCsvFileInserters {
                     @Override
                     public Object[] transform(Object[] columnValues) {
                         long fromPersonNodeId = personsIndex.get(Long.parseLong((String) columnValues[0]));
-                        long toOrganisationNodeId = organisationsIndex.get(Long.parseLong((String) columnValues[1]));
+                        long toOrganisationNodeId = organizationsIndex.get(Long.parseLong((String) columnValues[1]));
                         int classYear = Integer.parseInt((String) columnValues[2]);
                         return new Object[]{fromPersonNodeId, toOrganisationNodeId, classYear};
                     }
 
                     @Override
                     public void insert(Object[] columnValues) {
-                        Map<String, Object> properties = new HashMap<String, Object>();
+                        Map<String, Object> properties = new HashMap<>();
                         properties.put(Domain.StudiesAt.CLASS_YEAR, columnValues[2]);
                         batchInserter.createRelationship((long) columnValues[0], (long) columnValues[1], Domain.Rels.STUDY_AT, properties);
                     }
@@ -765,7 +768,7 @@ public class LdbcSocialNetworkCsvFileInserters {
 
     private static CsvFileInserter personWorksAtOrganisation(final String csvDataDir,
                                                              final BatchInserter batchInserter, final PersonsTempIndex personsIndex,
-                                                             final OrganisationsTempIndex organisationsIndex) throws FileNotFoundException {
+                                                             final OrganizationsTempIndex organizationsIndex) throws FileNotFoundException {
         /*
         Person.id   Organisation.id     workFrom
         75          10                  2016
@@ -775,7 +778,7 @@ public class LdbcSocialNetworkCsvFileInserters {
                     @Override
                     public Object[] transform(Object[] columnValues) {
                         long personNodeId = personsIndex.get(Long.parseLong((String) columnValues[0]));
-                        long organisationNodeId = organisationsIndex.get(Long.parseLong((String) columnValues[1]));
+                        long organisationNodeId = organizationsIndex.get(Long.parseLong((String) columnValues[1]));
                         int workFrom = Integer.parseInt((String) columnValues[2]);
                         return new Object[]{personNodeId, organisationNodeId, workFrom};
                     }
@@ -1072,7 +1075,7 @@ public class LdbcSocialNetworkCsvFileInserters {
     }
 
     private static CsvFileInserter organisationIsLocatedInPlace(final String csvDataDir,
-                                                                final BatchInserter batchInserter, final OrganisationsTempIndex organisationsIndex,
+                                                                final BatchInserter batchInserter, final OrganizationsTempIndex organizationsIndex,
                                                                 final PlacesTempIndex placesIndex) throws FileNotFoundException {
         /*
         Organisation.id     Place.id
@@ -1082,7 +1085,7 @@ public class LdbcSocialNetworkCsvFileInserters {
                 new CsvLineInserter() {
                     @Override
                     public Object[] transform(Object[] columnValues) {
-                        long organisationNodeId = organisationsIndex.get(Long.parseLong((String) columnValues[0]));
+                        long organisationNodeId = organizationsIndex.get(Long.parseLong((String) columnValues[0]));
                         long placeNodeId = placesIndex.get(Long.parseLong((String) columnValues[1]));
                         return new Object[]{organisationNodeId, placeNodeId};
                     }

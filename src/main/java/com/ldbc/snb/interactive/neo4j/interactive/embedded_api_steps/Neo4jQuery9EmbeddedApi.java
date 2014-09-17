@@ -60,7 +60,7 @@ public class Neo4jQuery9EmbeddedApi extends Neo4jQuery9<GraphDatabaseService> {
                                 String personFirstName = (String) friend.getProperty(Domain.Person.FIRST_NAME);
                                 String personLastName = (String) friend.getProperty(Domain.Person.LAST_NAME);
                                 long messageId = (long) message.getProperty(Domain.Message.ID);
-                                String messageContent = (String) message.getProperty(Domain.Message.CONTENT);
+                                String messageContent = (message.hasProperty(Domain.Message.CONTENT)) ? (String) message.getProperty(Domain.Message.CONTENT) : (String) message.getProperty(Domain.Post.IMAGE_FILE);
                                 long messageCreationDate = (long) message.getProperty(Domain.Message.CREATION_DATE);
                                 return new LdbcQuery9Result(personId, personFirstName, personLastName, messageId, messageContent, messageCreationDate);
                             }

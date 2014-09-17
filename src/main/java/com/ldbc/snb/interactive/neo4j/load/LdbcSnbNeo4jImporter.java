@@ -140,7 +140,7 @@ public class LdbcSnbNeo4jImporter {
         fileInserters.getTagClassesIndex().shutdown();
 
         // Node (Organisation)
-        insertFile(fileInserters.getOrganisationsInserter());
+        insertFile(fileInserters.getOrganizationsInserter());
 
         // Relationship (Person, Tag)
         insertFile(fileInserters.getPersonHasInterestTagInserter());
@@ -172,7 +172,7 @@ public class LdbcSnbNeo4jImporter {
         fileInserters.getTagsIndex().shutdown();
         // Free (Organisation)
         logger.info("Freeing organisations index");
-        fileInserters.getOrganisationsIndex().shutdown();
+        fileInserters.getOrganizationsIndex().shutdown();
         // Free (Place)
         logger.info("Freeing places index");
         fileInserters.getPlacesIndex().shutdown();

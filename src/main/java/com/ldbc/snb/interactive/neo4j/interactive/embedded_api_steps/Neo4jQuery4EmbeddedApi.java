@@ -80,11 +80,11 @@ public class Neo4jQuery4EmbeddedApi extends Neo4jQuery4<GraphDatabaseService> {
                         return new LdbcQuery4Result(input.getKey(), input.getValue());
                     }
                 }));
-        Collections.sort(tagCounts, new PostCountThenTagNameComparator());
+        Collections.sort(tagCounts, new DescendingPostCountAscendingTagNameComparator());
         return Iterators.limit(tagCounts.iterator(), operation.limit());
     }
 
-    public static class PostCountThenTagNameComparator implements Comparator<LdbcQuery4Result> {
+    public static class DescendingPostCountAscendingTagNameComparator implements Comparator<LdbcQuery4Result> {
         @Override
         public int compare(LdbcQuery4Result result1, LdbcQuery4Result result2) {
             if (result1.postCount() > result2.postCount()) return -1;

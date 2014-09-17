@@ -47,7 +47,7 @@ public class UtilsTests {
         defined.add(csvDir + CsvFiles.FORUM);
         defined.add(csvDir + CsvFiles.TAG);
         defined.add(csvDir + CsvFiles.TAGCLASS);
-        defined.add(csvDir + CsvFiles.ORGANISATION);
+        defined.add(csvDir + CsvFiles.ORGANIZATION);
         defined.add(csvDir + CsvFiles.PLACE);
 
         /*

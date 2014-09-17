@@ -562,15 +562,32 @@ public class TestGraph {
 
         @Override
         public Map<String, Object> params() {
-            return MapUtil.map("p1", TestPersons.p1(), "f2", TestPersons.f2(), "f3", TestPersons.f3(), "f4",
-                    TestPersons.f4(), "s5", TestPersons.s5(), "ff6", TestPersons.ff6(), "s7",
-                    TestPersons.s7(), "f3Post1", TestPosts.f3Post1(), "f3Post2", TestPosts.f3Post2(),
-                    "f3Post3", TestPosts.f3Post3(), "f4Post1", TestPosts.f4Post1(), "f2Post1", TestPosts.f2Post1(),
-                    "f2Post2", TestPosts.f2Post2(), "f2Post3", TestPosts.f2Post3(), "s5Post1",
-                    TestPosts.s5Post1(), "s5Post2", TestPosts.s5Post2(), "s7Post1",
-                    TestPosts.s7Post1(), "s7Post2", TestPosts.s7Post2(), "ff6Post1", TestPosts.ff6Post1(),
-                    "f2Comment1", TestComments.f2Comment1(), "f2Comment2", TestComments.f2Comment2(), "s5Comment1",
-                    TestComments.s5Comment1(), "f3Comment1", TestComments.f3Comment1(), "p1Comment1", TestComments.p1Comment1());
+            return MapUtil.map(
+                    "p1", TestPersons.p1(),
+                    "f2", TestPersons.f2(),
+                    "f3", TestPersons.f3(),
+                    "f4", TestPersons.f4(),
+                    "s5", TestPersons.s5(),
+                    "ff6", TestPersons.ff6(),
+                    "s7", TestPersons.s7(),
+                    "f3Post1", TestPosts.f3Post1(),
+                    "f3Post2", TestPosts.f3Post2(),
+                    "f3Post3", TestPosts.f3Post3(),
+                    "f4Post1", TestPosts.f4Post1(),
+                    "f2Post1", TestPosts.f2Post1(),
+                    "f2Post2", TestPosts.f2Post2(),
+                    "f2Post3", TestPosts.f2Post3(),
+                    "s5Post1", TestPosts.s5Post1(),
+                    "s5Post2", TestPosts.s5Post2(),
+                    "s7Post1", TestPosts.s7Post1(),
+                    "s7Post2", TestPosts.s7Post2(),
+                    "ff6Post1", TestPosts.ff6Post1(),
+                    "f2Comment1", TestComments.f2Comment1(),
+                    "f2Comment2", TestComments.f2Comment2(),
+                    "s5Comment1", TestComments.s5Comment1(),
+                    "f3Comment1", TestComments.f3Comment1(),
+                    "p1Comment1", TestComments.p1Comment1()
+            );
         }
 
         protected static class TestPersons {
@@ -698,7 +715,7 @@ public class TestGraph {
                 params.put(Message.ID, 2L);
                 params.put(Message.CONTENT, "[f3Post2] content");
                 params.put(Post.LANGUAGE, new String[]{"3"});
-                params.put(Post.IMAGE_FILE, "3");
+                params.put(Post.IMAGE_FILE, "[f3Post2] image");
                 params.put(Message.CREATION_DATE, 3l);
                 params.put(Message.BROWSER_USED, "3");
                 params.put(Message.LOCATION_IP, "3");
@@ -708,9 +725,8 @@ public class TestGraph {
             protected static Map<String, Object> f3Post3() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 3L);
-                params.put(Message.CONTENT, "[f3Post3] content");
                 params.put(Post.LANGUAGE, new String[]{"3"});
-                params.put(Post.IMAGE_FILE, "3");
+                params.put(Post.IMAGE_FILE, "[f3Post3] image");
                 params.put(Message.CREATION_DATE, 3l);
                 params.put(Message.BROWSER_USED, "3");
                 params.put(Message.LOCATION_IP, "3");
@@ -722,7 +738,7 @@ public class TestGraph {
                 params.put(Message.ID, 4L);
                 params.put(Message.CONTENT, "[f4Post1] content");
                 params.put(Post.LANGUAGE, new String[]{"4"});
-                params.put(Post.IMAGE_FILE, "4");
+                params.put(Post.IMAGE_FILE, "[f4Post1] image");
                 params.put(Message.CREATION_DATE, 4l);
                 params.put(Message.BROWSER_USED, "4");
                 params.put(Message.LOCATION_IP, "4");
@@ -734,7 +750,7 @@ public class TestGraph {
                 params.put(Message.ID, 5L);
                 params.put(Message.CONTENT, "[f2Post1] content");
                 params.put(Post.LANGUAGE, new String[]{"2"});
-                params.put(Post.IMAGE_FILE, "2");
+                params.put(Post.IMAGE_FILE, "[f2Post1] image");
                 params.put(Message.CREATION_DATE, 4l);
                 params.put(Message.BROWSER_USED, "2");
                 params.put(Message.LOCATION_IP, "2");
@@ -746,7 +762,7 @@ public class TestGraph {
                 params.put(Message.ID, 6L);
                 params.put(Message.CONTENT, "[f2Post2] content");
                 params.put(Post.LANGUAGE, new String[]{"2"});
-                params.put(Post.IMAGE_FILE, "some image file");
+                params.put(Post.IMAGE_FILE, "[f2Post2] image");
                 params.put(Message.CREATION_DATE, 2l);
                 params.put(Message.BROWSER_USED, "2");
                 params.put(Message.LOCATION_IP, "2");
@@ -758,7 +774,7 @@ public class TestGraph {
                 params.put(Message.ID, 7L);
                 params.put(Message.CONTENT, "[f2Post3] content");
                 params.put(Post.LANGUAGE, new String[]{"2"});
-                params.put(Post.IMAGE_FILE, "2 image");
+                params.put(Post.IMAGE_FILE, "[f2Post3] image");
                 params.put(Message.CREATION_DATE, 2l);
                 params.put(Message.BROWSER_USED, "safari");
                 params.put(Message.LOCATION_IP, "31.55.91.343");
@@ -770,7 +786,7 @@ public class TestGraph {
                 params.put(Message.ID, 8L);
                 params.put(Message.CONTENT, "[s5Post1] content");
                 params.put(Post.LANGUAGE, new String[]{"5"});
-                params.put(Post.IMAGE_FILE, "5");
+                params.put(Post.IMAGE_FILE, "[s5Post1] image");
                 params.put(Message.CREATION_DATE, 1l);
                 params.put(Message.BROWSER_USED, "5");
                 params.put(Message.LOCATION_IP, "5");
@@ -782,7 +798,7 @@ public class TestGraph {
                 params.put(Message.ID, 9L);
                 params.put(Message.CONTENT, "[s5Post2] content");
                 params.put(Post.LANGUAGE, new String[]{"5"});
-                params.put(Post.IMAGE_FILE, "5");
+                params.put(Post.IMAGE_FILE, "[s5Post2] image");
                 params.put(Message.CREATION_DATE, 1l);
                 params.put(Message.BROWSER_USED, "5");
                 params.put(Message.LOCATION_IP, "5");
@@ -794,7 +810,7 @@ public class TestGraph {
                 params.put(Message.ID, 10L);
                 params.put(Message.CONTENT, "[s7Post1] content");
                 params.put(Post.LANGUAGE, new String[]{"7a", "7b"});
-                params.put(Post.IMAGE_FILE, "7");
+                params.put(Post.IMAGE_FILE, "[s7Post1] image");
                 params.put(Message.CREATION_DATE, 1l);
                 params.put(Message.BROWSER_USED, "7");
                 params.put(Message.LOCATION_IP, "7");
@@ -806,7 +822,7 @@ public class TestGraph {
                 params.put(Message.ID, 11L);
                 params.put(Message.CONTENT, "[s7Post2] content");
                 params.put(Post.LANGUAGE, new String[]{"7"});
-                params.put(Post.IMAGE_FILE, "7");
+                params.put(Post.IMAGE_FILE, "[s7Post2] image");
                 params.put(Message.CREATION_DATE, 1l);
                 params.put(Message.BROWSER_USED, "7");
                 params.put(Message.LOCATION_IP, "7");
@@ -818,7 +834,7 @@ public class TestGraph {
                 params.put(Message.ID, 12L);
                 params.put(Message.CONTENT, "[ff6Post1] content");
                 params.put(Post.LANGUAGE, new String[]{"6"});
-                params.put(Post.IMAGE_FILE, "6");
+                params.put(Post.IMAGE_FILE, "[ff6Post1] image");
                 params.put(Message.CREATION_DATE, 1l);
                 params.put(Message.BROWSER_USED, "6");
                 params.put(Message.LOCATION_IP, "6");
@@ -3791,7 +3807,8 @@ public class TestGraph {
             protected static Map<String, Object> post01() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 1L);
-                params.put(Message.CONTENT, "P01");
+                params.put(Message.CONTENT, "P01 - content");
+                params.put(Post.IMAGE_FILE, "P01 - image");
                 params.put(Message.CREATION_DATE, 3L);
                 return params;
             }
@@ -3799,7 +3816,8 @@ public class TestGraph {
             protected static Map<String, Object> post11() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 11L);
-                params.put(Message.CONTENT, "P11");
+                params.put(Message.CONTENT, "P11 - content");
+                params.put(Post.IMAGE_FILE, "P11 - image");
                 params.put(Message.CREATION_DATE, 11L);
                 return params;
             }
@@ -3807,7 +3825,8 @@ public class TestGraph {
             protected static Map<String, Object> post12() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 12L);
-                params.put(Message.CONTENT, "P12");
+                params.put(Message.CONTENT, "P12 - content");
+                params.put(Post.IMAGE_FILE, "P12 - image");
                 params.put(Message.CREATION_DATE, 4L);
                 return params;
             }
@@ -3815,7 +3834,7 @@ public class TestGraph {
             protected static Map<String, Object> post21() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 21L);
-                params.put(Message.CONTENT, "P21");
+                params.put(Post.IMAGE_FILE, "P21 - image");
                 params.put(Message.CREATION_DATE, 6L);
                 return params;
             }
@@ -3823,7 +3842,8 @@ public class TestGraph {
             protected static Map<String, Object> post31() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Message.ID, 31L);
-                params.put(Message.CONTENT, "P31");
+                params.put(Message.CONTENT, "P31 - content");
+                params.put(Post.IMAGE_FILE, "P31 - image");
                 params.put(Message.CREATION_DATE, 1L);
                 return params;
             }

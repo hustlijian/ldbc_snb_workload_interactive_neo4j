@@ -48,10 +48,14 @@ public class Neo4jQuery2EmbeddedApi extends Neo4jQuery2<GraphDatabaseService> {
                         List<Node> friendAndPostPathList = ImmutableList.copyOf(friendAndPostPath.nodes());
                         Node friend = friendAndPostPathList.get(1);
                         Node post = friendAndPostPathList.get(2);
-                        return new LdbcQuery2Result((long) friend.getProperty(Person.ID),
+                        return new LdbcQuery2Result(
+                                (long) friend.getProperty(Person.ID),
                                 (String) friend.getProperty(Person.FIRST_NAME),
-                                (String) friend.getProperty(Person.LAST_NAME), (long) post.getProperty(Message.ID),
-                                (String) post.getProperty(Message.CONTENT), (long) post.getProperty(Message.CREATION_DATE));
+                                (String) friend.getProperty(Person.LAST_NAME),
+                                (long) post.getProperty(Message.ID),
+                                (post.hasProperty(Message.CONTENT)) ? (String) post.getProperty(Message.CONTENT) : (String) post.getProperty(Domain.Post.IMAGE_FILE),
+                                (long) post.getProperty(Message.CREATION_DATE)
+                        );
                     }
                 });
         List<LdbcQuery2Result> friendsPostsResults = Lists.newArrayList(friendsPostsResultsIterator);

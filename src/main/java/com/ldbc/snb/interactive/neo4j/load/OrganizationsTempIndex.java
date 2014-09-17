@@ -2,11 +2,11 @@ package com.ldbc.snb.interactive.neo4j.load;
 
 import com.ldbc.snb.interactive.neo4j.load.tempindex.TempIndex;
 
-public class OrganisationsTempIndex implements TempIndex<Long, Long>
+public class OrganizationsTempIndex implements TempIndex<Long, Long>
 {
     private final TempIndex<Long, Long> tempIndex;
 
-    public OrganisationsTempIndex( TempIndex<Long, Long> tempIndex )
+    public OrganizationsTempIndex(TempIndex<Long, Long> tempIndex)
     {
         this.tempIndex = tempIndex;
     }

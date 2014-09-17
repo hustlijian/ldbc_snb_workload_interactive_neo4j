@@ -21,7 +21,7 @@ public class CsvFiles {
     public static final String FORUM = "forum_0.csv";
     public static final String TAG = "tag_0.csv";
     public static final String TAGCLASS = "tagclass_0.csv";
-    public static final String ORGANISATION = "organisation_0.csv";
+    public static final String ORGANIZATION = "organisation_0.csv";
     public static final String PLACE = "place_0.csv";
 
     /*

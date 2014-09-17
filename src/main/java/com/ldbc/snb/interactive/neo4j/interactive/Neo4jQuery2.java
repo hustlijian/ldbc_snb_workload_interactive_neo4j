@@ -2,7 +2,8 @@ package com.ldbc.snb.interactive.neo4j.interactive;
 
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery2;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcQuery2Result;
-import com.ldbc.snb.interactive.neo4j.Domain;
+
+import static com.ldbc.snb.interactive.neo4j.Domain.*;
 
 public abstract class Neo4jQuery2<CONNECTION> implements Neo4jQuery<LdbcQuery2, LdbcQuery2Result, CONNECTION> {
     protected static final Integer PERSON_ID = 1;
@@ -15,15 +16,15 @@ public abstract class Neo4jQuery2<CONNECTION> implements Neo4jQuery<LdbcQuery2, 
     Sort results descending by creation date, and then ascending by Post identifier.
      */
     protected static final String QUERY_STRING = ""
-            + "MATCH (:" + Domain.Nodes.Person + " {" + Domain.Person.ID + ":{" + PERSON_ID + "}})-[:" + Domain.Rels.KNOWS + "]-(friend:" + Domain.Nodes.Person + ")<-[:" + Domain.Rels.HAS_CREATOR + "]-(message)\n"
-            + "WHERE message." + Domain.Message.CREATION_DATE + " <= {" + MAX_DATE + "} AND (message:" + Domain.Nodes.Post + " OR message:" + Domain.Nodes.Comment + ")\n"
+            + "MATCH (:" + Nodes.Person + " {" + Person.ID + ":{" + PERSON_ID + "}})-[:" + Rels.KNOWS + "]-(friend:" + Nodes.Person + ")<-[:" + Rels.HAS_CREATOR + "]-(message)\n"
+            + "WHERE message." + Message.CREATION_DATE + " <= {" + MAX_DATE + "} AND (message:" + Nodes.Post + " OR message:" + Nodes.Comment + ")\n"
             + "RETURN"
-            + " friend." + Domain.Person.ID + " AS personId,"
-            + " friend." + Domain.Person.FIRST_NAME + " AS personFirstName,"
-            + " friend." + Domain.Person.LAST_NAME + " AS personLastName,"
-            + " message." + Domain.Message.ID + " AS messageId,"
-            + " message." + Domain.Message.CONTENT + " AS messageContent,"
-            + " message." + Domain.Message.CREATION_DATE + " AS messageDate\n"
+            + " friend." + Person.ID + " AS personId,"
+            + " friend." + Person.FIRST_NAME + " AS personFirstName,"
+            + " friend." + Person.LAST_NAME + " AS personLastName,"
+            + " message." + Message.ID + " AS messageId,"
+            + " CASE has(message." + Message.CONTENT + ") WHEN true THEN message." + Message.CONTENT + " ELSE message." + Post.IMAGE_FILE + " END AS messageContent,\n"
+            + " message." + Message.CREATION_DATE + " AS messageDate\n"
             + "ORDER BY messageDate DESC, messageId ASC\n"
             + "LIMIT {" + LIMIT + "}";
 }

@@ -21,7 +21,7 @@ public abstract class Neo4jQuery9<CONNECTION> implements Neo4jQuery<LdbcQuery9, 
             + "WHERE message." + Domain.Message.CREATION_DATE + " < {" + LATEST_DATE + "}\n"
             + "RETURN DISTINCT"
             + " message." + Domain.Message.ID + " AS messageId,"
-            + " message." + Domain.Message.CONTENT + " AS messageContent,"
+            + " CASE has(message." + Domain.Message.CONTENT + ") WHEN true THEN message." + Domain.Message.CONTENT + " ELSE message." + Domain.Post.IMAGE_FILE + " END AS messageContent,\n"
             + " message." + Domain.Message.CREATION_DATE + " AS messageCreationDate,"
             + " friend." + Domain.Person.ID + " AS personId,"
             + " friend." + Domain.Person.FIRST_NAME + " AS personFirstName,"

@@ -230,7 +230,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
                     "f3",
                     "last3",
                     3,
-                    "[f3Post3] content",
+                    "[f3Post3] image",
                     3);
             actualRow = results.next();
             assertThat(actualRow, equalTo(expectedRow));
@@ -1098,7 +1098,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedPersonFirstName = "friend";
             expectedPersonLastName = "one";
             expectedCommentOrPostId = 11l;
-            expectedCommentOrPostContent = "P11";
+            expectedCommentOrPostContent = "P11 - content";
             expectedCommentOrPostCreationDate = 11l;
             assertThat(actualResult, equalTo(new LdbcQuery9Result(
                     expectedPersonId,
@@ -1173,7 +1173,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedPersonFirstName = "friend";
             expectedPersonLastName = "two";
             expectedCommentOrPostId = 21l;
-            expectedCommentOrPostContent = "P21";
+            expectedCommentOrPostContent = "P21 - image";
             expectedCommentOrPostCreationDate = 6l;
             assertThat(actualResult, equalTo(new LdbcQuery9Result(
                     expectedPersonId,
@@ -1188,7 +1188,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedPersonFirstName = "friend";
             expectedPersonLastName = "one";
             expectedCommentOrPostId = 12l;
-            expectedCommentOrPostContent = "P12";
+            expectedCommentOrPostContent = "P12 - content";
             expectedCommentOrPostCreationDate = 4l;
             assertThat(actualResult, equalTo(new LdbcQuery9Result(
                     expectedPersonId,
@@ -1228,7 +1228,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedPersonFirstName = "friend";
             expectedPersonLastName = "one";
             expectedCommentOrPostId = 11l;
-            expectedCommentOrPostContent = "P11";
+            expectedCommentOrPostContent = "P11 - content";
             expectedCommentOrPostCreationDate = 11l;
             assertThat(actualResult, equalTo(new LdbcQuery9Result(
                     expectedPersonId,

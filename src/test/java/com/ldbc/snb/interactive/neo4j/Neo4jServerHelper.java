@@ -25,7 +25,7 @@ public class Neo4jServerHelper {
         int port = 7474;
         String path = "/tmp/neodb";
         FileUtils.deleteDirectory(new File(path));
-        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query9GraphMaker();
+        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query2GraphMaker();
         WrappingNeoServer wrappingNeoServer = Neo4jServerHelper.fromQueryGraphMaker(queryGraphMaker, path, port);
         wrappingNeoServer.start();
     }

@@ -39,8 +39,10 @@ public class IntegrationTest {
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-    private static void buildGraph(String dbDirPath) throws IOException {
-        String csvFilesDirPath = TestUtils.getResource("/test_csv_files").getAbsolutePath() + "/";
+    private static final String CSV_DIR = TestUtils.getResource("/test_csv_files").getAbsolutePath();
+
+    private static void buildGraph(String dbDirPath, String csvDir) throws IOException {
+        String csvFilesDirPath = csvDir + "/";
         String importerConfigPath = TestUtils.getResource("/neo4j_import_dev.properties").getAbsolutePath();
         LdbcSnbNeo4jImporter importer = new LdbcSnbNeo4jImporter(dbDirPath, csvFilesDirPath, importerConfigPath);
         importer.load();
@@ -55,7 +57,7 @@ public class IntegrationTest {
     @Test
     public void shouldValidateAllImplementationUsingValidationParametersCreatedByEmbeddedCypherImplementation() throws IOException, DriverConfigurationException, ClientException {
         File dbDir = temporaryFolder.newFile();
-        buildGraph(dbDir.getAbsolutePath());
+        buildGraph(dbDir.getAbsolutePath(), CSV_DIR);
 
         /*
         CREATE VALIDATION PARAMETERS FOR USE IN VALIDATING OTHER IMPLEMENTATIONS
@@ -173,10 +175,92 @@ public class IntegrationTest {
         wrappingNeoServer.stop();
     }
 
+    @Ignore
+    @Test
+    public void shouldValidateAllImplementationUsingGivenValidationParametersAndCsvDir() throws IOException, DriverConfigurationException, ClientException {
+        // TODO set this
+        File validationParametersFile = TestUtils.getResource("/validation.csv");
+        // TODO set this
+        String csvDir = CSV_DIR;
+
+        File dbDir = temporaryFolder.newFile();
+        buildGraph(dbDir.getAbsolutePath(), csvDir);
+
+        /*
+        CREATE VALIDATION PARAMETERS FOR USE IN VALIDATING OTHER IMPLEMENTATIONS
+         */
+
+        ConsoleAndFileDriverConfiguration configuration = ConsoleAndFileDriverConfiguration.fromDefaults(Neo4jDb.class.getName(), LdbcSnbInteractiveWorkload.class.getName(), 10);
+
+        Map<String, String> ldbcSnbInteractiveReadOnlyConfiguration = LdbcSnbInteractiveWorkload.defaultReadOnlyConfig();
+        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(ldbcSnbInteractiveReadOnlyConfiguration);
+
+        Map<String, String> neo4jDbConfiguration = new HashMap<>();
+        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
+
+        Map<String, String> additionalParameters = new HashMap<>();
+        additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, TestUtils.getResource("/test_csv_files/").getAbsolutePath());
+        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(additionalParameters);
+
+         /*
+        VALIDATE EMBEDDED CYPHER IMPLEMENTATION AGAINST VALIDATION PARAMETERS
+         */
+
+        neo4jDbConfiguration.put(Neo4jDb.CONFIG_PATH_KEY, TestUtils.getResource("/neo4j_run_dev.properties").getAbsolutePath());
+        neo4jDbConfiguration.put(Neo4jDb.DB_PATH_KEY, dbDir.getAbsolutePath());
+        neo4jDbConfiguration.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_CYPHER);
+        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
+
+        Map<String, String> validateDbConfigurationParameters = new HashMap<>();
+        validateDbConfigurationParameters.put(ConsoleAndFileDriverConfiguration.DB_VALIDATION_FILE_PATH_ARG, validationParametersFile.getAbsolutePath());
+        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(validateDbConfigurationParameters);
+
+        TimeSource timeSource = new SystemTimeSource();
+        Time workloadStartTime = timeSource.now().plus(Duration.fromSeconds(1));
+        ConcurrentControlService controlService = new LocalControlService(workloadStartTime, configuration);
+        Client client = new Client(controlService, timeSource);
+        assertThat(client.databaseValidationResult(), is(nullValue()));
+        client.start();
+        assertThat(client.databaseValidationResult().isSuccessful(), is(true));
+
+         /*
+        VALIDATE EMBEDDED API IMPLEMENTATION AGAINST VALIDATION PARAMETERS
+         */
+
+        neo4jDbConfiguration.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_API);
+        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
+
+        controlService = new LocalControlService(workloadStartTime, configuration);
+        client = new Client(controlService, timeSource);
+        assertThat(client.databaseValidationResult(), is(nullValue()));
+        client.start();
+        assertThat(client.databaseValidationResult().isSuccessful(), is(true));
+
+         /*
+        VALIDATE JDBC CYPHER IMPLEMENTATION AGAINST VALIDATION PARAMETERS
+         */
+
+        int port = Neo4jServerHelper.nextFreePort();
+        WrappingNeoServer wrappingNeoServer = Neo4jServerHelper.fromPath(dbDir.getAbsolutePath(), port);
+        wrappingNeoServer.start();
+
+        neo4jDbConfiguration.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_REMOTE_CYPHER);
+        neo4jDbConfiguration.put(Neo4jDb.URL_KEY, "jdbc:neo4j://localhost:" + port);
+        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
+
+        controlService = new LocalControlService(workloadStartTime, configuration);
+        client = new Client(controlService, timeSource);
+        assertThat(client.databaseValidationResult(), is(nullValue()));
+        client.start();
+        assertThat(client.databaseValidationResult().isSuccessful(), is(true));
+
+        wrappingNeoServer.stop();
+    }
+
     @Test
     public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedSteps() throws ClientException, IOException, DriverConfigurationException {
         File dbDir = temporaryFolder.newFile();
-        buildGraph(dbDir.getAbsolutePath());
+        buildGraph(dbDir.getAbsolutePath(), CSV_DIR);
         File resultsFile = temporaryFolder.newFile();
         assertThat(resultsFile.length() == 0, is(true));
 
@@ -241,7 +325,7 @@ public class IntegrationTest {
     @Test
     public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedCypher() throws ClientException, IOException, DriverConfigurationException {
         File dbDir = temporaryFolder.newFile();
-        buildGraph(dbDir.getAbsolutePath());
+        buildGraph(dbDir.getAbsolutePath(), CSV_DIR);
         File resultsFile = temporaryFolder.newFile();
         assertThat(resultsFile.length() == 0, is(true));
 
@@ -305,7 +389,7 @@ public class IntegrationTest {
     @Test
     public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher() throws ClientException, IOException, DriverConfigurationException {
         File dbDir = temporaryFolder.newFile();
-        buildGraph(dbDir.getAbsolutePath());
+        buildGraph(dbDir.getAbsolutePath(), CSV_DIR);
 
         int port = Neo4jServerHelper.nextFreePort();
         WrappingNeoServer wrappingNeoServer = Neo4jServerHelper.fromPath(dbDir.getAbsolutePath(), port);

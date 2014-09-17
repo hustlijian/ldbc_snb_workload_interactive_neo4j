@@ -88,7 +88,7 @@ public class Neo4jQuery3EmbeddedApi extends Neo4jQuery3<GraphDatabaseService> {
                         )
                 );
 
-        Collections.sort(result, new CountComparator());
+        Collections.sort(result, new DescendingCountAscendingPersonIdComparator());
         return result.iterator();
     }
 
@@ -112,14 +112,14 @@ public class Neo4jQuery3EmbeddedApi extends Neo4jQuery3<GraphDatabaseService> {
         }
     }
 
-    class CountComparator implements Comparator<LdbcQuery3Result> {
+    class DescendingCountAscendingPersonIdComparator implements Comparator<LdbcQuery3Result> {
         @Override
         public int compare(LdbcQuery3Result result1, LdbcQuery3Result result2) {
             if (result1.count() > result2.count()) return -1;
             else if (result1.count() < result2.count()) return 1;
             else {
-                if (result1.personId() < result2.count()) return -1;
-                else if (result1.personId() > result2.count()) return 1;
+                if (result1.personId() < result2.personId()) return -1;
+                else if (result1.personId() > result2.personId()) return 1;
                 else return 0;
             }
         }
