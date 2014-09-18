@@ -58,8 +58,8 @@ public class IntegrationTest {
     public void shouldValidateAllImplementationUsingValidationParametersCreatedByEmbeddedCypherImplementation() throws IOException, DriverConfigurationException, ClientException {
         File dbDir = temporaryFolder.newFile();
         // TODO uncomment
-//        String csvDir = CSV_DIR;
-        String csvDir = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/csv_and_params_files_for_validation/").getAbsolutePath();
+        String csvDir = CSV_DIR;
+//        String csvDir = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/csv_files/").getAbsolutePath();
         buildGraph(dbDir.getAbsolutePath(), csvDir);
 
         /*
@@ -67,8 +67,8 @@ public class IntegrationTest {
          */
 
         // TODO uncomment
-//        File validationParametersFile = temporaryFolder.newFile();
-        File validationParametersFile = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/csv_and_params_files_for_validation/validation_params.csv");
+        File validationParametersFile = temporaryFolder.newFile();
+//        File validationParametersFile = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/csv_and_params_files_for_validation/validation_params.csv");
         int validationSetSize = 100;
 
         assertThat(validationParametersFile.length() == 0, is(true));
@@ -184,12 +184,13 @@ public class IntegrationTest {
     @Test
     public void shouldValidateAllImplementationUsingGivenValidationParametersAndCsvDir() throws IOException, DriverConfigurationException, ClientException {
         // TODO set this
-        File validationParametersFile = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/csv_and_params_files_for_validation/");
+        File validationParametersFile = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/validation_params.csv");
         // TODO set this
-        String csvDir = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/csv_and_params_files_for_validation/").getAbsolutePath();
+        String csvDirPath = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/csv_files/").getAbsolutePath();
+        String substitutionParametersDirPath = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/params_files/").getAbsolutePath();
 
         File dbDir = temporaryFolder.newFile();
-        buildGraph(dbDir.getAbsolutePath(), csvDir);
+        buildGraph(dbDir.getAbsolutePath(), csvDirPath);
 
         /*
         CREATE VALIDATION PARAMETERS FOR USE IN VALIDATING OTHER IMPLEMENTATIONS
@@ -204,7 +205,7 @@ public class IntegrationTest {
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
 
         Map<String, String> additionalParameters = new HashMap<>();
-        additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, csvDir);
+        additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, substitutionParametersDirPath);
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(additionalParameters);
 
          /*
