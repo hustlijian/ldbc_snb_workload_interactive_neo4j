@@ -28,13 +28,22 @@ The resulting Neo4j instance will have [this schema](https://github.com/ldbc/ldb
 
 **Run Example Using Maven**
 
+Against Java API:
+
 	MAVEN_OPTS="-server -XX:+UseConcMarkSweepGC -Xmx512m" 
 	mvn exec:java -Dexec.mainClass=com.ldbc.driver.Client
-	-Dexec.arguments="-db,com.ldbc.snb.interactive.neo4j.Neo4jDb,
-	  -w,com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcInteractiveWorkload,
-	  -oc,10,-tc,1,-s,-tu,MILLISECONDS,
-	  -p,neo4j.path=db/,-p,neo4j.dbtype=embedded-api-steps,
-	  -p,parameters=ldbc_driver/workloads/ldbc/socnet/interactive/parameters.json"
+	-Dexec.arguments="
+	  -db,com.ldbc.snb.interactive.neo4j.Neo4jDb,
+	  -w,com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload,
+	  -oc,10,
+	  -tc,1,
+	  -tu,MILLISECONDS,
+	  -rf,results.json,
+	  -P,ldbc_driver/workloads/ldbc/socnet/interactive/ldbc_socnet_interactive.properties,
+	  -p,parameters_dir|/Users/alexaverbuch/IdeaProjects/ldbc_snb_datagen/substitution_parameters/"
+	  -p,neo4j.path|/tmp/neo4jdb/,
+	  -p,neo4j.dbtype|embedded-api-steps,
+	  -p,neo4j.config|src/main/resources/neo4j_run_dev.properties,
 
 Valid values for `neo4j.dbtype`: `embedded-cypher`, `embedded-api-steps`, `embedded-api-raw` (not implemented), `remote-cypher` (not implemented)
 	
