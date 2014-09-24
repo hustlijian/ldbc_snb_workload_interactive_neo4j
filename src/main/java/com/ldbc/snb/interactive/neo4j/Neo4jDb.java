@@ -48,6 +48,8 @@ public class Neo4jDb extends Db {
         configPath = properties.get(CONFIG_PATH_KEY);
         dbType = properties.get(DB_TYPE_KEY);
 
+        if (null == dbType) throw new DbException("Neo4j database connector type not given");
+
         logger.info("*** Neo4j Properties ***");
         logger.info("database type = " + ((null == dbType) ? "UNKNOWN" : dbType));
         logger.info("url = " + ((null == url) ? "UNKNOWN" : url));
@@ -58,14 +60,19 @@ public class Neo4jDb extends Db {
         if (dbType.equals(DB_TYPE_VALUE_REMOTE_CYPHER)) {
             logger.info("Connecting to database: " + url);
             logger.info("API type: JDBC");
-            commands = new Neo4jDbCommandsJdbcCypher(url);
+            if (null == url) throw new DbException("Neo4j server URL not given");
+            commands = new Neo4jDbCommandsJdbcRemoteCypher(url);
         } else if (dbType.equals(DB_TYPE_VALUE_EMBEDDED_CYPHER)) {
             logger.info("Connecting to database: " + dbPath);
             logger.info("API type: Cypher");
+            if (null == dbPath) throw new DbException("Neo4j database path not given");
+            if (null == configPath) throw new DbException("Neo4j database configuration not given");
             commands = new Neo4jDbCommandsEmbeddedCypher(dbPath, configPath);
         } else if (dbType.equals(DB_TYPE_VALUE_EMBEDDED_API)) {
             logger.info("Connecting to database: " + dbPath);
             logger.info("API type: Traversal Framework - " + Neo4jDbCommandsEmbeddedApi.LdbcTraversersType.STEPS.name());
+            if (null == dbPath) throw new DbException("Neo4j database path not given");
+            if (null == configPath) throw new DbException("Neo4j database configuration not given");
             commands = new Neo4jDbCommandsEmbeddedApi(dbPath, configPath, Neo4jDbCommandsEmbeddedApi.LdbcTraversersType.STEPS);
         } else {
             throw new DbException(String.format("Invalid database type: %s", dbType));

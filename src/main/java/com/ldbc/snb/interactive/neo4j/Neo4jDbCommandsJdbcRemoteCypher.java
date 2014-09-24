@@ -6,11 +6,11 @@ import com.ldbc.driver.DbException;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.*;
 import com.ldbc.snb.interactive.neo4j.interactive.remote_cypher.*;
 
-public class Neo4jDbCommandsJdbcCypher extends Neo4jDbCommands {
+public class Neo4jDbCommandsJdbcRemoteCypher extends Neo4jDbCommands {
     private final String url;
     private Neo4jConnectionState dbConnectionState;
 
-    public Neo4jDbCommandsJdbcCypher(String url) {
+    public Neo4jDbCommandsJdbcRemoteCypher(String url) {
         this.url = url;
     }
 

@@ -37,13 +37,10 @@ public class QueryCorrectnessEmbeddedApiTest extends QueryCorrectnessTest<GraphD
 
     @Override
     public GraphDatabaseService openConnection(String path) throws Exception {
-        Map dbRunConfig;
-        try {
-            dbRunConfig = Utils.loadConfig(TestUtils.getResource("/neo4j_run_dev.properties").getAbsolutePath());
-        } catch (IOException e) {
-            throw new DbException("Unable to load database properties", e);
-        }
-        return new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(path).setConfig(dbRunConfig).newGraphDatabase();
+        return new GraphDatabaseFactory()
+                .newEmbeddedDatabaseBuilder(path)
+                .loadPropertiesFromFile(TestUtils.getResource("/neo4j_run_dev.properties").getAbsolutePath())
+                .newGraphDatabase();
     }
 
     @Override

@@ -6,12 +6,8 @@ import com.ldbc.driver.DbException;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.*;
 import com.ldbc.snb.interactive.neo4j.interactive.LdbcTraversers;
 import com.ldbc.snb.interactive.neo4j.interactive.embedded_api_steps.*;
-import com.ldbc.snb.interactive.neo4j.utils.Utils;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-
-import java.io.IOException;
-import java.util.Map;
 
 public class Neo4jDbCommandsEmbeddedApi extends Neo4jDbCommands {
     private final String dbPath;
@@ -32,13 +28,13 @@ public class Neo4jDbCommandsEmbeddedApi extends Neo4jDbCommands {
 
     @Override
     public void init() throws DbException {
-        Map dbConfig;
-        try {
-            dbConfig = Utils.loadConfig(configPath);
-        } catch (IOException e) {
-            throw new DbException("Unable to load Neo4j DB config", e);
-        }
-        GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbPath).setConfig(dbConfig).newGraphDatabase();
+        // TODO remove
+//        System.out.println(configPath);
+        System.out.println(dbPath);
+        GraphDatabaseService db = new GraphDatabaseFactory()
+                .newEmbeddedDatabaseBuilder(dbPath)
+//                .loadPropertiesFromFile(configPath)
+                .newGraphDatabase();
         switch (traversersType) {
             case STEPS:
                 traversers = new LdbcTraversers(db);
