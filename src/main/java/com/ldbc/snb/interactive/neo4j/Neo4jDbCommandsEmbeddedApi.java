@@ -28,12 +28,9 @@ public class Neo4jDbCommandsEmbeddedApi extends Neo4jDbCommands {
 
     @Override
     public void init() throws DbException {
-        // TODO remove
-//        System.out.println(configPath);
-        System.out.println(dbPath);
         GraphDatabaseService db = new GraphDatabaseFactory()
                 .newEmbeddedDatabaseBuilder(dbPath)
-//                .loadPropertiesFromFile(configPath)
+                .loadPropertiesFromFile(configPath)
                 .newGraphDatabase();
         switch (traversersType) {
             case STEPS:
