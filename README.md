@@ -22,10 +22,6 @@ Subsequent builds:
 **Import data into Neo4j**
 
 	mvn exec:java -Dexec.mainClass=com.ldbc.snb.interactive.neo4j.load.LdbcSnbNeo4jImporter
-
-OR
-
-	mvn exec:java -Dexec.mainClass=com.ldbc.snb.interactive.neo4j.load.LdbcSnbNeo4jImporter
 	-Dexec.arguments="where/db/will/be/created/, where/csv/files/are/,path/to/neo4j.properties" 
 	
 The resulting Neo4j instance will have [this schema](https://github.com/ldbc/ldbc_socialnet_bm_neo4j/wiki/Schema)
