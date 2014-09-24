@@ -21,7 +21,7 @@ Subsequent builds:
 
 **Import data into Neo4j**
 
-	mvn exec:java -Dexec.mainClass=com.ldbc.socialnet.workload.neo4j.load.LdbcSocialNeworkNeo4jImporter
+	mvn exec:java -Dexec.mainClass=com.ldbc.snb.interactive.neo4j.load.LdbcSocialNeworkNeo4jImporter
 	
 The resulting Neo4j instance will have [this schema](https://github.com/ldbc/ldbc_socialnet_bm_neo4j/wiki/Schema)
 
@@ -29,8 +29,8 @@ The resulting Neo4j instance will have [this schema](https://github.com/ldbc/ldb
 
 	MAVEN_OPTS="-server -XX:+UseConcMarkSweepGC -Xmx512m" 
 	mvn exec:java -Dexec.mainClass=com.ldbc.driver.Client
-	-Dexec.arguments="-db,com.ldbc.socialnet.workload.neo4j.Neo4jDb,
-	  -w,com.ldbc.driver.workloads.ldbc.socnet.interactive.LdbcInteractiveWorkload,
+	-Dexec.arguments="-db,com.ldbc.snb.interactive.neo4j.Neo4jDb,
+	  -w,com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcInteractiveWorkload,
 	  -oc,10,-tc,1,-s,-tu,MILLISECONDS,
 	  -p,neo4j.path=db/,-p,neo4j.dbtype=embedded-api-steps,
 	  -p,parameters=ldbc_driver/workloads/ldbc/socnet/interactive/parameters.json"
