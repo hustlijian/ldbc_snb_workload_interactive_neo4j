@@ -38,25 +38,17 @@ public class LdbcSnbNeo4jImporter {
         if (new File(importerPropertiesPath).exists() == false)
             throw new RuntimeException(String.format("Neo4j properties file not found: %s", importerPropertiesPath));
 
-        LdbcSnbNeo4jImporter ldbcSocialNetworkLoader = new LdbcSnbNeo4jImporter(dbDir, dataDir, importerPropertiesPath);
-        ldbcSocialNetworkLoader.load();
+        LdbcSnbNeo4jImporter ldbcSocialNetworkLoader = new LdbcSnbNeo4jImporter();
+        ldbcSocialNetworkLoader.load(dbDir, dataDir, importerPropertiesPath);
     }
 
-    private final String dbDir;
-    private final String csvDataDir;
-    private final Map<String, String> importerConfig;
-
-    public LdbcSnbNeo4jImporter(String dbDirPath, String csvDataDir, String importerPropertiesPath) throws IOException {
-        this.dbDir = new File(dbDirPath).getAbsolutePath();
-        this.csvDataDir = csvDataDir;
-        importerConfig = Utils.loadConfig(importerPropertiesPath);
-    }
-
-    public void load() throws IOException {
+    public void load(String dbDirPath, String csvDataDir, String importerPropertiesPath) throws IOException {
+        String dbDir = new File(dbDirPath).getAbsolutePath();
         logger.info(String.format("Clear DB directory: %s", dbDir));
         FileUtils.deleteRecursively(new File(dbDir));
 
         logger.info("Instantiating Neo4j BatchInserter");
+        Map<String, String> importerConfig = Utils.loadConfig(importerPropertiesPath);
         BatchInserter batchInserter = BatchInserters.inserter(dbDir, importerConfig);
 
         /*
@@ -201,13 +193,6 @@ public class LdbcSnbNeo4jImporter {
                 TimeUnit.MILLISECONDS.toMinutes(runtime),
                 TimeUnit.MILLISECONDS.toSeconds(runtime)
                         - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(runtime))));
-
-        // TODO move elsewhere?
-        // logger.info( "Graph Metrics:" );
-        // logger.info( "\tNode count = " + GraphUtils.nodeCount( db, 10000000 )
-        // );
-        // logger.info( "\tRelationship count = " +
-        // GraphUtils.relationshipCount( db, 10000000 ) );
 
         System.out.printf("Shutting down...");
         db.shutdown();

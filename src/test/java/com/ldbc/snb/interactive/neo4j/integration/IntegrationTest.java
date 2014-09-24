@@ -44,14 +44,8 @@ public class IntegrationTest {
     private static void buildGraph(String dbDirPath, String csvDir) throws IOException {
         String csvFilesDirPath = csvDir + "/";
         String importerConfigPath = TestUtils.getResource("/neo4j_import_dev.properties").getAbsolutePath();
-        LdbcSnbNeo4jImporter importer = new LdbcSnbNeo4jImporter(dbDirPath, csvFilesDirPath, importerConfigPath);
-        importer.load();
-    }
-
-    @Ignore
-    @Test
-    public void importerShouldBeReusableParametersShouldBeGivenToLoadMethodNotToConstructor() {
-        assertThat(true, is(false));
+        LdbcSnbNeo4jImporter importer = new LdbcSnbNeo4jImporter();
+        importer.load(dbDirPath, csvFilesDirPath, importerConfigPath);
     }
 
     @Test
@@ -479,8 +473,8 @@ public class IntegrationTest {
         File dbDir = temporaryFolder.newFile();
         String csvFilesDir = TestUtils.getResource("/test_csv_files").getAbsolutePath() + "/";
         String configFilePath = TestUtils.getResource("/neo4j_import_dev.properties").getAbsolutePath();
-        LdbcSnbNeo4jImporter ldbcSnbNeo4jImporter = new LdbcSnbNeo4jImporter(dbDir.getAbsolutePath(), csvFilesDir, configFilePath);
-        ldbcSnbNeo4jImporter.load();
+        LdbcSnbNeo4jImporter ldbcSnbNeo4jImporter = new LdbcSnbNeo4jImporter();
+        ldbcSnbNeo4jImporter.load(dbDir.getAbsolutePath(), csvFilesDir, configFilePath);
         GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase(dbDir.getAbsolutePath());
         db.shutdown();
     }
