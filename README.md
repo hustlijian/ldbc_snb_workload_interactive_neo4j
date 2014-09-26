@@ -17,12 +17,13 @@ Initial build (**NOTE: requires Java 7, Git 1.8+, Maven 3.0+**):
 
 Subsequent builds:
 
-	mvn clean compile -Dmaven.compiler.source=1.7 -Dmaven.compiler.target=1.7
+	mvn clean package -DskipTests
+
+This produces importer and runner uberjars in the target folder.
 
 **Import data into Neo4j**
 
-	mvn exec:java -Dexec.mainClass=com.ldbc.snb.interactive.neo4j.load.LdbcSnbNeo4jImporter
-	-Dexec.arguments="where/db/will/be/created/, where/csv/files/are/,path/to/neo4j.properties" 
+  $ java -jar target/importer.jar where/db/will/be/created/ where/csv/files/are/ path/to/neo4j.properties
 	
 The resulting Neo4j instance will have [this schema](https://github.com/ldbc/ldbc_socialnet_bm_neo4j/wiki/Schema)
 
@@ -30,20 +31,19 @@ The resulting Neo4j instance will have [this schema](https://github.com/ldbc/ldb
 
 Against Java API:
 
-	MAVEN_OPTS="-server -XX:+UseConcMarkSweepGC -Xmx512m" 
-	mvn exec:java -Dexec.mainClass=com.ldbc.driver.Client
-	-Dexec.arguments="
-	  -db,com.ldbc.snb.interactive.neo4j.Neo4jDb,
-	  -w,com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload,
-	  -oc,10,
-	  -tc,1,
-	  -tu,MILLISECONDS,
-	  -rf,results.json,
-	  -P,ldbc_driver/workloads/ldbc/socnet/interactive/ldbc_socnet_interactive.properties,
-	  -p,parameters_dir|path/to/ldbc_snb_datagen/substitution_parameters/"
-	  -p,neo4j.path|/tmp/neo4jdb/,
-	  -p,neo4j.dbtype|embedded-api-steps,
-	  -p,neo4j.config|src/main/resources/neo4j_run_dev.properties,
+  $ java -jar target/runner.jar -db com.ldbc.snb.interactive.neo4j.Neo4jDb \
+      -w com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload \
+      -oc 10 \
+      -tc 1 \
+      -tu MILLISECONDS \
+      -rf results.json \
+      -P ldbc_driver/workloads/ldbc/socnet/interactive/ldbc_socnet_interactive.properties \
+      -p "parameters_dir|/Users/lassewesth/Software/ldbc_sf001/substitution_parameters/" \
+      -p "neo4j.path|/tmp/graph.db/" \
+      -p "neo4j.dbtype|embedded-api-steps" \
+      -p "neo4j.config|src/main/resources/neo4j_run_dev.properties"
+
+You might need to pass extra parameters to the JVM, e.g. `-server -XX:+UseConcMarkSweepGC -Xmx512m`
 
 Valid values for `neo4j.dbtype`: `embedded-cypher`, `embedded-api-steps`, `embedded-api-raw` (not implemented), `remote-cypher` (not implemented)
 	
