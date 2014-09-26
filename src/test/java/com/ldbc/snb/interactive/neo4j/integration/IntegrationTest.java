@@ -71,7 +71,7 @@ public class IntegrationTest {
         int threadCount = 4;
         Duration statusDisplayInterval = Duration.fromSeconds(1);
         TimeUnit timeUnit = TimeUnit.MILLISECONDS;
-        String resultFilePath = null;
+        String resultDirPath = null;
         Double timeCompressionRatio = 1.0;
         Set<String> peerIds = new HashSet<>();
         Duration toleratedExecutionDelay = Duration.fromMinutes(60);
@@ -85,13 +85,14 @@ public class IntegrationTest {
         boolean printHelp = false;
         ConsoleAndFileDriverConfiguration configuration = new ConsoleAndFileDriverConfiguration(
                 new HashMap<String, String>(),
+                "LDBC-SNB",
                 Neo4jDb.class.getName(),
                 LdbcSnbInteractiveWorkload.class.getName(),
                 operationCount,
                 threadCount,
                 statusDisplayInterval,
                 timeUnit,
-                resultFilePath,
+                resultDirPath,
                 timeCompressionRatio,
                 windowedExecutionWindowDuration,
                 peerIds,
@@ -262,14 +263,14 @@ public class IntegrationTest {
         File dbDir = temporaryFolder.newFile();
         String csvDir = CSV_DIR;
         buildGraph(dbDir.getAbsolutePath(), csvDir);
-        File resultsFile = temporaryFolder.newFile();
-        assertThat(resultsFile.length() == 0, is(true));
+        File resultDir = temporaryFolder.newFolder();
+        assertThat(resultDir.listFiles().length, is(0));
 
         long operationCount = 10;
         int threadCount = 4;
         Duration statusDisplayInterval = Duration.fromSeconds(1);
         TimeUnit timeUnit = TimeUnit.MILLISECONDS;
-        String resultFilePath = resultsFile.getAbsolutePath();
+        String resultDirPath = resultDir.getAbsolutePath();
         Double timeCompressionRatio = 1.0;
         Set<String> peerIds = new HashSet<>();
         Duration toleratedExecutionDelay = Duration.fromMinutes(60);
@@ -282,13 +283,14 @@ public class IntegrationTest {
         boolean printHelp = false;
         ConsoleAndFileDriverConfiguration configuration = new ConsoleAndFileDriverConfiguration(
                 new HashMap<String, String>(),
+                "LDBC-SNB",
                 Neo4jDb.class.getName(),
                 LdbcSnbInteractiveWorkload.class.getName(),
                 operationCount,
                 threadCount,
                 statusDisplayInterval,
                 timeUnit,
-                resultFilePath,
+                resultDirPath,
                 timeCompressionRatio,
                 windowedExecutionWindowDuration,
                 peerIds,
@@ -320,7 +322,8 @@ public class IntegrationTest {
         Client client = new Client(controlService, timeSource);
         client.start();
 
-        assertThat(resultsFile.length() == 0, is(false));
+        // results, configuration
+        assertThat(resultDir.listFiles().length, is(2));
     }
 
     @Test
@@ -328,14 +331,14 @@ public class IntegrationTest {
         File dbDir = temporaryFolder.newFile();
         String csvDir = CSV_DIR;
         buildGraph(dbDir.getAbsolutePath(), csvDir);
-        File resultsFile = temporaryFolder.newFile();
-        assertThat(resultsFile.length() == 0, is(true));
+        File resultDir = temporaryFolder.newFolder();
+        assertThat(resultDir.listFiles().length, is(0));
 
         long operationCount = 10;
         int threadCount = 4;
         Duration statusDisplayInterval = Duration.fromSeconds(1);
         TimeUnit timeUnit = TimeUnit.MILLISECONDS;
-        String resultFilePath = resultsFile.getAbsolutePath();
+        String resultDirPath = resultDir.getAbsolutePath();
         Double timeCompressionRatio = 1.0;
         Set<String> peerIds = new HashSet<>();
         Duration toleratedExecutionDelay = Duration.fromMinutes(60);
@@ -348,13 +351,14 @@ public class IntegrationTest {
         boolean printHelp = false;
         ConsoleAndFileDriverConfiguration configuration = new ConsoleAndFileDriverConfiguration(
                 new HashMap<String, String>(),
+                "LDBC-SNB",
                 Neo4jDb.class.getName(),
                 LdbcSnbInteractiveWorkload.class.getName(),
                 operationCount,
                 threadCount,
                 statusDisplayInterval,
                 timeUnit,
-                resultFilePath,
+                resultDirPath,
                 timeCompressionRatio,
                 windowedExecutionWindowDuration,
                 peerIds,
@@ -385,7 +389,9 @@ public class IntegrationTest {
         ConcurrentControlService controlService = new LocalControlService(workloadStartTime, configuration);
         Client client = new Client(controlService, timeSource);
         client.start();
-        assertThat(resultsFile.length() == 0, is(false));
+
+        // results, configuration
+        assertThat(resultDir.listFiles().length, is(2));
     }
 
     @Test
@@ -397,14 +403,14 @@ public class IntegrationTest {
         WrappingNeoServer wrappingNeoServer = Neo4jServerHelper.fromPath(dbDir.getAbsolutePath(), port);
         wrappingNeoServer.start();
 
-        File resultsFile = temporaryFolder.newFile();
-        assertThat(resultsFile.length() == 0, is(true));
+        File resultDir = temporaryFolder.newFolder();
+        assertThat(resultDir.listFiles().length, is(0));
 
         long operationCount = 10;
         int threadCount = 4;
         Duration statusDisplayInterval = Duration.fromSeconds(1);
         TimeUnit timeUnit = TimeUnit.MILLISECONDS;
-        String resultFilePath = resultsFile.getAbsolutePath();
+        String resultDirPath = resultDir.getAbsolutePath();
         Double timeCompressionRatio = 1.0;
         Set<String> peerIds = new HashSet<>();
         Duration toleratedExecutionDelay = Duration.fromMinutes(60);
@@ -417,13 +423,14 @@ public class IntegrationTest {
         boolean printHelp = false;
         ConsoleAndFileDriverConfiguration configuration = new ConsoleAndFileDriverConfiguration(
                 new HashMap<String, String>(),
+                "LDBC-SNB",
                 Neo4jDb.class.getName(),
                 LdbcSnbInteractiveWorkload.class.getName(),
                 operationCount,
                 threadCount,
                 statusDisplayInterval,
                 timeUnit,
-                resultFilePath,
+                resultDirPath,
                 timeCompressionRatio,
                 windowedExecutionWindowDuration,
                 peerIds,
@@ -453,7 +460,9 @@ public class IntegrationTest {
         ConcurrentControlService controlService = new LocalControlService(workloadStartTime, configuration);
         Client client = new Client(controlService, timeSource);
         client.start();
-        assertThat(resultsFile.length() == 0, is(false));
+
+        // results, configuration
+        assertThat(resultDir.listFiles().length, is(2));
         wrappingNeoServer.stop();
     }
 
