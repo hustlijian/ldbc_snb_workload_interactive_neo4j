@@ -40,7 +40,7 @@ Against Java API:
 	  -tu,MILLISECONDS,
 	  -rf,results.json,
 	  -P,ldbc_driver/workloads/ldbc/socnet/interactive/ldbc_socnet_interactive.properties,
-	  -p,parameters_dir|/Users/alexaverbuch/IdeaProjects/ldbc_snb_datagen/substitution_parameters/"
+	  -p,parameters_dir|path/to/ldbc_snb_datagen/substitution_parameters/"
 	  -p,neo4j.path|/tmp/neo4jdb/,
 	  -p,neo4j.dbtype|embedded-api-steps,
 	  -p,neo4j.config|src/main/resources/neo4j_run_dev.properties,
