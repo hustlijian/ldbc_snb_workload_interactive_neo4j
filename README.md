@@ -21,32 +21,36 @@ Subsequent builds:
 
 This produces importer and runner uberjars in the target folder.
 
-**Import data into Neo4j**
+**Import Example**
 
-  $ java -jar target/importer.jar where/db/will/be/created/ where/csv/files/are/ path/to/neo4j.properties
+```
+$ java -jar target/importer.jar where/db/will/be/created/ where/csv/files/are/ path/to/neo4j.properties
+```
 	
 The resulting Neo4j instance will have [this schema](https://github.com/ldbc/ldbc_socialnet_bm_neo4j/wiki/Schema)
 
-**Run Example Using Maven**
+**Run Example**
 
-Against Java API:
+Valid values for `neo4j.dbtype`: `embedded-api-steps`, `embedded-cypher`, `remote-cypher`.
 
-  $ java -jar target/runner.jar -db com.ldbc.snb.interactive.neo4j.Neo4jDb \
-      -w com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload \
-      -oc 10 \
-      -tc 1 \
-      -tu MILLISECONDS \
-      -rf results.json \
-      -P ldbc_driver/workloads/ldbc/socnet/interactive/ldbc_socnet_interactive.properties \
-      -p "parameters_dir|/Users/lassewesth/Software/ldbc_sf001/substitution_parameters/" \
-      -p "neo4j.path|/tmp/graph.db/" \
-      -p "neo4j.dbtype|embedded-api-steps" \
-      -p "neo4j.config|src/main/resources/neo4j_run_dev.properties"
+*embedded-api-steps:*
+
+```
+$ java -jar target/runner.jar -db com.ldbc.snb.interactive.neo4j.Neo4jDb \
+    -w com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload \
+    -oc 10 \
+    -tc 1 \
+    -tu MILLISECONDS \
+    -rf results.json \
+    -P ldbc_driver/workloads/ldbc/socnet/interactive/ldbc_socnet_interactive.properties \
+    -p "parameters_dir|/Users/lassewesth/Software/ldbc_sf001/substitution_parameters/" \
+    -p "neo4j.path|/tmp/graph.db/" \
+    -p "neo4j.dbtype|embedded-api-steps" \
+    -p "neo4j.config|src/main/resources/neo4j_run_dev.properties"
+```
 
 You might need to pass extra parameters to the JVM, e.g. `-server -XX:+UseConcMarkSweepGC -Xmx512m`
 
-Valid values for `neo4j.dbtype`: `embedded-cypher`, `embedded-api-steps`, `embedded-api-raw` (not implemented), `remote-cypher` (not implemented)
-	
 Note, the workload is run using [ldbc_driver](https://github.com/ldbc/ldbc_driver). For more details about configuration options and general usage please refer to the wiki of that project.
 
 **Configuration**
