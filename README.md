@@ -41,7 +41,8 @@ $ java -jar target/runner.jar -db com.ldbc.snb.interactive.neo4j.Neo4jDb \
     -oc 10 \
     -tc 1 \
     -tu MILLISECONDS \
-    -rf results.json \
+    -nm BENCHMARK_NAME \
+    -rd results_dir \
     -P ldbc_driver/workloads/ldbc/socnet/interactive/ldbc_socnet_interactive.properties \
     -p "parameters_dir|/Users/lassewesth/Software/ldbc_sf001/substitution_parameters/" \
     -p "neo4j.path|/tmp/graph.db/" \
@@ -51,18 +52,10 @@ $ java -jar target/runner.jar -db com.ldbc.snb.interactive.neo4j.Neo4jDb \
 
 You might need to pass extra parameters to the JVM, e.g. `-server -XX:+UseConcMarkSweepGC -Xmx512m`
 
-Note, the workload is run using [ldbc_driver](https://github.com/ldbc/ldbc_driver). For more details about configuration options and general usage please refer to the wiki of that project.
+Upon completion `results_dir` (or whatever you set `-rd`/`--resultsdir` to) will contain two files, results and the configuration parameters used to run the benchmark:
+```
+$ ls results_dir/
+BENCHMARK_NAME-configuration.properties	BENCHMARK_NAME-results.json
+```
 
-**Configuration**
-
-	# Directory where CSV data can be found (from LDBC Data Generator)
-	data_dir=/path/to/ldbc/generator/social/network/csv/files/
-
-	# Directory to store Neo4j database instance
-	db_dir=db
-
-	# neo4j properties file for configuring the batch importer
-	neo4j_import_config=/neo4j_import_dev.properties
-
-	# neo4j properties file for configuring the transactional database
-	neo4j_run_config=/neo4j_run_dev.properties
+The workload is run using [ldbc_driver](https://github.com/ldbc/ldbc_driver). For more details about configuration options and general usage please refer to the wiki of that project.
