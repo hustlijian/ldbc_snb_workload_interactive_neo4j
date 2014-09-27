@@ -50,6 +50,23 @@ $ java -jar target/runner.jar -db com.ldbc.snb.interactive.neo4j.Neo4jDb \
     -p "neo4j.config|src/main/resources/neo4j_run_dev.properties"
 ```
 
+*embedded-cypher:*
+
+```
+$ java -jar target/runner.jar -db com.ldbc.snb.interactive.neo4j.Neo4jDb \
+    -w com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload \
+    -oc 10 \
+    -tc 1 \
+    -tu MILLISECONDS \
+    -nm BENCHMARK_NAME \
+    -rd results_dir \
+    -P ldbc_driver/workloads/ldbc/socnet/interactive/ldbc_socnet_interactive.properties \
+    -p "parameters_dir|/Users/lassewesth/Software/ldbc_sf001/substitution_parameters/" \
+    -p "neo4j.path|/tmp/graph.db/" \
+    -p "neo4j.dbtype|embedded-cypher" \
+    -p "neo4j.config|src/main/resources/neo4j_run_dev.properties"
+```
+
 You might need to pass extra parameters to the JVM, e.g. `-server -XX:+UseConcMarkSweepGC -Xmx512m`
 
 Upon completion `results_dir` (or whatever you set `-rd`/`--resultsdir` to) will contain two files, results and the configuration parameters used to run the benchmark:
