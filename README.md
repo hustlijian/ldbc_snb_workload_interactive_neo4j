@@ -72,7 +72,8 @@ You might need to pass extra parameters to the JVM, e.g. `-server -XX:+UseConcMa
 Upon completion `results_dir` (or whatever you set `-rd`/`--resultsdir` to) will contain two files, results and the configuration parameters used to run the benchmark:
 ```
 $ ls results_dir/
-BENCHMARK_NAME-configuration.properties	BENCHMARK_NAME-results.json
+BENCHMARK_NAME-configuration.properties	
+BENCHMARK_NAME-results.json
 ```
 
 The workload is run using [ldbc_driver](https://github.com/ldbc/ldbc_driver). For more details about configuration options and general usage please refer to the wiki of that project.
