@@ -20,12 +20,12 @@ You now have one large Maven muti-module project. To build it:
 
 	mvn clean package -DskipTests
 
-This builds dependent projects (submodules) and produces importer and runner uberjars in the target folder.
+This builds dependent projects (submodules) and produces importer and runner uberjars. You can find those in data-import/target and benchmark-run/target, respectively.
 
 **Import Example**
 
 ```
-$ java -jar target/importer.jar where/db/will/be/created/ where/csv/files/are/ path/to/neo4j.properties
+$ java -jar data-import/target/importer.jar where/db/will/be/created/ where/csv/files/are/ path/to/neo4j.properties
 ```
 	
 The resulting Neo4j instance will have [this schema](https://github.com/ldbc/ldbc_socialnet_bm_neo4j/wiki/Schema)
@@ -37,7 +37,7 @@ Valid values for `neo4j.dbtype`: `embedded-api-steps`, `embedded-cypher`, `remot
 *embedded-api-steps:*
 
 ```
-$ java -jar target/runner.jar -db com.ldbc.snb.interactive.neo4j.Neo4jDb \
+$ java -jar benchmark-run/target/runner.jar -db com.ldbc.snb.interactive.neo4j.Neo4jDb \
     -w com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload \
     -oc 10 \
     -tc 1 \
@@ -54,7 +54,7 @@ $ java -jar target/runner.jar -db com.ldbc.snb.interactive.neo4j.Neo4jDb \
 *embedded-cypher:*
 
 ```
-$ java -jar target/runner.jar -db com.ldbc.snb.interactive.neo4j.Neo4jDb \
+$ java -jar benchmark-run/target/runner.jar -db com.ldbc.snb.interactive.neo4j.Neo4jDb \
     -w com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload \
     -oc 10 \
     -tc 1 \

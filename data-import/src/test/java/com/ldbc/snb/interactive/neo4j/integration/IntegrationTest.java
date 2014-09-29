@@ -85,6 +85,7 @@ public class IntegrationTest {
         boolean printHelp = false;
         ConsoleAndFileDriverConfiguration configuration = new ConsoleAndFileDriverConfiguration(
                 new HashMap<String, String>(),
+                "LDBC-SNB",
                 Neo4jDb.class.getName(),
                 LdbcSnbInteractiveWorkload.class.getName(),
                 operationCount,
@@ -282,6 +283,7 @@ public class IntegrationTest {
         boolean printHelp = false;
         ConsoleAndFileDriverConfiguration configuration = new ConsoleAndFileDriverConfiguration(
                 new HashMap<String, String>(),
+                "LDBC-SNB",
                 Neo4jDb.class.getName(),
                 LdbcSnbInteractiveWorkload.class.getName(),
                 operationCount,
@@ -349,6 +351,7 @@ public class IntegrationTest {
         boolean printHelp = false;
         ConsoleAndFileDriverConfiguration configuration = new ConsoleAndFileDriverConfiguration(
                 new HashMap<String, String>(),
+                "LDBC-SNB",
                 Neo4jDb.class.getName(),
                 LdbcSnbInteractiveWorkload.class.getName(),
                 operationCount,
@@ -420,6 +423,7 @@ public class IntegrationTest {
         boolean printHelp = false;
         ConsoleAndFileDriverConfiguration configuration = new ConsoleAndFileDriverConfiguration(
                 new HashMap<String, String>(),
+                "LDBC-SNB",
                 Neo4jDb.class.getName(),
                 LdbcSnbInteractiveWorkload.class.getName(),
                 operationCount,
