@@ -37,8 +37,7 @@ Valid values for `neo4j.dbtype`: `embedded-api-steps`, `embedded-cypher`, `remot
 *embedded-api-steps:*
 
 ```
-$ java -jar target/runner.jar \
-    -db com.ldbc.snb.interactive.neo4j.Neo4jDb \
+$ java -jar target/runner.jar -db com.ldbc.snb.interactive.neo4j.Neo4jDb \
     -w com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload \
     -oc 10 \
     -tc 1 \
@@ -55,8 +54,7 @@ $ java -jar target/runner.jar \
 *embedded-cypher:*
 
 ```
-$ java -jar target/runner.jar \
-    -db com.ldbc.snb.interactive.neo4j.Neo4jDb \
+$ java -jar target/runner.jar -db com.ldbc.snb.interactive.neo4j.Neo4jDb \
     -w com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload \
     -oc 10 \
     -tc 1 \
