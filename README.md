@@ -13,13 +13,14 @@ Initial build (**NOTE: requires Java 7, Git 1.8+, Maven 3.0+**):
 
 	git clone https://github.com/ldbc/ldbc_socialnet_bm_neo4j.git
 	cd ldbc_socialnet_bm_neo4j
-	./build.sh
+	git submodule init
+	git submodule update
 
-Subsequent builds:
+You now have one large Maven muti-module project. To build it:
 
 	mvn clean package -DskipTests
 
-This produces importer and runner uberjars in the target folder.
+This builds dependent projects (submodules) and produces importer and runner uberjars in the target folder.
 
 **Import Example**
 

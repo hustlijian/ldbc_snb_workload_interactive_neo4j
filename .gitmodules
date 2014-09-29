@@ -1,9 +1,3 @@
-[submodule "ldbc_driver"]
-	path = ldbc_driver
-	url = git@github.com:ldbc/ldbc_driver.git
-[submodule "steps"]
-	path = steps
-	url = git@github.com:alexaverbuch/steps.git
 [submodule "neo4j-jdbc"]
 	path = neo4j-jdbc
 	url = git@github.com:neo4j-contrib/neo4j-jdbc.git
