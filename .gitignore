@@ -21,3 +21,7 @@ java.hprof.txt
 report/*.json
 .DS_Store
 m0friendList0.csv
+benchmark-run/dependency-reduced-pom.xml
+data-import/dependency-reduced-pom.xml
+out/
+
