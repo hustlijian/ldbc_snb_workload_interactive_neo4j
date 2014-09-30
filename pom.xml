@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ldbc.snb</groupId>
     <artifactId>neo4j-interactive</artifactId>
-    <version>2.0.5-SNAPSHOT</version>
+    <version>2.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Neo4j implementation of LDBC Social Network benchmark</name>
 
