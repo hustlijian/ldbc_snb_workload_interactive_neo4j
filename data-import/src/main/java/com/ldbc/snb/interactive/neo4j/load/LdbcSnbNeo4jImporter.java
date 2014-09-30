@@ -5,10 +5,10 @@ import com.ldbc.snb.interactive.neo4j.load.tempindex.TempIndexFactory;
 import com.ldbc.snb.interactive.neo4j.load.tempindex.TroveTempIndexFactory;
 import com.ldbc.snb.interactive.neo4j.utils.GraphUtils;
 import com.ldbc.snb.interactive.neo4j.utils.Utils;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.kernel.impl.util.FileUtils;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
@@ -45,7 +45,7 @@ public class LdbcSnbNeo4jImporter {
     public void load(String dbDirPath, String csvDataDir, String importerPropertiesPath) throws IOException {
         String dbDir = new File(dbDirPath).getAbsolutePath();
         logger.info(String.format("Clear DB directory: %s", dbDir));
-        FileUtils.deleteRecursively(new File(dbDir));
+        FileUtils.deleteDirectory(new File(dbDir));
 
         logger.info("Instantiating Neo4j BatchInserter");
         Map<String, String> importerConfig = Utils.loadConfig(importerPropertiesPath);

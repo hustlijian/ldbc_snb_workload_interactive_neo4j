@@ -50,7 +50,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldValidateAllImplementationUsingValidationParametersCreatedByEmbeddedCypherImplementation() throws IOException, DriverConfigurationException, ClientException {
-        File dbDir = temporaryFolder.newFile();
+        File dbDir = temporaryFolder.newFolder();
         // TODO uncomment
         String csvDir = CSV_DIR;
 //        String csvDir = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/csv_files/").getAbsolutePath();
@@ -184,7 +184,7 @@ public class IntegrationTest {
         String csvDirPath = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/csv_files/").getAbsolutePath();
         String substitutionParametersDirPath = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/params_files/").getAbsolutePath();
 
-        File dbDir = temporaryFolder.newFile();
+        File dbDir = temporaryFolder.newFolder();
         buildGraph(dbDir.getAbsolutePath(), csvDirPath);
 
         /*
@@ -260,7 +260,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedSteps() throws ClientException, IOException, DriverConfigurationException {
-        File dbDir = temporaryFolder.newFile();
+        File dbDir = temporaryFolder.newFolder();
         String csvDir = CSV_DIR;
         buildGraph(dbDir.getAbsolutePath(), csvDir);
         File resultDir = temporaryFolder.newFolder();
@@ -328,7 +328,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedCypher() throws ClientException, IOException, DriverConfigurationException {
-        File dbDir = temporaryFolder.newFile();
+        File dbDir = temporaryFolder.newFolder();
         String csvDir = CSV_DIR;
         buildGraph(dbDir.getAbsolutePath(), csvDir);
         File resultDir = temporaryFolder.newFolder();
@@ -396,7 +396,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher() throws ClientException, IOException, DriverConfigurationException {
-        File dbDir = temporaryFolder.newFile();
+        File dbDir = temporaryFolder.newFolder();
         buildGraph(dbDir.getAbsolutePath(), CSV_DIR);
 
         int port = Neo4jServerHelper.nextFreePort();
@@ -469,7 +469,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldLoadDatasetWithMain() throws ClientException, IOException {
-        File dbDir = temporaryFolder.newFile();
+        File dbDir = temporaryFolder.newFolder();
         String csvFilesDir = TestUtils.getResource("/test_csv_files").getAbsolutePath() + "/";
         String configFilePath = TestUtils.getResource("/neo4j_import_dev.properties").getAbsolutePath();
         LdbcSnbNeo4jImporter.main(new String[]{dbDir.getAbsolutePath(), csvFilesDir, configFilePath});
@@ -479,7 +479,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldLoadDatasetUsingConstructor() throws ClientException, IOException {
-        File dbDir = temporaryFolder.newFile();
+        File dbDir = temporaryFolder.newFolder();
         String csvFilesDir = TestUtils.getResource("/test_csv_files").getAbsolutePath() + "/";
         String configFilePath = TestUtils.getResource("/neo4j_import_dev.properties").getAbsolutePath();
         LdbcSnbNeo4jImporter ldbcSnbNeo4jImporter = new LdbcSnbNeo4jImporter();
