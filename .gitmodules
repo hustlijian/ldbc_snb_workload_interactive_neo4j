@@ -1,12 +1,12 @@
 [submodule "neo4j-jdbc"]
 	path = neo4j-jdbc
-	url = git@github.com:neo4j-contrib/neo4j-jdbc.git
-  branch = master
+	url = https://github.com/neo4j-contrib/neo4j-jdbc.git
+	branch = master
 [submodule "ldbc_driver"]
 	path = ldbc_driver
-	url = git@github.com:ldbc/ldbc_driver.git
+	url = https://github.com/ldbc/ldbc_driver.git
 	branch = master
 [submodule "steps"]
 	path = steps
-	url = git@github.com:alexaverbuch/steps.git
+	url = https://github.com/alexaverbuch/steps.git
 	branch = master
