@@ -24,11 +24,11 @@
     </properties>
 
     <modules>
-      <module>ldbc_driver</module>
-      <module>neo4j-jdbc</module>
-      <module>steps</module>
-      <module>data-import</module>
-      <module>benchmark-run</module>
+        <module>ldbc_driver</module>
+        <module>neo4j-jdbc</module>
+        <module>steps</module>
+        <module>data-import</module>
+        <module>benchmark-run</module>
     </modules>
 
     <dependencies>
