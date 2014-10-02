@@ -83,6 +83,8 @@ public class IntegrationTest {
         boolean calculateWorkloadStatistics = false;
         Duration spinnerSleepDuration = Duration.fromMilli(0);
         boolean printHelp = false;
+        boolean ignoreScheduledStartTimes = false;
+
         ConsoleAndFileDriverConfiguration configuration = new ConsoleAndFileDriverConfiguration(
                 new HashMap<String, String>(),
                 "LDBC-SNB",
@@ -102,7 +104,8 @@ public class IntegrationTest {
                 validateWorkload,
                 calculateWorkloadStatistics,
                 spinnerSleepDuration,
-                printHelp);
+                printHelp,
+                ignoreScheduledStartTimes);
 
         Map<String, String> ldbcSnbInteractiveReadOnlyConfiguration = LdbcSnbInteractiveWorkload.defaultReadOnlyConfig();
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(ldbcSnbInteractiveReadOnlyConfiguration);
@@ -260,13 +263,18 @@ public class IntegrationTest {
 
     @Test
     public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedSteps() throws ClientException, IOException, DriverConfigurationException {
+        long operationCount = 50;
+        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedSteps(true, operationCount);
+        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedSteps(false, operationCount);
+    }
+
+    public void doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedSteps(boolean ignoreScheduledStartTimes, long operationCount) throws ClientException, IOException, DriverConfigurationException {
         File dbDir = temporaryFolder.newFolder();
         String csvDir = CSV_DIR;
         buildGraph(dbDir.getAbsolutePath(), csvDir);
         File resultDir = temporaryFolder.newFolder();
         assertThat(resultDir.listFiles().length, is(0));
 
-        long operationCount = 10;
         int threadCount = 4;
         Duration statusDisplayInterval = Duration.fromSeconds(1);
         TimeUnit timeUnit = TimeUnit.MILLISECONDS;
@@ -281,6 +289,7 @@ public class IntegrationTest {
         boolean calculateWorkloadStatistics = false;
         Duration spinnerSleepDuration = Duration.fromMilli(0);
         boolean printHelp = false;
+
         ConsoleAndFileDriverConfiguration configuration = new ConsoleAndFileDriverConfiguration(
                 new HashMap<String, String>(),
                 "LDBC-SNB",
@@ -300,7 +309,8 @@ public class IntegrationTest {
                 validateWorkload,
                 calculateWorkloadStatistics,
                 spinnerSleepDuration,
-                printHelp);
+                printHelp,
+                ignoreScheduledStartTimes);
 
         Map<String, String> ldbcSnbInteractiveReadOnlyConfiguration = LdbcSnbInteractiveWorkload.defaultReadOnlyConfig();
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(ldbcSnbInteractiveReadOnlyConfiguration);
@@ -328,13 +338,18 @@ public class IntegrationTest {
 
     @Test
     public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedCypher() throws ClientException, IOException, DriverConfigurationException {
+        long operationCount = 50;
+        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedCypher(true, operationCount);
+        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedCypher(false, operationCount);
+    }
+
+    public void doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedCypher(boolean ignoreScheduledStartTimes, long operationCount) throws ClientException, IOException, DriverConfigurationException {
         File dbDir = temporaryFolder.newFolder();
         String csvDir = CSV_DIR;
         buildGraph(dbDir.getAbsolutePath(), csvDir);
         File resultDir = temporaryFolder.newFolder();
         assertThat(resultDir.listFiles().length, is(0));
 
-        long operationCount = 10;
         int threadCount = 4;
         Duration statusDisplayInterval = Duration.fromSeconds(1);
         TimeUnit timeUnit = TimeUnit.MILLISECONDS;
@@ -349,6 +364,7 @@ public class IntegrationTest {
         boolean calculateWorkloadStatistics = false;
         Duration spinnerSleepDuration = Duration.fromMilli(0);
         boolean printHelp = false;
+
         ConsoleAndFileDriverConfiguration configuration = new ConsoleAndFileDriverConfiguration(
                 new HashMap<String, String>(),
                 "LDBC-SNB",
@@ -368,7 +384,8 @@ public class IntegrationTest {
                 validateWorkload,
                 calculateWorkloadStatistics,
                 spinnerSleepDuration,
-                printHelp);
+                printHelp,
+                ignoreScheduledStartTimes);
 
         Map<String, String> ldbcSnbInteractiveReadOnlyConfiguration = LdbcSnbInteractiveWorkload.defaultReadOnlyConfig();
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(ldbcSnbInteractiveReadOnlyConfiguration);
@@ -396,6 +413,12 @@ public class IntegrationTest {
 
     @Test
     public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher() throws ClientException, IOException, DriverConfigurationException {
+        long operationCount = 50;
+        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher(true, operationCount);
+        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher(false, operationCount);
+    }
+
+    public void doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher(boolean ignoreScheduledStartTimes, long operationCount) throws ClientException, IOException, DriverConfigurationException {
         File dbDir = temporaryFolder.newFolder();
         buildGraph(dbDir.getAbsolutePath(), CSV_DIR);
 
@@ -406,7 +429,6 @@ public class IntegrationTest {
         File resultDir = temporaryFolder.newFolder();
         assertThat(resultDir.listFiles().length, is(0));
 
-        long operationCount = 10;
         int threadCount = 4;
         Duration statusDisplayInterval = Duration.fromSeconds(1);
         TimeUnit timeUnit = TimeUnit.MILLISECONDS;
@@ -421,6 +443,7 @@ public class IntegrationTest {
         boolean calculateWorkloadStatistics = false;
         Duration spinnerSleepDuration = Duration.fromMilli(0);
         boolean printHelp = false;
+
         ConsoleAndFileDriverConfiguration configuration = new ConsoleAndFileDriverConfiguration(
                 new HashMap<String, String>(),
                 "LDBC-SNB",
@@ -440,7 +463,8 @@ public class IntegrationTest {
                 validateWorkload,
                 calculateWorkloadStatistics,
                 spinnerSleepDuration,
-                printHelp);
+                printHelp,
+                ignoreScheduledStartTimes);
 
         Map<String, String> ldbcSnbInteractiveReadOnlyConfiguration = LdbcSnbInteractiveWorkload.defaultReadOnlyConfig();
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(ldbcSnbInteractiveReadOnlyConfiguration);
