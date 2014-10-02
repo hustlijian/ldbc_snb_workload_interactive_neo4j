@@ -8,7 +8,6 @@ import com.ldbc.snb.interactive.neo4j.TestUtils;
 import com.ldbc.snb.interactive.neo4j.interactive.remote_cypher.*;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.jdbc.Neo4jConnection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
