@@ -217,7 +217,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 0L);
                 params.put(Person.FIRST_NAME, "person");
-                params.put(Person.LAST_NAME, "zero");
+                params.put(Person.LAST_NAME, "zero-ᚠさ丵פش");
                 params.put(Person.CREATION_DATE, 0L);
                 params.put(Person.BIRTHDAY, 0L);
                 params.put(Person.BROWSER_USED, "browser0");
@@ -232,7 +232,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 1L);
                 params.put(Person.FIRST_NAME, "name0");
-                params.put(Person.LAST_NAME, "last1");
+                params.put(Person.LAST_NAME, "last1-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 1L);
                 params.put(Person.BIRTHDAY, 1L);
                 params.put(Person.BROWSER_USED, "browser1");
@@ -247,7 +247,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 2L);
                 params.put(Person.FIRST_NAME, "name0");
-                params.put(Person.LAST_NAME, "last0");
+                params.put(Person.LAST_NAME, "last0-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 2L);
                 params.put(Person.BIRTHDAY, 2L);
                 params.put(Person.BROWSER_USED, "browser2");
@@ -262,7 +262,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 3L);
                 params.put(Person.FIRST_NAME, "name0");
-                params.put(Person.LAST_NAME, "last0");
+                params.put(Person.LAST_NAME, "last0-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 3L);
                 params.put(Person.BIRTHDAY, 3L);
                 params.put(Person.BROWSER_USED, "browser3");
@@ -277,7 +277,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 11L);
                 params.put(Person.FIRST_NAME, "name0");
-                params.put(Person.LAST_NAME, "last11");
+                params.put(Person.LAST_NAME, "last11-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 11L);
                 params.put(Person.BIRTHDAY, 11L);
                 params.put(Person.BROWSER_USED, "browser11");
@@ -292,7 +292,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 111L);
                 params.put(Person.FIRST_NAME, "name1");
-                params.put(Person.LAST_NAME, "last111");
+                params.put(Person.LAST_NAME, "last111-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 111L);
                 params.put(Person.BIRTHDAY, 111L);
                 params.put(Person.BROWSER_USED, "browser111");
@@ -307,7 +307,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 1111L);
                 params.put(Person.FIRST_NAME, "name0");
-                params.put(Person.LAST_NAME, "last1111");
+                params.put(Person.LAST_NAME, "last1111-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 1111L);
                 params.put(Person.BIRTHDAY, 1111L);
                 params.put(Person.BROWSER_USED, "browser1111");
@@ -322,7 +322,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 11111L);
                 params.put(Person.FIRST_NAME, "name0");
-                params.put(Person.LAST_NAME, "last11111");
+                params.put(Person.LAST_NAME, "last11111-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 11111L);
                 params.put(Person.BIRTHDAY, 11111L);
                 params.put(Person.BROWSER_USED, "browser11111");
@@ -337,7 +337,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 21L);
                 params.put(Person.FIRST_NAME, "name1");
-                params.put(Person.LAST_NAME, "last21");
+                params.put(Person.LAST_NAME, "last21-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 21L);
                 params.put(Person.BIRTHDAY, 21L);
                 params.put(Person.BROWSER_USED, "browser21");
@@ -352,7 +352,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 211L);
                 params.put(Person.FIRST_NAME, "name1");
-                params.put(Person.LAST_NAME, "last211");
+                params.put(Person.LAST_NAME, "last211-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 211L);
                 params.put(Person.BIRTHDAY, 211L);
                 params.put(Person.BROWSER_USED, "browser211");
@@ -367,7 +367,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 31L);
                 params.put(Person.FIRST_NAME, "name0");
-                params.put(Person.LAST_NAME, "last31");
+                params.put(Person.LAST_NAME, "last31-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 31L);
                 params.put(Person.BIRTHDAY, 31L);
                 params.put(Person.BROWSER_USED, "browser31");
@@ -595,7 +595,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 1L);
                 params.put(Person.FIRST_NAME, "person1");
-                params.put(Person.LAST_NAME, "last1");
+                params.put(Person.LAST_NAME, "last1-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 1l);
                 params.put(Person.BIRTHDAY, 1l);
                 params.put(Person.BROWSER_USED, "1");
@@ -610,7 +610,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 2L);
                 params.put(Person.FIRST_NAME, "f2");
-                params.put(Person.LAST_NAME, "last2");
+                params.put(Person.LAST_NAME, "last2-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 2l);
                 params.put(Person.BIRTHDAY, 2l);
                 params.put(Person.BROWSER_USED, "2");
@@ -625,7 +625,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 3L);
                 params.put(Person.FIRST_NAME, "f3");
-                params.put(Person.LAST_NAME, "last3");
+                params.put(Person.LAST_NAME, "last3-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 3l);
                 params.put(Person.BIRTHDAY, 3l);
                 params.put(Person.BROWSER_USED, "3");
@@ -640,7 +640,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 4L);
                 params.put(Person.FIRST_NAME, "f4");
-                params.put(Person.LAST_NAME, "last4");
+                params.put(Person.LAST_NAME, "last4-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 4l);
                 params.put(Person.BIRTHDAY, 4l);
                 params.put(Person.BROWSER_USED, "4");
@@ -655,7 +655,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 5L);
                 params.put(Person.FIRST_NAME, "s5");
-                params.put(Person.LAST_NAME, "last5");
+                params.put(Person.LAST_NAME, "last5-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 5l);
                 params.put(Person.BIRTHDAY, 5l);
                 params.put(Person.BROWSER_USED, "5");
@@ -670,7 +670,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 6L);
                 params.put(Person.FIRST_NAME, "ff6");
-                params.put(Person.LAST_NAME, "last6");
+                params.put(Person.LAST_NAME, "last6-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 6l);
                 params.put(Person.BIRTHDAY, 6l);
                 params.put(Person.BROWSER_USED, "6");
@@ -685,7 +685,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 7L);
                 params.put(Person.FIRST_NAME, "s7");
-                params.put(Person.LAST_NAME, "last7");
+                params.put(Person.LAST_NAME, "last7-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 7l);
                 params.put(Person.BIRTHDAY, 7l);
                 params.put(Person.BROWSER_USED, "7");
@@ -1112,7 +1112,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 1L);
                 params.put(Person.FIRST_NAME, "person1");
-                params.put(Person.LAST_NAME, "last1");
+                params.put(Person.LAST_NAME, "last1-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 1l);
                 params.put(Person.BIRTHDAY, 1l);
                 params.put(Person.BROWSER_USED, "browser1");
@@ -1127,7 +1127,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 2L);
                 params.put(Person.FIRST_NAME, "f2");
-                params.put(Person.LAST_NAME, "last2");
+                params.put(Person.LAST_NAME, "last2-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 2l);
                 params.put(Person.BIRTHDAY, 2l);
                 params.put(Person.BROWSER_USED, "browser2");
@@ -1142,7 +1142,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 3L);
                 params.put(Person.FIRST_NAME, "f3");
-                params.put(Person.LAST_NAME, "last3");
+                params.put(Person.LAST_NAME, "last3-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 3l);
                 params.put(Person.BIRTHDAY, 3l);
                 params.put(Person.BROWSER_USED, "browser3");
@@ -1157,7 +1157,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 4L);
                 params.put(Person.FIRST_NAME, "f4");
-                params.put(Person.LAST_NAME, "last4");
+                params.put(Person.LAST_NAME, "last4-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 4l);
                 params.put(Person.BIRTHDAY, 4l);
                 params.put(Person.BROWSER_USED, "browser4");
@@ -1172,7 +1172,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 5L);
                 params.put(Person.FIRST_NAME, "s5");
-                params.put(Person.LAST_NAME, "last5");
+                params.put(Person.LAST_NAME, "last5-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 5l);
                 params.put(Person.BIRTHDAY, 5l);
                 params.put(Person.BROWSER_USED, "browser5");
@@ -1187,7 +1187,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 6L);
                 params.put(Person.FIRST_NAME, "ff6");
-                params.put(Person.LAST_NAME, "last6");
+                params.put(Person.LAST_NAME, "last6-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 6l);
                 params.put(Person.BIRTHDAY, 6l);
                 params.put(Person.BROWSER_USED, "browser6");
@@ -1202,7 +1202,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 7L);
                 params.put(Person.FIRST_NAME, "s7");
-                params.put(Person.LAST_NAME, "last7");
+                params.put(Person.LAST_NAME, "last7-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 7l);
                 params.put(Person.BIRTHDAY, 7l);
                 params.put(Person.BROWSER_USED, "browser7");
@@ -1922,36 +1922,31 @@ public class TestGraph {
         protected static class TestTags {
             protected static Map<String, Object> tag1() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "tag1");
-//                params.put(Tag.URI, new String[]{"tag1 uri"});
+                params.put(Tag.NAME, "tag1-ᚠさ丵פش\")");
                 return params;
             }
 
             protected static Map<String, Object> tag2() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "tag2");
-//                params.put(Tag.URI, new String[]{"tag2 uri"});
+                params.put(Tag.NAME, "tag2-ᚠさ丵פش\")");
                 return params;
             }
 
             protected static Map<String, Object> tag3() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "tag3");
-//                params.put(Tag.URI, new String[]{"tag3 uri"});
+                params.put(Tag.NAME, "tag3-ᚠさ丵פش\")");
                 return params;
             }
 
             protected static Map<String, Object> tag4() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "tag4");
-//                params.put(Tag.URI, new String[]{"tag4 uri"});
+                params.put(Tag.NAME, "tag4-ᚠさ丵פش\")");
                 return params;
             }
 
             protected static Map<String, Object> tag5() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "tag5");
-//                params.put(Tag.URI, new String[]{"tag5 uri"});
+                params.put(Tag.NAME, "tag5-ᚠさ丵פش\")");
                 return params;
             }
         }
@@ -2464,28 +2459,28 @@ public class TestGraph {
             protected static Map<String, Object> forum1() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Forum.ID, 1l);
-                params.put(Forum.TITLE, "forum1");
+                params.put(Forum.TITLE, "forum1-ᚠさ丵פش\")");
                 return params;
             }
 
             protected static Map<String, Object> forum2() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Forum.ID, 2l);
-                params.put(Forum.TITLE, "forum1");
+                params.put(Forum.TITLE, "forum1-ᚠさ丵פش\")");
                 return params;
             }
 
             protected static Map<String, Object> forum3() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Forum.ID, 3l);
-                params.put(Forum.TITLE, "forum3");
+                params.put(Forum.TITLE, "forum3-ᚠさ丵פش\")");
                 return params;
             }
 
             protected static Map<String, Object> forum4() {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Forum.ID, 4l);
-                params.put(Forum.TITLE, "forum4");
+                params.put(Forum.TITLE, "forum4-ᚠさ丵פش\")");
                 return params;
             }
         }
@@ -2900,36 +2895,31 @@ public class TestGraph {
         protected static class TestTags {
             protected static Map<String, Object> tag1() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "tag1");
-//                params.put(Tag.URI, new String[]{"tag1 uri"});
+                params.put(Tag.NAME, "tag1-ᚠさ丵פش\")");
                 return params;
             }
 
             protected static Map<String, Object> tag2() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "tag2");
-//                params.put(Tag.URI, new String[]{"tag2 uri"});
+                params.put(Tag.NAME, "tag2-ᚠさ丵פش\")");
                 return params;
             }
 
             protected static Map<String, Object> tag3() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "tag3");
-//                params.put(Tag.URI, new String[]{"tag3 uri"});
+                params.put(Tag.NAME, "tag3-ᚠさ丵פش\")");
                 return params;
             }
 
             protected static Map<String, Object> tag4() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "tag4");
-//                params.put(Tag.URI, new String[]{"tag4 uri"});
+                params.put(Tag.NAME, "tag4-ᚠさ丵פش\")");
                 return params;
             }
 
             protected static Map<String, Object> tag5() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "tag5");
-//                params.put(Tag.URI, new String[]{"tag5 uri"});
+                params.put(Tag.NAME, "tag5-ᚠさ丵פش\")");
                 return params;
             }
         }
@@ -3057,7 +3047,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 1L);
                 params.put(Person.FIRST_NAME, "person1");
-                params.put(Person.LAST_NAME, "last1");
+                params.put(Person.LAST_NAME, "last1-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 1l);
                 params.put(Person.BIRTHDAY, 2l);
                 params.put(Person.BROWSER_USED, "browser1");
@@ -3072,7 +3062,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 2L);
                 params.put(Person.FIRST_NAME, "f2");
-                params.put(Person.LAST_NAME, "last2");
+                params.put(Person.LAST_NAME, "last2-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 2l);
                 params.put(Person.BIRTHDAY, 2l);
                 params.put(Person.BROWSER_USED, "browser2");
@@ -3087,7 +3077,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 3L);
                 params.put(Person.FIRST_NAME, "f3");
-                params.put(Person.LAST_NAME, "last3");
+                params.put(Person.LAST_NAME, "last3-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 3l);
                 params.put(Person.BIRTHDAY, 3l);
                 params.put(Person.BROWSER_USED, "browser3");
@@ -3102,7 +3092,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 4L);
                 params.put(Person.FIRST_NAME, "f4");
-                params.put(Person.LAST_NAME, "last4");
+                params.put(Person.LAST_NAME, "last4-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 4l);
                 params.put(Person.BIRTHDAY, 4l);
                 params.put(Person.BROWSER_USED, "browser4");
@@ -3117,7 +3107,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 5L);
                 params.put(Person.FIRST_NAME, "ff5");
-                params.put(Person.LAST_NAME, "last5");
+                params.put(Person.LAST_NAME, "last5-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 5l);
                 params.put(Person.BIRTHDAY, 5l);
                 params.put(Person.BROWSER_USED, "browser5");
@@ -3132,7 +3122,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 6L);
                 params.put(Person.FIRST_NAME, "ff6");
-                params.put(Person.LAST_NAME, "last6");
+                params.put(Person.LAST_NAME, "last6-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 6l);
                 params.put(Person.BIRTHDAY, 6l);
                 params.put(Person.BROWSER_USED, "browser6");
@@ -3147,7 +3137,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 7L);
                 params.put(Person.FIRST_NAME, "s7");
-                params.put(Person.LAST_NAME, "last7");
+                params.put(Person.LAST_NAME, "last7-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 7l);
                 params.put(Person.BIRTHDAY, 7l);
                 params.put(Person.BROWSER_USED, "browser7");
@@ -3162,7 +3152,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 8L);
                 params.put(Person.FIRST_NAME, "s8");
-                params.put(Person.LAST_NAME, "last8");
+                params.put(Person.LAST_NAME, "last8-ᚠさ丵פش\")");
                 params.put(Person.CREATION_DATE, 8l);
                 params.put(Person.BIRTHDAY, 8l);
                 params.put(Person.BROWSER_USED, "browser8");
@@ -3511,7 +3501,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 0L);
                 params.put(Person.FIRST_NAME, "person");
-                params.put(Person.LAST_NAME, "zero");
+                params.put(Person.LAST_NAME, "zero-ᚠさ丵פش\")");
                 return params;
             }
 
@@ -3519,7 +3509,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 1L);
                 params.put(Person.FIRST_NAME, "friend");
-                params.put(Person.LAST_NAME, "one");
+                params.put(Person.LAST_NAME, "one-ᚠさ丵פش\")");
                 return params;
             }
 
@@ -3527,7 +3517,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 2L);
                 params.put(Person.FIRST_NAME, "friend");
-                params.put(Person.LAST_NAME, "two");
+                params.put(Person.LAST_NAME, "two-ᚠさ丵פش\")");
                 return params;
             }
 
@@ -3535,7 +3525,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 3L);
                 params.put(Person.FIRST_NAME, "friend");
-                params.put(Person.LAST_NAME, "three");
+                params.put(Person.LAST_NAME, "three-ᚠさ丵פش\")");
                 return params;
             }
         }
@@ -3766,7 +3756,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 0L);
                 params.put(Person.FIRST_NAME, "person");
-                params.put(Person.LAST_NAME, "zero");
+                params.put(Person.LAST_NAME, "zero-ᚠさ丵פش\")");
                 return params;
             }
 
@@ -3774,7 +3764,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 1L);
                 params.put(Person.FIRST_NAME, "friend");
-                params.put(Person.LAST_NAME, "one");
+                params.put(Person.LAST_NAME, "one-ᚠさ丵פش\")");
                 return params;
             }
 
@@ -3782,7 +3772,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 2L);
                 params.put(Person.FIRST_NAME, "friend");
-                params.put(Person.LAST_NAME, "two");
+                params.put(Person.LAST_NAME, "two-ᚠさ丵פش\")");
                 return params;
             }
 
@@ -3790,7 +3780,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 3L);
                 params.put(Person.FIRST_NAME, "stranger");
-                params.put(Person.LAST_NAME, "three");
+                params.put(Person.LAST_NAME, "three-ᚠさ丵פش\")");
                 return params;
             }
 
@@ -3798,7 +3788,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 4L);
                 params.put(Person.FIRST_NAME, "friendfriend");
-                params.put(Person.LAST_NAME, "four");
+                params.put(Person.LAST_NAME, "four-ᚠさ丵פش\")");
                 return params;
             }
         }
@@ -4054,7 +4044,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 0L);
                 params.put(Person.FIRST_NAME, "person");
-                params.put(Person.LAST_NAME, "zero");
+                params.put(Person.LAST_NAME, "zero-ᚠさ丵פش\")");
                 params.put(Person.GENDER, "male");
                 int birthdayMonth = 6;
                 Calendar c = Calendar.getInstance();
@@ -4070,7 +4060,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 1L);
                 params.put(Person.FIRST_NAME, "friend");
-                params.put(Person.LAST_NAME, "one");
+                params.put(Person.LAST_NAME, "one-ᚠさ丵פش\")");
                 params.put(Person.GENDER, "male");
                 int birthdayMonth = 2;
                 Calendar c = Calendar.getInstance();
@@ -4086,7 +4076,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 2L);
                 params.put(Person.FIRST_NAME, "friend");
-                params.put(Person.LAST_NAME, "two");
+                params.put(Person.LAST_NAME, "two-ᚠさ丵פش\")");
                 params.put(Person.GENDER, "male");
                 int birthdayMonth = 2;
                 Calendar c = Calendar.getInstance();
@@ -4102,7 +4092,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 11L);
                 params.put(Person.FIRST_NAME, "friendfriend");
-                params.put(Person.LAST_NAME, "one one");
+                params.put(Person.LAST_NAME, "one one-ᚠさ丵פش\")");
                 params.put(Person.GENDER, "female");
                 int birthdayMonth = 2;
                 Calendar c = Calendar.getInstance();
@@ -4118,7 +4108,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 12L);
                 params.put(Person.FIRST_NAME, "friendfriend");
-                params.put(Person.LAST_NAME, "one two");
+                params.put(Person.LAST_NAME, "one two-ᚠさ丵פش\")");
                 params.put(Person.GENDER, "male");
                 int birthdayMonth = 2;
                 Calendar c = Calendar.getInstance();
@@ -4134,7 +4124,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 21L);
                 params.put(Person.FIRST_NAME, "friendfriend");
-                params.put(Person.LAST_NAME, "two one");
+                params.put(Person.LAST_NAME, "two one-ᚠさ丵פش\")");
                 params.put(Person.GENDER, "male");
                 int birthdayMonth = 2;
                 Calendar c = Calendar.getInstance();
@@ -4150,7 +4140,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 22L);
                 params.put(Person.FIRST_NAME, "friendfriend");
-                params.put(Person.LAST_NAME, "two two");
+                params.put(Person.LAST_NAME, "two two-ᚠさ丵פش\")");
                 params.put(Person.GENDER, "male");
                 int birthdayMonth = 2;
                 Calendar c = Calendar.getInstance();
@@ -4166,7 +4156,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 23L);
                 params.put(Person.FIRST_NAME, "friendfriend");
-                params.put(Person.LAST_NAME, "two three");
+                params.put(Person.LAST_NAME, "two three-ᚠさ丵פش\")");
                 params.put(Person.GENDER, "male");
                 int birthdayMonth = 3;
                 Calendar c = Calendar.getInstance();
@@ -4361,7 +4351,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 0L);
                 params.put(Person.FIRST_NAME, "person");
-                params.put(Person.LAST_NAME, "zero");
+                params.put(Person.LAST_NAME, "zero-ᚠさ丵פش\")");
                 return params;
             }
 
@@ -4369,7 +4359,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 1L);
                 params.put(Person.FIRST_NAME, "friend");
-                params.put(Person.LAST_NAME, "one");
+                params.put(Person.LAST_NAME, "one-ᚠさ丵פش\")");
                 return params;
             }
 
@@ -4377,7 +4367,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 2L);
                 params.put(Person.FIRST_NAME, "friend");
-                params.put(Person.LAST_NAME, "two");
+                params.put(Person.LAST_NAME, "two-ᚠさ丵פش\")");
                 return params;
             }
 
@@ -4385,7 +4375,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 3L);
                 params.put(Person.FIRST_NAME, "stranger");
-                params.put(Person.LAST_NAME, "three");
+                params.put(Person.LAST_NAME, "three-ᚠさ丵פش\")");
                 return params;
             }
 
@@ -4393,7 +4383,7 @@ public class TestGraph {
                 Map<String, Object> params = new HashMap<>();
                 params.put(Person.ID, 11L);
                 params.put(Person.FIRST_NAME, "friend friend");
-                params.put(Person.LAST_NAME, "one one");
+                params.put(Person.LAST_NAME, "one one-ᚠさ丵פش\")");
                 return params;
             }
         }
@@ -4686,37 +4676,37 @@ public class TestGraph {
         protected static class TestTags {
             protected static Map<String, Object> t11() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "tag11");
+                params.put(Tag.NAME, "tag11-ᚠさ丵פش\")");
                 return params;
             }
 
             protected static Map<String, Object> t111() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "tag111");
+                params.put(Tag.NAME, "tag111-ᚠさ丵פش\")");
                 return params;
             }
 
             protected static Map<String, Object> t112() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "tag112");
+                params.put(Tag.NAME, "tag112-ᚠさ丵פش\")");
                 return params;
             }
 
             protected static Map<String, Object> t12111() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "tag12111");
+                params.put(Tag.NAME, "tag12111-ᚠさ丵פش\")");
                 return params;
             }
 
             protected static Map<String, Object> t21() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "tag21");
+                params.put(Tag.NAME, "tag21-ᚠさ丵פش\")");
                 return params;
             }
 
             protected static Map<String, Object> t211() {
                 Map<String, Object> params = new HashMap<>();
-                params.put(Tag.NAME, "tag211");
+                params.put(Tag.NAME, "tag211-ᚠさ丵פش\")");
                 return params;
             }
         }
@@ -4724,49 +4714,42 @@ public class TestGraph {
         protected static class TestTagClasses {
             protected static Map<String, Object> tc1() {
                 Map<String, Object> params = new HashMap<>();
-//                params.put(TagClass.URI, 1L);
                 params.put(TagClass.NAME, "1");
                 return params;
             }
 
             protected static Map<String, Object> tc11() {
                 Map<String, Object> params = new HashMap<>();
-//                params.put(TagClass.URI, 11L);
                 params.put(TagClass.NAME, "11");
                 return params;
             }
 
             protected static Map<String, Object> tc12() {
                 Map<String, Object> params = new HashMap<>();
-//                params.put(TagClass.URI, 12L);
                 params.put(TagClass.NAME, "12");
                 return params;
             }
 
             protected static Map<String, Object> tc121() {
                 Map<String, Object> params = new HashMap<>();
-//                params.put(TagClass.URI, 121L);
                 params.put(TagClass.NAME, "121");
                 return params;
             }
 
             protected static Map<String, Object> tc1211() {
                 Map<String, Object> params = new HashMap<>();
-//                params.put(TagClass.URI, 1211L);
                 params.put(TagClass.NAME, "1211");
                 return params;
             }
 
             protected static Map<String, Object> tc2() {
                 Map<String, Object> params = new HashMap<>();
-//                params.put(TagClass.URI, 2L);
                 params.put(TagClass.NAME, "2");
                 return params;
             }
 
             protected static Map<String, Object> tc21() {
                 Map<String, Object> params = new HashMap<>();
-//                params.put(TagClass.URI, 21L);
                 params.put(TagClass.NAME, "21");
                 return params;
             }
