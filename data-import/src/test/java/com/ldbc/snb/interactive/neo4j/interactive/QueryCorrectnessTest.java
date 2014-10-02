@@ -70,7 +70,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualRow = results.next();
             expectedRow = new LdbcQuery1Result(
                     2L,
-                    "last0",
+                    "last0-ᚠさ丵פش\")",
                     1,
                     2L,
                     2L,
@@ -88,7 +88,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualRow = results.next();
             expectedRow = new LdbcQuery1Result(
                     3L,
-                    "last0",
+                    "last0-ᚠさ丵פش\")",
                     1,
                     3L,
                     3L,
@@ -106,7 +106,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualRow = results.next();
             expectedRow = new LdbcQuery1Result(
                     1L,
-                    "last1",
+                    "last1-ᚠさ丵פش\")",
                     1,
                     1L,
                     1L,
@@ -124,7 +124,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualRow = results.next();
             expectedRow = new LdbcQuery1Result(
                     11L,
-                    "last11",
+                    "last11-ᚠさ丵פش\")",
                     2,
                     11L,
                     11L,
@@ -142,7 +142,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualRow = results.next();
             expectedRow = new LdbcQuery1Result(
                     31L,
-                    "last31",
+                    "last31-ᚠさ丵פش\")",
                     2,
                     31L,
                     31L,
@@ -170,7 +170,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualRow = results.next();
             expectedRow = new LdbcQuery1Result(
                     21L,
-                    "last21",
+                    "last21-ᚠさ丵פش\")",
                     2,
                     21L,
                     21L,
@@ -218,7 +218,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedRow = new LdbcQuery2Result(
                     3,
                     "f3",
-                    "last3",
+                    "last3-ᚠさ丵פش\")",
                     2,
                     "[f3Post2] content",
                     3);
@@ -228,7 +228,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedRow = new LdbcQuery2Result(
                     3,
                     "f3",
-                    "last3",
+                    "last3-ᚠさ丵פش\")",
                     3,
                     "[f3Post3] image",
                     3);
@@ -238,7 +238,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedRow = new LdbcQuery2Result(
                     3,
                     "f3",
-                    "last3",
+                    "last3-ᚠさ丵פش\")",
                     16,
                     "[f3Comment1] content",
                     3);
@@ -248,7 +248,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedRow = new LdbcQuery2Result(
                     2,
                     "f2",
-                    "last2",
+                    "last2-ᚠさ丵פش\")",
                     6,
                     "[f2Post2] content",
                     2);
@@ -258,7 +258,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedRow = new LdbcQuery2Result(
                     2,
                     "f2",
-                    "last2",
+                    "last2-ᚠさ丵פش\")",
                     7,
                     "[f2Post3] content",
                     2);
@@ -268,7 +268,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedRow = new LdbcQuery2Result(
                     2,
                     "f2",
-                    "last2",
+                    "last2-ᚠさ丵פش\")",
                     13,
                     "[f2Comment1] content",
                     2);
@@ -287,7 +287,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedRow = new LdbcQuery2Result(
                     3,
                     "f3",
-                    "last3",
+                    "last3-ᚠさ丵פش\")",
                     2,
                     "[f3Post2] content",
                     3);
@@ -307,7 +307,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedRow = new LdbcQuery2Result(
                     3,
                     "f3",
-                    "last3",
+                    "last3-ᚠさ丵פش\")",
                     1,
                     "[f3Post1] content",
                     4);
@@ -317,7 +317,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedRow = new LdbcQuery2Result(
                     4,
                     "f4",
-                    "last4",
+                    "last4-ᚠさ丵פش\")",
                     4,
                     "[f4Post1] content",
                     4);
@@ -327,7 +327,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedRow = new LdbcQuery2Result(
                     2,
                     "f2",
-                    "last2",
+                    "last2-ᚠさ丵פش\")",
                     5,
                     "[f2Post1] content",
                     4);
@@ -337,7 +337,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedRow = new LdbcQuery2Result(
                     2,
                     "f2",
-                    "last2",
+                    "last2-ᚠさ丵פش\")",
                     14,
                     "[f2Comment2] content",
                     4);
@@ -347,7 +347,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedRow = new LdbcQuery2Result(
                     3,
                     "f3",
-                    "last3",
+                    "last3-ᚠさ丵פش\")",
                     2,
                     "[f3Post2] content",
                     3);
@@ -402,7 +402,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 2l;
             expectedPersonFirstName = "f2";
-            expectedPersonLastName = "last2";
+            expectedPersonLastName = "last2-ᚠさ丵פش\")";
             expectedXCount = 1;
             expectedYCount = 1;
             expectedCount = 2;
@@ -420,7 +420,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 6l;
             expectedPersonFirstName = "ff6";
-            expectedPersonLastName = "last6";
+            expectedPersonLastName = "last6-ᚠさ丵פش\")";
             expectedXCount = 1;
             expectedYCount = 1;
             expectedCount = 2;
@@ -454,7 +454,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 2l;
             expectedPersonFirstName = "f2";
-            expectedPersonLastName = "last2";
+            expectedPersonLastName = "last2-ᚠさ丵פش\")";
             expectedXCount = 1;
             expectedYCount = 1;
             expectedCount = 2;
@@ -505,17 +505,17 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             results = neo4jQuery4Impl(connection, operation);
 
-            expectedTagName = "tag2";
+            expectedTagName = "tag2-ᚠさ丵פش\")";
             expectedTagCount = 3;
             actualResult = results.next();
             assertThat(actualResult, equalTo(new LdbcQuery4Result(expectedTagName, expectedTagCount)));
 
-            expectedTagName = "tag3";
+            expectedTagName = "tag3-ᚠさ丵פش\")";
             expectedTagCount = 2;
             actualResult = results.next();
             assertThat(actualResult, equalTo(new LdbcQuery4Result(expectedTagName, expectedTagCount)));
 
-            expectedTagName = "tag5";
+            expectedTagName = "tag5-ᚠさ丵פش\")";
             expectedTagCount = 1;
             actualResult = results.next();
             assertThat(actualResult, equalTo(new LdbcQuery4Result(expectedTagName, expectedTagCount)));
@@ -533,7 +533,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             results = neo4jQuery4Impl(connection, operation);
 
-            expectedTagName = "tag2";
+            expectedTagName = "tag2-ᚠさ丵פش\")";
             expectedTagCount = 3;
             actualResult = results.next();
             assertThat(actualResult, equalTo(new LdbcQuery4Result(expectedTagName, expectedTagCount)));
@@ -573,18 +573,18 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             results = neo4jQuery5Impl(connection, operation);
 
             actualResult = results.next();
-            expectedForumTitle = "forum1";
+            expectedForumTitle = "forum1-ᚠさ丵פش\")";
             expectedPostCount = 1;
             assertThat(actualResult, equalTo(new LdbcQuery5Result(expectedForumTitle, expectedPostCount)));
 
             actualResult = results.next();
-            expectedForumTitle = "forum3";
+            expectedForumTitle = "forum3-ᚠさ丵פش\")";
             expectedPostCount = 1;
             assertThat(actualResult, equalTo(new LdbcQuery5Result(expectedForumTitle, expectedPostCount)));
 
             // Note, it is totally valid for different forums to have the same title. Query should handle that case
             actualResult = results.next();
-            expectedForumTitle = "forum1";
+            expectedForumTitle = "forum1-ᚠさ丵פش\")";
             expectedPostCount = 0;
             assertThat(actualResult, equalTo(new LdbcQuery5Result(expectedForumTitle, expectedPostCount)));
 
@@ -601,7 +601,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             results = neo4jQuery5Impl(connection, operation);
 
             actualResult = results.next();
-            expectedForumTitle = "forum1";
+            expectedForumTitle = "forum1-ᚠさ丵פش\")";
             expectedPostCount = 1;
             assertThat(actualResult, equalTo(new LdbcQuery5Result(expectedForumTitle, expectedPostCount)));
 
@@ -629,22 +629,22 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             personId = 1;
             personUri = null;
-            tagName = "tag3";
+            tagName = "tag3-ᚠさ丵פش\")";
             limit = 4;
             operation = new LdbcQuery6(personId, personUri, tagName, limit);
             results = neo4jQuery6Impl(connection, operation);
 
-            expectedTagName = "tag2";
+            expectedTagName = "tag2-ᚠさ丵פش\")";
             expectedPostCount = 2;
             actualResult = results.next();
             assertThat(actualResult, equalTo(new LdbcQuery6Result(expectedTagName, expectedPostCount)));
 
-            expectedTagName = "tag5";
+            expectedTagName = "tag5-ᚠさ丵פش\")";
             expectedPostCount = 2;
             actualResult = results.next();
             assertThat(actualResult, equalTo(new LdbcQuery6Result(expectedTagName, expectedPostCount)));
 
-            expectedTagName = "tag1";
+            expectedTagName = "tag1-ᚠさ丵פش\")";
             expectedPostCount = 1;
             actualResult = results.next();
             assertThat(actualResult, equalTo(new LdbcQuery6Result(expectedTagName, expectedPostCount)));
@@ -653,12 +653,12 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             personId = 1;
             personUri = null;
-            tagName = "tag3";
+            tagName = "tag3-ᚠさ丵פش\")";
             limit = 1;
             operation = new LdbcQuery6(personId, personUri, tagName, limit);
             results = neo4jQuery6Impl(connection, operation);
 
-            expectedTagName = "tag2";
+            expectedTagName = "tag2-ᚠさ丵פش\")";
             expectedPostCount = 2;
             actualResult = results.next();
             assertThat(actualResult, equalTo(new LdbcQuery6Result(expectedTagName, expectedPostCount)));
@@ -667,27 +667,27 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             personId = 1;
             personUri = null;
-            tagName = "tag1";
+            tagName = "tag1-ᚠさ丵פش\")";
             limit = 10;
             operation = new LdbcQuery6(personId, personUri, tagName, limit);
             results = neo4jQuery6Impl(connection, operation);
 
-            expectedTagName = "tag2";
+            expectedTagName = "tag2-ᚠさ丵פش\")";
             expectedPostCount = 2;
             actualResult = results.next();
             assertThat(actualResult, equalTo(new LdbcQuery6Result(expectedTagName, expectedPostCount)));
 
-            expectedTagName = "tag4";
+            expectedTagName = "tag4-ᚠさ丵פش\")";
             expectedPostCount = 2;
             actualResult = results.next();
             assertThat(actualResult, equalTo(new LdbcQuery6Result(expectedTagName, expectedPostCount)));
 
-            expectedTagName = "tag3";
+            expectedTagName = "tag3-ᚠさ丵פش\")";
             expectedPostCount = 1;
             actualResult = results.next();
             assertThat(actualResult, equalTo(new LdbcQuery6Result(expectedTagName, expectedPostCount)));
 
-            expectedTagName = "tag5";
+            expectedTagName = "tag5-ᚠさ丵פش\")";
             expectedPostCount = 1;
             actualResult = results.next();
             assertThat(actualResult, equalTo(new LdbcQuery6Result(expectedTagName, expectedPostCount)));
@@ -729,7 +729,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             expectedPersonId = 8l;
             expectedPersonFirstName = "s8";
-            expectedPersonLastName = "last8";
+            expectedPersonLastName = "last8-ᚠさ丵פش\")";
             c.clear();
             c.set(2000, Calendar.JANUARY, 1, 0, 10, 0);
             expectedLikeCreationDate = c.getTimeInMillis();
@@ -751,7 +751,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             expectedPersonId = 7l;
             expectedPersonFirstName = "s7";
-            expectedPersonLastName = "last7";
+            expectedPersonLastName = "last7-ᚠさ丵פش\")";
             c.clear();
             c.set(2000, Calendar.JANUARY, 1, 0, 6, 0);
             expectedLikeCreationDate = c.getTimeInMillis();
@@ -773,7 +773,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             expectedPersonId = 2l;
             expectedPersonFirstName = "f2";
-            expectedPersonLastName = "last2";
+            expectedPersonLastName = "last2-ᚠさ丵פش\")";
             c.clear();
             c.set(2000, Calendar.JANUARY, 1, 0, 5, 0);
             expectedLikeCreationDate = c.getTimeInMillis();
@@ -795,7 +795,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             expectedPersonId = 4l;
             expectedPersonFirstName = "f4";
-            expectedPersonLastName = "last4";
+            expectedPersonLastName = "last4-ᚠさ丵פش\")";
             c.clear();
             c.set(2000, Calendar.JANUARY, 1, 0, 5, 0);
             expectedLikeCreationDate = c.getTimeInMillis();
@@ -817,7 +817,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             expectedPersonId = 6l;
             expectedPersonFirstName = "ff6";
-            expectedPersonLastName = "last6";
+            expectedPersonLastName = "last6-ᚠさ丵פش\")";
             c.clear();
             c.set(2000, Calendar.JANUARY, 1, 0, 4, 0);
             expectedLikeCreationDate = c.getTimeInMillis();
@@ -839,7 +839,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             expectedPersonId = 1l;
             expectedPersonFirstName = "person1";
-            expectedPersonLastName = "last1";
+            expectedPersonLastName = "last1-ᚠさ丵פش\")";
             c.clear();
             c.set(2000, Calendar.JANUARY, 1, 0, 1, 0);
             expectedLikeCreationDate = c.getTimeInMillis();
@@ -869,7 +869,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
 
             expectedPersonId = 8l;
             expectedPersonFirstName = "s8";
-            expectedPersonLastName = "last8";
+            expectedPersonLastName = "last8-ᚠさ丵פش\")";
             c.clear();
             c.set(2000, Calendar.JANUARY, 1, 0, 10, 0);
             expectedLikeCreationDate = c.getTimeInMillis();
@@ -924,7 +924,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 1l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "one";
+            expectedPersonLastName = "one-ᚠさ丵פش\")";
             expectedCommentDate = 7l;
             expectedCommentId = 17l;
             expectedCommentContent = "C21";
@@ -939,7 +939,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 2l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "two";
+            expectedPersonLastName = "two-ᚠさ丵פش\")";
             expectedCommentDate = 4l;
             expectedCommentId = 14l;
             expectedCommentContent = "C131";
@@ -954,7 +954,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 0l;
             expectedPersonFirstName = "person";
-            expectedPersonLastName = "zero";
+            expectedPersonLastName = "zero-ᚠさ丵פش\")";
             expectedCommentDate = 3l;
             expectedCommentId = 13l;
             expectedCommentContent = "C13";
@@ -969,7 +969,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 3l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "three";
+            expectedPersonLastName = "three-ᚠさ丵פش\")";
             expectedCommentDate = 2l;
             expectedCommentId = 12l;
             expectedCommentContent = "C12";
@@ -984,7 +984,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 3l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "three";
+            expectedPersonLastName = "three-ᚠさ丵פش\")";
             expectedCommentDate = 1l;
             expectedCommentId = 10l;
             expectedCommentContent = "C01";
@@ -999,7 +999,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 3l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "three";
+            expectedPersonLastName = "three-ᚠさ丵פش\")";
             expectedCommentDate = 1l;
             expectedCommentId = 11l;
             expectedCommentContent = "C11";
@@ -1022,7 +1022,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 1l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "one";
+            expectedPersonLastName = "one-ᚠさ丵פش\")";
             expectedCommentDate = 7l;
             expectedCommentId = 17l;
             expectedCommentContent = "C21";
@@ -1045,7 +1045,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 1l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "one";
+            expectedPersonLastName = "one-ᚠさ丵פش\")";
             expectedCommentDate = 7l;
             expectedCommentId = 17l;
             expectedCommentContent = "C21";
@@ -1096,7 +1096,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 1l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "one";
+            expectedPersonLastName = "one-ᚠさ丵פش\")";
             expectedCommentOrPostId = 11l;
             expectedCommentOrPostContent = "P11 - content";
             expectedCommentOrPostCreationDate = 11l;
@@ -1111,7 +1111,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 4l;
             expectedPersonFirstName = "friendfriend";
-            expectedPersonLastName = "four";
+            expectedPersonLastName = "four-ᚠさ丵פش\")";
             expectedCommentOrPostId = 1211l;
             expectedCommentOrPostContent = "C1211";
             expectedCommentOrPostCreationDate = 10l;
@@ -1126,7 +1126,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 1l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "one";
+            expectedPersonLastName = "one-ᚠさ丵פش\")";
             expectedCommentOrPostId = 21111l;
             expectedCommentOrPostContent = "C21111";
             expectedCommentOrPostCreationDate = 9l;
@@ -1141,7 +1141,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 2l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "two";
+            expectedPersonLastName = "two-ᚠさ丵פش\")";
             expectedCommentOrPostId = 2111l;
             expectedCommentOrPostContent = "C2111";
             expectedCommentOrPostCreationDate = 8l;
@@ -1156,7 +1156,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 1l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "one";
+            expectedPersonLastName = "one-ᚠさ丵פش\")";
             expectedCommentOrPostId = 211l;
             expectedCommentOrPostContent = "C211";
             expectedCommentOrPostCreationDate = 7l;
@@ -1171,7 +1171,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 2l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "two";
+            expectedPersonLastName = "two-ᚠさ丵פش\")";
             expectedCommentOrPostId = 21l;
             expectedCommentOrPostContent = "P21 - image";
             expectedCommentOrPostCreationDate = 6l;
@@ -1186,7 +1186,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 1l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "one";
+            expectedPersonLastName = "one-ᚠさ丵פش\")";
             expectedCommentOrPostId = 12l;
             expectedCommentOrPostContent = "P12 - content";
             expectedCommentOrPostCreationDate = 4l;
@@ -1201,7 +1201,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 2l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "two";
+            expectedPersonLastName = "two-ᚠさ丵פش\")";
             expectedCommentOrPostId = 311l;
             expectedCommentOrPostContent = "C311";
             expectedCommentOrPostCreationDate = 4l;
@@ -1226,7 +1226,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 1l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "one";
+            expectedPersonLastName = "one-ᚠさ丵פش\")";
             expectedCommentOrPostId = 11l;
             expectedCommentOrPostContent = "P11 - content";
             expectedCommentOrPostCreationDate = 11l;
@@ -1275,7 +1275,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 22l;
             expectedPersonFirstName = "friendfriend";
-            expectedPersonLastName = "two two";
+            expectedPersonLastName = "two two-ᚠさ丵פش\")";
             expectedCommonInterestScore = 0;
             expectedPersonGender = "male";
             expectedPersonCityName = "city0";
@@ -1291,7 +1291,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 11l;
             expectedPersonFirstName = "friendfriend";
-            expectedPersonLastName = "one one";
+            expectedPersonLastName = "one one-ᚠさ丵פش\")";
             expectedCommonInterestScore = -1;
             expectedPersonGender = "female";
             expectedPersonCityName = "city1";
@@ -1307,7 +1307,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 12l;
             expectedPersonFirstName = "friendfriend";
-            expectedPersonLastName = "one two";
+            expectedPersonLastName = "one two-ᚠさ丵פش\")";
             expectedCommonInterestScore = -1;
             expectedPersonGender = "male";
             expectedPersonCityName = "city0";
@@ -1323,7 +1323,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 21l;
             expectedPersonFirstName = "friendfriend";
-            expectedPersonLastName = "two one";
+            expectedPersonLastName = "two one-ᚠさ丵פش\")";
             expectedCommonInterestScore = -1;
             expectedPersonGender = "male";
             expectedPersonCityName = "city0";
@@ -1348,7 +1348,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 22l;
             expectedPersonFirstName = "friendfriend";
-            expectedPersonLastName = "two two";
+            expectedPersonLastName = "two two-ᚠさ丵פش\")";
             expectedCommonInterestScore = 0;
             expectedPersonGender = "male";
             expectedPersonCityName = "city0";
@@ -1399,7 +1399,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 1l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "one";
+            expectedPersonLastName = "one-ᚠさ丵פش\")";
             expectedOrganizationName = "company zero";
             expectedWorkFromYear = 2;
             assertThat(actualResult, equalTo(new LdbcQuery11Result(
@@ -1412,7 +1412,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 11l;
             expectedPersonFirstName = "friend friend";
-            expectedPersonLastName = "one one";
+            expectedPersonLastName = "one one-ᚠさ丵פش\")";
             expectedOrganizationName = "company zero";
             expectedWorkFromYear = 3;
             assertThat(actualResult, equalTo(new LdbcQuery11Result(
@@ -1435,7 +1435,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             actualResult = results.next();
             expectedPersonId = 1l;
             expectedPersonFirstName = "friend";
-            expectedPersonLastName = "one";
+            expectedPersonLastName = "one-ᚠさ丵פش\")";
             expectedOrganizationName = "company zero";
             expectedWorkFromYear = 2;
             assertThat(actualResult, equalTo(new LdbcQuery11Result(
@@ -1482,7 +1482,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedPersonId = 1l;
             expectedPersonFirstName = "f";
             expectedPersonLastName = "1";
-            expectedTagNames = Sets.newHashSet("tag111", "tag12111");
+            expectedTagNames = Sets.newHashSet("tag111-ᚠさ丵פش\")", "tag12111-ᚠさ丵פش\")");
             expectedReplyCount = 2;
             assertThat(actualResult, equalTo(new LdbcQuery12Result(
                     expectedPersonId,
@@ -1495,7 +1495,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedPersonId = 2l;
             expectedPersonFirstName = "f";
             expectedPersonLastName = "2";
-            expectedTagNames = Sets.newHashSet("tag111");
+            expectedTagNames = Sets.newHashSet("tag111-ᚠさ丵פش\")");
             expectedReplyCount = 1;
             assertThat(actualResult, equalTo(new LdbcQuery12Result(
                     expectedPersonId,
@@ -1508,7 +1508,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedPersonId = 3l;
             expectedPersonFirstName = "f";
             expectedPersonLastName = "3";
-            expectedTagNames = Sets.newHashSet("tag11", "tag12111");
+            expectedTagNames = Sets.newHashSet("tag11-ᚠさ丵פش\")", "tag12111-ᚠさ丵פش\")");
             expectedReplyCount = 1;
             assertThat(actualResult, equalTo(new LdbcQuery12Result(
                     expectedPersonId,
@@ -1543,7 +1543,7 @@ public abstract class QueryCorrectnessTest<CONNECTION> implements QueryCorrectne
             expectedPersonId = 1l;
             expectedPersonFirstName = "f";
             expectedPersonLastName = "1";
-            expectedTagNames = Sets.newHashSet("tag111", "tag12111");
+            expectedTagNames = Sets.newHashSet("tag111-ᚠさ丵פش\")", "tag12111-ᚠさ丵פش\")");
             expectedReplyCount = 2;
             assertThat(actualResult, equalTo(new LdbcQuery12Result(
                     expectedPersonId,
