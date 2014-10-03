@@ -7,9 +7,14 @@ import com.ldbc.driver.workloads.ldbc.snb.interactive.*;
 import com.ldbc.snb.interactive.neo4j.interactive.embedded_cypher.*;
 import org.apache.log4j.Logger;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.tooling.GlobalGraphOperations;
+
+import java.util.Iterator;
 
 public class Neo4jDbCommandsEmbeddedCypher extends Neo4jDbCommands {
     private static Logger logger = Logger.getLogger(Neo4jDbCommandsEmbeddedCypher.class);
@@ -32,30 +37,49 @@ public class Neo4jDbCommandsEmbeddedCypher extends Neo4jDbCommands {
         if (doWarmup) {
             long nodeCount = 0;
             long relationshipCount = 0;
-            long labelCount = 0;
-            long propertyKeyCount = 0;
+            final int maxTransactionSize = 10000;
+
+            Iterator<Node> allNodes;
             try (Transaction tx = db.beginTx()) {
-                for (Node node : GlobalGraphOperations.at(db).getAllNodes()) {
-                    nodeCount++;
-                }
-                for (Relationship relationship : GlobalGraphOperations.at(db).getAllRelationships()) {
-                    relationshipCount++;
-                }
-                for (Label label : GlobalGraphOperations.at(db).getAllLabels()) {
-                    labelCount++;
-                }
-                for (String propertyKey : GlobalGraphOperations.at(db).getAllPropertyKeys()) {
-                    propertyKeyCount++;
-                }
+                allNodes = GlobalGraphOperations.at(db).getAllNodes().iterator();
                 tx.success();
-            } catch (Exception e) {
-                throw new DbException("Error encountered while warming up database", e);
             }
+            boolean moreNodesRemain = true;
+            while (moreNodesRemain) {
+                int inThisTransaction = 0;
+                try (Transaction tx = db.beginTx()) {
+                    while (inThisTransaction < maxTransactionSize && allNodes.hasNext()) {
+                        allNodes.next();
+                        nodeCount++;
+                        inThisTransaction++;
+                    }
+                    moreNodesRemain = allNodes.hasNext();
+                    tx.success();
+                }
+            }
+
+            Iterator<Relationship> allRelationships;
+            try (Transaction tx = db.beginTx()) {
+                allRelationships = GlobalGraphOperations.at(db).getAllRelationships().iterator();
+                tx.success();
+            }
+            boolean moreRelationshipsRemain = true;
+            while (moreRelationshipsRemain) {
+                int inThisTransaction = 0;
+                try (Transaction tx = db.beginTx()) {
+                    while (inThisTransaction < maxTransactionSize && allRelationships.hasNext()) {
+                        allRelationships.next();
+                        relationshipCount++;
+                        inThisTransaction++;
+                    }
+                    moreRelationshipsRemain = allRelationships.hasNext();
+                    tx.success();
+                }
+            }
+
             logger.info("- Simple database statistics -");
             logger.info("Node count: " + nodeCount);
             logger.info("Relationship count: " + relationshipCount);
-            logger.info("Label count: " + labelCount);
-            logger.info("Unique property key count: " + propertyKeyCount);
         }
 
         ExecutionEngine queryEngine = new ExecutionEngine(db);
