@@ -5,15 +5,14 @@ import com.ldbc.driver.DbConnectionState;
 import com.ldbc.driver.DbException;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.*;
 import com.ldbc.snb.interactive.neo4j.interactive.embedded_cypher.*;
-import com.ldbc.snb.interactive.neo4j.utils.Utils;
+import org.apache.log4j.Logger;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-
-import java.io.IOException;
-import java.util.Map;
+import org.neo4j.tooling.GlobalGraphOperations;
 
 public class Neo4jDbCommandsEmbeddedCypher extends Neo4jDbCommands {
+    private static Logger logger = Logger.getLogger(Neo4jDbCommandsEmbeddedCypher.class);
     final private String dbPath;
     final private String configPath;
     private Neo4jConnectionState dbConnectionState;
@@ -24,14 +23,41 @@ public class Neo4jDbCommandsEmbeddedCypher extends Neo4jDbCommands {
     }
 
     @Override
-    public void init() throws DbException {
-        Map dbConfig;
-        try {
-            dbConfig = Utils.loadConfig(configPath);
-        } catch (IOException e) {
-            throw new DbException("Unable to load Neo4j DB config", e);
+    public void init(boolean doWarmup) throws DbException {
+        GraphDatabaseService db = new GraphDatabaseFactory()
+                .newEmbeddedDatabaseBuilder(dbPath)
+                .loadPropertiesFromFile(configPath)
+                .newGraphDatabase();
+
+        if (doWarmup) {
+            long nodeCount = 0;
+            long relationshipCount = 0;
+            long labelCount = 0;
+            long propertyKeyCount = 0;
+            try (Transaction tx = db.beginTx()) {
+                for (Node node : GlobalGraphOperations.at(db).getAllNodes()) {
+                    nodeCount++;
+                }
+                for (Relationship relationship : GlobalGraphOperations.at(db).getAllRelationships()) {
+                    relationshipCount++;
+                }
+                for (Label label : GlobalGraphOperations.at(db).getAllLabels()) {
+                    labelCount++;
+                }
+                for (String propertyKey : GlobalGraphOperations.at(db).getAllPropertyKeys()) {
+                    propertyKeyCount++;
+                }
+                tx.success();
+            } catch (Exception e) {
+                throw new DbException("Error encountered while warming up database", e);
+            }
+            logger.info("- Simple database statistics -");
+            logger.info("Node count: " + nodeCount);
+            logger.info("Relationship count: " + relationshipCount);
+            logger.info("Label count: " + labelCount);
+            logger.info("Unique property key count: " + propertyKeyCount);
         }
-        GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbPath).setConfig(dbConfig).newGraphDatabase();
+
         ExecutionEngine queryEngine = new ExecutionEngine(db);
         dbConnectionState = new Neo4jConnectionState(db, queryEngine, null, null);
         registerShutdownHook(db);

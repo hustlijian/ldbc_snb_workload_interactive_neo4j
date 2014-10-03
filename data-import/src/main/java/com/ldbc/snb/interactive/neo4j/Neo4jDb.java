@@ -12,39 +12,35 @@ public class Neo4jDb extends Db {
     private static Logger logger = Logger.getLogger(Neo4jDb.class);
 
     public static String URL_KEY = "neo4j.url";
-
     public static String DB_PATH_KEY = "neo4j.path";
-
     public static String CONFIG_PATH_KEY = "neo4j.config";
-
     public static String DB_TYPE_KEY = "neo4j.dbtype";
     public static String DB_TYPE_VALUE_REMOTE_CYPHER = "remote-cypher";
     public static String DB_TYPE_VALUE_EMBEDDED_CYPHER = "embedded-cypher";
     public static String DB_TYPE_VALUE_EMBEDDED_API = "embedded-api-steps";
-
-    private String url;
-    private String dbType;
-    private String dbPath;
-    private String configPath;
+    public static String WARMUP_KEY = "neo4j.warmup";
 
     private Neo4jDbCommands commands;
 
     @Override
     protected void onInit(Map<String, String> properties) throws DbException {
         // Initialize Neo4j driver
-        url = properties.get(URL_KEY);
-        dbPath = properties.get(DB_PATH_KEY);
-        configPath = properties.get(CONFIG_PATH_KEY);
-        dbType = properties.get(DB_TYPE_KEY);
-
-        if (null == dbType) throw new DbException("Neo4j database connector type not given");
+        String url = properties.get(URL_KEY);
+        String dbPath = properties.get(DB_PATH_KEY);
+        String configPath = properties.get(CONFIG_PATH_KEY);
+        String dbType = properties.get(DB_TYPE_KEY);
+        String doWarmupString = (null == properties.get(WARMUP_KEY)) ? "false" : properties.get(WARMUP_KEY);
 
         logger.info("*** Neo4j Properties ***");
         logger.info("database type = " + ((null == dbType) ? "UNKNOWN" : dbType));
         logger.info("url = " + ((null == url) ? "UNKNOWN" : url));
         logger.info("db path = " + ((null == dbPath) ? "UNKNOWN" : new File(dbPath).getAbsolutePath()));
         logger.info("config path = " + ((null == configPath) ? "UNKNOWN" : new File(configPath).getAbsolutePath()));
+        logger.info("warmup = " + doWarmupString);
         logger.info("************************");
+
+        if (null == dbType) throw new DbException("Neo4j database connector type not given");
+        boolean doWarmup = (null == doWarmupString) ? false : Boolean.parseBoolean(doWarmupString);
 
         if (dbType.equals(DB_TYPE_VALUE_REMOTE_CYPHER)) {
             logger.info("Connecting to database: " + url);
@@ -67,7 +63,7 @@ public class Neo4jDb extends Db {
             throw new DbException(String.format("Invalid database type: %s", dbType));
         }
 
-        commands.init();
+        commands.init(doWarmup);
         commands.registerHandlersWithDb(this);
         logger.info("Initialization complete");
     }

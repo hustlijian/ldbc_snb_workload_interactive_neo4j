@@ -119,6 +119,7 @@ public class IntegrationTest {
 
         Map<String, String> additionalParameters = new HashMap<>();
         additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, csvDir);
+        additionalParameters.put(ConsoleAndFileDriverConfiguration.OPERATION_COUNT_ARG, Long.toString(operationCount));
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(additionalParameters);
 
         TimeSource timeSource = new SystemTimeSource();
@@ -263,9 +264,16 @@ public class IntegrationTest {
 
     @Test
     public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedSteps() throws ClientException, IOException, DriverConfigurationException {
-        long operationCount = 50;
-        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedSteps(true, operationCount);
-        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedSteps(false, operationCount);
+        long operationCount = 100;
+        boolean ignoreScheduledStartTimes = false;
+        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedSteps(ignoreScheduledStartTimes, operationCount);
+    }
+
+    @Test
+    public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedStepsIgnoringStartTimes() throws ClientException, IOException, DriverConfigurationException {
+        long operationCount = 100;
+        boolean ignoreScheduledStartTimes = true;
+        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedSteps(ignoreScheduledStartTimes, operationCount);
     }
 
     public void doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedSteps(boolean ignoreScheduledStartTimes, long operationCount) throws ClientException, IOException, DriverConfigurationException {
@@ -319,11 +327,13 @@ public class IntegrationTest {
         neo4jDbConfiguration.put(Neo4jDb.CONFIG_PATH_KEY, TestUtils.getResource("/neo4j_run_dev.properties").getAbsolutePath());
         neo4jDbConfiguration.put(Neo4jDb.DB_PATH_KEY, dbDir.getAbsolutePath());
         neo4jDbConfiguration.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_API);
+        neo4jDbConfiguration.put(Neo4jDb.WARMUP_KEY, "true");
 
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
 
         Map<String, String> additionalParameters = new HashMap<>();
         additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, csvDir);
+        additionalParameters.put(ConsoleAndFileDriverConfiguration.OPERATION_COUNT_ARG, Long.toString(operationCount));
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(additionalParameters);
 
         TimeSource timeSource = new SystemTimeSource();
@@ -338,9 +348,16 @@ public class IntegrationTest {
 
     @Test
     public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedCypher() throws ClientException, IOException, DriverConfigurationException {
-        long operationCount = 50;
-        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedCypher(true, operationCount);
-        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedCypher(false, operationCount);
+        long operationCount = 100;
+        boolean ignoreScheduledStartTimes = false;
+        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedCypher(ignoreScheduledStartTimes, operationCount);
+    }
+
+    @Test
+    public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedCypherIgnoringStartTimes() throws ClientException, IOException, DriverConfigurationException {
+        long operationCount = 100;
+        boolean ignoreScheduledStartTimes = true;
+        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedCypher(ignoreScheduledStartTimes, operationCount);
     }
 
     public void doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithEmbeddedCypher(boolean ignoreScheduledStartTimes, long operationCount) throws ClientException, IOException, DriverConfigurationException {
@@ -394,11 +411,13 @@ public class IntegrationTest {
         neo4jDbConfiguration.put(Neo4jDb.CONFIG_PATH_KEY, TestUtils.getResource("/neo4j_run_dev.properties").getAbsolutePath());
         neo4jDbConfiguration.put(Neo4jDb.DB_PATH_KEY, dbDir.getAbsolutePath());
         neo4jDbConfiguration.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_CYPHER);
+        neo4jDbConfiguration.put(Neo4jDb.WARMUP_KEY, "true");
 
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
 
         Map<String, String> additionalParameters = new HashMap<>();
         additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, csvDir);
+        additionalParameters.put(ConsoleAndFileDriverConfiguration.OPERATION_COUNT_ARG, Long.toString(operationCount));
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(additionalParameters);
 
         TimeSource timeSource = new SystemTimeSource();
@@ -413,9 +432,16 @@ public class IntegrationTest {
 
     @Test
     public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher() throws ClientException, IOException, DriverConfigurationException {
-        long operationCount = 50;
-        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher(true, operationCount);
-        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher(false, operationCount);
+        long operationCount = 100;
+        boolean ignoreScheduledStartTimes = false;
+        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher(ignoreScheduledStartTimes, operationCount);
+    }
+
+    @Test
+    public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypherIgnoringStartTimes() throws ClientException, IOException, DriverConfigurationException {
+        long operationCount = 100;
+        boolean ignoreScheduledStartTimes = true;
+        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher(ignoreScheduledStartTimes, operationCount);
     }
 
     public void doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher(boolean ignoreScheduledStartTimes, long operationCount) throws ClientException, IOException, DriverConfigurationException {
@@ -472,11 +498,13 @@ public class IntegrationTest {
         Map<String, String> neo4jDbConfiguration = new HashMap<>();
         neo4jDbConfiguration.put(Neo4jDb.URL_KEY, "jdbc:neo4j://localhost:" + port);
         neo4jDbConfiguration.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_REMOTE_CYPHER);
+        neo4jDbConfiguration.put(Neo4jDb.WARMUP_KEY, "false");
 
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
 
         Map<String, String> additionalParameters = new HashMap<>();
         additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, TestUtils.getResource("/test_csv_files/").getAbsolutePath());
+        additionalParameters.put(ConsoleAndFileDriverConfiguration.OPERATION_COUNT_ARG, Long.toString(operationCount));
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(additionalParameters);
 
         TimeSource timeSource = new SystemTimeSource();
