@@ -15,7 +15,7 @@ public class Neo4jDbCommandsJdbcRemoteCypher extends Neo4jDbCommands {
     }
 
     @Override
-    public void init() throws DbException {
+    public void init(boolean doWarmup) throws DbException {
         dbConnectionState = new Neo4jConnectionState(null, null, null, url);
     }
 
