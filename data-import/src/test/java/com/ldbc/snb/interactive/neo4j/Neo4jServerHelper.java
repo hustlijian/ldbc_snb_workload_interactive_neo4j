@@ -13,6 +13,7 @@ import org.neo4j.server.configuration.ServerConfigurator;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class Neo4jServerHelper {
     private static int port = 7475;
@@ -21,12 +22,39 @@ public class Neo4jServerHelper {
         return port++;
     }
 
+    /*
+    IntelliJ params: 7474, /tmp/neodb, true
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
-        int port = 7474;
-        String path = "/tmp/neodb";
-        FileUtils.deleteDirectory(new File(path));
-        TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query2GraphMaker();
-        WrappingNeoServer wrappingNeoServer = Neo4jServerHelper.fromQueryGraphMaker(queryGraphMaker, path, port);
+        if (args.length != 3) {
+            throw new RuntimeException(
+                    String.format("Expected 3 parameters [port:int,db_dir:string,delete_db_dir:boolean], received %s: %s", args.length, Arrays.toString(args))
+            );
+        }
+        int port;
+        String dbDir;
+        boolean deleteDbDir;
+        try {
+            port = Integer.parseInt(args[0]);
+            dbDir = args[1];
+            deleteDbDir = Boolean.parseBoolean(args[2]);
+        } catch (Throwable e) {
+            throw new RuntimeException(
+                    String.format("Expected 3 parameters [port:int,db_dir:string,delete_db_dir:boolean], received %s: %s", args.length, Arrays.toString(args)),
+                    e
+            );
+        }
+
+        System.out.println(String.format("Port = %s\nDB Directory = %s\nDeleting Directory = %s\nStarting Server...", port, dbDir, deleteDbDir));
+
+        WrappingNeoServer wrappingNeoServer;
+        if (deleteDbDir) {
+            FileUtils.deleteDirectory(new File(dbDir));
+            TestGraph.QueryGraphMaker queryGraphMaker = new TestGraph.Query2GraphMaker();
+            wrappingNeoServer = Neo4jServerHelper.fromQueryGraphMaker(queryGraphMaker, dbDir, port);
+        } else {
+            wrappingNeoServer = Neo4jServerHelper.fromPath(dbDir, port);
+        }
         wrappingNeoServer.start();
     }
 

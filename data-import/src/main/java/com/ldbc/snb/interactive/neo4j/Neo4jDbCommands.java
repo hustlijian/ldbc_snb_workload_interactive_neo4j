@@ -5,7 +5,7 @@ import com.ldbc.driver.DbConnectionState;
 import com.ldbc.driver.DbException;
 
 public abstract class Neo4jDbCommands {
-    public abstract void init() throws DbException;
+    public abstract void init(boolean doWarmup) throws DbException;
 
     public abstract void cleanUp() throws DbException;
 
