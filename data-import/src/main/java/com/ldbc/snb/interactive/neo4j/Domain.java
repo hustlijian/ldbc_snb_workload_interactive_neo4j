@@ -13,11 +13,16 @@ public class Domain {
     public static Iterable<Tuple2<Label, String>> labelPropertyPairsToIndex() {
         List<Tuple2<Label, String>> labelPropertyPairsToIndex = new ArrayList<>();
         labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Nodes.Tag, Tag.NAME));
+        labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Nodes.TagClass, TagClass.NAME));
         labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Nodes.Person, Person.ID));
         labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Nodes.Person, Person.FIRST_NAME));
         labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Nodes.Person, Person.LAST_NAME));
+        labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Nodes.Person, Person.BIRTHDAY_MONTH));
+        labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Nodes.Person, Person.BIRTHDAY_DAY_OF_MONTH));
         labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Place.Type.City, Place.NAME));
         labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Place.Type.Country, Place.NAME));
+        labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Nodes.Comment, Message.CREATION_DATE));
+        labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Nodes.Post, Message.CREATION_DATE));
         return labelPropertyPairsToIndex;
     }
 
