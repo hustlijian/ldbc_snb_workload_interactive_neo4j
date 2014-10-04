@@ -21,8 +21,6 @@ public class Domain {
         labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Nodes.Person, Person.BIRTHDAY_DAY_OF_MONTH));
         labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Place.Type.City, Place.NAME));
         labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Place.Type.Country, Place.NAME));
-        labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Nodes.Comment, Message.CREATION_DATE));
-        labelPropertyPairsToIndex.add(new Tuple2<Label, String>(Nodes.Post, Message.CREATION_DATE));
         return labelPropertyPairsToIndex;
     }
 
