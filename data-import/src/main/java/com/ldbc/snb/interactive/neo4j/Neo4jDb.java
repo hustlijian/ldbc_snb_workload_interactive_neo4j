@@ -11,11 +11,9 @@ import java.util.Map;
 public class Neo4jDb extends Db {
     private static Logger logger = Logger.getLogger(Neo4jDb.class);
 
-    public static String URL_KEY = "neo4j.url";
     public static String DB_PATH_KEY = "neo4j.path";
     public static String CONFIG_PATH_KEY = "neo4j.config";
     public static String DB_TYPE_KEY = "neo4j.dbtype";
-    public static String DB_TYPE_VALUE_REMOTE_CYPHER = "remote-cypher";
     public static String DB_TYPE_VALUE_EMBEDDED_CYPHER = "embedded-cypher";
     public static String DB_TYPE_VALUE_EMBEDDED_API = "embedded-api-steps";
     public static String WARMUP_KEY = "neo4j.warmup";
@@ -25,7 +23,6 @@ public class Neo4jDb extends Db {
     @Override
     protected void onInit(Map<String, String> properties) throws DbException {
         // Initialize Neo4j driver
-        String url = properties.get(URL_KEY);
         String dbPath = properties.get(DB_PATH_KEY);
         String configPath = properties.get(CONFIG_PATH_KEY);
         String dbType = properties.get(DB_TYPE_KEY);
@@ -33,7 +30,6 @@ public class Neo4jDb extends Db {
 
         logger.info("*** Neo4j Properties ***");
         logger.info("database type = " + ((null == dbType) ? "UNKNOWN" : dbType));
-        logger.info("url = " + ((null == url) ? "UNKNOWN" : url));
         logger.info("db path = " + ((null == dbPath) ? "UNKNOWN" : new File(dbPath).getAbsolutePath()));
         logger.info("config path = " + ((null == configPath) ? "UNKNOWN" : new File(configPath).getAbsolutePath()));
         logger.info("warmup = " + doWarmupString);
@@ -42,12 +38,7 @@ public class Neo4jDb extends Db {
         if (null == dbType) throw new DbException("Neo4j database connector type not given");
         boolean doWarmup = (null == doWarmupString) ? false : Boolean.parseBoolean(doWarmupString);
 
-        if (dbType.equals(DB_TYPE_VALUE_REMOTE_CYPHER)) {
-            logger.info("Connecting to database: " + url);
-            logger.info("API type: JDBC");
-            if (null == url) throw new DbException("Neo4j server URL not given");
-            commands = new Neo4jDbCommandsJdbcRemoteCypher(url);
-        } else if (dbType.equals(DB_TYPE_VALUE_EMBEDDED_CYPHER)) {
+        if (dbType.equals(DB_TYPE_VALUE_EMBEDDED_CYPHER)) {
             logger.info("Connecting to database: " + dbPath);
             logger.info("API type: Cypher");
             if (null == dbPath) throw new DbException("Neo4j database path not given");
