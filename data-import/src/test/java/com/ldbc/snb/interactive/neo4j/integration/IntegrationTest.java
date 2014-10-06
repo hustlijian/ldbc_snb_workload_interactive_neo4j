@@ -1,18 +1,20 @@
 package com.ldbc.snb.interactive.neo4j.integration;
 
+import com.google.common.collect.Iterators;
 import com.ldbc.driver.Client;
 import com.ldbc.driver.ClientException;
 import com.ldbc.driver.control.ConcurrentControlService;
 import com.ldbc.driver.control.ConsoleAndFileDriverConfiguration;
 import com.ldbc.driver.control.DriverConfigurationException;
 import com.ldbc.driver.control.LocalControlService;
+import com.ldbc.driver.runtime.metrics.ThreadedQueuedConcurrentMetricsService;
 import com.ldbc.driver.temporal.Duration;
 import com.ldbc.driver.temporal.SystemTimeSource;
 import com.ldbc.driver.temporal.Time;
 import com.ldbc.driver.temporal.TimeSource;
+import com.ldbc.driver.util.CsvFileReader;
 import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload;
 import com.ldbc.snb.interactive.neo4j.Neo4jDb;
-import com.ldbc.snb.interactive.neo4j.Neo4jServerHelper;
 import com.ldbc.snb.interactive.neo4j.TestUtils;
 import com.ldbc.snb.interactive.neo4j.load.LdbcSnbNeo4jImporter;
 import org.junit.Ignore;
@@ -21,7 +23,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.server.WrappingNeoServer;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,6 +85,7 @@ public class IntegrationTest {
         Duration spinnerSleepDuration = Duration.fromMilli(0);
         boolean printHelp = false;
         boolean ignoreScheduledStartTimes = false;
+        boolean shouldCreateResultsLog = false;
 
         ConsoleAndFileDriverConfiguration configuration = new ConsoleAndFileDriverConfiguration(
                 new HashMap<String, String>(),
@@ -105,7 +107,9 @@ public class IntegrationTest {
                 calculateWorkloadStatistics,
                 spinnerSleepDuration,
                 printHelp,
-                ignoreScheduledStartTimes);
+                ignoreScheduledStartTimes,
+                shouldCreateResultsLog
+        );
 
         Map<String, String> ldbcSnbInteractiveReadOnlyConfiguration = LdbcSnbInteractiveWorkload.defaultReadOnlyConfig();
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(ldbcSnbInteractiveReadOnlyConfiguration);
@@ -257,6 +261,7 @@ public class IntegrationTest {
         boolean calculateWorkloadStatistics = false;
         Duration spinnerSleepDuration = Duration.fromMilli(0);
         boolean printHelp = false;
+        boolean shouldCreateResultsLog = true;
 
         ConsoleAndFileDriverConfiguration configuration = new ConsoleAndFileDriverConfiguration(
                 new HashMap<String, String>(),
@@ -278,7 +283,9 @@ public class IntegrationTest {
                 calculateWorkloadStatistics,
                 spinnerSleepDuration,
                 printHelp,
-                ignoreScheduledStartTimes);
+                ignoreScheduledStartTimes,
+                shouldCreateResultsLog
+        );
 
         Map<String, String> ldbcSnbInteractiveReadOnlyConfiguration = LdbcSnbInteractiveWorkload.defaultReadOnlyConfig();
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(ldbcSnbInteractiveReadOnlyConfiguration);
@@ -303,7 +310,19 @@ public class IntegrationTest {
         client.start();
 
         // results, configuration
-        assertThat(resultDir.listFiles().length, is(2));
+        Set<String> fileNames = new HashSet<>();
+        for (File file : resultDir.listFiles()){
+            fileNames.add(file.getName());
+        }
+        assertThat(fileNames.size(), is(3));
+        assertThat(fileNames.contains(configuration.name()+ThreadedQueuedConcurrentMetricsService.RESULTS_CONFIGURATION_FILENAME_SUFFIX),is(true));
+        assertThat(fileNames.contains(configuration.name()+ThreadedQueuedConcurrentMetricsService.RESULTS_METRICS_FILENAME_SUFFIX),is(true));
+        assertThat(fileNames.contains(configuration.name()+ThreadedQueuedConcurrentMetricsService.RESULTS_LOG_FILENAME_SUFFIX),is(true));
+
+        File resultsLog = new File(resultDir, configuration.name() + ThreadedQueuedConcurrentMetricsService.RESULTS_LOG_FILENAME_SUFFIX);
+        CsvFileReader csvResultsLogReader = new CsvFileReader(resultsLog, CsvFileReader.DEFAULT_COLUMN_SEPARATOR_PATTERN);
+        assertThat((long) Iterators.size(csvResultsLogReader), is(configuration.operationCount() + 1)); // + 1 to account for csv headers
+        csvResultsLogReader.closeReader();
     }
 
     @Test
@@ -341,6 +360,7 @@ public class IntegrationTest {
         boolean calculateWorkloadStatistics = false;
         Duration spinnerSleepDuration = Duration.fromMilli(0);
         boolean printHelp = false;
+        boolean shouldCreateResultsLog = true;
 
         ConsoleAndFileDriverConfiguration configuration = new ConsoleAndFileDriverConfiguration(
                 new HashMap<String, String>(),
@@ -362,7 +382,9 @@ public class IntegrationTest {
                 calculateWorkloadStatistics,
                 spinnerSleepDuration,
                 printHelp,
-                ignoreScheduledStartTimes);
+                ignoreScheduledStartTimes,
+                shouldCreateResultsLog
+        );
 
         Map<String, String> ldbcSnbInteractiveReadOnlyConfiguration = LdbcSnbInteractiveWorkload.defaultReadOnlyConfig();
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(ldbcSnbInteractiveReadOnlyConfiguration);
@@ -387,7 +409,20 @@ public class IntegrationTest {
         client.start();
 
         // results, configuration
-        assertThat(resultDir.listFiles().length, is(2));
+        Set<String> fileNames = new HashSet<>();
+        for (File file : resultDir.listFiles()){
+            fileNames.add(file.getName());
+        }
+        assertThat(fileNames.size(), is(3));
+        assertThat(fileNames.contains(configuration.name()+ThreadedQueuedConcurrentMetricsService.RESULTS_CONFIGURATION_FILENAME_SUFFIX),is(true));
+        assertThat(fileNames.contains(configuration.name()+ThreadedQueuedConcurrentMetricsService.RESULTS_METRICS_FILENAME_SUFFIX),is(true));
+        assertThat(fileNames.contains(configuration.name()+ThreadedQueuedConcurrentMetricsService.RESULTS_LOG_FILENAME_SUFFIX),is(true));
+
+
+        File resultsLog = new File(resultDir, configuration.name() + ThreadedQueuedConcurrentMetricsService.RESULTS_LOG_FILENAME_SUFFIX);
+        CsvFileReader csvResultsLogReader = new CsvFileReader(resultsLog, CsvFileReader.DEFAULT_COLUMN_SEPARATOR_PATTERN);
+        assertThat((long) Iterators.size(csvResultsLogReader), is(configuration.operationCount() + 1)); // + 1 to account for csv headers
+        csvResultsLogReader.closeReader();
     }
 
     @Test
