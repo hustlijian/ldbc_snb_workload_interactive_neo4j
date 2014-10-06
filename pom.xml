@@ -20,12 +20,10 @@
         <mapdb-version>0.9.3</mapdb-version>
         <ldbc-driver-version>0.2-SNAPSHOT</ldbc-driver-version>
         <steps-version>0.2-SNAPSHOT</steps-version>
-        <neo4j-jdbc-version>2.0.4-SNAPSHOT</neo4j-jdbc-version>
     </properties>
 
     <modules>
         <module>ldbc_driver</module>
-        <module>neo4j-jdbc</module>
         <module>steps</module>
         <module>data-import</module>
         <module>benchmark-run</module>
@@ -42,11 +40,6 @@
             <groupId>org.neo4j.traversal</groupId>
             <artifactId>steps</artifactId>
             <version>${steps-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-jdbc</artifactId>
-            <version>${neo4j-jdbc-version}</version>
         </dependency>
         <dependency>
             <groupId>org.neo4j</groupId>
