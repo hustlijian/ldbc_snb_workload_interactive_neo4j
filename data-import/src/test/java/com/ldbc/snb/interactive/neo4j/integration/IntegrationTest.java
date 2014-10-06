@@ -157,26 +157,6 @@ public class IntegrationTest {
         assertThat(client.databaseValidationResult(), is(nullValue()));
         client.start();
         assertThat(client.databaseValidationResult().isSuccessful(), is(true));
-
-         /*
-        VALIDATE JDBC CYPHER IMPLEMENTATION AGAINST VALIDATION PARAMETERS CREATED BY EMBEDDED CYPHER IMPLEMENTATION
-         */
-
-        int port = Neo4jServerHelper.nextFreePort();
-        WrappingNeoServer wrappingNeoServer = Neo4jServerHelper.fromPath(dbDir.getAbsolutePath(), port);
-        wrappingNeoServer.start();
-
-        neo4jDbConfiguration.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_REMOTE_CYPHER);
-        neo4jDbConfiguration.put(Neo4jDb.URL_KEY, "jdbc:neo4j://localhost:" + port);
-        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
-
-        controlService = new LocalControlService(workloadStartTime, configuration);
-        client = new Client(controlService, timeSource);
-        assertThat(client.databaseValidationResult(), is(nullValue()));
-        client.start();
-        assertThat(client.databaseValidationResult().isSuccessful(), is(true));
-
-        wrappingNeoServer.stop();
     }
 
     @Ignore
@@ -240,26 +220,6 @@ public class IntegrationTest {
         assertThat(client.databaseValidationResult(), is(nullValue()));
         client.start();
         assertThat(client.databaseValidationResult().isSuccessful(), is(true));
-
-         /*
-        VALIDATE JDBC CYPHER IMPLEMENTATION AGAINST VALIDATION PARAMETERS
-         */
-
-        int port = Neo4jServerHelper.nextFreePort();
-        WrappingNeoServer wrappingNeoServer = Neo4jServerHelper.fromPath(dbDir.getAbsolutePath(), port);
-        wrappingNeoServer.start();
-
-        neo4jDbConfiguration.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_REMOTE_CYPHER);
-        neo4jDbConfiguration.put(Neo4jDb.URL_KEY, "jdbc:neo4j://localhost:" + port);
-        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
-
-        controlService = new LocalControlService(workloadStartTime, configuration);
-        client = new Client(controlService, timeSource);
-        assertThat(client.databaseValidationResult(), is(nullValue()));
-        client.start();
-        assertThat(client.databaseValidationResult().isSuccessful(), is(true));
-
-        wrappingNeoServer.stop();
     }
 
     @Test
@@ -429,95 +389,6 @@ public class IntegrationTest {
         // results, configuration
         assertThat(resultDir.listFiles().length, is(2));
     }
-
-    @Test
-    public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher() throws ClientException, IOException, DriverConfigurationException {
-        long operationCount = 100;
-        boolean ignoreScheduledStartTimes = false;
-        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher(ignoreScheduledStartTimes, operationCount);
-    }
-
-    @Test
-    public void shouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypherIgnoringStartTimes() throws ClientException, IOException, DriverConfigurationException {
-        long operationCount = 100;
-        boolean ignoreScheduledStartTimes = true;
-        doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher(ignoreScheduledStartTimes, operationCount);
-    }
-
-    public void doShouldRunLdbcSnbInteractiveReadOnlyWorkloadWithRemoteCypher(boolean ignoreScheduledStartTimes, long operationCount) throws ClientException, IOException, DriverConfigurationException {
-        File dbDir = temporaryFolder.newFolder();
-        buildGraph(dbDir.getAbsolutePath(), CSV_DIR);
-
-        int port = Neo4jServerHelper.nextFreePort();
-        WrappingNeoServer wrappingNeoServer = Neo4jServerHelper.fromPath(dbDir.getAbsolutePath(), port);
-        wrappingNeoServer.start();
-
-        File resultDir = temporaryFolder.newFolder();
-        assertThat(resultDir.listFiles().length, is(0));
-
-        int threadCount = 4;
-        Duration statusDisplayInterval = Duration.fromSeconds(1);
-        TimeUnit timeUnit = TimeUnit.MILLISECONDS;
-        String resultDirPath = resultDir.getAbsolutePath();
-        Double timeCompressionRatio = 1.0;
-        Set<String> peerIds = new HashSet<>();
-        Duration toleratedExecutionDelay = Duration.fromMinutes(60);
-        Duration windowedExecutionWindowDuration = Duration.fromSeconds(1);
-        ConsoleAndFileDriverConfiguration.ConsoleAndFileValidationParamOptions validationCreationParams = null;
-        String databaseValidationFilePath = null;
-        boolean validateWorkload = false;
-        boolean calculateWorkloadStatistics = false;
-        Duration spinnerSleepDuration = Duration.fromMilli(0);
-        boolean printHelp = false;
-
-        ConsoleAndFileDriverConfiguration configuration = new ConsoleAndFileDriverConfiguration(
-                new HashMap<String, String>(),
-                "LDBC-SNB",
-                Neo4jDb.class.getName(),
-                LdbcSnbInteractiveWorkload.class.getName(),
-                operationCount,
-                threadCount,
-                statusDisplayInterval,
-                timeUnit,
-                resultDirPath,
-                timeCompressionRatio,
-                windowedExecutionWindowDuration,
-                peerIds,
-                toleratedExecutionDelay,
-                validationCreationParams,
-                databaseValidationFilePath,
-                validateWorkload,
-                calculateWorkloadStatistics,
-                spinnerSleepDuration,
-                printHelp,
-                ignoreScheduledStartTimes);
-
-        Map<String, String> ldbcSnbInteractiveReadOnlyConfiguration = LdbcSnbInteractiveWorkload.defaultReadOnlyConfig();
-        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(ldbcSnbInteractiveReadOnlyConfiguration);
-
-        Map<String, String> neo4jDbConfiguration = new HashMap<>();
-        neo4jDbConfiguration.put(Neo4jDb.URL_KEY, "jdbc:neo4j://localhost:" + port);
-        neo4jDbConfiguration.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_REMOTE_CYPHER);
-        neo4jDbConfiguration.put(Neo4jDb.WARMUP_KEY, "false");
-
-        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
-
-        Map<String, String> additionalParameters = new HashMap<>();
-        additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, TestUtils.getResource("/test_csv_files/").getAbsolutePath());
-        additionalParameters.put(ConsoleAndFileDriverConfiguration.OPERATION_COUNT_ARG, Long.toString(operationCount));
-        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(additionalParameters);
-
-        TimeSource timeSource = new SystemTimeSource();
-        Time workloadStartTime = timeSource.now().plus(Duration.fromSeconds(1));
-        ConcurrentControlService controlService = new LocalControlService(workloadStartTime, configuration);
-        Client client = new Client(controlService, timeSource);
-        client.start();
-
-        // results, configuration
-        assertThat(resultDir.listFiles().length, is(2));
-        wrappingNeoServer.stop();
-    }
-
 
     @Test
     public void shouldLoadDatasetWithMain() throws ClientException, IOException {

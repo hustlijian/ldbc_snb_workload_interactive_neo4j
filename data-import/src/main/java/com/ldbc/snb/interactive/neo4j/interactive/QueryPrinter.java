@@ -1,7 +1,6 @@
 package com.ldbc.snb.interactive.neo4j.interactive;
 
 import com.ldbc.snb.interactive.neo4j.interactive.embedded_cypher.*;
-import com.ldbc.snb.interactive.neo4j.interactive.remote_cypher.Neo4jQuery1RemoteCypher;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,7 +18,7 @@ public class QueryPrinter {
         writer.write("QUERY 1");
         writer.newLine();
         writer.newLine();
-        writer.write(new Neo4jQuery1RemoteCypher().description());
+        writer.write(new Neo4jQuery1EmbeddedCypher().description());
         writer.newLine();
         writer.newLine();
         writer.write("QUERY 2");
