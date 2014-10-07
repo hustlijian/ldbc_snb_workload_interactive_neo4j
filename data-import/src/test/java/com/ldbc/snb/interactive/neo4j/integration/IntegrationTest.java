@@ -17,7 +17,6 @@ import com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload
 import com.ldbc.snb.interactive.neo4j.Neo4jDb;
 import com.ldbc.snb.interactive.neo4j.TestUtils;
 import com.ldbc.snb.interactive.neo4j.load.LdbcSnbNeo4jImporter;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -52,23 +51,25 @@ public class IntegrationTest {
     @Test
     public void shouldValidateAllImplementationsUsingValidationParametersCreatedByEmbeddedCypherImplementation() throws IOException, DriverConfigurationException, ClientException {
         File dbDir = temporaryFolder.newFolder();
-        // TODO uncomment
-        String csvDir = CSV_DIR;
+        // TODO uncomment to use public validation set
 //        String csvDir = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/csv_files/").getAbsolutePath();
+        String csvDir = CSV_DIR;
         buildGraph(dbDir.getAbsolutePath(), csvDir);
 
         /*
         CREATE VALIDATION PARAMETERS FOR USE IN VALIDATING OTHER IMPLEMENTATIONS
          */
 
-        // TODO uncomment
+        // TODO uncomment to use public validation set
+//        File validationParametersFile = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/validation_params.csv");
         File validationParametersFile = temporaryFolder.newFile();
-//        File validationParametersFile = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/csv_and_params_files_for_validation/validation_params.csv");
         int validationSetSize = 100;
 
         assertThat(validationParametersFile.length() == 0, is(true));
 
-        long operationCount = 10;
+        // TODO uncomment to use public validation set
+        long operationCount = 100000;
+//        long operationCount = 100;
         int threadCount = 4;
         Duration statusDisplayInterval = Duration.fromSeconds(1);
         TimeUnit timeUnit = TimeUnit.MILLISECONDS;
@@ -111,6 +112,11 @@ public class IntegrationTest {
                 shouldCreateResultsLog
         );
 
+        // TODO uncomment to use public validation set
+//        File ldbcSnbInteractiveReadOnlyConfigurationFile = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/ldbc_driver_validation_config.properties");
+//        Properties ldbcSnbInteractiveReadOnlyConfigurationProperties = new Properties();
+//        ldbcSnbInteractiveReadOnlyConfigurationProperties.load(new FileInputStream(ldbcSnbInteractiveReadOnlyConfigurationFile));
+//        Map<String, String> ldbcSnbInteractiveReadOnlyConfiguration = MapUtils.propertiesToMap(ldbcSnbInteractiveReadOnlyConfigurationProperties);
         Map<String, String> ldbcSnbInteractiveReadOnlyConfiguration = LdbcSnbInteractiveWorkload.defaultReadOnlyConfig();
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(ldbcSnbInteractiveReadOnlyConfiguration);
 
@@ -122,7 +128,10 @@ public class IntegrationTest {
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
 
         Map<String, String> additionalParameters = new HashMap<>();
-        additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, csvDir);
+        // TODO uncomment to use public validation set
+//        String substitutionParametersDir = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/params_files/").getAbsolutePath();
+        String substitutionParametersDir = csvDir;
+        additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, substitutionParametersDir);
         additionalParameters.put(ConsoleAndFileDriverConfiguration.OPERATION_COUNT_ARG, Long.toString(operationCount));
         configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(additionalParameters);
 
@@ -151,69 +160,6 @@ public class IntegrationTest {
 
          /*
         VALIDATE EMBEDDED API IMPLEMENTATION AGAINST VALIDATION PARAMETERS CREATED BY EMBEDDED CYPHER IMPLEMENTATION
-         */
-
-        neo4jDbConfiguration.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_API);
-        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
-
-        controlService = new LocalControlService(workloadStartTime, configuration);
-        client = new Client(controlService, timeSource);
-        assertThat(client.databaseValidationResult(), is(nullValue()));
-        client.start();
-        assertThat(client.databaseValidationResult().isSuccessful(), is(true));
-    }
-
-    @Ignore
-    @Test
-    public void shouldValidateAllImplementationUsingGivenValidationParametersAndCsvDir() throws IOException, DriverConfigurationException, ClientException {
-        // TODO set this
-        File validationParametersFile = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/validation_params.csv");
-        // TODO set this
-        String csvDirPath = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/csv_files/").getAbsolutePath();
-        String substitutionParametersDirPath = new File("/Users/alexaverbuch/IdeaProjects/ldbc_snb_interactive_validation/params_files/").getAbsolutePath();
-
-        File dbDir = temporaryFolder.newFolder();
-        buildGraph(dbDir.getAbsolutePath(), csvDirPath);
-
-        /*
-        CREATE VALIDATION PARAMETERS FOR USE IN VALIDATING OTHER IMPLEMENTATIONS
-         */
-
-        ConsoleAndFileDriverConfiguration configuration = ConsoleAndFileDriverConfiguration.fromDefaults(Neo4jDb.class.getName(), LdbcSnbInteractiveWorkload.class.getName(), 10);
-
-        Map<String, String> ldbcSnbInteractiveReadOnlyConfiguration = LdbcSnbInteractiveWorkload.defaultReadOnlyConfig();
-        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(ldbcSnbInteractiveReadOnlyConfiguration);
-
-        Map<String, String> neo4jDbConfiguration = new HashMap<>();
-        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
-
-        Map<String, String> additionalParameters = new HashMap<>();
-        additionalParameters.put(LdbcSnbInteractiveWorkload.PARAMETERS_DIRECTORY, substitutionParametersDirPath);
-        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(additionalParameters);
-
-         /*
-        VALIDATE EMBEDDED CYPHER IMPLEMENTATION AGAINST VALIDATION PARAMETERS
-         */
-
-        neo4jDbConfiguration.put(Neo4jDb.CONFIG_PATH_KEY, TestUtils.getResource("/neo4j_run_dev.properties").getAbsolutePath());
-        neo4jDbConfiguration.put(Neo4jDb.DB_PATH_KEY, dbDir.getAbsolutePath());
-        neo4jDbConfiguration.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_CYPHER);
-        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(neo4jDbConfiguration);
-
-        Map<String, String> validateDbConfigurationParameters = new HashMap<>();
-        validateDbConfigurationParameters.put(ConsoleAndFileDriverConfiguration.DB_VALIDATION_FILE_PATH_ARG, validationParametersFile.getAbsolutePath());
-        configuration = (ConsoleAndFileDriverConfiguration) configuration.applyMap(validateDbConfigurationParameters);
-
-        TimeSource timeSource = new SystemTimeSource();
-        Time workloadStartTime = timeSource.now().plus(Duration.fromSeconds(1));
-        ConcurrentControlService controlService = new LocalControlService(workloadStartTime, configuration);
-        Client client = new Client(controlService, timeSource);
-        assertThat(client.databaseValidationResult(), is(nullValue()));
-        client.start();
-        assertThat(client.databaseValidationResult().isSuccessful(), is(true));
-
-         /*
-        VALIDATE EMBEDDED API IMPLEMENTATION AGAINST VALIDATION PARAMETERS
          */
 
         neo4jDbConfiguration.put(Neo4jDb.DB_TYPE_KEY, Neo4jDb.DB_TYPE_VALUE_EMBEDDED_API);
@@ -311,13 +257,13 @@ public class IntegrationTest {
 
         // results, configuration
         Set<String> fileNames = new HashSet<>();
-        for (File file : resultDir.listFiles()){
+        for (File file : resultDir.listFiles()) {
             fileNames.add(file.getName());
         }
         assertThat(fileNames.size(), is(3));
-        assertThat(fileNames.contains(configuration.name()+ThreadedQueuedConcurrentMetricsService.RESULTS_CONFIGURATION_FILENAME_SUFFIX),is(true));
-        assertThat(fileNames.contains(configuration.name()+ThreadedQueuedConcurrentMetricsService.RESULTS_METRICS_FILENAME_SUFFIX),is(true));
-        assertThat(fileNames.contains(configuration.name()+ThreadedQueuedConcurrentMetricsService.RESULTS_LOG_FILENAME_SUFFIX),is(true));
+        assertThat(fileNames.contains(configuration.name() + ThreadedQueuedConcurrentMetricsService.RESULTS_CONFIGURATION_FILENAME_SUFFIX), is(true));
+        assertThat(fileNames.contains(configuration.name() + ThreadedQueuedConcurrentMetricsService.RESULTS_METRICS_FILENAME_SUFFIX), is(true));
+        assertThat(fileNames.contains(configuration.name() + ThreadedQueuedConcurrentMetricsService.RESULTS_LOG_FILENAME_SUFFIX), is(true));
 
         File resultsLog = new File(resultDir, configuration.name() + ThreadedQueuedConcurrentMetricsService.RESULTS_LOG_FILENAME_SUFFIX);
         CsvFileReader csvResultsLogReader = new CsvFileReader(resultsLog, CsvFileReader.DEFAULT_COLUMN_SEPARATOR_PATTERN);
@@ -410,13 +356,13 @@ public class IntegrationTest {
 
         // results, configuration
         Set<String> fileNames = new HashSet<>();
-        for (File file : resultDir.listFiles()){
+        for (File file : resultDir.listFiles()) {
             fileNames.add(file.getName());
         }
         assertThat(fileNames.size(), is(3));
-        assertThat(fileNames.contains(configuration.name()+ThreadedQueuedConcurrentMetricsService.RESULTS_CONFIGURATION_FILENAME_SUFFIX),is(true));
-        assertThat(fileNames.contains(configuration.name()+ThreadedQueuedConcurrentMetricsService.RESULTS_METRICS_FILENAME_SUFFIX),is(true));
-        assertThat(fileNames.contains(configuration.name()+ThreadedQueuedConcurrentMetricsService.RESULTS_LOG_FILENAME_SUFFIX),is(true));
+        assertThat(fileNames.contains(configuration.name() + ThreadedQueuedConcurrentMetricsService.RESULTS_CONFIGURATION_FILENAME_SUFFIX), is(true));
+        assertThat(fileNames.contains(configuration.name() + ThreadedQueuedConcurrentMetricsService.RESULTS_METRICS_FILENAME_SUFFIX), is(true));
+        assertThat(fileNames.contains(configuration.name() + ThreadedQueuedConcurrentMetricsService.RESULTS_LOG_FILENAME_SUFFIX), is(true));
 
 
         File resultsLog = new File(resultDir, configuration.name() + ThreadedQueuedConcurrentMetricsService.RESULTS_LOG_FILENAME_SUFFIX);
