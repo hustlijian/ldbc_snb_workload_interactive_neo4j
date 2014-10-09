@@ -17,6 +17,8 @@ import java.util.List;
 public class LdbcQuery8HandlerEmbeddedCypher extends OperationHandler<LdbcQuery8> {
     @Override
     protected OperationResultReport executeOperation(LdbcQuery8 operation) throws DbException {
+        // TODO remove
+        System.out.println(operation.toString());
         ExecutionEngine engine = ((Neo4jConnectionState) dbConnectionState()).executionEngine();
         GraphDatabaseService db = ((Neo4jConnectionState) dbConnectionState()).db();
         List<LdbcQuery8Result> result;

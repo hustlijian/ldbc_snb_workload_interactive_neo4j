@@ -17,6 +17,8 @@ import java.util.List;
 public class LdbcQuery9HandlerEmbeddedCypher extends OperationHandler<LdbcQuery9> {
     @Override
     protected OperationResultReport executeOperation(LdbcQuery9 operation) throws DbException {
+        // TODO remove
+        System.out.println("STARTED: " + operation.toString());
         ExecutionEngine engine = ((Neo4jConnectionState) dbConnectionState()).executionEngine();
         GraphDatabaseService db = ((Neo4jConnectionState) dbConnectionState()).db();
         List<LdbcQuery9Result> result;
@@ -31,7 +33,8 @@ public class LdbcQuery9HandlerEmbeddedCypher extends OperationHandler<LdbcQuery9
                     ConcurrentErrorReporter.stackTraceToString(e));
             throw new DbException(errMsg, e);
         }
-
+        // TODO remove
+        System.out.println("FINISHED: " + operation.toString());
         return operation.buildResult(resultCode, result);
     }
 }

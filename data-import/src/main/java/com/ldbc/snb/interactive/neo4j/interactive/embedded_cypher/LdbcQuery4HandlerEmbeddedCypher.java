@@ -18,6 +18,8 @@ public class LdbcQuery4HandlerEmbeddedCypher extends OperationHandler<LdbcQuery4
 
     @Override
     protected OperationResultReport executeOperation(LdbcQuery4 operation) throws DbException {
+        // TODO remove
+        System.out.println("STARTED: " + operation.toString());
         ExecutionEngine engine = ((Neo4jConnectionState) dbConnectionState()).executionEngine();
         GraphDatabaseService db = ((Neo4jConnectionState) dbConnectionState()).db();
         List<LdbcQuery4Result> result;
@@ -32,7 +34,8 @@ public class LdbcQuery4HandlerEmbeddedCypher extends OperationHandler<LdbcQuery4
                     ConcurrentErrorReporter.stackTraceToString(e));
             throw new DbException(errMsg, e);
         }
-
+        // TODO remove
+        System.out.println("FINISHED: " + operation.toString());
         return operation.buildResult(resultCode, result);
     }
 }
