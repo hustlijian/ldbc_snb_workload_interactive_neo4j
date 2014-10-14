@@ -69,7 +69,7 @@ public class Neo4jQuery7EmbeddedApi extends Neo4jQuery7<GraphDatabaseService> {
                                 String personLastName = (String) liker.getProperty(Domain.Person.LAST_NAME);
                                 long likeCreationDate = input.getValue()._2();
                                 long commentOrPostId = (long) message.getProperty(Domain.Message.ID);
-                                String commentOrPostContent = (String) message.getProperty(Domain.Message.CONTENT);
+                                String commentOrPostContent = (message.hasProperty(Domain.Message.CONTENT)) ? (String) message.getProperty(Domain.Message.CONTENT) : (String) message.getProperty(Domain.Post.IMAGE_FILE);
                                 long commentOrPostCreationDate = (long) message.getProperty(Domain.Message.CREATION_DATE);
                                 Long minutesLatency = Time.fromMilli(likeCreationDate).durationGreaterThan(Time.fromMilli(commentOrPostCreationDate)).as(TimeUnit.MINUTES);
                                 boolean isNew = false == likerKnowsPerson(liker, person);
