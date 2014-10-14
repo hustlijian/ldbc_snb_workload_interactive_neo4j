@@ -27,7 +27,7 @@ public abstract class Neo4jQuery7<CONNECTION> implements Neo4jQuery<LdbcQuery7, 
             + " latestLike.likeTime AS likeTime,"
             + " not((liker)-[:" + Rels.KNOWS + "]-(person)) AS isNew,"
             + " latestLike.msg." + Message.ID + " AS messageId,"
-            + " latestLike.msg." + Message.CONTENT + " AS messageContent,"
+            + " CASE has(latestLike.msg." + Message.CONTENT + ") WHEN true THEN latestLike.msg." + Message.CONTENT + " ELSE latestLike.msg." + Post.IMAGE_FILE + " END AS messageContent,"
             + " latestLike.likeTime - latestLike.msg." + Message.CREATION_DATE + " AS latencyAsMilli\n"
             + "ORDER BY likeTime DESC, personId ASC\n"
             + "LIMIT {" + LIMIT + "}";
