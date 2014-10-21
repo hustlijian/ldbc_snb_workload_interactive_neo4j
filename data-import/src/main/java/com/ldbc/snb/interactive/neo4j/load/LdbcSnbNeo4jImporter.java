@@ -144,10 +144,11 @@ public class LdbcSnbNeo4jImporter {
         // Relationship (Place, Place)
         insertFile(fileInserters.getPlaceIsPartOfPlaceInserter());
 
-        // Node Property (Person)
-        insertFile(fileInserters.getPersonHasEmailAddressInserter());
+        
         // Node Property (Person)
         insertFile(fileInserters.getPersonSpeaksLanguageInserter());
+        // Node Property (Person)
+        //insertFile(fileInserters.getPersonHasEmailAddressInserter());
 
         // Relationship (Person, Organisation)
         insertFile(fileInserters.getPersonStudyAtOrganisationInserter());
@@ -156,6 +157,9 @@ public class LdbcSnbNeo4jImporter {
         // Relationship (Organisation, Place)
         insertFile(fileInserters.getOrganisationIsLocatedInPlaceInserter());
 
+        // Node Property (Person)
+        insertFile(fileInserters.getPersonHasEmailAddressInserter());
+        
         // Free (Person)
         logger.info("Freeing persons index");
         fileInserters.getPersonsIndex().shutdown();

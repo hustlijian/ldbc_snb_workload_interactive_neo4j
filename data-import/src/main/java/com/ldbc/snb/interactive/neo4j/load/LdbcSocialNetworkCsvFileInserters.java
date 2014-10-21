@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import com.ldbc.snb.interactive.neo4j.Domain;
 import com.ldbc.snb.interactive.neo4j.load.tempindex.TempIndexFactory;
 import com.ldbc.snb.interactive.neo4j.utils.Utils;
+
+import org.apache.log4j.Logger;
 import org.neo4j.graphdb.Label;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 

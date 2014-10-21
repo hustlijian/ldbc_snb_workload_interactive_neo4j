@@ -89,7 +89,7 @@ public class Domain {
         public static final String LOCATION_IP = "locationIP";
         public static final String BROWSER_USED = "browserUsed";
         public static final String LANGUAGES = "languages";
-        public static final String EMAIL_ADDRESSES = "email";
+        public static final String EMAIL_ADDRESSES = "emails";
     }
 
     public static class Forum {
